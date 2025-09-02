@@ -1,9 +1,9 @@
 package tn.mbs.memory.procedures;
 
-import tn.mbs.memory.configuration.MechanicsConfigConfiguration;
+import tn.naizo.jauml.JaumlConfigLib;
 
 public class ReturnAttributeSeventhTipProcedure {
 	public static String execute() {
-		return ReturnAttributeSeventhNameProcedure.execute() + "" + MechanicsConfigConfiguration.DISPLAY_TIP_ATT_7.get();
+		return ReturnAttributeOneNameProcedure.execute() + "" + JaumlConfigLib.getStringValue("motp/attributes", "attribute_7", "tip_to_display");
 	}
 }

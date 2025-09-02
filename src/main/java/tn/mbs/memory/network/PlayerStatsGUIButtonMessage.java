@@ -1,19 +1,17 @@
-
 package tn.mbs.memory.network;
 
-import tn.mbs.memory.world.inventory.PlayerStatsGUIMenu;
 import tn.mbs.memory.procedures.RemoveModiferCountProcedure;
 import tn.mbs.memory.procedures.OpenAttributesDisplayGUIProcedure;
-import tn.mbs.memory.procedures.AddPointsAttributeTwoProcedure;
-import tn.mbs.memory.procedures.AddPointsAttributeThreeProcedure;
-import tn.mbs.memory.procedures.AddPointsAttributeTenProcedure;
-import tn.mbs.memory.procedures.AddPointsAttributeSixthProcedure;
-import tn.mbs.memory.procedures.AddPointsAttributeSeventhProcedure;
-import tn.mbs.memory.procedures.AddPointsAttributeOneProcedure;
-import tn.mbs.memory.procedures.AddPointsAttributeNineProcedure;
-import tn.mbs.memory.procedures.AddPointsAttributeForthProcedure;
-import tn.mbs.memory.procedures.AddPointsAttributeFifthProcedure;
-import tn.mbs.memory.procedures.AddPointsAttributeEightProcedure;
+import tn.mbs.memory.procedures.AddPointsAttribute9Procedure;
+import tn.mbs.memory.procedures.AddPointsAttribute8Procedure;
+import tn.mbs.memory.procedures.AddPointsAttribute7Procedure;
+import tn.mbs.memory.procedures.AddPointsAttribute6Procedure;
+import tn.mbs.memory.procedures.AddPointsAttribute5Procedure;
+import tn.mbs.memory.procedures.AddPointsAttribute4Procedure;
+import tn.mbs.memory.procedures.AddPointsAttribute3Procedure;
+import tn.mbs.memory.procedures.AddPointsAttribute2Procedure;
+import tn.mbs.memory.procedures.AddPointsAttribute1Procedure;
+import tn.mbs.memory.procedures.AddPointsAttribute10Procedure;
 import tn.mbs.memory.procedures.AddModiferCountProcedure;
 import tn.mbs.memory.MemoryOfThePastMod;
 
@@ -28,7 +26,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
 
 import java.util.function.Supplier;
-import java.util.HashMap;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class PlayerStatsGUIButtonMessage {
@@ -70,61 +67,60 @@ public class PlayerStatsGUIButtonMessage {
 
 	public static void handleButtonAction(Player entity, int buttonID, int x, int y, int z) {
 		Level world = entity.level();
-		HashMap guistate = PlayerStatsGUIMenu.guistate;
 		// security measure to prevent arbitrary chunk generation
 		if (!world.hasChunkAt(new BlockPos(x, y, z)))
 			return;
 		if (buttonID == 0) {
 
-			AddPointsAttributeOneProcedure.execute(entity);
+			AddPointsAttribute1Procedure.execute(entity);
 		}
 		if (buttonID == 1) {
 
-			AddPointsAttributeTwoProcedure.execute(entity);
+			AddPointsAttribute2Procedure.execute(entity);
 		}
 		if (buttonID == 2) {
 
-			AddPointsAttributeThreeProcedure.execute(entity);
+			AddPointsAttribute3Procedure.execute(entity);
 		}
 		if (buttonID == 3) {
 
-			AddPointsAttributeForthProcedure.execute(entity);
+			AddPointsAttribute4Procedure.execute(entity);
 		}
 		if (buttonID == 4) {
 
-			AddPointsAttributeFifthProcedure.execute(entity);
+			AddPointsAttribute5Procedure.execute(entity);
 		}
 		if (buttonID == 5) {
 
-			AddPointsAttributeSixthProcedure.execute(entity);
+			AddPointsAttribute6Procedure.execute(entity);
 		}
 		if (buttonID == 6) {
 
-			AddPointsAttributeSeventhProcedure.execute(entity);
+			AddPointsAttribute7Procedure.execute(entity);
 		}
 		if (buttonID == 7) {
 
-			AddPointsAttributeEightProcedure.execute(entity);
+			AddPointsAttribute8Procedure.execute(entity);
 		}
 		if (buttonID == 8) {
 
-			AddPointsAttributeNineProcedure.execute(entity);
+			AddPointsAttribute10Procedure.execute(entity);
 		}
 		if (buttonID == 9) {
 
-			AddPointsAttributeTenProcedure.execute(entity);
+			OpenAttributesDisplayGUIProcedure.execute(world, x, y, z, entity);
 		}
 		if (buttonID == 10) {
 
-			OpenAttributesDisplayGUIProcedure.execute(world, x, y, z, entity);
+			RemoveModiferCountProcedure.execute(entity);
 		}
 		if (buttonID == 11) {
 
-			RemoveModiferCountProcedure.execute(entity);
+			AddModiferCountProcedure.execute(entity);
 		}
 		if (buttonID == 12) {
 
-			AddModiferCountProcedure.execute(entity);
+			AddPointsAttribute9Procedure.execute(entity);
 		}
 	}
 

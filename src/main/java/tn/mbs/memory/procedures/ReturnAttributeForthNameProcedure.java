@@ -1,9 +1,9 @@
 package tn.mbs.memory.procedures;
 
-import tn.mbs.memory.configuration.MechanicsConfigConfiguration;
+import tn.naizo.jauml.JaumlConfigLib;
 
 public class ReturnAttributeForthNameProcedure {
 	public static String execute() {
-		return MechanicsConfigConfiguration.DISPLAY_NAME_ATT_4.get();
+		return JaumlConfigLib.getStringValue("motp/attributes", "attribute_4", "display_name");
 	}
 }

@@ -1,6 +1,5 @@
 package tn.mbs.memory.init;
 
-import tn.mbs.memory.configuration.MechanicsConfigConfiguration;
 import tn.mbs.memory.configuration.MainConfigFileConfiguration;
 import tn.mbs.memory.configuration.GUIAttributeConfigConfiguration;
 import tn.mbs.memory.MemoryOfThePastMod;
@@ -17,7 +16,6 @@ public class MemoryOfThePastModConfigs {
 	public static void register(FMLConstructModEvent event) {
 		event.enqueueWork(() -> {
 			ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, MainConfigFileConfiguration.SPEC, "motp/main_config.toml");
-			ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, MechanicsConfigConfiguration.SPEC, "motp/attributes_config.toml");
 			ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, GUIAttributeConfigConfiguration.SPEC, "motp/attribute_display_config.toml");
 		});
 	}

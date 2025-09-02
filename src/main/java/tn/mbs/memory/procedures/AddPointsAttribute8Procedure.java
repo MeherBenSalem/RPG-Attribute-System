@@ -1,28 +1,35 @@
 package tn.mbs.memory.procedures;
 
+import tn.naizo.jauml.JaumlConfigLib;
+
 import tn.mbs.memory.network.MemoryOfThePastModVariables;
-import tn.mbs.memory.configuration.MechanicsConfigConfiguration;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.CommandSource;
 
-public class AddPointsAttributeTwoProcedure {
+public class AddPointsAttribute8Procedure {
 	public static void execute(Entity entity) {
 		if (entity == null)
 			return;
+		double count = 0;
+		String filename = "";
+		filename = "attribute_8";
+		count = 0;
 		for (int index0 = 0; index0 < (int) (entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).modifier; index0++) {
 			if ((entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).SparePoints >= 1
-					&& (entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).attribute_2 < (double) MechanicsConfigConfiguration.MAX_LEVEL_ATT_2.get()) {
-				for (String stringiterator : MechanicsConfigConfiguration.LEVEL_ATT_2.get()) {
+					&& (entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).attribute_8 < JaumlConfigLib.getNumberValue("motp/attributes", filename,
+							"max_level")) {
+				for (int index1 = 0; index1 < (int) JaumlConfigLib.getArrayLength("motp/attributes", filename, "on_level_event"); index1++) {
 					{
 						Entity _ent = entity;
 						if (!_ent.level().isClientSide() && _ent.getServer() != null) {
 							_ent.getServer().getCommands().performPrefixedCommand(new CommandSourceStack(CommandSource.NULL, _ent.position(), _ent.getRotationVector(), _ent.level() instanceof ServerLevel ? (ServerLevel) _ent.level() : null, 4,
-									_ent.getName().getString(), _ent.getDisplayName(), _ent.level().getServer(), _ent), stringiterator);
+									_ent.getName().getString(), _ent.getDisplayName(), _ent.level().getServer(), _ent), JaumlConfigLib.getArrayElement("motp/attributes", filename, "on_level_event", ((int) count)));
 						}
 					}
+					count = count + 1;
 				}
 				{
 					double _setval = (entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).SparePoints - 1;
@@ -32,10 +39,10 @@ public class AddPointsAttributeTwoProcedure {
 					});
 				}
 				{
-					double _setval = (entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).attribute_2
-							+ (double) MechanicsConfigConfiguration.BASE_VALUE_PER_POINT_2.get();
+					double _setval = (entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).attribute_8
+							+ JaumlConfigLib.getNumberValue("motp/attributes", filename, "base_value_per_point");
 					entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-						capability.attribute_2 = _setval;
+						capability.attribute_8 = _setval;
 						capability.syncPlayerVariables(entity);
 					});
 				}

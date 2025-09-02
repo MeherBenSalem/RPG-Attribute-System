@@ -63,9 +63,9 @@
       "registry_name": "player_stats_gui",
       "metadata": {
         "files": [
+          "src/main/java/tn/mbs/memory/network/PlayerStatsGUIButtonMessage.java",
           "src/main/java/tn/mbs/memory/client/gui/PlayerStatsGUIScreen.java",
-          "src/main/java/tn/mbs/memory/world/inventory/PlayerStatsGUIMenu.java",
-          "src/main/java/tn/mbs/memory/network/PlayerStatsGUIButtonMessage.java"
+          "src/main/java/tn/mbs/memory/world/inventory/PlayerStatsGUIMenu.java"
         ]
       },
       "path": "~/GUI"
@@ -286,8 +286,8 @@
       "registry_name": "codex_of_ascension",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/item/OrbOfLevelingItem.java",
-          "src/main/resources/assets/memory_of_the_past/models/item/codex_of_ascension.json"
+          "src/main/resources/assets/memory_of_the_past/models/item/codex_of_ascension.json",
+          "src/main/java/tn/mbs/memory/item/OrbOfLevelingItem.java"
         ]
       },
       "path": "~/Items"
@@ -431,11 +431,11 @@
       "registry_name": "level_100_trophy_reward",
       "metadata": {
         "files": [
-          "src/main/resources/data/memory_of_the_past/loot_tables/blocks/level_100_trophy_reward.json",
-          "src/main/resources/assets/memory_of_the_past/models/item/level_100_trophy_reward.json",
           "src/main/java/tn/mbs/memory/block/Level100TrophyRewardBlock.java",
+          "src/main/resources/assets/memory_of_the_past/models/item/level_100_trophy_reward.json",
+          "src/main/resources/assets/memory_of_the_past/models/block/level_100_trophy_reward.json",
           "src/main/resources/assets/memory_of_the_past/blockstates/level_100_trophy_reward.json",
-          "src/main/resources/assets/memory_of_the_past/models/block/level_100_trophy_reward.json"
+          "src/main/resources/data/memory_of_the_past/loot_tables/blocks/level_100_trophy_reward.json"
         ]
       },
       "path": "~/Blocks"
@@ -448,11 +448,11 @@
       "registry_name": "level_200_trophy_reward",
       "metadata": {
         "files": [
-          "src/main/resources/assets/memory_of_the_past/models/block/level_200_trophy_reward.json",
           "src/main/java/tn/mbs/memory/block/Level200TrophyRewardBlock.java",
+          "src/main/resources/data/memory_of_the_past/loot_tables/blocks/level_200_trophy_reward.json",
           "src/main/resources/assets/memory_of_the_past/blockstates/level_200_trophy_reward.json",
-          "src/main/resources/assets/memory_of_the_past/models/item/level_200_trophy_reward.json",
-          "src/main/resources/data/memory_of_the_past/loot_tables/blocks/level_200_trophy_reward.json"
+          "src/main/resources/assets/memory_of_the_past/models/block/level_200_trophy_reward.json",
+          "src/main/resources/assets/memory_of_the_past/models/item/level_200_trophy_reward.json"
         ]
       },
       "path": "~/Blocks"
@@ -540,19 +540,6 @@
         ]
       },
       "path": "~/Commands"
-    },
-    {
-      "name": "MechanicsConfig",
-      "type": "config",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "mechanics_config",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/configuration/MechanicsConfigConfiguration.java"
-        ]
-      },
-      "path": "~/Configurations"
     },
     {
       "name": "ReturnAttributeOneName",
@@ -863,78 +850,6 @@
       "path": "~/Commands"
     },
     {
-      "name": "AddPointsAttributeOne",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "add_points_attribute_one",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttributeOneProcedure.java"
-        ],
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ]
-      },
-      "path": "~/Procedures/Leveling Logic/Add Points"
-    },
-    {
-      "name": "AddPointsAttributeTwo",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "add_points_attribute_two",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttributeTwoProcedure.java"
-        ],
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ]
-      },
-      "path": "~/Procedures/Leveling Logic/Add Points"
-    },
-    {
-      "name": "AddPointsAttributeThree",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "add_points_attribute_three",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttributeThreeProcedure.java"
-        ],
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ]
-      },
-      "path": "~/Procedures/Leveling Logic/Add Points"
-    },
-    {
-      "name": "DisplayLogicAttributeOne",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "display_logic_attribute_one",
-      "metadata": {
-        "return_type": "logic",
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttributeOneProcedure.java"
-        ],
-        "dependencies": []
-      },
-      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
-    },
-    {
       "name": "ReturnNextAttributeOne",
       "type": "procedure",
       "compiles": true,
@@ -1055,70 +970,6 @@
       "path": "~/Procedures/Text Logic/LevelInfo"
     },
     {
-      "name": "DisplayLogicAttributeTwo",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "display_logic_attribute_two",
-      "metadata": {
-        "return_type": "logic",
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttributeTwoProcedure.java"
-        ],
-        "dependencies": []
-      },
-      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
-    },
-    {
-      "name": "DisplayLogicAttributeThree",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "display_logic_attribute_three",
-      "metadata": {
-        "return_type": "logic",
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttributeThreeProcedure.java"
-        ],
-        "dependencies": []
-      },
-      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
-    },
-    {
-      "name": "DisplayLogicAttributeForth",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "display_logic_attribute_forth",
-      "metadata": {
-        "return_type": "logic",
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttributeForthProcedure.java"
-        ],
-        "dependencies": []
-      },
-      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
-    },
-    {
-      "name": "AddPointsAttributeForth",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "add_points_attribute_forth",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttributeForthProcedure.java"
-        ],
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ]
-      },
-      "path": "~/Procedures/Leveling Logic/Add Points"
-    },
-    {
       "name": "ReturnNextAttributeForth",
       "type": "procedure",
       "compiles": true,
@@ -1199,40 +1050,6 @@
       "path": "~/Procedures/Text Logic/LevelInfo"
     },
     {
-      "name": "AddPointsAttributeFifth",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "add_points_attribute_fifth",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttributeFifthProcedure.java"
-        ],
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ]
-      },
-      "path": "~/Procedures/Leveling Logic/Add Points"
-    },
-    {
-      "name": "DisplayLogicAttributeFifth",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "display_logic_attribute_fifth",
-      "metadata": {
-        "return_type": "logic",
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttributeFifthProcedure.java"
-        ],
-        "dependencies": []
-      },
-      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
-    },
-    {
       "name": "ReturnNextAttributeSixth",
       "type": "procedure",
       "compiles": true,
@@ -1311,176 +1128,6 @@
         ]
       },
       "path": "~/Procedures/Text Logic/LevelInfo"
-    },
-    {
-      "name": "DisplayLogicAttributeSixth",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "display_logic_attribute_sixth",
-      "metadata": {
-        "return_type": "logic",
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttributeSixthProcedure.java"
-        ],
-        "dependencies": []
-      },
-      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
-    },
-    {
-      "name": "DisplayLogicAttributeSeventh",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "display_logic_attribute_seventh",
-      "metadata": {
-        "return_type": "logic",
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttributeSeventhProcedure.java"
-        ],
-        "dependencies": []
-      },
-      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
-    },
-    {
-      "name": "AddPointsAttributeSixth",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "add_points_attribute_sixth",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttributeSixthProcedure.java"
-        ],
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ]
-      },
-      "path": "~/Procedures/Leveling Logic/Add Points"
-    },
-    {
-      "name": "AddPointsAttributeSeventh",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "add_points_attribute_seventh",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttributeSeventhProcedure.java"
-        ],
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ]
-      },
-      "path": "~/Procedures/Leveling Logic/Add Points"
-    },
-    {
-      "name": "DisplayLogicAttributeEight",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "display_logic_attribute_eight",
-      "metadata": {
-        "return_type": "logic",
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttributeEightProcedure.java"
-        ],
-        "dependencies": []
-      },
-      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
-    },
-    {
-      "name": "DisplayLogicAttributeNine",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "display_logic_attribute_nine",
-      "metadata": {
-        "return_type": "logic",
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttributeNineProcedure.java"
-        ],
-        "dependencies": []
-      },
-      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
-    },
-    {
-      "name": "DisplayLogicAttributeTen",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "display_logic_attribute_ten",
-      "metadata": {
-        "return_type": "logic",
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttributeTenProcedure.java"
-        ],
-        "dependencies": []
-      },
-      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
-    },
-    {
-      "name": "AddPointsAttributeEight",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "add_points_attribute_eight",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttributeEightProcedure.java"
-        ],
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ]
-      },
-      "path": "~/Procedures/Leveling Logic/Add Points"
-    },
-    {
-      "name": "AddPointsAttributeNine",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "add_points_attribute_nine",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttributeNineProcedure.java"
-        ],
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ]
-      },
-      "path": "~/Procedures/Leveling Logic/Add Points"
-    },
-    {
-      "name": "AddPointsAttributeTen",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "add_points_attribute_ten",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttributeTenProcedure.java"
-        ],
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ]
-      },
-      "path": "~/Procedures/Leveling Logic/Add Points"
     },
     {
       "name": "ReturnNextAttributeEight",
@@ -1700,9 +1347,9 @@
       "registry_name": "player_attributes_viewer_gui",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/world/inventory/PlayerAttributesViewerGUIMenu.java",
+          "src/main/java/tn/mbs/memory/client/gui/PlayerAttributesViewerGUIScreen.java",
           "src/main/java/tn/mbs/memory/network/PlayerAttributesViewerGUIButtonMessage.java",
-          "src/main/java/tn/mbs/memory/client/gui/PlayerAttributesViewerGUIScreen.java"
+          "src/main/java/tn/mbs/memory/world/inventory/PlayerAttributesViewerGUIMenu.java"
         ]
       },
       "path": "~/GUI"
@@ -2471,10 +2118,6 @@
           {
             "name": "itemstack",
             "type": "itemstack"
-          },
-          {
-            "name": "tooltip",
-            "type": "tooltip"
           }
         ]
       },
@@ -3207,6 +2850,700 @@
         "dependencies": []
       },
       "path": "~/Configurations"
+    },
+    {
+      "name": "MotpLevel",
+      "type": "attribute",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "motp_level",
+      "metadata": {
+        "files": []
+      }
+    },
+    {
+      "name": "CreateAttributesConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultOneConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_one_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateDefaultOneConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultTwoConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_two_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateDefaultTwoConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultThreeConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_three_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateDefaultThreeConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultForthConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_forth_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateDefaultForthConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultFifthConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_fifth_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateDefaultFifthConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultSixthConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_sixth_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateDefaultSixthConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultSeventhConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_seventh_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateDefaultSeventhConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute1",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_1",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute1Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute2",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_2",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute2Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute3",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_3",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute3Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute4",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_4",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute4Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute5",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_5",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute5Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute6",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_6",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute6Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute7",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_7",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute7Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute8",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_8",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute8Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute9",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_9",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute9Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute10",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_10",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute10Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "CreateDefaultEiightConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_eiight_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateDefaultEiightConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultNineConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_nine_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateDefaultNineConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultTenConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_ten_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateDefaultTenConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "AddPointsAttribute1",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_1",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute1Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute2",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_2",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute2Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute3",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_3",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute3Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute4",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_4",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute4Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute5",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_5",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute5Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute6",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_6",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute6Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute7",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_7",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute7Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute8",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_8",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute8Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute9",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_9",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute9Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute10",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_10",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute10Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "DisplayLogicAttribute1",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_1",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute1Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute2",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_2",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute2Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute3",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_3",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute3Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute4",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_4",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute4Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute5",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_5",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute5Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute6",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_6",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute6Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute7",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_7",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute7Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute8",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_8",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute8Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute9",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_9",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute9Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute10",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_10",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute10Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
     }
   ],
   "variable_elements": [
@@ -3405,7 +3742,8 @@
       "gui.memory_of_the_past.player_stats_gui.button_empty1": "\u003e",
       "gui.memoryfrags.player_stats_gui.label_health": "Health :",
       "gui.memory_of_the_past.player_stats_gui.tooltip_indicates_the_number_of_points_y": "§7Indicates the number of points you can allocate to improve your stats",
-      "gui.memory_of_the_past.player_stats_gui.label_5": "5"
+      "gui.memory_of_the_past.player_stats_gui.label_5": "5",
+      "attribute.memory_of_the_past.motp_level": "Memory Level"
     },
     "fr_fr": {
       "gui.memoryfrags.player_stats_gui.label_resistance": "Resistance : ",
@@ -3502,8 +3840,26 @@
       "gui.memory_of_the_past.player_stats_gui.button_empty1": "\u003e",
       "gui.memoryfrags.player_stats_gui.label_health": "Health :",
       "gui.memory_of_the_past.player_stats_gui.tooltip_indicates_the_number_of_points_y": "§7Indique le nombre de points que vous pouvez allouer pour améliorer vos statistiques",
-      "gui.memory_of_the_past.player_stats_gui.label_5": "5"
+      "gui.memory_of_the_past.player_stats_gui.label_5": "5",
+      "attribute.memory_of_the_past.motp_level": "Memory Level"
     }
+  },
+  "metadata": {
+    "files": [
+      "src/main/java/tn/mbs/memory/network/MemoryOfThePastModVariables.java",
+      "src/main/java/tn/mbs/memory/MemoryOfThePastMod.java",
+      "src/main/resources/META-INF/mods.toml",
+      "src/main/resources/pack.mcmeta",
+      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModTabs.java",
+      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModAttributes.java",
+      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModConfigs.java",
+      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModMenus.java",
+      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModScreens.java",
+      "src/main/java/tn/mbs/memory/network/MenuStateUpdateMessage.java",
+      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModKeyMappings.java",
+      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModBlocks.java",
+      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModItems.java"
+    ]
   },
   "foldersRoot": {
     "name": "~",
@@ -3549,6 +3905,10 @@
               },
               {
                 "name": "Add Points",
+                "children": []
+              },
+              {
+                "name": "Attributes",
                 "children": []
               }
             ]
@@ -3596,7 +3956,12 @@
       },
       {
         "name": "Configurations",
-        "children": []
+        "children": [
+          {
+            "name": "Attributes Config",
+            "children": []
+          }
+        ]
       },
       {
         "name": "Blocks",
@@ -3619,14 +3984,16 @@
   "workspaceSettings": {
     "modid": "memory_of_the_past",
     "modName": "Memories of the past",
-    "version": "1.7.0",
+    "version": "1.8.0",
     "description": "As players explore the world, they collect Memories from significant defeating a bosses or mobs. you can use this fragments to level up and gain extra stats.",
     "author": "NAIZO",
     "websiteURL": "https://meherbensalem.github.io",
     "license": "All Rights Reserved",
     "serverSideOnly": false,
     "modPicture": "logo",
-    "requiredMods": [],
+    "requiredMods": [
+      "jauml"
+    ],
     "dependencies": [],
     "dependants": [],
     "mcreatorDependencies": [
@@ -3636,5 +4003,5 @@
     "credits": "Thank you @porogulaemeo",
     "modElementsPackage": "tn.mbs.memory"
   },
-  "mcreatorVersion": 202400452410
+  "mcreatorVersion": 202500228610
 }

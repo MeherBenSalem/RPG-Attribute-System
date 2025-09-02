@@ -93,5 +93,6 @@
   "gui.memory_of_the_past.player_stats_gui.button_empty1": "\u003e",
   "gui.memoryfrags.player_stats_gui.label_health": "Health :",
   "gui.memory_of_the_past.player_stats_gui.tooltip_indicates_the_number_of_points_y": "§7Indicates the number of points you can allocate to improve your stats",
-  "gui.memory_of_the_past.player_stats_gui.label_5": "5"
+  "gui.memory_of_the_past.player_stats_gui.label_5": "5",
+  "attribute.memory_of_the_past.motp_level": "Memory Level"
 }

@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "memory_of_the_past:level_200_trophy_reward",
-    "memory_of_the_past:level_100_trophy_reward"
+    "memory_of_the_past:level_100_trophy_reward",
+    "memory_of_the_past:level_200_trophy_reward"
   ]
 }

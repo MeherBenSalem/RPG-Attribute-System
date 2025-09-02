@@ -1,4 +1,3 @@
-
 package tn.mbs.memory.client.screens;
 
 import tn.mbs.memory.procedures.YouHavePointsProcedure;
@@ -69,70 +68,70 @@ public class LevelOverlayOverlay {
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		if (true) {
 			if (IsAt0Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_0.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_0.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt5Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_5.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_5.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt10Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_10.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_10.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt15Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_15.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_15.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt20Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_20.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_20.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt25Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_25.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_25.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt30Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_30.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_30.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt35Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_35.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_35.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt40Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_40.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_40.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt45Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_45.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_45.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt50Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_50.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_50.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt55Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_55.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_55.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt60Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_60.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_60.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt65Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_65.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_65.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt70Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_70.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_70.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt75Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_75.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_75.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt80Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_80.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_80.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt85Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_85.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_85.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt90Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_90.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_90.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt95Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_95.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_95.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (IsAt99Procedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/ui_bar_99.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_99.png"), 3, h - 15, 0, 0, 80, 12, 80, 12);
 			}
 			if (YouHavePointsProcedure.execute(entity)) {
-				event.getGuiGraphics().blit(new ResourceLocation("memory_of_the_past:textures/screens/levelup.png"), 4, h - 25, 0, 0, 7, 8, 7, 8);
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/levelup.png"), 4, h - 25, 0, 0, 7, 8, 7, 8);
 			}
 			if (DisplayXpOverlayProcedure.execute())
 				event.getGuiGraphics().drawString(Minecraft.getInstance().font,

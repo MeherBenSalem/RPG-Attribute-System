@@ -20,63 +20,63 @@ public class AddPointsCmdProcedure {
 			});
 		}
 		if (DoubleArgumentType.getDouble(arguments, "attribute_Id") == 1) {
-			if (DisplayLogicAttributeOneProcedure.execute()) {
+			if (DisplayLogicAttribute1Procedure.execute()) {
 				for (int index0 = 0; index0 < (int) DoubleArgumentType.getDouble(arguments, "count"); index0++) {
-					AddPointsAttributeOneProcedure.execute(entity);
+					AddPointsAttribute1Procedure.execute(entity);
 				}
 			}
 		} else if (DoubleArgumentType.getDouble(arguments, "attribute_Id") == 2) {
-			if (DisplayLogicAttributeOneProcedure.execute()) {
+			if (DisplayLogicAttribute2Procedure.execute()) {
 				for (int index1 = 0; index1 < (int) DoubleArgumentType.getDouble(arguments, "count"); index1++) {
-					AddPointsAttributeTwoProcedure.execute(entity);
+					AddPointsAttribute2Procedure.execute(entity);
 				}
 			}
 		} else if (DoubleArgumentType.getDouble(arguments, "attribute_Id") == 3) {
-			if (DisplayLogicAttributeThreeProcedure.execute()) {
+			if (DisplayLogicAttribute3Procedure.execute()) {
 				for (int index2 = 0; index2 < (int) DoubleArgumentType.getDouble(arguments, "count"); index2++) {
-					AddPointsAttributeThreeProcedure.execute(entity);
+					AddPointsAttribute3Procedure.execute(entity);
 				}
 			}
 		} else if (DoubleArgumentType.getDouble(arguments, "attribute_Id") == 4) {
-			if (DisplayLogicAttributeForthProcedure.execute()) {
+			if (DisplayLogicAttribute4Procedure.execute()) {
 				for (int index3 = 0; index3 < (int) DoubleArgumentType.getDouble(arguments, "count"); index3++) {
-					AddPointsAttributeForthProcedure.execute(entity);
+					AddPointsAttribute4Procedure.execute(entity);
 				}
 			}
 		} else if (DoubleArgumentType.getDouble(arguments, "attribute_Id") == 5) {
-			if (DisplayLogicAttributeFifthProcedure.execute()) {
+			if (DisplayLogicAttribute5Procedure.execute()) {
 				for (int index4 = 0; index4 < (int) DoubleArgumentType.getDouble(arguments, "count"); index4++) {
-					AddPointsAttributeFifthProcedure.execute(entity);
+					AddPointsAttribute5Procedure.execute(entity);
 				}
 			}
 		} else if (DoubleArgumentType.getDouble(arguments, "attribute_Id") == 6) {
-			if (DisplayLogicAttributeSixthProcedure.execute()) {
+			if (DisplayLogicAttribute6Procedure.execute()) {
 				for (int index5 = 0; index5 < (int) DoubleArgumentType.getDouble(arguments, "count"); index5++) {
-					DisplayLogicAttributeSixthProcedure.execute();
+					AddPointsAttribute6Procedure.execute(entity);
 				}
 			}
 		} else if (DoubleArgumentType.getDouble(arguments, "attribute_Id") == 7) {
-			if (DisplayLogicAttributeSeventhProcedure.execute()) {
+			if (DisplayLogicAttribute7Procedure.execute()) {
 				for (int index6 = 0; index6 < (int) DoubleArgumentType.getDouble(arguments, "count"); index6++) {
-					DisplayLogicAttributeSeventhProcedure.execute();
+					AddPointsAttribute7Procedure.execute(entity);
 				}
 			}
 		} else if (DoubleArgumentType.getDouble(arguments, "attribute_Id") == 8) {
-			if (DisplayLogicAttributeEightProcedure.execute()) {
+			if (DisplayLogicAttribute8Procedure.execute()) {
 				for (int index7 = 0; index7 < (int) DoubleArgumentType.getDouble(arguments, "count"); index7++) {
-					DisplayLogicAttributeEightProcedure.execute();
+					AddPointsAttribute8Procedure.execute(entity);
 				}
 			}
 		} else if (DoubleArgumentType.getDouble(arguments, "attribute_Id") == 9) {
-			if (DisplayLogicAttributeNineProcedure.execute()) {
+			if (DisplayLogicAttribute9Procedure.execute()) {
 				for (int index8 = 0; index8 < (int) DoubleArgumentType.getDouble(arguments, "count"); index8++) {
-					AddPointsAttributeNineProcedure.execute(entity);
+					AddPointsAttribute9Procedure.execute(entity);
 				}
 			}
 		} else {
-			if (DisplayLogicAttributeTenProcedure.execute()) {
+			if (DisplayLogicAttribute10Procedure.execute()) {
 				for (int index9 = 0; index9 < (int) DoubleArgumentType.getDouble(arguments, "count"); index9++) {
-					AddPointsAttributeTenProcedure.execute(entity);
+					AddPointsAttribute10Procedure.execute(entity);
 				}
 			}
 		}

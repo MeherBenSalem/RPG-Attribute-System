@@ -1,4 +1,3 @@
-
 package tn.mbs.memory.network;
 
 import tn.mbs.memory.procedures.OpenStatsMenuProcedure;
