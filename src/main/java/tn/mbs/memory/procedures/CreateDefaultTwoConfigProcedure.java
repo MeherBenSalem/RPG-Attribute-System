@@ -35,7 +35,7 @@ public class CreateDefaultTwoConfigProcedure {
 			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p generic.attack_damage base set");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "on_level_event")) {
-			JaumlConfigLib.addStringToArray(dir, file, "on_level_event", "");
+			JaumlConfigLib.setStringValue(dir, file, "on_level_event", "");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "tip_to_display")) {
 			JaumlConfigLib.setStringValue(dir, file, "tip_to_display", "\u00A77Defines the amount of harm you can inflict with each attack. ");

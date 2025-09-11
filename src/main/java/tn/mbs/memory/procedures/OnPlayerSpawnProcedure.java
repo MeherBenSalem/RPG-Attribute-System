@@ -4,7 +4,6 @@ import tn.naizo.jauml.JaumlConfigLib;
 
 import tn.mbs.memory.network.MemoryOfThePastModVariables;
 import tn.mbs.memory.init.MemoryOfThePastModAttributes;
-import tn.mbs.memory.configuration.MainConfigFileConfiguration;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -107,7 +106,7 @@ public class OnPlayerSpawnProcedure {
 			if (!((entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).SparePoints > JaumlConfigLib.getNumberValue("motp/attributes", "settings",
 					"init_val_starting_level"))) {
 				{
-					double _setval = (double) MainConfigFileConfiguration.FIRST_LEVEL_VP.get();
+					double _setval = JaumlConfigLib.getNumberValue("motp", "settings", "first_level_vp");
 					entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
 						capability.nextevelXp = _setval;
 						capability.syncPlayerVariables(entity);

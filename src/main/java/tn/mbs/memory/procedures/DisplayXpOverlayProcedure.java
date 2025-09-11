@@ -1,10 +1,10 @@
 package tn.mbs.memory.procedures;
 
-import tn.mbs.memory.configuration.MainConfigFileConfiguration;
+import tn.naizo.jauml.JaumlConfigLib;
 
 public class DisplayXpOverlayProcedure {
 	public static boolean execute() {
-		if (MainConfigFileConfiguration.DISPLAY_VP.get()) {
+		if (JaumlConfigLib.getBooleanValue("motp", "settings", "display_vp_overlay")) {
 			return true;
 		}
 		return false;

@@ -35,7 +35,7 @@ public class CreateDefaultOneConfigProcedure {
 			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p generic.max_health base set");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "on_level_event")) {
-			JaumlConfigLib.addStringToArray(dir, file, "on_level_event", "/effect give @p minecraft:instant_health 2 3");
+			JaumlConfigLib.setStringValue(dir, file, "on_level_event", "effect give @p minecraft:instant_health 2 3");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "tip_to_display")) {
 			JaumlConfigLib.setStringValue(dir, file, "tip_to_display", "\u00A77Represents your overall durability. \u00A77More health means you can survive longer in battle");

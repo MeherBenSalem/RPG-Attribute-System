@@ -1,6 +1,6 @@
 package tn.mbs.memory.procedures;
 
-import tn.mbs.memory.configuration.GUIAttributeConfigConfiguration;
+import tn.naizo.jauml.JaumlConfigLib;
 
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -12,8 +12,13 @@ public class ReturnSection2DisplayProcedure {
 	public static String execute(Entity entity) {
 		if (entity == null)
 			return "";
-		return GUIAttributeConfigConfiguration.DISPLAY_NAME_SECTION_2.get() + "" + new java.text.DecimalFormat("##.#").format(
-				((LivingEntity) entity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation((GUIAttributeConfigConfiguration.NAMESPACE_SECTION_2.get()), (GUIAttributeConfigConfiguration.NAME_SECTION_2.get())))).getBaseValue()
-						* (double) GUIAttributeConfigConfiguration.MODFIER_SECTION_2.get());
+		String filename = "";
+		String dir = "";
+		dir = "motp/display";
+		filename = "attribute_2";
+		return JaumlConfigLib.getStringValue(dir, filename, "display_name") + ""
+				+ new java.text.DecimalFormat("##.#").format(((LivingEntity) entity)
+						.getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation(JaumlConfigLib.getStringValue(dir, filename, "attribute_namespace"), JaumlConfigLib.getStringValue(dir, filename, "attribute_name")))).getBaseValue()
+						* JaumlConfigLib.getNumberValue(dir, filename, "display_modifer"));
 	}
 }

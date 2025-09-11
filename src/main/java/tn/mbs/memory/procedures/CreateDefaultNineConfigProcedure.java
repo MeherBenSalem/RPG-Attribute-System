@@ -35,7 +35,7 @@ public class CreateDefaultNineConfigProcedure {
 			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "on_level_event")) {
-			JaumlConfigLib.addStringToArray(dir, file, "on_level_event", "");
+			JaumlConfigLib.setStringValue(dir, file, "on_level_event", "");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "tip_to_display")) {
 			JaumlConfigLib.setStringValue(dir, file, "tip_to_display", "");

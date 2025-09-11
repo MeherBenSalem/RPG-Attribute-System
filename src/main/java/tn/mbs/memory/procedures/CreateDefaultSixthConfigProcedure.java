@@ -35,7 +35,7 @@ public class CreateDefaultSixthConfigProcedure {
 			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p generic.knockback_resistance base set [param(0.01)]");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "on_level_event")) {
-			JaumlConfigLib.addStringToArray(dir, file, "on_level_event", "");
+			JaumlConfigLib.setStringValue(dir, file, "on_level_event", "");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "tip_to_display")) {
 			JaumlConfigLib.setStringValue(dir, file, "tip_to_display", "\u00A77Reduces the distance you are pushed back when hit by an enemy or explosion");

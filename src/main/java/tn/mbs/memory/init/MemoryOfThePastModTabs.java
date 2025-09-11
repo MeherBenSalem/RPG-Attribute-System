@@ -17,9 +17,9 @@ public class MemoryOfThePastModTabs {
 	public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MemoryOfThePastMod.MODID);
 	public static final RegistryObject<CreativeModeTab> MEMORYFRAGMENTS = REGISTRY.register("memoryfragments",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.memory_of_the_past.memoryfragments")).icon(() -> new ItemStack(MemoryOfThePastModItems.CODEX_OF_ASCENSION.get())).displayItems((parameters, tabData) -> {
-				tabData.accept(MemoryOfThePastModItems.CODEX_OF_ASCENSION.get());
-				tabData.accept(MemoryOfThePastModItems.TOME_OF_REBIRTH.get());
 				tabData.accept(MemoryOfThePastModBlocks.LEVEL_100_TROPHY_REWARD.get().asItem());
 				tabData.accept(MemoryOfThePastModBlocks.LEVEL_200_TROPHY_REWARD.get().asItem());
+				tabData.accept(MemoryOfThePastModItems.CODEX_OF_ASCENSION.get());
+				tabData.accept(MemoryOfThePastModItems.TOME_OF_REBIRTH.get());
 			}).build());
 }

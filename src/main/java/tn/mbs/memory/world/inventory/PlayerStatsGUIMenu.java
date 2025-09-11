@@ -27,7 +27,7 @@ public class PlayerStatsGUIMenu extends AbstractContainerMenu implements MemoryO
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
 		public Object put(String key, Object value) {
-			if (!this.containsKey(key) && this.size() >= 105)
+			if (!this.containsKey(key) && this.size() >= 115)
 				return null;
 			return super.put(key, value);
 		}

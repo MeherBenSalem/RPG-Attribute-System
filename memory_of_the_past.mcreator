@@ -279,34 +279,6 @@
       "path": "~/GUI"
     },
     {
-      "name": "OrbOfLeveling",
-      "type": "item",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "codex_of_ascension",
-      "metadata": {
-        "files": [
-          "src/main/resources/assets/memory_of_the_past/models/item/codex_of_ascension.json",
-          "src/main/java/tn/mbs/memory/item/OrbOfLevelingItem.java"
-        ]
-      },
-      "path": "~/Items"
-    },
-    {
-      "name": "OrbOfReseting",
-      "type": "item",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "tome_of_rebirth",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/item/OrbOfResetingItem.java",
-          "src/main/resources/assets/memory_of_the_past/models/item/tome_of_rebirth.json"
-        ]
-      },
-      "path": "~/Items"
-    },
-    {
       "name": "YouHavePoints",
       "type": "procedure",
       "compiles": true,
@@ -325,19 +297,6 @@
         ]
       },
       "path": "~/Procedures/Text Logic"
-    },
-    {
-      "name": "MainConfigFile",
-      "type": "config",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "main_config_file",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/configuration/MainConfigFileConfiguration.java"
-        ]
-      },
-      "path": "~/Configurations"
     },
     {
       "name": "DisplayOverlay",
@@ -1353,19 +1312,6 @@
         ]
       },
       "path": "~/GUI"
-    },
-    {
-      "name": "GUIAttributeConfig",
-      "type": "config",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "gui_attribute_config",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/configuration/GUIAttributeConfigConfiguration.java"
-        ]
-      },
-      "path": "~/Configurations"
     },
     {
       "name": "ReturnSection1Display",
@@ -3544,6 +3490,452 @@
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "CreateAttributesDisplayConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayOneConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_one_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayOneConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayTwoConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_two_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayTwoConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayThreeConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_three_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayThreeConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayForthConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_forth_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayForthConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayFifthConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_fifth_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayFifthConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplaySixthConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_sixth_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplaySixthConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplaySeventhConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_seventh_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplaySeventhConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayEigthConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_eigth_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayEigthConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayNineConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_nine_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayNineConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayTenConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_ten_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayTenConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayElevenConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_eleven_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayElevenConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayTwelveConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_twelve_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayTwelveConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayThirteenConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_thirteen_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayThirteenConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayFourteenConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_fourteen_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayFourteenConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayFifteenConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_fifteen_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayFifteenConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateGlobalConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_global_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/CreateGlobalConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations"
+    },
+    {
+      "name": "CodexOfAscension",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "codex_of_ascension",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/memory_of_the_past/models/item/codex_of_ascension.json",
+          "src/main/java/tn/mbs/memory/item/CodexOfAscensionItem.java"
+        ]
+      },
+      "path": "~/Items"
+    },
+    {
+      "name": "TomeOfRebirth",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "tome_of_rebirth",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/mbs/memory/item/TomeOfRebirthItem.java",
+          "src/main/resources/assets/memory_of_the_past/models/item/tome_of_rebirth.json"
+        ]
+      },
+      "path": "~/Items"
+    },
+    {
+      "name": "DisplayLogicLockAttribute1",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_1",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute1Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute2",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_2",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute2Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute3",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_3",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute3Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute4",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_4",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute4Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute5",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_5",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute5Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute6",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_6",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute6Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute7",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_7",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute7Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute8",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_8",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute8Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute9",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_9",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute9Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute10",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_10",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute10Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "PressToGetKeyBindName",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "press_to_get_key_bind_name",
+      "metadata": {
+        "return_type": "string",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/PressToGetKeyBindNameProcedure.java"
+        ]
+      },
+      "path": "~/Procedures/Keybinds"
+    },
+    {
+      "name": "DisplayLogicKeybindOverlay",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_keybind_overlay",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/DisplayLogicKeybindOverlayProcedure.java"
+        ]
+      },
+      "path": "~/Procedures/GUI"
     }
   ],
   "variable_elements": [
@@ -3636,6 +4028,12 @@
       "type": "number",
       "scope": "player_persistent",
       "value": "1.0"
+    },
+    {
+      "name": "counter",
+      "type": "number",
+      "scope": "global",
+      "value": "0"
     }
   ],
   "sound_elements": [],
@@ -3671,11 +4069,10 @@
       "item.memory_of_the_past.experience_enhancer_artifact.description_1": "Requires Exploration : 4",
       "item.memoryfrags.orb_of_reseting": "Orb Of Reset",
       "advancements.reach_level_50.title": "Reach Level 50",
-      "item.memory_of_the_past.tome_of_rebirth.description_0": "§eA mystical orb that gently§b resets §eyour points, allowing you to start anew",
       "gui.memory_of_the_past.player_stats_gui.label_health": "Vitality :",
       "gui.memory_of_the_past.player_stats_gui.tooltip_represents_your_overall_durabili": "§7Represents your overall durability. §7More health means you can survive longer in battle. ",
       "gui.memoryfrags.alter_gui.button_fuse": "Fuse",
-      "key.memory_of_the_past.open_stats_menu_keybind": "Open Stats Menu ",
+      "key.memory_of_the_past.open_stats_menu_keybind": "Open Stats Menu",
       "itemGroup.memory_of_the_past.memoryfragments": "MOTP",
       "item.memoryfrags.orb_of_leveling": "Orb Of Leveling",
       "gui.memory_of_the_past.player_stats_gui.label_resistance": "Fortitude : ",
@@ -3706,7 +4103,6 @@
       "block.memory_of_the_past.level_200_trophy_reward.description_0": "§b!YOU MADE IT",
       "advancements.first_level_up.descr": "You just made the first step into the mod",
       "gui.memory_of_the_past.player_stats_gui.label_upgrade_memories": "Memories Upgrade",
-      "item.memory_of_the_past.tome_of_rebirth": "Tome of Rebirth",
       "gui.memoryfrags.player_stats_gui.label_movement_speed": "Movement Speed :",
       "gui.memory_of_the_past.player_stats_gui.label_attack_damage": "Attack Power :",
       "advancements.first_level_up.title": "Level Up",
@@ -3724,14 +4120,12 @@
       "gui.memoryfrags.alter_gui.label_alter": "Alter",
       "gui.memory_of_the_past.player_stats_gui.tooltip_influences_the_chances_of_receiv": "§7Influences the chances of receiving better loot or triggering beneficial events",
       "item.memoryfrags.better_drop_of_knowledge": "Better Drop of Knowledge",
-      "item.memory_of_the_past.codex_of_ascension": "Codex of Ascension",
       "gui.memory_of_the_past.player_stats_gui.label_exploration": "Exploration :",
       "gui.memoryfrags.player_stats_gui.label_hp": "hp",
       "gui.memory_of_the_past.player_stats_gui.label_armor": "Protection :",
       "gui.memory_of_the_past.level_overlay.label_available_points": "You have unspent points !",
       "gui.memoryfrags.player_stats_gui.label_armor": "Armor :",
       "gui.memory_of_the_past.player_stats_gui.tooltip_defines_the_amount_of_harm_you_c": "§7Defines the amount of harm you can inflict with each attack. ",
-      "item.memory_of_the_past.codex_of_ascension.description_0": "§6Harness the power within this orb to §aascend §eyour level and reach new heights",
       "advancements.reach_level_50.descr": "You Just Reached LEVEL 50 !!",
       "gui.memory_of_the_past.player_stats_gui.button_empty5": "\u003e",
       "advancements.reach_level_100.title": "Reach Level 100",
@@ -3743,7 +4137,12 @@
       "gui.memoryfrags.player_stats_gui.label_health": "Health :",
       "gui.memory_of_the_past.player_stats_gui.tooltip_indicates_the_number_of_points_y": "§7Indicates the number of points you can allocate to improve your stats",
       "gui.memory_of_the_past.player_stats_gui.label_5": "5",
-      "attribute.memory_of_the_past.motp_level": "Memory Level"
+      "attribute.memory_of_the_past.motp_level": "Memory Level",
+      "item.memory_of_the_past.tome_of_rebirth": "Tome of Rebirth",
+      "item.memory_of_the_past.tome_of_rebirth.description_0": "§eA mystical orb that gently§b resets §eyour points, allowing you to start anew",
+      "item.memory_of_the_past.codex_of_ascension.description_0": "§6Harness the power within this orb to §aascend §eyour level and reach new heights",
+      "item.memory_of_the_past.codex_of_ascension": "Codex of Ascension",
+      "gui.memory_of_the_past.level_overlay.label_press_to_open": "Press To Open"
     },
     "fr_fr": {
       "gui.memoryfrags.player_stats_gui.label_resistance": "Resistance : ",
@@ -3770,7 +4169,6 @@
       "item.memory_of_the_past.experience_enhancer_artifact.description_1": "Requires Exploration : 4",
       "item.memoryfrags.orb_of_reseting": "Orbe de réinitialisation",
       "advancements.reach_level_50.title": "Atteindre le niveau 50",
-      "item.memory_of_the_past.tome_of_rebirth.description_0": "§eA mystical orb that gently§b resets §eyour points, allowing you to start anew",
       "gui.memory_of_the_past.player_stats_gui.label_health": "Vitalité :",
       "gui.memory_of_the_past.player_stats_gui.tooltip_represents_your_overall_durabili": "§7Représente votre durabilité générale. §Plus de santé signifie que vous pouvez survivre plus longtemps au combat. ",
       "gui.memoryfrags.alter_gui.button_fuse": "Fuse",
@@ -3804,7 +4202,6 @@
       "block.memory_of_the_past.level_200_trophy_reward.description_0": "§b!YOU MADE IT",
       "advancements.first_level_up.descr": "Vous venez de faire le premier pas dans le mod",
       "gui.memory_of_the_past.player_stats_gui.label_upgrade_memories": "Mise à niveau des mémoires",
-      "item.memory_of_the_past.tome_of_rebirth": "Tome of Rebirth",
       "gui.memoryfrags.player_stats_gui.label_movement_speed": "Movement Speed :",
       "gui.memory_of_the_past.player_stats_gui.label_attack_damage": "Puissance d\u0027attaque :",
       "advancements.first_level_up.title": "Level Up",
@@ -3822,14 +4219,12 @@
       "gui.memoryfrags.alter_gui.label_alter": "Alter",
       "gui.memory_of_the_past.player_stats_gui.tooltip_influences_the_chances_of_receiv": "§7Influence sur les chances de recevoir un meilleur butin ou de déclencher des événements bénéfiques",
       "item.memoryfrags.better_drop_of_knowledge": "Une meilleure diffusion des connaissances",
-      "item.memory_of_the_past.codex_of_ascension": "Orb Of Leveling",
       "gui.memory_of_the_past.player_stats_gui.label_exploration": "Exploration :",
       "gui.memoryfrags.player_stats_gui.label_hp": "hp",
       "gui.memory_of_the_past.player_stats_gui.label_armor": "Protection :",
       "gui.memory_of_the_past.level_overlay.label_available_points": "Vous avez des points non dépensés !",
       "gui.memoryfrags.player_stats_gui.label_armor": "Armor :",
       "gui.memory_of_the_past.player_stats_gui.tooltip_defines_the_amount_of_harm_you_c": "§7Définit la quantité de dégâts que vous pouvez infliger à chaque attaque. ",
-      "item.memory_of_the_past.codex_of_ascension.description_0": "§6Harness the power within this orb to §aascend §eyour level and reach new heights",
       "advancements.reach_level_50.descr": "Vous venez d\u0027atteindre le NIVEAU 50 !",
       "gui.memory_of_the_past.player_stats_gui.button_empty5": "\u003e",
       "advancements.reach_level_100.title": "Atteindre le niveau 100",
@@ -3841,7 +4236,12 @@
       "gui.memoryfrags.player_stats_gui.label_health": "Health :",
       "gui.memory_of_the_past.player_stats_gui.tooltip_indicates_the_number_of_points_y": "§7Indique le nombre de points que vous pouvez allouer pour améliorer vos statistiques",
       "gui.memory_of_the_past.player_stats_gui.label_5": "5",
-      "attribute.memory_of_the_past.motp_level": "Memory Level"
+      "attribute.memory_of_the_past.motp_level": "Memory Level",
+      "item.memory_of_the_past.tome_of_rebirth": "Tome of Rebirth",
+      "item.memory_of_the_past.tome_of_rebirth.description_0": "§eA mystical orb that gently§b resets §eyour points, allowing you to start anew",
+      "item.memory_of_the_past.codex_of_ascension.description_0": "§6Harness the power within this orb to §aascend §eyour level and reach new heights",
+      "item.memory_of_the_past.codex_of_ascension": "Codex of Ascension",
+      "gui.memory_of_the_past.level_overlay.label_press_to_open": "Press To Open"
     }
   },
   "metadata": {
@@ -3852,7 +4252,6 @@
       "src/main/resources/pack.mcmeta",
       "src/main/java/tn/mbs/memory/init/MemoryOfThePastModTabs.java",
       "src/main/java/tn/mbs/memory/init/MemoryOfThePastModAttributes.java",
-      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModConfigs.java",
       "src/main/java/tn/mbs/memory/init/MemoryOfThePastModMenus.java",
       "src/main/java/tn/mbs/memory/init/MemoryOfThePastModScreens.java",
       "src/main/java/tn/mbs/memory/network/MenuStateUpdateMessage.java",
@@ -3960,6 +4359,10 @@
           {
             "name": "Attributes Config",
             "children": []
+          },
+          {
+            "name": "Display",
+            "children": []
           }
         ]
       },
@@ -3990,7 +4393,7 @@
     "websiteURL": "https://meherbensalem.github.io",
     "license": "All Rights Reserved",
     "serverSideOnly": false,
-    "modPicture": "logo",
+    "modPicture": "newlogo",
     "requiredMods": [
       "jauml"
     ],
@@ -4000,7 +4403,7 @@
       "jauml"
     ],
     "currentGenerator": "forge-1.20.1",
-    "credits": "Thank you @porogulaemeo",
+    "credits": "donations : @porogulaemeo",
     "modElementsPackage": "tn.mbs.memory"
   },
   "mcreatorVersion": 202500228610

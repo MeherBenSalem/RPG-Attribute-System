@@ -1,6 +1,6 @@
 package tn.mbs.memory.item;
 
-import tn.mbs.memory.procedures.OrbOfLevelingProcedureProcedure;
+import tn.mbs.memory.procedures.OnOrbResetProcedure;
 
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,8 +17,8 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-public class OrbOfLevelingItem extends Item {
-	public OrbOfLevelingItem() {
+public class TomeOfRebirthItem extends Item {
+	public TomeOfRebirthItem() {
 		super(new Item.Properties().stacksTo(64).fireResistant().rarity(Rarity.EPIC));
 	}
 
@@ -31,13 +31,13 @@ public class OrbOfLevelingItem extends Item {
 	@Override
 	public void appendHoverText(ItemStack itemstack, Level level, List<Component> list, TooltipFlag flag) {
 		super.appendHoverText(itemstack, level, list, flag);
-		list.add(Component.translatable("item.memory_of_the_past.codex_of_ascension.description_0"));
+		list.add(Component.translatable("item.memory_of_the_past.tome_of_rebirth.description_0"));
 	}
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player entity, InteractionHand hand) {
 		InteractionResultHolder<ItemStack> ar = super.use(world, entity, hand);
-		OrbOfLevelingProcedureProcedure.execute(entity);
+		OnOrbResetProcedure.execute(entity);
 		return ar;
 	}
 }

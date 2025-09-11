@@ -1,7 +1,8 @@
 package tn.mbs.memory.procedures;
 
+import tn.naizo.jauml.JaumlConfigLib;
+
 import tn.mbs.memory.network.MemoryOfThePastModVariables;
-import tn.mbs.memory.configuration.MainConfigFileConfiguration;
 
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -29,7 +30,7 @@ public class GiveXpCmdProcedure {
 				capability.syncPlayerVariables(entity);
 			});
 		}
-		if ((entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).Level >= (double) MainConfigFileConfiguration.MAX_PLAYER_LEVEL.get()) {
+		if ((entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).Level >= JaumlConfigLib.getNumberValue("motp", "settings", "max_player_level")) {
 			return;
 		}
 		if (world instanceof Level _level) {

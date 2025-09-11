@@ -13,7 +13,6 @@ import tn.mbs.memory.procedures.ReturnNextAttributeFifthProcedure;
 import tn.mbs.memory.procedures.ReturnNextAttributeEightProcedure;
 import tn.mbs.memory.procedures.ReturnGlobalSectionsDisplayProcedure;
 import tn.mbs.memory.procedures.ReturnExtraPointsProcedure;
-import tn.mbs.memory.procedures.ReturnDisplaySection15Procedure;
 import tn.mbs.memory.procedures.ReturnCurrentModifierProcedure;
 import tn.mbs.memory.procedures.ReturnCurrentLevelProcedure;
 import tn.mbs.memory.procedures.ReturnCurrentAttributeTwoProcedure;
@@ -59,6 +58,16 @@ import tn.mbs.memory.procedures.IsAt15Procedure;
 import tn.mbs.memory.procedures.IsAt10Procedure;
 import tn.mbs.memory.procedures.IsAt0Procedure;
 import tn.mbs.memory.procedures.GetThePlayerModelProcedure;
+import tn.mbs.memory.procedures.DisplayLogicLockAttribute9Procedure;
+import tn.mbs.memory.procedures.DisplayLogicLockAttribute8Procedure;
+import tn.mbs.memory.procedures.DisplayLogicLockAttribute7Procedure;
+import tn.mbs.memory.procedures.DisplayLogicLockAttribute6Procedure;
+import tn.mbs.memory.procedures.DisplayLogicLockAttribute5Procedure;
+import tn.mbs.memory.procedures.DisplayLogicLockAttribute4Procedure;
+import tn.mbs.memory.procedures.DisplayLogicLockAttribute3Procedure;
+import tn.mbs.memory.procedures.DisplayLogicLockAttribute2Procedure;
+import tn.mbs.memory.procedures.DisplayLogicLockAttribute1Procedure;
+import tn.mbs.memory.procedures.DisplayLogicLockAttribute10Procedure;
 import tn.mbs.memory.procedures.DisplayLogicAttribute9Procedure;
 import tn.mbs.memory.procedures.DisplayLogicAttribute8Procedure;
 import tn.mbs.memory.procedures.DisplayLogicAttribute7Procedure;
@@ -152,7 +161,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
 				customTooltipShown = true;
 			}
 		if (DisplayLogicAttribute1Procedure.execute())
-			if (mouseX > leftPos + 127 && mouseX < leftPos + 141 && mouseY > topPos + 26 && mouseY < topPos + 39) {
+			if (mouseX > leftPos + 129 && mouseX < leftPos + 143 && mouseY > topPos + 26 && mouseY < topPos + 39) {
 				String hoverText = ReturnNextAttributeOneProcedure.execute(entity);
 				if (hoverText != null) {
 					guiGraphics.renderComponentTooltip(font, Arrays.stream(hoverText.split("\n")).map(Component::literal).collect(Collectors.toList()), mouseX, mouseY);
@@ -288,7 +297,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
 				customTooltipShown = true;
 			}
 		if (DisplayLogicAttribute9Procedure.execute())
-			if (mouseX > leftPos + 129 && mouseX < leftPos + 142 && mouseY > topPos + 151 && mouseY < topPos + 165) {
+			if (mouseX > leftPos + 128 && mouseX < leftPos + 141 && mouseY > topPos + 151 && mouseY < topPos + 165) {
 				String hoverText = ReturnNextAttributeNineProcedure.execute(entity);
 				if (hoverText != null) {
 					guiGraphics.renderComponentTooltip(font, Arrays.stream(hoverText.split("\n")).map(Component::literal).collect(Collectors.toList()), mouseX, mouseY);
@@ -466,6 +475,36 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
 		if (IsAt99Procedure.execute(entity)) {
 			guiGraphics.blit(ResourceLocation.parse("memory_of_the_past:textures/screens/ui_bar_99.png"), this.leftPos + -52, this.topPos + 162, 0, 0, 80, 12, 80, 12);
 		}
+		if (DisplayLogicLockAttribute1Procedure.execute()) {
+			guiGraphics.blit(ResourceLocation.parse("memory_of_the_past:textures/screens/bg_attributes_locked.png"), this.leftPos + 49, this.topPos + 17, 0, 0, 97, 30, 97, 30);
+		}
+		if (DisplayLogicLockAttribute2Procedure.execute()) {
+			guiGraphics.blit(ResourceLocation.parse("memory_of_the_past:textures/screens/bg_attributes_locked.png"), this.leftPos + 171, this.topPos + 17, 0, 0, 97, 30, 97, 30);
+		}
+		if (DisplayLogicLockAttribute3Procedure.execute()) {
+			guiGraphics.blit(ResourceLocation.parse("memory_of_the_past:textures/screens/bg_attributes_locked.png"), this.leftPos + 49, this.topPos + 48, 0, 0, 97, 30, 97, 30);
+		}
+		if (DisplayLogicLockAttribute4Procedure.execute()) {
+			guiGraphics.blit(ResourceLocation.parse("memory_of_the_past:textures/screens/bg_attributes_locked.png"), this.leftPos + 171, this.topPos + 49, 0, 0, 97, 30, 97, 30);
+		}
+		if (DisplayLogicLockAttribute5Procedure.execute()) {
+			guiGraphics.blit(ResourceLocation.parse("memory_of_the_past:textures/screens/bg_attributes_locked.png"), this.leftPos + 48, this.topPos + 79, 0, 0, 97, 30, 97, 30);
+		}
+		if (DisplayLogicLockAttribute6Procedure.execute()) {
+			guiGraphics.blit(ResourceLocation.parse("memory_of_the_past:textures/screens/bg_attributes_locked.png"), this.leftPos + 171, this.topPos + 79, 0, 0, 97, 30, 97, 30);
+		}
+		if (DisplayLogicLockAttribute7Procedure.execute()) {
+			guiGraphics.blit(ResourceLocation.parse("memory_of_the_past:textures/screens/bg_attributes_locked.png"), this.leftPos + 49, this.topPos + 112, 0, 0, 97, 30, 97, 30);
+		}
+		if (DisplayLogicLockAttribute8Procedure.execute()) {
+			guiGraphics.blit(ResourceLocation.parse("memory_of_the_past:textures/screens/bg_attributes_locked.png"), this.leftPos + 171, this.topPos + 112, 0, 0, 97, 30, 97, 30);
+		}
+		if (DisplayLogicLockAttribute9Procedure.execute()) {
+			guiGraphics.blit(ResourceLocation.parse("memory_of_the_past:textures/screens/bg_attributes_locked.png"), this.leftPos + 49, this.topPos + 143, 0, 0, 97, 30, 97, 30);
+		}
+		if (DisplayLogicLockAttribute10Procedure.execute()) {
+			guiGraphics.blit(ResourceLocation.parse("memory_of_the_past:textures/screens/bg_attributes_locked.png"), this.leftPos + 171, this.topPos + 143, 0, 0, 97, 30, 97, 30);
+		}
 		RenderSystem.disableBlend();
 	}
 
@@ -623,7 +662,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
 		imagebutton_button_notclicked8 = new ImageButton(this.leftPos + 127, this.topPos + 152, 16, 14, 0, 0, 14, ResourceLocation.parse("memory_of_the_past:textures/screens/atlas/imagebutton_button_notclicked8.png"), 16, 28, e -> {
 			int x = PlayerStatsGUIScreen.this.x;
 			int y = PlayerStatsGUIScreen.this.y;
-			if (ReturnDisplaySection15Procedure.execute()) {
+			if (DisplayLogicAttribute9Procedure.execute()) {
 				MemoryOfThePastMod.PACKET_HANDLER.sendToServer(new PlayerStatsGUIButtonMessage(12, x, y, z));
 				PlayerStatsGUIButtonMessage.handleButtonAction(entity, 12, x, y, z);
 			}

@@ -1,7 +1,8 @@
 package tn.mbs.memory.procedures;
 
+import tn.naizo.jauml.JaumlConfigLib;
+
 import tn.mbs.memory.network.MemoryOfThePastModVariables;
-import tn.mbs.memory.configuration.MainConfigFileConfiguration;
 import tn.mbs.memory.MemoryOfThePastMod;
 
 import org.checkerframework.checker.units.qual.s;
@@ -12,16 +13,20 @@ public class LevelUpProcedureProcedure {
 	public static void execute(Entity target) {
 		if (target == null)
 			return;
-		String level_interval = "";
 		double level_scale = 0;
 		double nextLevelScale = 0;
 		double max_level_interval = 0;
 		double min_level_interval = 0;
 		double current_level_scale = 0;
+		double count = 0;
+		String level_interval = "";
+		String textIterator = "";
 		current_level_scale = 0;
-		for (String stringiterator : MainConfigFileConfiguration.LEVELS_SCALE_INTERVAL.get()) {
-			if (stringiterator.contains("[range]") && stringiterator.contains("[rangeEnd]") && stringiterator.contains("[scale]") && stringiterator.contains("[scaleEnd]")) {
-				level_interval = stringiterator.substring((int) (stringiterator.indexOf("[range]") + 7), (int) stringiterator.indexOf("[rangeEnd]"));
+		count = 0;
+		for (int index0 = 0; index0 < (int) JaumlConfigLib.getArrayLength("motp", "settings", "levels_scale_interval"); index0++) {
+			textIterator = JaumlConfigLib.getArrayElement("motp", "settings", "levels_scale_interval", ((int) count));
+			if (textIterator.contains("[range]") && textIterator.contains("[rangeEnd]") && textIterator.contains("[scale]") && textIterator.contains("[scaleEnd]")) {
+				level_interval = textIterator.substring((int) (textIterator.indexOf("[range]") + 7), (int) textIterator.indexOf("[rangeEnd]"));
 				level_scale = new Object() {
 					double convert(String s) {
 						try {
@@ -30,7 +35,7 @@ public class LevelUpProcedureProcedure {
 						}
 						return 0;
 					}
-				}.convert(stringiterator.substring((int) (stringiterator.indexOf("[scale]") + 7), (int) stringiterator.indexOf("[scaleEnd]")));
+				}.convert(textIterator.substring((int) (textIterator.indexOf("[scale]") + 7), (int) textIterator.indexOf("[scaleEnd]")));
 				min_level_interval = new Object() {
 					double convert(String s) {
 						try {
@@ -59,9 +64,10 @@ public class LevelUpProcedureProcedure {
 			} else {
 				MemoryOfThePastMod.LOGGER.error("Error in levels intervals config, please check config again have the correct format");
 			}
+			count = count + 1;
 		}
 		if (current_level_scale == 0) {
-			current_level_scale = (double) MainConfigFileConfiguration.DEFAULT_LEVELING_SCALE.get();
+			current_level_scale = JaumlConfigLib.getNumberValue("motp", "settings", "default_leveling_scale");
 		}
 		{
 			double _setval = Math.round((target.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).nextevelXp * current_level_scale);
@@ -71,7 +77,8 @@ public class LevelUpProcedureProcedure {
 			});
 		}
 		{
-			double _setval = (target.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).SparePoints + (double) MainConfigFileConfiguration.POINTS_PER_LEVEL.get();
+			double _setval = (target.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).SparePoints
+					+ JaumlConfigLib.getNumberValue("motp", "settings", "points_per_level");
 			target.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
 				capability.SparePoints = _setval;
 				capability.syncPlayerVariables(target);

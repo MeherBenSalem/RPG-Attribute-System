@@ -35,7 +35,7 @@ public class CreateDefaultSeventhConfigProcedure {
 			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p generic.luck base set [param(0.5)]");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "on_level_event")) {
-			JaumlConfigLib.addStringToArray(dir, file, "on_level_event", "");
+			JaumlConfigLib.setStringValue(dir, file, "on_level_event", "");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "tip_to_display")) {
 			JaumlConfigLib.setStringValue(dir, file, "tip_to_display", "\u00A77Influences the chances of receiving better loot or triggering beneficial events");

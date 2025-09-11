@@ -1,7 +1,8 @@
 package tn.mbs.memory.procedures;
 
+import tn.naizo.jauml.JaumlConfigLib;
+
 import tn.mbs.memory.network.MemoryOfThePastModVariables;
-import tn.mbs.memory.configuration.MainConfigFileConfiguration;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -26,7 +27,7 @@ public class WhenPlayerRespawnsProcedure {
 	private static void execute(@Nullable Event event, Entity entity) {
 		if (entity == null)
 			return;
-		if (MainConfigFileConfiguration.ON_DEATH_RESET.get()) {
+		if (JaumlConfigLib.getBooleanValue("motp", "settings", "on_death_reset")) {
 			{
 				double _setval = 0;
 				entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {

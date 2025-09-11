@@ -35,7 +35,7 @@ public class CreateDefaultForthConfigProcedure {
 			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p generic.armor base set [param(0.1)]");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "on_level_event")) {
-			JaumlConfigLib.addStringToArray(dir, file, "on_level_event", "");
+			JaumlConfigLib.setStringValue(dir, file, "on_level_event", "");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "tip_to_display")) {
 			JaumlConfigLib.setStringValue(dir, file, "tip_to_display", "\u00A77Reduces the amount of damage you take from enemy attacks");

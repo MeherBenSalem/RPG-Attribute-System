@@ -1,7 +1,8 @@
 package tn.mbs.memory.procedures;
 
+import tn.naizo.jauml.JaumlConfigLib;
+
 import tn.mbs.memory.init.MemoryOfThePastModItems;
-import tn.mbs.memory.configuration.MainConfigFileConfiguration;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.player.Player;
@@ -15,7 +16,7 @@ public class OrbOfLevelingProcedureProcedure {
 			ItemStack _stktoremove = new ItemStack(MemoryOfThePastModItems.CODEX_OF_ASCENSION.get());
 			_player.getInventory().clearOrCountMatchingItems(p -> _stktoremove.getItem() == p.getItem(), 1, _player.inventoryMenu.getCraftSlots());
 		}
-		for (int index0 = 0; index0 < (int) (double) MainConfigFileConfiguration.LEVEL_PER_ORB.get(); index0++) {
+		for (int index0 = 0; index0 < (int) JaumlConfigLib.getNumberValue("motp", "settings", "level_per_orb"); index0++) {
 			LevelUpProcedureProcedure.execute(entity);
 		}
 	}

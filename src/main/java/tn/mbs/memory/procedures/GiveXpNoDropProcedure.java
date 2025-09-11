@@ -3,7 +3,6 @@ package tn.mbs.memory.procedures;
 import tn.naizo.jauml.JaumlConfigLib;
 
 import tn.mbs.memory.network.MemoryOfThePastModVariables;
-import tn.mbs.memory.configuration.MainConfigFileConfiguration;
 
 import org.checkerframework.checker.units.qual.s;
 
@@ -43,7 +42,7 @@ public class GiveXpNoDropProcedure {
 		double index = 0;
 		double count = 0;
 		String dimension = "";
-		if ((sourceentity instanceof Player || sourceentity instanceof ServerPlayer) && !MainConfigFileConfiguration.USE_VANILLA_XP.get()) {
+		if ((sourceentity instanceof Player || sourceentity instanceof ServerPlayer) && !JaumlConfigLib.getBooleanValue("motp", "settings", "use_vanilla_xp")) {
 			count = JaumlConfigLib.getArrayLength("motp", "droprate", "dimensions_drop_rates");
 			index = 0;
 			for (int index0 = 0; index0 < (int) count; index0++) {
@@ -71,13 +70,13 @@ public class GiveXpNoDropProcedure {
 				double _setval = (sourceentity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).currentXpTLevel
 						+ AddedXp * (1 + Math.round(((sourceentity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).SparePoints
 								+ (sourceentity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).Level)
-								/ (double) MainConfigFileConfiguration.SCALE_FACTOR.get()));
+								/ JaumlConfigLib.getNumberValue("motp", "settings", "scale_factor")));
 				sourceentity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
 					capability.currentXpTLevel = _setval;
 					capability.syncPlayerVariables(sourceentity);
 				});
 			}
-			if (MainConfigFileConfiguration.SHOW_VP_INACTION_BAR.get()) {
+			if (JaumlConfigLib.getBooleanValue("motp", "settings", "show_vp_inaction_bar")) {
 				if (sourceentity instanceof Player _player && !_player.level().isClientSide())
 					_player.displayClientMessage(Component.literal(("\u00A7a+" + new java.text.DecimalFormat("##").format(AddedXp) + " VP")), true);
 			}

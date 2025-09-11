@@ -4,6 +4,6 @@ import tn.naizo.jauml.JaumlConfigLib;
 
 public class ReturnAttributeTwoTipProcedure {
 	public static String execute() {
-		return ReturnAttributeOneNameProcedure.execute() + "" + JaumlConfigLib.getStringValue("motp/attributes", "attribute_2", "tip_to_display");
+		return ReturnAttributeTwoNameProcedure.execute() + "" + JaumlConfigLib.getStringValue("motp/attributes", "attribute_2", "tip_to_display");
 	}
 }

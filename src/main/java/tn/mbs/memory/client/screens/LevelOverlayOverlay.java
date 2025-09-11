@@ -2,6 +2,7 @@ package tn.mbs.memory.client.screens;
 
 import tn.mbs.memory.procedures.YouHavePointsProcedure;
 import tn.mbs.memory.procedures.ReturnExtraPointsProcedure;
+import tn.mbs.memory.procedures.PressToGetKeyBindNameProcedure;
 import tn.mbs.memory.procedures.IsAt99Procedure;
 import tn.mbs.memory.procedures.IsAt95Procedure;
 import tn.mbs.memory.procedures.IsAt90Procedure;
@@ -24,6 +25,7 @@ import tn.mbs.memory.procedures.IsAt15Procedure;
 import tn.mbs.memory.procedures.IsAt10Procedure;
 import tn.mbs.memory.procedures.IsAt0Procedure;
 import tn.mbs.memory.procedures.DisplayXpOverlayProcedure;
+import tn.mbs.memory.procedures.DisplayLogicKeybindOverlayProcedure;
 import tn.mbs.memory.procedures.CurrentXpToLevelProcedure;
 
 import org.checkerframework.checker.units.qual.h;
@@ -133,6 +135,9 @@ public class LevelOverlayOverlay {
 			if (YouHavePointsProcedure.execute(entity)) {
 				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/levelup.png"), 4, h - 25, 0, 0, 7, 8, 7, 8);
 			}
+			if (DisplayLogicKeybindOverlayProcedure.execute()) {
+				event.getGuiGraphics().blit(ResourceLocation.parse("memory_of_the_past:textures/screens/bookoverlay.png"), 85, h - 15, 0, 0, 8, 12, 8, 12);
+			}
 			if (DisplayXpOverlayProcedure.execute())
 				event.getGuiGraphics().drawString(Minecraft.getInstance().font,
 
@@ -141,6 +146,10 @@ public class LevelOverlayOverlay {
 				event.getGuiGraphics().drawString(Minecraft.getInstance().font,
 
 						ReturnExtraPointsProcedure.execute(entity), 12, h - 25, -1, false);
+			if (DisplayLogicKeybindOverlayProcedure.execute())
+				event.getGuiGraphics().drawString(Minecraft.getInstance().font,
+
+						PressToGetKeyBindNameProcedure.execute(), 95, h - 13, -1, false);
 		}
 		RenderSystem.depthMask(true);
 		RenderSystem.defaultBlendFunc();

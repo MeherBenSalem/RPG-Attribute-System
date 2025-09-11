@@ -1,7 +1,8 @@
 package tn.mbs.memory.procedures;
 
+import tn.naizo.jauml.JaumlConfigLib;
+
 import tn.mbs.memory.network.MemoryOfThePastModVariables;
-import tn.mbs.memory.configuration.MainConfigFileConfiguration;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,7 +33,7 @@ public class GiveXpVanillaProcedure {
 			return;
 		double AddedXp = 0;
 		double DropChance = 0;
-		if (MainConfigFileConfiguration.USE_VANILLA_XP.get()) {
+		if (JaumlConfigLib.getBooleanValue("motp", "settings", "use_vanilla_xp")) {
 			AddedXp = droppedexperience;
 			{
 				double _setval = (sourceentity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).currentXpTLevel + AddedXp;
@@ -41,7 +42,7 @@ public class GiveXpVanillaProcedure {
 					capability.syncPlayerVariables(sourceentity);
 				});
 			}
-			if (MainConfigFileConfiguration.SHOW_VP_INACTION_BAR.get()) {
+			if (JaumlConfigLib.getBooleanValue("motp", "settings", "show_vp_inaction_bar")) {
 				if (sourceentity instanceof Player _player && !_player.level().isClientSide())
 					_player.displayClientMessage(Component.literal(("\u00A7a+" + AddedXp + " VP")), true);
 			}

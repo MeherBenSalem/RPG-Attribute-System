@@ -32,6 +32,8 @@ import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MemoryOfThePastModVariables {
+	public static double counter = 0;
+
 	@SubscribeEvent
 	public static void init(FMLCommonSetupEvent event) {
 		MemoryOfThePastMod.addNetworkMessage(PlayerVariablesSyncMessage.class, PlayerVariablesSyncMessage::buffer, PlayerVariablesSyncMessage::new, PlayerVariablesSyncMessage::handler);

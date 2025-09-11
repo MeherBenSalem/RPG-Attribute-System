@@ -4,6 +4,6 @@ import tn.naizo.jauml.JaumlConfigLib;
 
 public class ReturnAttributeFifthTipProcedure {
 	public static String execute() {
-		return ReturnAttributeOneNameProcedure.execute() + "" + JaumlConfigLib.getStringValue("motp/attributes", "attribute_5", "tip_to_display");
+		return ReturnAttributeFifthNameProcedure.execute() + "" + JaumlConfigLib.getStringValue("motp/attributes", "attribute_5", "tip_to_display");
 	}
 }

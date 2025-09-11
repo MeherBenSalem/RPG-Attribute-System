@@ -1,9 +1,9 @@
 package tn.mbs.memory.procedures;
 
-import tn.mbs.memory.configuration.GUIAttributeConfigConfiguration;
+import tn.naizo.jauml.JaumlConfigLib;
 
 public class ReturnDisplaySection13Procedure {
 	public static boolean execute() {
-		return GUIAttributeConfigConfiguration.ENABLE_SECTION_13.get();
+		return JaumlConfigLib.getBooleanValue("motp/display", "attribute_13", "enable");
 	}
 }
