@@ -1,3 +1,11 @@
+## Changelog [1.8.0]
+
+## 🚀 New Features
+- **JAUML Library Full Integration**: Added FULL support for the JAUML library and now all config files are `.json`
+- **Pre-Config Setups**: Now we have new `/motp setup` command that allows you to instantly deploy configs for diffrent mods (currently only iron's spells).
+- **Changed Mod Icon**: The mod icon have been changed to a new design!
+- **Quality Of Life**: New quality of life changes made such as keybind overlay indicator, new background, etc.
+
 ## Changelog [1.7.0]
 
 ## 🚀 New Features
