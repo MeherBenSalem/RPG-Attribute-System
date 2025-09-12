@@ -4218,7 +4218,9 @@
       "item.memory_of_the_past.tome_of_rebirth.description_0": "§eA mystical orb that gently§b resets §eyour points, allowing you to start anew",
       "item.memory_of_the_past.codex_of_ascension.description_0": "§6Harness the power within this orb to §aascend §eyour level and reach new heights",
       "item.memory_of_the_past.codex_of_ascension": "Codex of Ascension",
-      "gui.memory_of_the_past.level_overlay.label_press_to_open": "Press To Open"
+      "gui.memory_of_the_past.level_overlay.label_press_to_open": "Press To Open",
+      "item.memory_of_the_past.level_100_trophy_reward": "Level 100 Trophy Reward",
+      "item.memory_of_the_past.level_200_trophy_reward": "Level 200 Trophy Reward"
     },
     "fr_fr": {
       "gui.memoryfrags.player_stats_gui.label_resistance": "Resistance : ",
@@ -4317,7 +4319,9 @@
       "item.memory_of_the_past.tome_of_rebirth.description_0": "§eA mystical orb that gently§b resets §eyour points, allowing you to start anew",
       "item.memory_of_the_past.codex_of_ascension.description_0": "§6Harness the power within this orb to §aascend §eyour level and reach new heights",
       "item.memory_of_the_past.codex_of_ascension": "Codex of Ascension",
-      "gui.memory_of_the_past.level_overlay.label_press_to_open": "Press To Open"
+      "gui.memory_of_the_past.level_overlay.label_press_to_open": "Press To Open",
+      "item.memory_of_the_past.level_100_trophy_reward": "Level 100 Trophy Reward",
+      "item.memory_of_the_past.level_200_trophy_reward": "Level 200 Trophy Reward"
     }
   },
   "metadata": {
