@@ -67,7 +67,7 @@ public class LevelUpProcedureProcedure {
 			count = count + 1;
 		}
 		if (current_level_scale == 0) {
-			current_level_scale = JaumlConfigLib.getNumberValue("motp", "settings", "default_leveling_scale");
+			current_level_scale = JaumlConfigLib.getNumberValue("motp", "settings", "levels_scale_default");
 		}
 		{
 			double _setval = Math.round((target.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).nextevelXp * current_level_scale);

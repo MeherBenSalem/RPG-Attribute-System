@@ -32,7 +32,7 @@ public class CreateAttributesDisplayOneConfigProcedure {
 			JaumlConfigLib.setBooleanValue(dir, file, "enable", true);
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "display_name")) {
-			JaumlConfigLib.setStringValue(dir, file, "display_name", "\u00A7fHealth \u00A74\u2665 \u00A7f| \u00A74");
+			JaumlConfigLib.setStringValue(dir, file, "display_name", "\u00A7fHealth \u00A7f| \u00A74");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "attribute_namespace")) {
 			JaumlConfigLib.setStringValue(dir, file, "attribute_namespace", "minecraft");

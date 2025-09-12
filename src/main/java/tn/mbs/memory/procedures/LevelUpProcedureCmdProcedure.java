@@ -103,7 +103,7 @@ public class LevelUpProcedureCmdProcedure {
 			count = count + 1;
 		}
 		if (current_level_scale == 0) {
-			current_level_scale = JaumlConfigLib.getNumberValue("motp", "settings", "default_leveling_scale");
+			current_level_scale = JaumlConfigLib.getNumberValue("motp", "settings", "levels_scale_default");
 		}
 		{
 			double _setval = Math.round(((new Object() {

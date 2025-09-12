@@ -3,6 +3,7 @@ package tn.mbs.memory.procedures;
 import tn.naizo.jauml.JaumlConfigLib;
 
 import tn.mbs.memory.network.MemoryOfThePastModVariables;
+import tn.mbs.memory.MemoryOfThePastMod;
 
 import org.checkerframework.checker.units.qual.s;
 
@@ -70,12 +71,13 @@ public class GiveXpNoDropProcedure {
 				double _setval = (sourceentity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).currentXpTLevel
 						+ AddedXp * (1 + Math.round(((sourceentity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).SparePoints
 								+ (sourceentity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).Level)
-								/ JaumlConfigLib.getNumberValue("motp", "settings", "scale_factor")));
+								/ JaumlConfigLib.getNumberValue("motp", "settings", "vp_diminishing_factor")));
 				sourceentity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
 					capability.currentXpTLevel = _setval;
 					capability.syncPlayerVariables(sourceentity);
 				});
 			}
+			MemoryOfThePastMod.LOGGER.info((entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).currentXpTLevel);
 			if (JaumlConfigLib.getBooleanValue("motp", "settings", "show_vp_inaction_bar")) {
 				if (sourceentity instanceof Player _player && !_player.level().isClientSide())
 					_player.displayClientMessage(Component.literal(("\u00A7a+" + new java.text.DecimalFormat("##").format(AddedXp) + " VP")), true);

@@ -3936,6 +3936,82 @@
         ]
       },
       "path": "~/Procedures/GUI"
+    },
+    {
+      "name": "SetupIronSpellsMaxMana",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "setup_iron_spells_max_mana",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/SetupIronSpellsMaxManaProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Setup/IronsSpells"
+    },
+    {
+      "name": "SetupIronSpellsManaRegen",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "setup_iron_spells_mana_regen",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/SetupIronSpellsManaRegenProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Setup/IronsSpells"
+    },
+    {
+      "name": "SetupIronSpellsPower",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "setup_iron_spells_power",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/SetupIronSpellsPowerProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Setup/IronsSpells"
+    },
+    {
+      "name": "SetupIronSpellsResist",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "setup_iron_spells_resist",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/mbs/memory/procedures/SetupIronSpellsResistProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Setup/IronsSpells"
     }
   ],
   "variable_elements": [
@@ -4363,6 +4439,15 @@
           {
             "name": "Display",
             "children": []
+          },
+          {
+            "name": "Setup",
+            "children": [
+              {
+                "name": "IronsSpells",
+                "children": []
+              }
+            ]
           }
         ]
       },

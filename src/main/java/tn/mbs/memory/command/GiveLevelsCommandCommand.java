@@ -1,5 +1,9 @@
 package tn.mbs.memory.command;
 
+import tn.mbs.memory.procedures.SetupIronSpellsResistProcedure;
+import tn.mbs.memory.procedures.SetupIronSpellsPowerProcedure;
+import tn.mbs.memory.procedures.SetupIronSpellsMaxManaProcedure;
+import tn.mbs.memory.procedures.SetupIronSpellsManaRegenProcedure;
 import tn.mbs.memory.procedures.SetXpToPlayerProcedure;
 import tn.mbs.memory.procedures.SetXpCmdProcedure;
 import tn.mbs.memory.procedures.ResetPlayerCmdProcedure;
@@ -157,7 +161,63 @@ public class GiveLevelsCommandCommand {
 
 					ResetGivenPlayerProcedure.execute(arguments);
 					return 0;
-				}))));
+				}))).then(Commands.literal("setup").then(Commands.literal("ironspells").then(Commands.literal("max_mana").then(Commands.argument("number", DoubleArgumentType.doubleArg(1, 10)).executes(arguments -> {
+					Level world = arguments.getSource().getUnsidedLevel();
+					double x = arguments.getSource().getPosition().x();
+					double y = arguments.getSource().getPosition().y();
+					double z = arguments.getSource().getPosition().z();
+					Entity entity = arguments.getSource().getEntity();
+					if (entity == null && world instanceof ServerLevel _servLevel)
+						entity = FakePlayerFactory.getMinecraft(_servLevel);
+					Direction direction = Direction.DOWN;
+					if (entity != null)
+						direction = entity.getDirection();
+
+					SetupIronSpellsMaxManaProcedure.execute(arguments);
+					return 0;
+				}))).then(Commands.literal("mana_regen").then(Commands.argument("number", DoubleArgumentType.doubleArg(1, 10)).executes(arguments -> {
+					Level world = arguments.getSource().getUnsidedLevel();
+					double x = arguments.getSource().getPosition().x();
+					double y = arguments.getSource().getPosition().y();
+					double z = arguments.getSource().getPosition().z();
+					Entity entity = arguments.getSource().getEntity();
+					if (entity == null && world instanceof ServerLevel _servLevel)
+						entity = FakePlayerFactory.getMinecraft(_servLevel);
+					Direction direction = Direction.DOWN;
+					if (entity != null)
+						direction = entity.getDirection();
+
+					SetupIronSpellsManaRegenProcedure.execute(arguments);
+					return 0;
+				}))).then(Commands.literal("spell_power").then(Commands.argument("number", DoubleArgumentType.doubleArg(1, 10)).executes(arguments -> {
+					Level world = arguments.getSource().getUnsidedLevel();
+					double x = arguments.getSource().getPosition().x();
+					double y = arguments.getSource().getPosition().y();
+					double z = arguments.getSource().getPosition().z();
+					Entity entity = arguments.getSource().getEntity();
+					if (entity == null && world instanceof ServerLevel _servLevel)
+						entity = FakePlayerFactory.getMinecraft(_servLevel);
+					Direction direction = Direction.DOWN;
+					if (entity != null)
+						direction = entity.getDirection();
+
+					SetupIronSpellsPowerProcedure.execute(arguments);
+					return 0;
+				}))).then(Commands.literal("spell_resist").then(Commands.argument("number", DoubleArgumentType.doubleArg(1, 10)).executes(arguments -> {
+					Level world = arguments.getSource().getUnsidedLevel();
+					double x = arguments.getSource().getPosition().x();
+					double y = arguments.getSource().getPosition().y();
+					double z = arguments.getSource().getPosition().z();
+					Entity entity = arguments.getSource().getEntity();
+					if (entity == null && world instanceof ServerLevel _servLevel)
+						entity = FakePlayerFactory.getMinecraft(_servLevel);
+					Direction direction = Direction.DOWN;
+					if (entity != null)
+						direction = entity.getDirection();
+
+					SetupIronSpellsResistProcedure.execute(arguments);
+					return 0;
+				}))))));
 	}
 
 }
