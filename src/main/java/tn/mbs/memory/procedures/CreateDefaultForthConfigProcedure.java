@@ -32,7 +32,7 @@ public class CreateDefaultForthConfigProcedure {
 			JaumlConfigLib.setStringValue(dir, file, "display_name", "Protection : ");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "cmd_to_exc")) {
-			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p generic.armor base set [param(0.1)]");
+			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p armor base set [param(0.1)]");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "on_level_event")) {
 			JaumlConfigLib.setStringValue(dir, file, "on_level_event", "");

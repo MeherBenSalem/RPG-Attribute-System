@@ -32,7 +32,7 @@ public class CreateDefaultOneConfigProcedure {
 			JaumlConfigLib.setStringValue(dir, file, "display_name", "Vitality : ");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "cmd_to_exc")) {
-			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p generic.max_health base set");
+			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p max_health base set");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "on_level_event")) {
 			JaumlConfigLib.setStringValue(dir, file, "on_level_event", "effect give @p minecraft:instant_health 2 3");

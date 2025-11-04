@@ -40,16 +40,12 @@ public class ItemUseLockProcedure {
 		boolean cancelEvent = false;
 		double attribute = 0;
 		double level = 0;
-		double count = 0;
-		double index = 0;
 		String iterrator = "";
 		if (JaumlConfigLib.getBooleanValue("motp", "items_lock", "enabled")) {
-			count = JaumlConfigLib.getArrayLength("motp", "items_lock", "items_list");
-			index = 0;
-			for (int index0 = 0; index0 < (int) count; index0++) {
-				iterrator = JaumlConfigLib.getArrayElement("motp", "items_lock", "items_list", ((int) index));
+			for (String iterator : JaumlConfigLib.getArrayAsList("motp", "items_lock", "items_list")) {
+				iterrator = iterator;
 				if ((iterrator.substring((int) (iterrator.indexOf("[item]") + 6), (int) iterrator.indexOf("[itemEnd]")))
-						.equals(ForgeRegistries.ITEMS.getKey((entity instanceof LivingEntity _entUseItem6 ? _entUseItem6.getUseItem() : ItemStack.EMPTY).getItem()).toString())) {
+						.equals(ForgeRegistries.ITEMS.getKey((entity instanceof LivingEntity _entUseItem4 ? _entUseItem4.getUseItem() : ItemStack.EMPTY).getItem()).toString())) {
 					attribute = new Object() {
 						double convert(String s) {
 							try {
@@ -120,8 +116,6 @@ public class ItemUseLockProcedure {
 						}
 						break;
 					}
-				} else {
-					index = index + 1;
 				}
 			}
 		}

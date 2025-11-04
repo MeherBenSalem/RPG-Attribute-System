@@ -24,9 +24,8 @@ public class CheckLevelupRewardsProcedure {
 		if (target == null)
 			return;
 		ItemStack itemToGive = ItemStack.EMPTY;
-		double index = 0;
-		double count = 0;
 		String itterator = "";
+		double index = 0;
 		if (!(target instanceof ServerPlayer _plr0 && _plr0.level() instanceof ServerLevel
 				&& _plr0.getAdvancements().getOrStartProgress(_plr0.server.getAdvancements().getAdvancement(ResourceLocation.parse("memory_of_the_past:first_level_up"))).isDone())) {
 			if (target instanceof ServerPlayer _player) {
@@ -51,10 +50,9 @@ public class CheckLevelupRewardsProcedure {
 			}
 		}
 		if (JaumlConfigLib.getBooleanValue("motp", "levelup_rewards", "enabled")) {
-			count = JaumlConfigLib.getArrayLength("motp", "levelup_rewards", "rewards");
 			index = 0;
-			for (int index0 = 0; index0 < (int) count; index0++) {
-				itterator = JaumlConfigLib.getArrayElement("motp", "levelup_rewards", "rewards", ((int) index));
+			for (String iterator : JaumlConfigLib.getArrayAsList("motp", "levelup_rewards", "rewards")) {
+				itterator = iterator;
 				if (itterator.contains("[level]") && itterator.contains("[levelEnd]")) {
 					if ((target.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).SparePoints
 							+ (target.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).Level == new Object() {
@@ -83,10 +81,9 @@ public class CheckLevelupRewardsProcedure {
 			if ((target.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).SparePoints
 					+ (target.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).Level >= JaumlConfigLib.getNumberValue("motp", "levelup_rewards",
 							"random_rewards_level")) {
-				count = JaumlConfigLib.getArrayLength("motp", "levelup_rewards", "random_rewards");
 				index = 0;
-				for (int index1 = 0; index1 < (int) count; index1++) {
-					itterator = JaumlConfigLib.getArrayElement("motp", "levelup_rewards", "random_rewards", ((int) index));
+				for (String iterator : JaumlConfigLib.getArrayAsList("motp", "levelup_rewards", "random_rewards")) {
+					itterator = iterator;
 					if (itterator.contains("[chance]") && itterator.contains("[chanceEnd]")) {
 						if (Mth.nextInt(RandomSource.create(), 0, 100) <= new Object() {
 							double convert(String s) {

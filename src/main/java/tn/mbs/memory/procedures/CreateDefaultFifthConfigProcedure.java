@@ -32,7 +32,7 @@ public class CreateDefaultFifthConfigProcedure {
 			JaumlConfigLib.setStringValue(dir, file, "display_name", "Agility : ");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "cmd_to_exc")) {
-			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p generic.movement_speed base set [param(0.005)]");
+			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p movement_speed base set [param(0.005)]");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "on_level_event")) {
 			JaumlConfigLib.setStringValue(dir, file, "on_level_event", "");

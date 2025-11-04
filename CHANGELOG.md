@@ -1,3 +1,10 @@
+## Changelog [1.8.1]
+
+- Updated **JAUML** from **v1.0.4b -> v1.1.0** for improved stability, performance, and modularity. 
+- Optimized code to reduce load times and calculations by ~40%.  
+- Improved memory handling and reduced log spam from deprecated modules.
+- Fixed Tooltips on blocked items not showing up correctly.
+
 ## Changelog [1.8.0]
 
 ## 🚀 New Features

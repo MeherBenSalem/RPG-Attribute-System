@@ -18,13 +18,12 @@ public class LevelUpProcedureProcedure {
 		double max_level_interval = 0;
 		double min_level_interval = 0;
 		double current_level_scale = 0;
-		double count = 0;
 		String level_interval = "";
 		String textIterator = "";
 		current_level_scale = 0;
-		count = 0;
-		for (int index0 = 0; index0 < (int) JaumlConfigLib.getArrayLength("motp", "settings", "levels_scale_interval"); index0++) {
-			textIterator = JaumlConfigLib.getArrayElement("motp", "settings", "levels_scale_interval", ((int) count));
+		level_scale = 0;
+		for (String iterator : JaumlConfigLib.getArrayAsList("motp", "settings", "levels_scale_interval")) {
+			textIterator = iterator;
 			if (textIterator.contains("[range]") && textIterator.contains("[rangeEnd]") && textIterator.contains("[scale]") && textIterator.contains("[scaleEnd]")) {
 				level_interval = textIterator.substring((int) (textIterator.indexOf("[range]") + 7), (int) textIterator.indexOf("[rangeEnd]"));
 				level_scale = new Object() {
@@ -64,7 +63,7 @@ public class LevelUpProcedureProcedure {
 			} else {
 				MemoryOfThePastMod.LOGGER.error("Error in levels intervals config, please check config again have the correct format");
 			}
-			count = count + 1;
+			level_scale = level_scale + 1;
 		}
 		if (current_level_scale == 0) {
 			current_level_scale = JaumlConfigLib.getNumberValue("motp", "settings", "levels_scale_default");

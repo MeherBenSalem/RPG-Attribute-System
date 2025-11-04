@@ -32,7 +32,7 @@ public class CreateDefaultSeventhConfigProcedure {
 			JaumlConfigLib.setStringValue(dir, file, "display_name", "Exploration : ");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "cmd_to_exc")) {
-			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p generic.luck base set [param(0.5)]");
+			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p luck base set [param(0.5)]");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "on_level_event")) {
 			JaumlConfigLib.setStringValue(dir, file, "on_level_event", "");

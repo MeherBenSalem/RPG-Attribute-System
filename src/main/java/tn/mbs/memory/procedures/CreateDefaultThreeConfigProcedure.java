@@ -32,7 +32,7 @@ public class CreateDefaultThreeConfigProcedure {
 			JaumlConfigLib.setStringValue(dir, file, "display_name", "Attack Speed : ");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "cmd_to_exc")) {
-			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p generic.attack_speed base set");
+			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p attack_speed base set");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "on_level_event")) {
 			JaumlConfigLib.setStringValue(dir, file, "on_level_event", "");

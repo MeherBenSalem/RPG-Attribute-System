@@ -20,13 +20,11 @@ public class OnPlayerSpawnAttribute2Procedure {
 		String directory = "";
 		double commandParam = 0;
 		double finalValue = 0;
-		double count = 0;
 		directory = "motp/attributes";
 		filename = "attribute_2";
 		if (!JaumlConfigLib.getBooleanValue(directory, filename, "lock")) {
-			count = 0;
-			for (int index0 = 0; index0 < (int) JaumlConfigLib.getArrayLength(directory, filename, "cmd_to_exc"); index0++) {
-				stringCommand = JaumlConfigLib.getArrayElement(directory, filename, "cmd_to_exc", ((int) count));
+			for (String iterator : JaumlConfigLib.getArrayAsList(directory, filename, "cmd_to_exc")) {
+				stringCommand = iterator;
 				if (stringCommand.contains("[param(")) {
 					commandParam = 0;
 					finalValue = 0;
@@ -40,7 +38,7 @@ public class OnPlayerSpawnAttribute2Procedure {
 						}
 					}.convert(stringCommand.substring((int) (stringCommand.indexOf("[param(") + 7), (int) stringCommand.indexOf(")]")));
 					if (commandParam > 0) {
-						for (int index1 = 0; index1 < (int) (entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).attribute_2; index1++) {
+						for (int index0 = 0; index0 < (int) (entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).attribute_2; index0++) {
 							finalValue = finalValue + commandParam;
 						}
 					}
@@ -61,7 +59,6 @@ public class OnPlayerSpawnAttribute2Procedure {
 								_ent.getName().getString(), _ent.getDisplayName(), _ent.level().getServer(), _ent), stringCommand);
 					}
 				}
-				count = count + 1;
 			}
 		}
 	}

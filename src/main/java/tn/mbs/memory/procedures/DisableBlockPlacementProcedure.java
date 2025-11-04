@@ -37,15 +37,11 @@ public class DisableBlockPlacementProcedure {
 		boolean cancelEvent = false;
 		double attribute = 0;
 		double level = 0;
-		double count = 0;
-		double index = 0;
 		String iterrator = "";
 		if (JaumlConfigLib.getBooleanValue("motp", "items_lock", "enabled")) {
 			if (entity instanceof Player) {
-				count = JaumlConfigLib.getArrayLength("motp", "items_lock", "items_list");
-				index = 0;
-				for (int index0 = 0; index0 < (int) count; index0++) {
-					iterrator = JaumlConfigLib.getArrayElement("motp", "items_lock", "items_list", ((int) index));
+				for (String iterator : JaumlConfigLib.getArrayAsList("motp", "items_lock", "items_list")) {
+					iterrator = iterator;
 					if ((iterrator.substring((int) (iterrator.indexOf("[item]") + 6), (int) iterrator.indexOf("[itemEnd]"))).equals(ForgeRegistries.BLOCKS.getKey(blockstate.getBlock()).toString())) {
 						attribute = new Object() {
 							double convert(String s) {
@@ -117,8 +113,6 @@ public class DisableBlockPlacementProcedure {
 							}
 							break;
 						}
-					} else {
-						index = index + 1;
 					}
 				}
 			}

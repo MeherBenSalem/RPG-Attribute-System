@@ -32,7 +32,7 @@ public class CreateDefaultSixthConfigProcedure {
 			JaumlConfigLib.setStringValue(dir, file, "display_name", "Fortitude : ");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "cmd_to_exc")) {
-			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p generic.knockback_resistance base set [param(0.01)]");
+			JaumlConfigLib.addStringToArray(dir, file, "cmd_to_exc", "/attribute @p knockback_resistance base set [param(0.01)]");
 		}
 		if (!JaumlConfigLib.arrayKeyExists(dir, file, "on_level_event")) {
 			JaumlConfigLib.setStringValue(dir, file, "on_level_event", "");

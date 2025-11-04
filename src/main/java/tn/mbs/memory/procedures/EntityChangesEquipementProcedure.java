@@ -40,14 +40,10 @@ public class EntityChangesEquipementProcedure {
 		boolean cancelEvent = false;
 		double attribute = 0;
 		double level = 0;
-		double count = 0;
-		double index = 0;
 		String itterator = "";
 		if (JaumlConfigLib.getBooleanValue("motp", "items_lock", "enabled")) {
-			count = JaumlConfigLib.getArrayLength("motp", "items_lock", "items_list");
-			index = 0;
-			for (int index0 = 0; index0 < (int) count; index0++) {
-				itterator = JaumlConfigLib.getArrayElement("motp", "items_lock", "items_list", ((int) index));
+			for (String iterator : JaumlConfigLib.getArrayAsList("motp", "items_lock", "items_list")) {
+				itterator = iterator;
 				if ((itterator.substring((int) (itterator.indexOf("[item]") + 6), (int) itterator.indexOf("[itemEnd]"))).equals(ForgeRegistries.ITEMS.getKey(to.getItem()).toString())) {
 					attribute = new Object() {
 						double convert(String s) {
@@ -161,11 +157,9 @@ public class EntityChangesEquipementProcedure {
 								_setstack.setCount(1);
 								ItemHandlerHelper.giveItemToPlayer(_player, _setstack);
 							}
+							break;
 						}
-						break;
 					}
-				} else {
-					index = index + 1;
 				}
 			}
 		}

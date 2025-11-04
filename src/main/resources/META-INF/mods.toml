@@ -4,7 +4,7 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="memory_of_the_past"
-version="1.8.0"
+version="1.8.1"
 displayName="Memories of the past"
 displayURL="https://meherbensalem.github.io"
 logoFile="logo.png"
@@ -41,19 +41,19 @@ side="BOTH"
 [[dependencies.memory_of_the_past]]
 modId="jauml"
 mandatory=true
-versionRange="[1.0.3,)"
+versionRange="[1.1.0,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.memory_of_the_past]]
 modId="jauml"
 mandatory=true
-versionRange="[1.0.3,)"
+versionRange="[1.1.0,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.memory_of_the_past]]
 modId="jauml"
 mandatory=true
-versionRange="[1.0.3,)"
+versionRange="[1.1.0,)"
 ordering="NONE"
 side="BOTH"
 # End of user code block dependencies configuration

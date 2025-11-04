@@ -3,7 +3,6 @@ package tn.mbs.memory.procedures;
 import tn.naizo.jauml.JaumlConfigLib;
 
 import tn.mbs.memory.network.MemoryOfThePastModVariables;
-import tn.mbs.memory.MemoryOfThePastMod;
 
 import org.checkerframework.checker.units.qual.s;
 
@@ -41,13 +40,11 @@ public class GiveXpNoDropProcedure {
 		double AddedXp = 0;
 		double DropChance = 0;
 		double index = 0;
-		double count = 0;
 		String dimension = "";
 		if ((sourceentity instanceof Player || sourceentity instanceof ServerPlayer) && !JaumlConfigLib.getBooleanValue("motp", "settings", "use_vanilla_xp")) {
-			count = JaumlConfigLib.getArrayLength("motp", "droprate", "dimensions_drop_rates");
 			index = 0;
-			for (int index0 = 0; index0 < (int) count; index0++) {
-				dimension = JaumlConfigLib.getArrayElement("motp", "droprate", "dimensions_drop_rates", ((int) index));
+			for (String iterator : JaumlConfigLib.getArrayAsList("motp", "droprate", "dimensions_drop_rates")) {
+				dimension = iterator;
 				if (("" + sourceentity.level().dimension()).contains(dimension.substring(0, (int) dimension.indexOf("/")))) {
 					AddedXp = ((LivingEntity) entity).getAttribute(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("minecraft", "generic.max_health"))).getBaseValue() * new Object() {
 						double convert(String s) {
@@ -61,7 +58,6 @@ public class GiveXpNoDropProcedure {
 					break;
 				} else {
 					index = index + 1;
-					continue;
 				}
 			}
 			if (AddedXp <= 0) {
@@ -77,7 +73,6 @@ public class GiveXpNoDropProcedure {
 					capability.syncPlayerVariables(sourceentity);
 				});
 			}
-			MemoryOfThePastMod.LOGGER.info((entity.getCapability(MemoryOfThePastModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new MemoryOfThePastModVariables.PlayerVariables())).currentXpTLevel);
 			if (JaumlConfigLib.getBooleanValue("motp", "settings", "show_vp_inaction_bar")) {
 				if (sourceentity instanceof Player _player && !_player.level().isClientSide())
 					_player.displayClientMessage(Component.literal(("\u00A7a+" + new java.text.DecimalFormat("##").format(AddedXp) + " VP")), true);
