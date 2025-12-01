@@ -1,35 +1,40 @@
-# Memories of the past - RPG leveling system
+# RPG Attribute Stats – RPG Leveling System
 
-**Welcome to the Memories of the past Mod, a unique and engaging addition to Minecraft that introduces a dynamic leveling system through the collection and use of Memory Fragments. Experience a new dimension of gameplay as you unlock abilities, access special content, and face new challenges! ** 
+**Welcome to the RPG Attribute Stats Mod — a clean, powerful, and dynamic attribute-based leveling system for Minecraft.  
+This mod enhances your gameplay by evolving player stats as they level up, unlocking new strengths, customizing progression, and introducing meaningful RPG-style growth.**
 
 ---
 
 ## 💖 Sponsors List  
-Thanks @porogulaemeo for being awsome <3
-Want to support this project? [Become a sponsor](https://ko-fi.com/nightbeamstudio)!  
+Special thanks to **@porogulaemeo** for being awesome! ❤️  
+Want to support this project?  
+👉 [Become a sponsor on Ko-fi](https://ko-fi.com/nightbeamstudio)!
 
 ---
 
 ## 🛠 Supported Versions  
 - **Forge**  
-- **NeoForge**  
+- **NeoForge**
 
-*Ensure you have one of these mod loaders installed before adding MOTP to your game.*  
+*Ensure you have one of these mod loaders installed before adding RPG Attribute Stats to your game.*
 
 ---
 
-## 🎮 Enjoyed this Mod?
-Check out my other mods for more amazing Minecraft experiences! 😊  
+## 🎮 Enjoying the Mod?
+Check out my other mods for more unique and immersive Minecraft experiences! 😊
 
 ---
 
 ## 🌐 Social Media & Links  
-Follow me for updates, announcements, and sneak peeks of upcoming projects:
+Stay connected for updates, announcements, and behind-the-scenes content:
+
 - **Discord**: [NightBeam COMMUNITY SERVER](https://discord.gg/TJc3CxR4jK)
-- **CurseForge**: [Download Mod](https://www.curseforge.com/minecraft/mc-mods/memories-of-the-past)
-- **Modrinth**: [Download Mod](https://modrinth.com/mod/memories-of-the-past/versions)
-- **YouTube**: [Join My Community](https://www.youtube.com/@naizo_mods)
+- **CurseForge**: [Download Mod](https://www.curseforge.com/minecraft/mc-mods/rpg-attribute-stats)
+- **Modrinth**: [Download Mod](https://modrinth.com/mod/rpg-attribute-system)
+- **YouTube**: [Join My Community](https://www.youtube.com/@nightbeamstudio)
+- **Website**: https://www.nightBeam.cloud
 
 ---
 
-Thank you for downloading and playing **motp**! Your feedback, suggestions, and support are always welcome.  
+Thank you for downloading and playing **RPG Attribute Stats**!  
+Your feedback, suggestions, and continued support help the mod grow and improve.
