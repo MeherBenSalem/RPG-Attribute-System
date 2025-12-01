@@ -8,7 +8,7 @@
       "registry_name": "on_player_spawn",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnProcedure.java"
         ],
         "dependencies": [
           {
@@ -28,7 +28,7 @@
       "metadata": {
         "return_type": "entity",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/GetThePlayerModelProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/GetThePlayerModelProcedure.java"
         ],
         "dependencies": [
           {
@@ -63,9 +63,9 @@
       "registry_name": "player_stats_gui",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/network/PlayerStatsGUIButtonMessage.java",
-          "src/main/java/tn/mbs/memory/client/gui/PlayerStatsGUIScreen.java",
-          "src/main/java/tn/mbs/memory/world/inventory/PlayerStatsGUIMenu.java"
+          "src/main/java/tn/nightbeam/ras/world/inventory/PlayerStatsGUIMenu.java",
+          "src/main/java/tn/nightbeam/ras/network/PlayerStatsGUIButtonMessage.java",
+          "src/main/java/tn/nightbeam/ras/client/gui/PlayerStatsGUIScreen.java"
         ]
       },
       "path": "~/GUI"
@@ -79,7 +79,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnCurrentLevelProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentLevelProcedure.java"
         ],
         "dependencies": [
           {
@@ -99,7 +99,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnExtraPointsProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnExtraPointsProcedure.java"
         ],
         "dependencies": [
           {
@@ -118,7 +118,7 @@
       "registry_name": "when_player_respawns",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/WhenPlayerRespawnsProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/WhenPlayerRespawnsProcedure.java"
         ],
         "dependencies": [
           {
@@ -137,7 +137,7 @@
       "registry_name": "orb_of_leveling_procedure",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OrbOfLevelingProcedureProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OrbOfLevelingProcedureProcedure.java"
         ],
         "dependencies": [
           {
@@ -157,7 +157,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CurrentXpToLevelProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CurrentXpToLevelProcedure.java"
         ],
         "dependencies": [
           {
@@ -176,7 +176,7 @@
       "registry_name": "level_overlay",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/client/screens/LevelOverlayOverlay.java"
+          "src/main/java/tn/nightbeam/ras/client/screens/LevelOverlayOverlay.java"
         ]
       },
       "path": "~/GUI"
@@ -189,7 +189,7 @@
       "registry_name": "level_up_procedure",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/LevelUpProcedureProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/LevelUpProcedureProcedure.java"
         ],
         "dependencies": [
           {
@@ -208,7 +208,7 @@
       "registry_name": "open_stats_menu",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OpenStatsMenuProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OpenStatsMenuProcedure.java"
         ],
         "dependencies": [
           {
@@ -243,7 +243,7 @@
       "registry_name": "open_stats_menu_keybind",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/network/OpenStatsMenuKeybindMessage.java"
+          "src/main/java/tn/nightbeam/ras/network/OpenStatsMenuKeybindMessage.java"
         ]
       },
       "path": "~/Keybinds"
@@ -256,7 +256,7 @@
       "registry_name": "on_orb_reset",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OnOrbResetProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OnOrbResetProcedure.java"
         ],
         "dependencies": [
           {
@@ -268,17 +268,6 @@
       "path": "~/Procedures/Items"
     },
     {
-      "name": "Memoryfragments",
-      "type": "tab",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "memoryfragments",
-      "metadata": {
-        "files": []
-      },
-      "path": "~/GUI"
-    },
-    {
       "name": "YouHavePoints",
       "type": "procedure",
       "compiles": true,
@@ -287,7 +276,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/YouHavePointsProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/YouHavePointsProcedure.java"
         ],
         "dependencies": [
           {
@@ -307,7 +296,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayOverlayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayOverlayProcedure.java"
         ],
         "dependencies": []
       },
@@ -321,7 +310,7 @@
       "registry_name": "vanilla_drop_rates",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/VanillaDropRatesProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/VanillaDropRatesProcedure.java"
         ],
         "dependencies": [
           {
@@ -357,7 +346,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayXpOverlayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayXpOverlayProcedure.java"
         ],
         "dependencies": []
       },
@@ -371,7 +360,7 @@
       "registry_name": "check_levelup_rewards",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CheckLevelupRewardsProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CheckLevelupRewardsProcedure.java"
         ],
         "dependencies": [
           {
@@ -383,92 +372,6 @@
       "path": "~/Procedures/Leveling Logic"
     },
     {
-      "name": "Level100TrophyReward",
-      "type": "block",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "level_100_trophy_reward",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/block/Level100TrophyRewardBlock.java",
-          "src/main/resources/assets/memory_of_the_past/models/item/level_100_trophy_reward.json",
-          "src/main/resources/assets/memory_of_the_past/models/block/level_100_trophy_reward.json",
-          "src/main/resources/assets/memory_of_the_past/blockstates/level_100_trophy_reward.json",
-          "src/main/resources/data/memory_of_the_past/loot_tables/blocks/level_100_trophy_reward.json"
-        ]
-      },
-      "path": "~/Blocks"
-    },
-    {
-      "name": "Level200TrophyReward",
-      "type": "block",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "level_200_trophy_reward",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/block/Level200TrophyRewardBlock.java",
-          "src/main/resources/data/memory_of_the_past/loot_tables/blocks/level_200_trophy_reward.json",
-          "src/main/resources/assets/memory_of_the_past/blockstates/level_200_trophy_reward.json",
-          "src/main/resources/assets/memory_of_the_past/models/block/level_200_trophy_reward.json",
-          "src/main/resources/assets/memory_of_the_past/models/item/level_200_trophy_reward.json"
-        ]
-      },
-      "path": "~/Blocks"
-    },
-    {
-      "name": "FirstLevelUp",
-      "type": "achievement",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "first_level_up",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/memory_of_the_past/advancements/first_level_up.json"
-        ]
-      },
-      "path": "~/Advancements"
-    },
-    {
-      "name": "ReachLevel50",
-      "type": "achievement",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "reach_level_50",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/memory_of_the_past/advancements/reach_level_50.json"
-        ]
-      },
-      "path": "~/Advancements"
-    },
-    {
-      "name": "ReachLevel100",
-      "type": "achievement",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "reach_level_100",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/memory_of_the_past/advancements/reach_level_100.json"
-        ]
-      },
-      "path": "~/Advancements"
-    },
-    {
-      "name": "ReachLevel200",
-      "type": "achievement",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "reach_level_200",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/memory_of_the_past/advancements/reach_level_200.json"
-        ]
-      },
-      "path": "~/Advancements"
-    },
-    {
       "name": "GiveLevelsCommand",
       "type": "command",
       "compiles": true,
@@ -476,7 +379,7 @@
       "registry_name": "give_levels_command",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/command/GiveLevelsCommandCommand.java"
+          "src/main/java/tn/nightbeam/ras/command/GiveLevelsCommandCommand.java"
         ]
       },
       "path": "~/Commands"
@@ -489,7 +392,7 @@
       "registry_name": "level_up_user_command_procedure",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/LevelUpUserCommandProcedureProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/LevelUpUserCommandProcedureProcedure.java"
         ],
         "dependencies": [
           {
@@ -509,7 +412,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeOneNameProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeOneNameProcedure.java"
         ],
         "dependencies": []
       },
@@ -524,7 +427,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeTwoNameProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeTwoNameProcedure.java"
         ],
         "dependencies": []
       },
@@ -539,7 +442,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeThreeNameProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeThreeNameProcedure.java"
         ],
         "dependencies": []
       },
@@ -554,7 +457,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeForthNameProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeForthNameProcedure.java"
         ],
         "dependencies": []
       },
@@ -569,7 +472,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeFifthNameProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeFifthNameProcedure.java"
         ],
         "dependencies": []
       },
@@ -584,7 +487,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeSixthNameProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeSixthNameProcedure.java"
         ],
         "dependencies": []
       },
@@ -599,7 +502,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeSeventhNameProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeSeventhNameProcedure.java"
         ],
         "dependencies": []
       },
@@ -614,7 +517,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeOneTipProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeOneTipProcedure.java"
         ],
         "dependencies": []
       },
@@ -629,7 +532,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeTwoTipProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeTwoTipProcedure.java"
         ],
         "dependencies": []
       },
@@ -644,7 +547,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeThreeTipProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeThreeTipProcedure.java"
         ],
         "dependencies": []
       },
@@ -659,7 +562,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeForthTipProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeForthTipProcedure.java"
         ],
         "dependencies": []
       },
@@ -674,7 +577,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeFifthTipProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeFifthTipProcedure.java"
         ],
         "dependencies": []
       },
@@ -689,7 +592,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeSixthTipProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeSixthTipProcedure.java"
         ],
         "dependencies": []
       },
@@ -704,7 +607,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeSeventhTipProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeSeventhTipProcedure.java"
         ],
         "dependencies": []
       },
@@ -718,7 +621,7 @@
       "registry_name": "give_xp_no_drop",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/GiveXpNoDropProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/GiveXpNoDropProcedure.java"
         ],
         "dependencies": [
           {
@@ -742,7 +645,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/PlayerNameProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/PlayerNameProcedure.java"
         ],
         "dependencies": [
           {
@@ -761,7 +664,7 @@
       "registry_name": "tome_of_rebirth_recipe",
       "metadata": {
         "files": [
-          "src/main/resources/data/memory_of_the_past/recipes/tome_of_rebirth_recipe.json"
+          "src/main/resources/data/rpg_attribute_system/recipes/tome_of_rebirth_recipe.json"
         ]
       },
       "path": "~/Recipes"
@@ -774,7 +677,7 @@
       "registry_name": "reset_player_cmd",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ResetPlayerCmdProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ResetPlayerCmdProcedure.java"
         ],
         "dependencies": [
           {
@@ -793,7 +696,7 @@
       "registry_name": "add_points_cmd",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsCmdProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsCmdProcedure.java"
         ],
         "dependencies": [
           {
@@ -817,7 +720,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnNextAttributeOneProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeOneProcedure.java"
         ],
         "dependencies": [
           {
@@ -837,7 +740,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnCurrentAttributeOneProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeOneProcedure.java"
         ],
         "dependencies": [
           {
@@ -857,7 +760,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnNextAttributeTwoProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeTwoProcedure.java"
         ],
         "dependencies": [
           {
@@ -877,7 +780,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnNextAttributeThreeProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeThreeProcedure.java"
         ],
         "dependencies": [
           {
@@ -897,7 +800,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnCurrentAttributeThreeProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeThreeProcedure.java"
         ],
         "dependencies": [
           {
@@ -917,7 +820,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnCurrentAttributeTwoProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeTwoProcedure.java"
         ],
         "dependencies": [
           {
@@ -937,7 +840,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnNextAttributeForthProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeForthProcedure.java"
         ],
         "dependencies": [
           {
@@ -957,7 +860,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnCurrentAttributeForthProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeForthProcedure.java"
         ],
         "dependencies": [
           {
@@ -977,7 +880,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnNextAttributeFifthProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeFifthProcedure.java"
         ],
         "dependencies": [
           {
@@ -997,7 +900,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnCurrentAttributeFifthProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeFifthProcedure.java"
         ],
         "dependencies": [
           {
@@ -1017,7 +920,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnNextAttributeSixthProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeSixthProcedure.java"
         ],
         "dependencies": [
           {
@@ -1037,7 +940,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnNextAttributeSeventhProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeSeventhProcedure.java"
         ],
         "dependencies": [
           {
@@ -1057,7 +960,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnCurrentAttributeSixthProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeSixthProcedure.java"
         ],
         "dependencies": [
           {
@@ -1077,7 +980,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnCurrentAttributeSeventhProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeSeventhProcedure.java"
         ],
         "dependencies": [
           {
@@ -1097,7 +1000,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnNextAttributeEightProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeEightProcedure.java"
         ],
         "dependencies": [
           {
@@ -1117,7 +1020,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnNextAttributeNineProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeNineProcedure.java"
         ],
         "dependencies": [
           {
@@ -1137,7 +1040,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnNextAttributeTenProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeTenProcedure.java"
         ],
         "dependencies": [
           {
@@ -1157,7 +1060,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnCurrentAttributeEightProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeEightProcedure.java"
         ],
         "dependencies": [
           {
@@ -1177,7 +1080,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnCurrentAttributeNineProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeNineProcedure.java"
         ],
         "dependencies": [
           {
@@ -1197,7 +1100,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnCurrentAttributeTenProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeTenProcedure.java"
         ],
         "dependencies": [
           {
@@ -1217,7 +1120,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeEightTipProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeEightTipProcedure.java"
         ],
         "dependencies": []
       },
@@ -1232,7 +1135,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeEightNameProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeEightNameProcedure.java"
         ],
         "dependencies": []
       },
@@ -1247,7 +1150,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeNineNameProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeNineNameProcedure.java"
         ],
         "dependencies": []
       },
@@ -1262,7 +1165,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeTenNameProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeTenNameProcedure.java"
         ],
         "dependencies": []
       },
@@ -1277,7 +1180,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeNineTipProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeNineTipProcedure.java"
         ],
         "dependencies": []
       },
@@ -1292,7 +1195,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnAttributeTenTipProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeTenTipProcedure.java"
         ],
         "dependencies": []
       },
@@ -1306,9 +1209,9 @@
       "registry_name": "player_attributes_viewer_gui",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/client/gui/PlayerAttributesViewerGUIScreen.java",
-          "src/main/java/tn/mbs/memory/network/PlayerAttributesViewerGUIButtonMessage.java",
-          "src/main/java/tn/mbs/memory/world/inventory/PlayerAttributesViewerGUIMenu.java"
+          "src/main/java/tn/nightbeam/ras/network/PlayerAttributesViewerGUIButtonMessage.java",
+          "src/main/java/tn/nightbeam/ras/client/gui/PlayerAttributesViewerGUIScreen.java",
+          "src/main/java/tn/nightbeam/ras/world/inventory/PlayerAttributesViewerGUIMenu.java"
         ]
       },
       "path": "~/GUI"
@@ -1322,7 +1225,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection1DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection1DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1342,7 +1245,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection1Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection1Procedure.java"
         ],
         "dependencies": []
       },
@@ -1356,7 +1259,7 @@
       "registry_name": "open_attributes_display_gui",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OpenAttributesDisplayGUIProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OpenAttributesDisplayGUIProcedure.java"
         ],
         "dependencies": [
           {
@@ -1392,7 +1295,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection2DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection2DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1412,7 +1315,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection3DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection3DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1432,7 +1335,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection4DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection4DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1452,7 +1355,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection5DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection5DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1472,7 +1375,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection6DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection6DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1492,7 +1395,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection7DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection7DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1512,7 +1415,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection8DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection8DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1532,7 +1435,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection9DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection9DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1552,7 +1455,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection10DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection10DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1572,7 +1475,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection11DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection11DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1592,7 +1495,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection12DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection12DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1612,7 +1515,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection14DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection14DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1632,7 +1535,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection13DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection13DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1652,7 +1555,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnSection15DisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection15DisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -1672,7 +1575,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection2Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection2Procedure.java"
         ],
         "dependencies": []
       },
@@ -1687,7 +1590,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection3Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection3Procedure.java"
         ],
         "dependencies": []
       },
@@ -1702,7 +1605,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection4Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection4Procedure.java"
         ],
         "dependencies": []
       },
@@ -1717,7 +1620,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection5Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection5Procedure.java"
         ],
         "dependencies": []
       },
@@ -1732,7 +1635,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection6Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection6Procedure.java"
         ],
         "dependencies": []
       },
@@ -1747,7 +1650,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection7Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection7Procedure.java"
         ],
         "dependencies": []
       },
@@ -1762,7 +1665,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection8Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection8Procedure.java"
         ],
         "dependencies": []
       },
@@ -1777,7 +1680,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection9Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection9Procedure.java"
         ],
         "dependencies": []
       },
@@ -1792,7 +1695,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection10Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection10Procedure.java"
         ],
         "dependencies": []
       },
@@ -1807,7 +1710,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection11Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection11Procedure.java"
         ],
         "dependencies": []
       },
@@ -1822,7 +1725,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection12Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection12Procedure.java"
         ],
         "dependencies": []
       },
@@ -1837,7 +1740,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection13Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection13Procedure.java"
         ],
         "dependencies": []
       },
@@ -1852,7 +1755,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection14Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection14Procedure.java"
         ],
         "dependencies": []
       },
@@ -1867,7 +1770,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnDisplaySection15Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection15Procedure.java"
         ],
         "dependencies": []
       },
@@ -1881,7 +1784,7 @@
       "registry_name": "reset_given_player",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ResetGivenPlayerProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ResetGivenPlayerProcedure.java"
         ],
         "dependencies": [
           {
@@ -1900,7 +1803,7 @@
       "registry_name": "give_xp_cmd",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/GiveXpCmdProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/GiveXpCmdProcedure.java"
         ],
         "dependencies": [
           {
@@ -1939,7 +1842,7 @@
       "registry_name": "give_xp_to_player",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/GiveXpToPlayerProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/GiveXpToPlayerProcedure.java"
         ],
         "dependencies": [
           {
@@ -1958,7 +1861,7 @@
       "registry_name": "give_attributes_to_player",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/GiveAttributesToPlayerProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/GiveAttributesToPlayerProcedure.java"
         ],
         "dependencies": [
           {
@@ -1977,7 +1880,7 @@
       "registry_name": "level_up_procedure_cmd",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/LevelUpProcedureCmdProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/LevelUpProcedureCmdProcedure.java"
         ],
         "dependencies": [
           {
@@ -1996,7 +1899,7 @@
       "registry_name": "set_xp_cmd",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/SetXpCmdProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/SetXpCmdProcedure.java"
         ],
         "dependencies": [
           {
@@ -2035,7 +1938,7 @@
       "registry_name": "set_xp_to_player",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/SetXpToPlayerProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/SetXpToPlayerProcedure.java"
         ],
         "dependencies": [
           {
@@ -2054,7 +1957,7 @@
       "registry_name": "item_requirements_display",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ItemRequirementsDisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ItemRequirementsDisplayProcedure.java"
         ],
         "dependencies": [
           {
@@ -2081,7 +1984,7 @@
       "registry_name": "item_use_lock",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ItemUseLockProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ItemUseLockProcedure.java"
         ],
         "dependencies": [
           {
@@ -2100,7 +2003,7 @@
       "registry_name": "give_xp_vanilla",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/GiveXpVanillaProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/GiveXpVanillaProcedure.java"
         ],
         "dependencies": [
           {
@@ -2124,7 +2027,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnGlobalSectionsDisplayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnGlobalSectionsDisplayProcedure.java"
         ],
         "dependencies": []
       },
@@ -2139,7 +2042,7 @@
       "metadata": {
         "return_type": "number",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnPercentageProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnPercentageProcedure.java"
         ],
         "dependencies": [
           {
@@ -2159,7 +2062,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt0Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt0Procedure.java"
         ],
         "dependencies": [
           {
@@ -2179,7 +2082,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt5Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt5Procedure.java"
         ],
         "dependencies": [
           {
@@ -2199,7 +2102,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt10Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt10Procedure.java"
         ],
         "dependencies": [
           {
@@ -2219,7 +2122,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt15Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt15Procedure.java"
         ],
         "dependencies": [
           {
@@ -2239,7 +2142,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt20Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt20Procedure.java"
         ],
         "dependencies": [
           {
@@ -2259,7 +2162,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt25Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt25Procedure.java"
         ],
         "dependencies": [
           {
@@ -2279,7 +2182,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt30Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt30Procedure.java"
         ],
         "dependencies": [
           {
@@ -2299,7 +2202,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt35Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt35Procedure.java"
         ],
         "dependencies": [
           {
@@ -2319,7 +2222,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt40Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt40Procedure.java"
         ],
         "dependencies": [
           {
@@ -2339,7 +2242,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt45Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt45Procedure.java"
         ],
         "dependencies": [
           {
@@ -2359,7 +2262,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt50Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt50Procedure.java"
         ],
         "dependencies": [
           {
@@ -2379,7 +2282,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt55Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt55Procedure.java"
         ],
         "dependencies": [
           {
@@ -2399,7 +2302,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt60Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt60Procedure.java"
         ],
         "dependencies": [
           {
@@ -2419,7 +2322,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt65Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt65Procedure.java"
         ],
         "dependencies": [
           {
@@ -2439,7 +2342,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt70Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt70Procedure.java"
         ],
         "dependencies": [
           {
@@ -2459,7 +2362,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt75Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt75Procedure.java"
         ],
         "dependencies": [
           {
@@ -2479,7 +2382,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt80Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt80Procedure.java"
         ],
         "dependencies": [
           {
@@ -2499,7 +2402,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt85Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt85Procedure.java"
         ],
         "dependencies": [
           {
@@ -2519,7 +2422,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt90Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt90Procedure.java"
         ],
         "dependencies": [
           {
@@ -2539,7 +2442,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt95Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt95Procedure.java"
         ],
         "dependencies": [
           {
@@ -2559,7 +2462,7 @@
       "metadata": {
         "return_type": "logic",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/IsAt99Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt99Procedure.java"
         ],
         "dependencies": [
           {
@@ -2578,7 +2481,7 @@
       "registry_name": "entity_changes_equipement",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/EntityChangesEquipementProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/EntityChangesEquipementProcedure.java"
         ],
         "dependencies": [
           {
@@ -2605,7 +2508,7 @@
       "registry_name": "add_modifer_count",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddModiferCountProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/AddModiferCountProcedure.java"
         ],
         "dependencies": [
           {
@@ -2624,7 +2527,7 @@
       "registry_name": "remove_modifer_count",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/RemoveModiferCountProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/RemoveModiferCountProcedure.java"
         ],
         "dependencies": [
           {
@@ -2644,7 +2547,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnCurrentModifierProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentModifierProcedure.java"
         ],
         "dependencies": [
           {
@@ -2663,7 +2566,7 @@
       "registry_name": "player_stats_gui_this_gui_is_opened",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/PlayerStatsGUIThisGUIIsOpenedProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/PlayerStatsGUIThisGUIIsOpenedProcedure.java"
         ],
         "dependencies": [
           {
@@ -2683,7 +2586,7 @@
       "metadata": {
         "return_type": "string",
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/ReturnExtraPointsUIProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnExtraPointsUIProcedure.java"
         ],
         "dependencies": [
           {
@@ -2702,7 +2605,7 @@
       "registry_name": "create_drop_rate_config",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateDropRateConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDropRateConfigProcedure.java"
         ],
         "dependencies": []
       },
@@ -2716,7 +2619,7 @@
       "registry_name": "create_items_lock_config",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateItemsLockConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateItemsLockConfigProcedure.java"
         ],
         "dependencies": []
       },
@@ -2730,7 +2633,7 @@
       "registry_name": "disable_block_placement",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisableBlockPlacementProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisableBlockPlacementProcedure.java"
         ],
         "dependencies": [
           {
@@ -2753,7 +2656,7 @@
       "registry_name": "disable_block_break",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisableBlockBreakProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisableBlockBreakProcedure.java"
         ],
         "dependencies": [
           {
@@ -2776,7 +2679,7 @@
       "registry_name": "disable_entity_attack",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisableEntityAttackProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisableEntityAttackProcedure.java"
         ],
         "dependencies": [
           {
@@ -2795,21 +2698,11 @@
       "registry_name": "create_level_up_rewards_config",
       "metadata": {
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateLevelUpRewardsConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateLevelUpRewardsConfigProcedure.java"
         ],
         "dependencies": []
       },
       "path": "~/Configurations"
-    },
-    {
-      "name": "MotpLevel",
-      "type": "attribute",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "motp_level",
-      "metadata": {
-        "files": []
-      }
     },
     {
       "name": "CreateAttributesConfig",
@@ -2820,7 +2713,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Attributes Config"
@@ -2834,7 +2727,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateDefaultOneConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultOneConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Attributes Config"
@@ -2848,7 +2741,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateDefaultTwoConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultTwoConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Attributes Config"
@@ -2862,7 +2755,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateDefaultThreeConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultThreeConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Attributes Config"
@@ -2876,7 +2769,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateDefaultForthConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultForthConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Attributes Config"
@@ -2890,7 +2783,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateDefaultFifthConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultFifthConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Attributes Config"
@@ -2904,7 +2797,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateDefaultSixthConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultSixthConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Attributes Config"
@@ -2918,7 +2811,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateDefaultSeventhConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultSeventhConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Attributes Config"
@@ -2937,7 +2830,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute1Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute1Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Attributes"
@@ -2956,7 +2849,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute2Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute2Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Attributes"
@@ -2975,7 +2868,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute3Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute3Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Attributes"
@@ -2994,7 +2887,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute4Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute4Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Attributes"
@@ -3013,7 +2906,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute5Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute5Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Attributes"
@@ -3032,7 +2925,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute6Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute6Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Attributes"
@@ -3051,7 +2944,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute7Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute7Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Attributes"
@@ -3070,7 +2963,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute8Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute8Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Attributes"
@@ -3089,7 +2982,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute9Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute9Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Attributes"
@@ -3108,7 +3001,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/OnPlayerSpawnAttribute10Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute10Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Attributes"
@@ -3122,7 +3015,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateDefaultEiightConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultEiightConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Attributes Config"
@@ -3136,7 +3029,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateDefaultNineConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultNineConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Attributes Config"
@@ -3150,7 +3043,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateDefaultTenConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultTenConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Attributes Config"
@@ -3169,7 +3062,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute1Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute1Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Add Points"
@@ -3188,7 +3081,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute2Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute2Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Add Points"
@@ -3207,7 +3100,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute3Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute3Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Add Points"
@@ -3226,7 +3119,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute4Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute4Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Add Points"
@@ -3245,7 +3138,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute5Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute5Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Add Points"
@@ -3264,7 +3157,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute6Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute6Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Add Points"
@@ -3283,7 +3176,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute7Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute7Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Add Points"
@@ -3302,7 +3195,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute8Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute8Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Add Points"
@@ -3321,7 +3214,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute9Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute9Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Add Points"
@@ -3340,7 +3233,7 @@
           }
         ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/AddPointsAttribute10Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute10Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Add Points"
@@ -3355,7 +3248,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute1Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute1Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3370,7 +3263,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute2Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute2Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3385,7 +3278,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute3Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute3Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3400,7 +3293,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute4Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute4Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3415,7 +3308,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute5Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute5Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3430,7 +3323,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute6Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute6Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3445,7 +3338,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute7Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute7Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3460,7 +3353,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute8Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute8Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3475,7 +3368,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute9Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute9Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3490,7 +3383,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicAttribute10Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute10Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3504,7 +3397,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3518,7 +3411,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayOneConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayOneConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3532,7 +3425,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayTwoConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayTwoConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3546,7 +3439,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayThreeConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayThreeConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3560,7 +3453,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayForthConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayForthConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3574,7 +3467,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayFifthConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayFifthConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3588,7 +3481,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplaySixthConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplaySixthConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3602,7 +3495,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplaySeventhConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplaySeventhConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3616,7 +3509,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayEigthConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayEigthConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3630,7 +3523,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayNineConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayNineConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3644,7 +3537,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayTenConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayTenConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3658,7 +3551,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayElevenConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayElevenConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3672,7 +3565,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayTwelveConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayTwelveConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3686,7 +3579,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayThirteenConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayThirteenConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3700,7 +3593,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayFourteenConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayFourteenConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3714,7 +3607,7 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateAttributesDisplayFifteenConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayFifteenConfigProcedure.java"
         ]
       },
       "path": "~/Configurations/Display"
@@ -3728,38 +3621,10 @@
       "metadata": {
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/CreateGlobalConfigProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/CreateGlobalConfigProcedure.java"
         ]
       },
       "path": "~/Configurations"
-    },
-    {
-      "name": "CodexOfAscension",
-      "type": "item",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "codex_of_ascension",
-      "metadata": {
-        "files": [
-          "src/main/resources/assets/memory_of_the_past/models/item/codex_of_ascension.json",
-          "src/main/java/tn/mbs/memory/item/CodexOfAscensionItem.java"
-        ]
-      },
-      "path": "~/Items"
-    },
-    {
-      "name": "TomeOfRebirth",
-      "type": "item",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "tome_of_rebirth",
-      "metadata": {
-        "files": [
-          "src/main/java/tn/mbs/memory/item/TomeOfRebirthItem.java",
-          "src/main/resources/assets/memory_of_the_past/models/item/tome_of_rebirth.json"
-        ]
-      },
-      "path": "~/Items"
     },
     {
       "name": "DisplayLogicLockAttribute1",
@@ -3771,7 +3636,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute1Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute1Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3786,7 +3651,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute2Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute2Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3801,7 +3666,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute3Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute3Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3816,7 +3681,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute4Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute4Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3831,7 +3696,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute5Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute5Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3846,7 +3711,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute6Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute6Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3861,7 +3726,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute7Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute7Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3876,7 +3741,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute8Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute8Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3891,7 +3756,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute9Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute9Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3906,7 +3771,7 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicLockAttribute10Procedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute10Procedure.java"
         ]
       },
       "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
@@ -3921,7 +3786,7 @@
         "return_type": "string",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/PressToGetKeyBindNameProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/PressToGetKeyBindNameProcedure.java"
         ]
       },
       "path": "~/Procedures/Keybinds"
@@ -3936,86 +3801,59 @@
         "return_type": "logic",
         "dependencies": [],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/DisplayLogicKeybindOverlayProcedure.java"
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicKeybindOverlayProcedure.java"
         ]
       },
       "path": "~/Procedures/GUI"
     },
     {
-      "name": "SetupIronSpellsMaxMana",
-      "type": "procedure",
+      "name": "TomeOfAscension",
+      "type": "item",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "setup_iron_spells_max_mana",
+      "registry_name": "tome_of_ascension",
       "metadata": {
-        "dependencies": [
-          {
-            "name": "arguments",
-            "type": "cmdcontext"
-          }
-        ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/SetupIronSpellsMaxManaProcedure.java"
+          "src/main/resources/assets/rpg_attribute_system/models/item/tome_of_ascension.json",
+          "src/main/java/tn/nightbeam/ras/item/TomeOfAscensionItem.java"
         ]
       },
-      "path": "~/Configurations/Setup/IronsSpells"
+      "path": "~/Items"
     },
     {
-      "name": "SetupIronSpellsManaRegen",
-      "type": "procedure",
+      "name": "ScrollOfRebirth",
+      "type": "item",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "setup_iron_spells_mana_regen",
+      "registry_name": "scroll_of_rebirth",
       "metadata": {
-        "dependencies": [
-          {
-            "name": "arguments",
-            "type": "cmdcontext"
-          }
-        ],
         "files": [
-          "src/main/java/tn/mbs/memory/procedures/SetupIronSpellsManaRegenProcedure.java"
+          "src/main/java/tn/nightbeam/ras/item/ScrollOfRebirthItem.java",
+          "src/main/resources/assets/rpg_attribute_system/models/item/scroll_of_rebirth.json"
         ]
       },
-      "path": "~/Configurations/Setup/IronsSpells"
+      "path": "~/Items"
     },
     {
-      "name": "SetupIronSpellsPower",
-      "type": "procedure",
+      "name": "RASCreativeTab",
+      "type": "tab",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "setup_iron_spells_power",
+      "registry_name": "ras_creative_tab",
       "metadata": {
-        "dependencies": [
-          {
-            "name": "arguments",
-            "type": "cmdcontext"
-          }
-        ],
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/SetupIronSpellsPowerProcedure.java"
-        ]
-      },
-      "path": "~/Configurations/Setup/IronsSpells"
+        "files": []
+      }
     },
     {
-      "name": "SetupIronSpellsResist",
-      "type": "procedure",
+      "name": "RPGLevel",
+      "type": "attribute",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "setup_iron_spells_resist",
+      "registry_name": "rpg_level",
       "metadata": {
-        "dependencies": [
-          {
-            "name": "arguments",
-            "type": "cmdcontext"
-          }
-        ],
-        "files": [
-          "src/main/java/tn/mbs/memory/procedures/SetupIronSpellsResistProcedure.java"
-        ]
+        "files": []
       },
-      "path": "~/Configurations/Setup/IronsSpells"
+      "path": "~/Attributes"
     }
   ],
   "variable_elements": [
@@ -4117,231 +3955,42 @@
     }
   ],
   "sound_elements": [],
-  "tag_elements": {
-    "BLOCKS:minecraft:mineable/pickaxe": [
-      "~CUSTOM:Level200TrophyReward",
-      "~CUSTOM:Level100TrophyReward"
-    ]
-  },
+  "tag_elements": {},
   "tab_element_order": {},
   "language_map": {
     "en_us": {
-      "gui.memoryfrags.player_stats_gui.label_resistance": "Resistance : ",
-      "gui.memoryfrags.player_stats_gui.label_available_points": "Available Points:",
-      "itemGroup.tab_memoryfragments": "MOTP",
       "key.memory_of_the_past.next_value": "Next value is : ",
-      "item.memoryfrags.lesser_drop_of_knowledge": "Lesser Drop of Knowledge",
-      "gui.memoryfrags.player_stats_gui.label_level": "Level :",
-      "gui.memory_of_the_past.player_stats_gui.label_available_points": "Available Points:",
-      "key.memoryfrags.open_stats_menu_keybind": "Open Stats Menu ",
-      "gui.memory_of_the_past.player_attributes_viewer_gui.tooltip_indicates_the_number_of_points_y": "§7Indicates the number of points you can allocate to improve your stats",
-      "gui.memory_of_the_past.player_attributes_viewer_gui.tooltip_represents_your_overall_progress": "§7Represents your overall progress and power",
-      "item.memory_of_the_past.auto_consumer_item.description_1": "Requires Exploration : 1 ",
-      "gui.memory_of_the_past.player_stats_gui.button_empty": "\u003e",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_reduces_the_distance_you_are_pus": "§7Reduces the distance you are pushed back when hit by an enemy or explosion",
-      "block.memory_of_the_past.level_100_trophy_reward": "Level 100 Trophy Reward",
-      "gui.memoryfrags.player_stats_gui.label_attack_damage": "Attack Damage :",
-      "gui.memory_of_the_past.player_stats_gui.label_empty1": "?",
-      "gui.memory_of_the_past.player_stats_gui.label_level": "Level :",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_reduces_the_amount_of_damage_you": "§7Reduces the amount of damage you take from enemy attacks. ",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_influences_how_fast_you_can_move": "§7Influences how fast you can move. ",
-      "item_group.memoryfrags.memoryfragments": "Memory fragments",
-      "item.memory_of_the_past.experience_enhancer_artifact.description_1": "Requires Exploration : 4",
-      "item.memoryfrags.orb_of_reseting": "Orb Of Reset",
-      "advancements.reach_level_50.title": "Reach Level 50",
-      "gui.memory_of_the_past.player_stats_gui.label_health": "Vitality :",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_represents_your_overall_durabili": "§7Represents your overall durability. §7More health means you can survive longer in battle. ",
-      "gui.memoryfrags.alter_gui.button_fuse": "Fuse",
-      "key.memory_of_the_past.open_stats_menu_keybind": "Open Stats Menu",
-      "itemGroup.memory_of_the_past.memoryfragments": "MOTP",
-      "item.memoryfrags.orb_of_leveling": "Orb Of Leveling",
-      "gui.memory_of_the_past.player_stats_gui.label_resistance": "Fortitude : ",
-      "item.memoryfrags.great_drop_of_knowledge": "Great Drop of Knowledge",
-      "gui.memory_of_the_past.player_stats_gui.label_empty8": "?",
-      "gui.memoryfrags.level_overlay.label_available_points": "Available Points :",
-      "gui.memory_of_the_past.player_stats_gui.label_empty7": "?",
-      "gui.memory_of_the_past.player_stats_gui.label_empty6": "?",
-      "gui.memory_of_the_past.player_attributes_viewer_gui.label_level": "Level :",
-      "gui.memory_of_the_past.player_stats_gui.label_empty5": "?",
-      "key.categories.motp": "Memory Of The Past",
-      "advancements.reach_level_100.descr": "You Just Reached LEVEL 100 !!",
-      "advancements.reach_level_200.title": "Reach Level 200",
-      "gui.memory_of_the_past.player_stats_gui.label_empty4": "?",
-      "gui.memory_of_the_past.player_stats_gui.label_empty": "?",
-      "gui.memory_of_the_past.player_stats_gui.label_empty3": "?",
-      "gui.memory_of_the_past.player_stats_gui.label_empty2": "?",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_determines_how_quickly_you_can_s": "§7Determines how quickly you can swing your weapon. ",
-      "gui.memoryfrags.player_stats_gui.button_empty1": "\u003e",
-      "gui.memoryfrags.player_stats_gui.button_empty2": "\u003e",
-      "gui.memoryfrags.player_stats_gui.button_empty3": "\u003e",
-      "gui.memory_of_the_past.level_overlay.label_level": "Level:",
-      "gui.memoryfrags.player_stats_gui.button_empty4": "\u003e",
-      "gui.memoryfrags.level_overlay.label_experience": "Level :",
-      "gui.memoryfrags.player_stats_gui.button_empty5": "\u003e",
-      "advancements.reach_level_200.descr": "You Just Reached LEVEL 200 !!",
-      "block.memory_of_the_past.level_200_trophy_reward.description_1": "§bCongratulations on reaching §cLevel 200§b!",
-      "block.memory_of_the_past.level_200_trophy_reward.description_0": "§b!YOU MADE IT",
-      "advancements.first_level_up.descr": "You just made the first step into the mod",
-      "gui.memory_of_the_past.player_stats_gui.label_upgrade_memories": "Memories Upgrade",
-      "gui.memoryfrags.player_stats_gui.label_movement_speed": "Movement Speed :",
-      "gui.memory_of_the_past.player_stats_gui.label_attack_damage": "Attack Power :",
-      "advancements.first_level_up.title": "Level Up",
-      "gui.memory_of_the_past.player_stats_gui.label_attack_speed": "Attack Speed :",
-      "gui.memoryfrags.player_stats_gui.button_empty": "\u003e",
-      "gui.memory_of_the_past.player_stats_gui.label_movement_speed": "Agility :",
-      "block.memory_of_the_past.level_100_trophy_reward.description_1": "§bCongratulations on reaching §cLevel 100§b!",
-      "block.memory_of_the_past.level_100_trophy_reward.description_0": "§7You have proven your strength and dedication.",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_represents_your_overall_progress": "§7Represents your overall progress and power",
-      "gui.memoryfrags.player_stats_gui.label_attack_speed": "Attack Speed :",
-      "item_group.memory_of_the_past.memoryfragments": "MOTP",
-      "gui.memoryfrags.alter_gui.button_empty": "fuse",
-      "gui.memory_of_the_past.level_overlay.label_experience": "Level :",
-      "block.memory_of_the_past.level_200_trophy_reward": "Level 200 Trophy Reward",
-      "gui.memoryfrags.alter_gui.label_alter": "Alter",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_influences_the_chances_of_receiv": "§7Influences the chances of receiving better loot or triggering beneficial events",
-      "item.memoryfrags.better_drop_of_knowledge": "Better Drop of Knowledge",
-      "gui.memory_of_the_past.player_stats_gui.label_exploration": "Exploration :",
-      "gui.memoryfrags.player_stats_gui.label_hp": "hp",
-      "gui.memory_of_the_past.player_stats_gui.label_armor": "Protection :",
-      "gui.memory_of_the_past.level_overlay.label_available_points": "You have unspent points !",
-      "gui.memoryfrags.player_stats_gui.label_armor": "Armor :",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_defines_the_amount_of_harm_you_c": "§7Defines the amount of harm you can inflict with each attack. ",
-      "advancements.reach_level_50.descr": "You Just Reached LEVEL 50 !!",
-      "gui.memory_of_the_past.player_stats_gui.button_empty5": "\u003e",
-      "advancements.reach_level_100.title": "Reach Level 100",
-      "gui.memory_of_the_past.player_stats_gui.button_empty4": "\u003e",
-      "gui.memory_of_the_past.player_stats_gui.button_empty3": "\u003e",
-      "gui.memory_of_the_past.player_stats_gui.button_empty2": "\u003e",
-      "gui.memory_of_the_past.player_attributes_viewer_gui.label_available_points": "Available Points:",
-      "gui.memory_of_the_past.player_stats_gui.button_empty1": "\u003e",
-      "gui.memoryfrags.player_stats_gui.label_health": "Health :",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_indicates_the_number_of_points_y": "§7Indicates the number of points you can allocate to improve your stats",
-      "gui.memory_of_the_past.player_stats_gui.label_5": "5",
-      "attribute.memory_of_the_past.motp_level": "Memory Level",
-      "item.memory_of_the_past.tome_of_rebirth": "Tome of Rebirth",
-      "item.memory_of_the_past.tome_of_rebirth.description_0": "§eA mystical orb that gently§b resets §eyour points, allowing you to start anew",
-      "item.memory_of_the_past.codex_of_ascension.description_0": "§6Harness the power within this orb to §aascend §eyour level and reach new heights",
-      "item.memory_of_the_past.codex_of_ascension": "Codex of Ascension",
-      "gui.memory_of_the_past.level_overlay.label_press_to_open": "Press To Open",
-      "item.memory_of_the_past.level_100_trophy_reward": "Level 100 Trophy Reward",
-      "item.memory_of_the_past.level_200_trophy_reward": "Level 200 Trophy Reward"
-    },
-    "fr_fr": {
-      "gui.memoryfrags.player_stats_gui.label_resistance": "Resistance : ",
-      "gui.memoryfrags.player_stats_gui.label_available_points": "Available Points:",
-      "itemGroup.tab_memoryfragments": "Fragments de mémoire",
-      "key.memory_of_the_past.next_value": "",
-      "item.memoryfrags.lesser_drop_of_knowledge": "Petite goutte de connaissance",
-      "gui.memoryfrags.player_stats_gui.label_level": "Level :",
-      "gui.memory_of_the_past.player_stats_gui.label_available_points": "Points disponibles :",
-      "key.memoryfrags.open_stats_menu_keybind": "Ouvrir le menu Stats ",
-      "gui.memory_of_the_past.player_attributes_viewer_gui.tooltip_indicates_the_number_of_points_y": "§7Indicates the number of points you can allocate to improve your stats",
-      "gui.memory_of_the_past.player_attributes_viewer_gui.tooltip_represents_your_overall_progress": "§7Represents your overall progress and power",
-      "item.memory_of_the_past.auto_consumer_item.description_1": "Requires Exploration : 1 ",
-      "gui.memory_of_the_past.player_stats_gui.button_empty": "\u003e",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_reduces_the_distance_you_are_pus": "§7Réduit la distance à laquelle vous êtes repoussé lorsque vous êtes touché par un ennemi ou une explosion",
-      "block.memory_of_the_past.level_100_trophy_reward": "Récompense du trophée du niveau 100",
-      "gui.memoryfrags.player_stats_gui.label_attack_damage": "Attack Damage :",
-      "gui.memory_of_the_past.player_stats_gui.label_empty1": "?",
-      "gui.memory_of_the_past.player_stats_gui.label_level": "Niveau :",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_reduces_the_amount_of_damage_you": "§7Réduit les dégâts infligés par les attaques ennemies",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_influences_how_fast_you_can_move": "§7Influence sur la vitesse de déplacement. ",
-      "key.category.motp": "Memory Of The Past",
-      "item_group.memoryfrags.memoryfragments": "Memory fragments",
-      "item.memory_of_the_past.experience_enhancer_artifact.description_1": "Requires Exploration : 4",
-      "item.memoryfrags.orb_of_reseting": "Orbe de réinitialisation",
-      "advancements.reach_level_50.title": "Atteindre le niveau 50",
-      "gui.memory_of_the_past.player_stats_gui.label_health": "Vitalité :",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_represents_your_overall_durabili": "§7Représente votre durabilité générale. §Plus de santé signifie que vous pouvez survivre plus longtemps au combat. ",
-      "gui.memoryfrags.alter_gui.button_fuse": "Fuse",
-      "key.memory_of_the_past.open_stats_menu_keybind": "Ouvrir le menu Stats ",
-      "itemGroup.memory_of_the_past.memoryfragments": "MOTP",
-      "item.memoryfrags.orb_of_leveling": "Orbe de nivellement",
-      "gui.memory_of_the_past.player_stats_gui.label_resistance": "Fortitude : ",
-      "item.memoryfrags.great_drop_of_knowledge": "Grande goutte de connaissance",
-      "gui.memory_of_the_past.player_stats_gui.label_empty8": "?",
-      "gui.memoryfrags.level_overlay.label_available_points": "Points disponibles :",
-      "gui.memory_of_the_past.player_stats_gui.label_empty7": "?",
-      "gui.memory_of_the_past.player_stats_gui.label_empty6": "?",
-      "gui.memory_of_the_past.player_attributes_viewer_gui.label_level": "Level :",
-      "gui.memory_of_the_past.player_stats_gui.label_empty5": "?",
-      "advancements.reach_level_100.descr": "Vous venez d\u0027atteindre le NIVEAU 100 !",
-      "advancements.reach_level_200.title": "Atteindre le niveau 200",
-      "gui.memory_of_the_past.player_stats_gui.label_empty4": "?",
-      "gui.memory_of_the_past.player_stats_gui.label_empty": "?",
-      "gui.memory_of_the_past.player_stats_gui.label_empty3": "?",
-      "gui.memory_of_the_past.player_stats_gui.label_empty2": "?",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_determines_how_quickly_you_can_s": "§7Détermine la vitesse à laquelle vous pouvez balancer votre arme. ",
-      "gui.memoryfrags.player_stats_gui.button_empty1": "\u003e",
-      "gui.memoryfrags.player_stats_gui.button_empty2": "\u003e",
-      "gui.memoryfrags.player_stats_gui.button_empty3": "\u003e",
-      "gui.memory_of_the_past.level_overlay.label_level": "Level:",
-      "gui.memoryfrags.player_stats_gui.button_empty4": "\u003e",
-      "gui.memoryfrags.level_overlay.label_experience": "Level :",
-      "gui.memoryfrags.player_stats_gui.button_empty5": "\u003e",
-      "advancements.reach_level_200.descr": "Vous venez d\u0027atteindre le NIVEAU 200 !",
-      "block.memory_of_the_past.level_200_trophy_reward.description_1": "§bCongratulations on reaching §cLevel 200§b!",
-      "block.memory_of_the_past.level_200_trophy_reward.description_0": "§b!YOU MADE IT",
-      "advancements.first_level_up.descr": "Vous venez de faire le premier pas dans le mod",
-      "gui.memory_of_the_past.player_stats_gui.label_upgrade_memories": "Mise à niveau des mémoires",
-      "gui.memoryfrags.player_stats_gui.label_movement_speed": "Movement Speed :",
-      "gui.memory_of_the_past.player_stats_gui.label_attack_damage": "Puissance d\u0027attaque :",
-      "advancements.first_level_up.title": "Level Up",
-      "gui.memory_of_the_past.player_stats_gui.label_attack_speed": "Vitesse d\u0027attaque :",
-      "gui.memoryfrags.player_stats_gui.button_empty": "\u003e",
-      "gui.memory_of_the_past.player_stats_gui.label_movement_speed": "Agilité :",
-      "block.memory_of_the_past.level_100_trophy_reward.description_1": "§bCongratulations on reaching §cLevel 100§b!",
-      "block.memory_of_the_past.level_100_trophy_reward.description_0": "§7You have proven your strength and dedication.",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_represents_your_overall_progress": "§7Représente vos progrès et votre puissance globale",
-      "gui.memoryfrags.player_stats_gui.label_attack_speed": "Attack Speed :",
-      "item_group.memory_of_the_past.memoryfragments": "MOTP",
-      "gui.memoryfrags.alter_gui.button_empty": "fuse",
-      "gui.memory_of_the_past.level_overlay.label_experience": "Niveau :",
-      "block.memory_of_the_past.level_200_trophy_reward": "Récompense du trophée du niveau 200",
-      "gui.memoryfrags.alter_gui.label_alter": "Alter",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_influences_the_chances_of_receiv": "§7Influence sur les chances de recevoir un meilleur butin ou de déclencher des événements bénéfiques",
-      "item.memoryfrags.better_drop_of_knowledge": "Une meilleure diffusion des connaissances",
-      "gui.memory_of_the_past.player_stats_gui.label_exploration": "Exploration :",
-      "gui.memoryfrags.player_stats_gui.label_hp": "hp",
-      "gui.memory_of_the_past.player_stats_gui.label_armor": "Protection :",
-      "gui.memory_of_the_past.level_overlay.label_available_points": "Vous avez des points non dépensés !",
-      "gui.memoryfrags.player_stats_gui.label_armor": "Armor :",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_defines_the_amount_of_harm_you_c": "§7Définit la quantité de dégâts que vous pouvez infliger à chaque attaque. ",
-      "advancements.reach_level_50.descr": "Vous venez d\u0027atteindre le NIVEAU 50 !",
-      "gui.memory_of_the_past.player_stats_gui.button_empty5": "\u003e",
-      "advancements.reach_level_100.title": "Atteindre le niveau 100",
-      "gui.memory_of_the_past.player_stats_gui.button_empty4": "\u003e",
-      "gui.memory_of_the_past.player_stats_gui.button_empty3": "\u003e",
-      "gui.memory_of_the_past.player_stats_gui.button_empty2": "\u003e",
-      "gui.memory_of_the_past.player_attributes_viewer_gui.label_available_points": "Available Points:",
-      "gui.memory_of_the_past.player_stats_gui.button_empty1": "\u003e",
-      "gui.memoryfrags.player_stats_gui.label_health": "Health :",
-      "gui.memory_of_the_past.player_stats_gui.tooltip_indicates_the_number_of_points_y": "§7Indique le nombre de points que vous pouvez allouer pour améliorer vos statistiques",
-      "gui.memory_of_the_past.player_stats_gui.label_5": "5",
-      "attribute.memory_of_the_past.motp_level": "Memory Level",
-      "item.memory_of_the_past.tome_of_rebirth": "Tome of Rebirth",
-      "item.memory_of_the_past.tome_of_rebirth.description_0": "§eA mystical orb that gently§b resets §eyour points, allowing you to start anew",
-      "item.memory_of_the_past.codex_of_ascension.description_0": "§6Harness the power within this orb to §aascend §eyour level and reach new heights",
-      "item.memory_of_the_past.codex_of_ascension": "Codex of Ascension",
-      "gui.memory_of_the_past.level_overlay.label_press_to_open": "Press To Open",
-      "item.memory_of_the_past.level_100_trophy_reward": "Level 100 Trophy Reward",
-      "item.memory_of_the_past.level_200_trophy_reward": "Level 200 Trophy Reward"
+      "key.categories.ras": "Memory Of The Past",
+      "gui.rpg_attribute_system.player_stats_gui.label_available_points": "Available Points:",
+      "gui.rpg_attribute_system.player_stats_gui.label_level": "Level :",
+      "gui.rpg_attribute_system.player_stats_gui.tooltip_indicates_the_number_of_points_y": "§7Indicates the number of points you can allocate to improve your stats",
+      "gui.rpg_attribute_system.player_stats_gui.tooltip_represents_your_overall_progress": "§7Represents your overall progress and power",
+      "key.rpg_attribute_system.open_stats_menu_keybind": "Open Stats Menu",
+      "gui.rpg_attribute_system.player_attributes_viewer_gui.label_available_points": "Available Points:",
+      "gui.rpg_attribute_system.player_attributes_viewer_gui.label_level": "Level :",
+      "gui.rpg_attribute_system.player_attributes_viewer_gui.tooltip_represents_your_overall_progress": "§7Represents your overall progress and power",
+      "gui.rpg_attribute_system.player_attributes_viewer_gui.tooltip_indicates_the_number_of_points_y": "§7Indicates the number of points you can allocate to improve your stats",
+      "item.rpg_attribute_system.tome_of_ascension": "Tome of Ascension",
+      "item.rpg_attribute_system.tome_of_ascension.description_0": "§6Harness the power within this tome to §aascend §eyour level.",
+      "item.rpg_attribute_system.scroll_of_rebirth": "Scroll of Rebirth",
+      "item.rpg_attribute_system.scroll_of_rebirth.description_0": "§eA mystical scroll that gently§b resets §eyour points, allowing you to start anew.",
+      "item_group.rpg_attribute_system.ras_creative_tab": "RAS",
+      "attribute.rpg_attribute_system.rpg_level": "RPGLevel"
     }
   },
   "metadata": {
     "files": [
-      "src/main/java/tn/mbs/memory/network/MemoryOfThePastModVariables.java",
-      "src/main/java/tn/mbs/memory/MemoryOfThePastMod.java",
+      "src/main/java/tn/nightbeam/ras/network/RpgAttributeSystemModVariables.java",
+      "src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModTabs.java",
+      "src/main/java/tn/nightbeam/ras/RpgAttributeSystemMod.java",
       "src/main/resources/META-INF/mods.toml",
       "src/main/resources/pack.mcmeta",
-      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModTabs.java",
-      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModAttributes.java",
-      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModMenus.java",
-      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModScreens.java",
-      "src/main/java/tn/mbs/memory/network/MenuStateUpdateMessage.java",
-      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModKeyMappings.java",
-      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModBlocks.java",
-      "src/main/java/tn/mbs/memory/init/MemoryOfThePastModItems.java"
+      "src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModAttributes.java",
+      "src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModScreens.java",
+      "src/main/java/tn/nightbeam/ras/network/MenuStateUpdateMessage.java",
+      "src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModMenus.java",
+      "src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModKeyMappings.java",
+      "src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModItems.java"
     ]
   },
   "foldersRoot": {
@@ -4447,25 +4096,8 @@
           {
             "name": "Display",
             "children": []
-          },
-          {
-            "name": "Setup",
-            "children": [
-              {
-                "name": "IronsSpells",
-                "children": []
-              }
-            ]
           }
         ]
-      },
-      {
-        "name": "Blocks",
-        "children": []
-      },
-      {
-        "name": "Advancements",
-        "children": []
       },
       {
         "name": "Commands",
@@ -4474,16 +4106,20 @@
       {
         "name": "Recipes",
         "children": []
+      },
+      {
+        "name": "Attributes",
+        "children": []
       }
     ]
   },
   "workspaceSettings": {
-    "modid": "memory_of_the_past",
-    "modName": "Memories of the past",
-    "version": "1.8.1",
-    "description": "As players explore the world, they collect Memories from significant defeating a bosses or mobs. you can use this fragments to level up and gain extra stats.",
+    "modid": "rpg_attribute_system",
+    "modName": "RPG Attribute System",
+    "version": "2.0.0",
+    "description": "A lightweight RPG-style system that scales player attributes based on level.",
     "author": "NAIZO",
-    "websiteURL": "https://meherbensalem.github.io",
+    "websiteURL": "https://www.nightbeam.cloud",
     "license": "All Rights Reserved",
     "serverSideOnly": false,
     "modPicture": "newlogo",
@@ -4496,8 +4132,8 @@
       "jauml"
     ],
     "currentGenerator": "forge-1.20.1",
-    "credits": "donations : @porogulaemeo",
-    "modElementsPackage": "tn.mbs.memory"
+    "credits": "thank you : @porogulaemeo",
+    "modElementsPackage": "tn.nightbeam.ras"
   },
   "mcreatorVersion": 202500228610
 }

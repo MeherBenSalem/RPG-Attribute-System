@@ -1,6 +1,6 @@
 {
   "pack": {
     "pack_format": 15,
-    "description": "As players explore the world, they collect Memories from significant defeating a bosses or mobs. you can use this fragments to level up and gain extra stats."
+    "description": "A lightweight RPG-style system that scales player attributes based on level."
   }
 }

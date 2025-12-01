@@ -1,0 +1,69 @@
+package tn.nightbeam.ras.procedures;
+
+import tn.nightbeam.ras.network.RpgAttributeSystemModVariables;
+import tn.nightbeam.ras.init.RpgAttributeSystemModAttributes;
+
+import tn.naizo.jauml.JaumlConfigLib;
+
+import org.checkerframework.checker.units.qual.s;
+
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.CommandSource;
+
+public class OnPlayerSpawnAttribute4Procedure {
+	public static void execute(Entity entity) {
+		if (entity == null)
+			return;
+		String stringCommand = "";
+		String filename = "";
+		String directory = "";
+		double commandParam = 0;
+		double finalValue = 0;
+		directory = "motp/attributes";
+		filename = "attribute_4";
+		if ((entity instanceof LivingEntity _livingEntity0 && _livingEntity0.getAttributes().hasAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_4.get())
+				? _livingEntity0.getAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_4.get()).getBaseValue()
+				: 0) == 0) {
+			for (String iterator : JaumlConfigLib.getArrayAsList(directory, filename, "cmd_to_exc")) {
+				stringCommand = iterator;
+				if (stringCommand.contains("[param(")) {
+					commandParam = 0;
+					finalValue = 0;
+					commandParam = new Object() {
+						double convert(String s) {
+							try {
+								return Double.parseDouble(s.trim());
+							} catch (Exception e) {
+							}
+							return 0;
+						}
+					}.convert(stringCommand.substring((int) (stringCommand.indexOf("[param(") + 7), (int) stringCommand.indexOf(")]")));
+					if (commandParam > 0) {
+						for (int index0 = 0; index0 < (int) (entity.getCapability(RpgAttributeSystemModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new RpgAttributeSystemModVariables.PlayerVariables())).attribute_4; index0++) {
+							finalValue = finalValue + commandParam;
+						}
+					}
+				} else {
+					finalValue = (entity.getCapability(RpgAttributeSystemModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new RpgAttributeSystemModVariables.PlayerVariables())).attribute_4;
+				}
+				if (stringCommand.contains("base set")) {
+					stringCommand = stringCommand.substring(0, (int) (stringCommand.indexOf("base set") + 8));
+					stringCommand = stringCommand + " " + finalValue;
+				} else if (stringCommand.contains("[param(")) {
+					stringCommand = stringCommand.substring(0, (int) stringCommand.indexOf("[param("));
+					stringCommand = stringCommand + " " + finalValue;
+				}
+				{
+					Entity _ent = entity;
+					if (!_ent.level().isClientSide() && _ent.getServer() != null) {
+						_ent.getServer().getCommands().performPrefixedCommand(new CommandSourceStack(CommandSource.NULL, _ent.position(), _ent.getRotationVector(), _ent.level() instanceof ServerLevel ? (ServerLevel) _ent.level() : null, 4,
+								_ent.getName().getString(), _ent.getDisplayName(), _ent.level().getServer(), _ent), stringCommand);
+					}
+				}
+			}
+		}
+	}
+}

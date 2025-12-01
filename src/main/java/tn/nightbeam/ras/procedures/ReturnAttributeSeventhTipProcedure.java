@@ -1,0 +1,9 @@
+package tn.nightbeam.ras.procedures;
+
+import tn.naizo.jauml.JaumlConfigLib;
+
+public class ReturnAttributeSeventhTipProcedure {
+	public static String execute() {
+		return ReturnAttributeSeventhNameProcedure.execute() + "" + JaumlConfigLib.getStringValue("motp/attributes", "attribute_7", "tip_to_display");
+	}
+}

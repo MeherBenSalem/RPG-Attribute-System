@@ -1,9 +1,0 @@
-{
-  "parent": "memory_of_the_past:custom/trophy_1",
-  "textures": {
-    "all": "memory_of_the_past:block/trophy_texture",
-    "particle": "memory_of_the_past:block/trophy_texture",
-    "0": "memory_of_the_past:block/trophy_texture"
-  },
-  "render_type": "solid"
-}

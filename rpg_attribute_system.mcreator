@@ -1,0 +1,4471 @@
+{
+  "mod_elements": [
+    {
+      "name": "OnPlayerSpawn",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic"
+    },
+    {
+      "name": "PlayerStatsGUI",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "player_stats_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/world/inventory/PlayerStatsGUIMenu.java",
+          "src/main/java/tn/nightbeam/ras/network/PlayerStatsGUIButtonMessage.java",
+          "src/main/java/tn/nightbeam/ras/client/gui/PlayerStatsGUIScreen.java"
+        ]
+      },
+      "path": "~/GUI"
+    },
+    {
+      "name": "ReturnCurrentLevel",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_current_level",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentLevelProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "ReturnExtraPoints",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_extra_points",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnExtraPointsProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "WhenPlayerRespawns",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "when_player_respawns",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/WhenPlayerRespawnsProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic"
+    },
+    {
+      "name": "OrbOfLevelingProcedure",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "orb_of_leveling_procedure",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OrbOfLevelingProcedureProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ]
+      },
+      "path": "~/Procedures/Items"
+    },
+    {
+      "name": "CurrentXpToLevel",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "current_xp_to_level",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CurrentXpToLevelProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "LevelOverlay",
+      "type": "overlay",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "level_overlay",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/client/screens/LevelOverlayOverlay.java"
+        ]
+      },
+      "path": "~/GUI"
+    },
+    {
+      "name": "LevelUpProcedure",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "level_up_procedure",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/LevelUpProcedureProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "target",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic"
+    },
+    {
+      "name": "OpenStatsMenu",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "open_stats_menu",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OpenStatsMenuProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ]
+      },
+      "path": "~/Procedures/Keybinds"
+    },
+    {
+      "name": "OpenStatsMenuKeybind",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "open_stats_menu_keybind",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/network/OpenStatsMenuKeybindMessage.java"
+        ]
+      },
+      "path": "~/Keybinds"
+    },
+    {
+      "name": "OnOrbReset",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_orb_reset",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OnOrbResetProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Items"
+    },
+    {
+      "name": "YouHavePoints",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "you_have_points",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/YouHavePointsProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic"
+    },
+    {
+      "name": "DisplayOverlay",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_overlay",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayOverlayProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic"
+    },
+    {
+      "name": "VanillaDropRates",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "vanilla_drop_rates",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/VanillaDropRatesProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ]
+      },
+      "path": "~/Procedures/Drop Logic"
+    },
+    {
+      "name": "DisplayXpOverlay",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_xp_overlay",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayXpOverlayProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic"
+    },
+    {
+      "name": "CheckLevelupRewards",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "check_levelup_rewards",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CheckLevelupRewardsProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "target",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic"
+    },
+    {
+      "name": "GiveLevelsCommand",
+      "type": "command",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "give_levels_command",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/command/GiveLevelsCommandCommand.java"
+        ]
+      },
+      "path": "~/Commands"
+    },
+    {
+      "name": "LevelUpUserCommandProcedure",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "level_up_user_command_procedure",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/LevelUpUserCommandProcedureProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          }
+        ]
+      },
+      "path": "~/Commands"
+    },
+    {
+      "name": "ReturnAttributeOneName",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_one_name",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeOneNameProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeTwoName",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_two_name",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeTwoNameProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeThreeName",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_three_name",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeThreeNameProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeForthName",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_forth_name",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeForthNameProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeFifthName",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_fifth_name",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeFifthNameProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeSixthName",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_sixth_name",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeSixthNameProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeSeventhName",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_seventh_name",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeSeventhNameProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeOneTip",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_one_tip",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeOneTipProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeTwoTip",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_two_tip",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeTwoTipProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeThreeTip",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_three_tip",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeThreeTipProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeForthTip",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_forth_tip",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeForthTipProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeFifthTip",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_fifth_tip",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeFifthTipProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeSixthTip",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_sixth_tip",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeSixthTipProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeSeventhTip",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_seventh_tip",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeSeventhTipProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "GiveXpNoDrop",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "give_xp_no_drop",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/GiveXpNoDropProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "sourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ]
+      },
+      "path": "~/Procedures/Drop Logic"
+    },
+    {
+      "name": "TomeOfRebirthRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "tome_of_rebirth_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/rpg_attribute_system/recipes/tome_of_rebirth_recipe.json"
+        ]
+      },
+      "path": "~/Recipes"
+    },
+    {
+      "name": "ResetPlayerCmd",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "reset_player_cmd",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ResetPlayerCmdProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Commands"
+    },
+    {
+      "name": "AddPointsCmd",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_cmd",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsCmdProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ]
+      },
+      "path": "~/Commands"
+    },
+    {
+      "name": "ReturnNextAttributeOne",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_next_attribute_one",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeOneProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/Next"
+    },
+    {
+      "name": "ReturnCurrentAttributeOne",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_current_attribute_one",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeOneProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "ReturnNextAttributeTwo",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_next_attribute_two",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeTwoProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/Next"
+    },
+    {
+      "name": "ReturnNextAttributeThree",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_next_attribute_three",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeThreeProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/Next"
+    },
+    {
+      "name": "ReturnCurrentAttributeThree",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_current_attribute_three",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeThreeProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "ReturnCurrentAttributeTwo",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_current_attribute_two",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeTwoProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "ReturnNextAttributeForth",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_next_attribute_forth",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeForthProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/Next"
+    },
+    {
+      "name": "ReturnCurrentAttributeForth",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_current_attribute_forth",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeForthProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "ReturnNextAttributeFifth",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_next_attribute_fifth",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeFifthProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/Next"
+    },
+    {
+      "name": "ReturnCurrentAttributeFifth",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_current_attribute_fifth",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeFifthProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "ReturnNextAttributeSixth",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_next_attribute_sixth",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeSixthProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/Next"
+    },
+    {
+      "name": "ReturnNextAttributeSeventh",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_next_attribute_seventh",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeSeventhProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/Next"
+    },
+    {
+      "name": "ReturnCurrentAttributeSixth",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_current_attribute_sixth",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeSixthProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "ReturnCurrentAttributeSeventh",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_current_attribute_seventh",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeSeventhProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "ReturnNextAttributeEight",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_next_attribute_eight",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeEightProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/Next"
+    },
+    {
+      "name": "ReturnNextAttributeNine",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_next_attribute_nine",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeNineProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/Next"
+    },
+    {
+      "name": "ReturnNextAttributeTen",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_next_attribute_ten",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeTenProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/Next"
+    },
+    {
+      "name": "ReturnCurrentAttributeEight",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_current_attribute_eight",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeEightProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "ReturnCurrentAttributeNine",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_current_attribute_nine",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeNineProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "ReturnCurrentAttributeTen",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_current_attribute_ten",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeTenProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "ReturnAttributeEightTip",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_eight_tip",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeEightTipProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeEightName",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_eight_name",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeEightNameProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeNineName",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_nine_name",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeNineNameProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeTenName",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_ten_name",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeTenNameProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeNineTip",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_nine_tip",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeNineTipProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "ReturnAttributeTenTip",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_attribute_ten_tip",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeTenTipProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/Text Logic/AtrributesNames"
+    },
+    {
+      "name": "PlayerAttributesViewerGUI",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "player_attributes_viewer_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/network/PlayerAttributesViewerGUIButtonMessage.java",
+          "src/main/java/tn/nightbeam/ras/client/gui/PlayerAttributesViewerGUIScreen.java",
+          "src/main/java/tn/nightbeam/ras/world/inventory/PlayerAttributesViewerGUIMenu.java"
+        ]
+      },
+      "path": "~/GUI"
+    },
+    {
+      "name": "ReturnSection1Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_1_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection1DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnDisplaySection1",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_1",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection1Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "OpenAttributesDisplayGUI",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "open_attributes_display_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OpenAttributesDisplayGUIProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI"
+    },
+    {
+      "name": "ReturnSection2Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_2_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection2DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnSection3Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_3_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection3DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnSection4Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_4_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection4DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnSection5Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_5_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection5DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnSection6Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_6_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection6DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnSection7Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_7_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection7DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnSection8Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_8_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection8DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnSection9Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_9_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection9DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnSection10Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_10_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection10DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnSection11Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_11_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection11DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnSection12Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_12_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection12DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnSection14Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_14_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection14DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnSection13Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_13_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection13DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnSection15Display",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_section_15_display",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnSection15DisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Text"
+    },
+    {
+      "name": "ReturnDisplaySection2",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_2",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection2Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ReturnDisplaySection3",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_3",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection3Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ReturnDisplaySection4",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_4",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection4Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ReturnDisplaySection5",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_5",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection5Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ReturnDisplaySection6",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_6",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection6Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ReturnDisplaySection7",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_7",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection7Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ReturnDisplaySection8",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_8",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection8Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ReturnDisplaySection9",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_9",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection9Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ReturnDisplaySection10",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_10",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection10Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ReturnDisplaySection11",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_11",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection11Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ReturnDisplaySection12",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_12",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection12Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ReturnDisplaySection13",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_13",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection13Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ReturnDisplaySection14",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_14",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection14Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ReturnDisplaySection15",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_display_section_15",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySection15Procedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ResetGivenPlayer",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "reset_given_player",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ResetGivenPlayerProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          }
+        ]
+      },
+      "path": "~/Commands"
+    },
+    {
+      "name": "GiveXpCmd",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "give_xp_cmd",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/GiveXpCmdProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ]
+      },
+      "path": "~/Commands"
+    },
+    {
+      "name": "GiveXpToPlayer",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "give_xp_to_player",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/GiveXpToPlayerProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          }
+        ]
+      },
+      "path": "~/Commands"
+    },
+    {
+      "name": "GiveAttributesToPlayer",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "give_attributes_to_player",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/GiveAttributesToPlayerProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          }
+        ]
+      },
+      "path": "~/Commands"
+    },
+    {
+      "name": "LevelUpProcedureCmd",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "level_up_procedure_cmd",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/LevelUpProcedureCmdProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          }
+        ]
+      },
+      "path": "~/Commands"
+    },
+    {
+      "name": "SetXpCmd",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "set_xp_cmd",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/SetXpCmdProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ]
+      },
+      "path": "~/Commands"
+    },
+    {
+      "name": "SetXpToPlayer",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "set_xp_to_player",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/SetXpToPlayerProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          }
+        ]
+      },
+      "path": "~/Commands"
+    },
+    {
+      "name": "ItemRequirementsDisplay",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_requirements_display",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ItemRequirementsDisplayProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "itemstack",
+            "type": "itemstack"
+          },
+          {
+            "name": "tooltip",
+            "type": "tooltip"
+          }
+        ]
+      },
+      "path": "~/Procedures/Items/ItemLock"
+    },
+    {
+      "name": "ItemUseLock",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_use_lock",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ItemUseLockProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Items/ItemLock"
+    },
+    {
+      "name": "GiveXpVanilla",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "give_xp_vanilla",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/GiveXpVanillaProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "sourceentity",
+            "type": "entity"
+          },
+          {
+            "name": "droppedexperience",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ]
+      },
+      "path": "~/Procedures/Drop Logic"
+    },
+    {
+      "name": "ReturnGlobalSectionsDisplay",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_global_sections_display",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnGlobalSectionsDisplayProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Procedures/GUI/GetPlayerAttributesDisplay/Return Display Logic"
+    },
+    {
+      "name": "ReturnPercentage",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_percentage",
+      "metadata": {
+        "return_type": "number",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnPercentageProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "IsAt0",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_0",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt0Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt5",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_5",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt5Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt10",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_10",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt10Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt15",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_15",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt15Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt20",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_20",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt20Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt25",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_25",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt25Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt30",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_30",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt30Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt35",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_35",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt35Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt40",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_40",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt40Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt45",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_45",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt45Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt50",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_50",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt50Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt55",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_55",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt55Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt60",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_60",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt60Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt65",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_65",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt65Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt70",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_70",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt70Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt75",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_75",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt75Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt80",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_80",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt80Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt85",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_85",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt85Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt90",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_90",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt90Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt95",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_95",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt95Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "IsAt99",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "is_at_99",
+      "metadata": {
+        "return_type": "logic",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/IsAt99Procedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI/UI Bar"
+    },
+    {
+      "name": "EntityChangesEquipement",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "entity_changes_equipement",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/EntityChangesEquipementProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "to",
+            "type": "itemstack"
+          },
+          {
+            "name": "slot",
+            "type": "string"
+          }
+        ]
+      },
+      "path": "~/Procedures/Items/ItemLock"
+    },
+    {
+      "name": "AddModiferCount",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_modifer_count",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/AddModiferCountProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI"
+    },
+    {
+      "name": "RemoveModiferCount",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "remove_modifer_count",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/RemoveModiferCountProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI"
+    },
+    {
+      "name": "ReturnCurrentModifier",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_current_modifier",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentModifierProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/GUI"
+    },
+    {
+      "name": "PlayerStatsGUIThisGUIIsOpened",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "player_stats_gui_this_gui_is_opened",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/PlayerStatsGUIThisGUIIsOpenedProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/GUI"
+    },
+    {
+      "name": "ReturnExtraPointsUI",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "return_extra_points_ui",
+      "metadata": {
+        "return_type": "string",
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/ReturnExtraPointsUIProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Text Logic/LevelInfo"
+    },
+    {
+      "name": "CreateDropRateConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_drop_rate_config",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDropRateConfigProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Configurations"
+    },
+    {
+      "name": "CreateItemsLockConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_items_lock_config",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateItemsLockConfigProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Configurations"
+    },
+    {
+      "name": "DisableBlockPlacement",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "disable_block_placement",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisableBlockPlacementProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "blockstate",
+            "type": "blockstate"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Items/ItemLock"
+    },
+    {
+      "name": "DisableBlockBreak",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "disable_block_break",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisableBlockBreakProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "blockstate",
+            "type": "blockstate"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Items/ItemLock"
+    },
+    {
+      "name": "DisableEntityAttack",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "disable_entity_attack",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisableEntityAttackProcedure.java"
+        ],
+        "dependencies": [
+          {
+            "name": "sourceentity",
+            "type": "entity"
+          }
+        ]
+      },
+      "path": "~/Procedures/Items/ItemLock"
+    },
+    {
+      "name": "CreateLevelUpRewardsConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_level_up_rewards_config",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateLevelUpRewardsConfigProcedure.java"
+        ],
+        "dependencies": []
+      },
+      "path": "~/Configurations"
+    },
+    {
+      "name": "CreateAttributesConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultOneConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_one_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultOneConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultTwoConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_two_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultTwoConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultThreeConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_three_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultThreeConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultForthConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_forth_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultForthConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultFifthConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_fifth_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultFifthConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultSixthConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_sixth_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultSixthConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultSeventhConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_seventh_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultSeventhConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute1",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_1",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute1Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute2",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_2",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute2Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute3",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_3",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute3Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute4",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_4",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute4Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute5",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_5",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute5Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute6",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_6",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute6Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute7",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_7",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute7Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute8",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_8",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute8Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute9",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_9",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute9Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "OnPlayerSpawnAttribute10",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "on_player_spawn_attribute_10",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttribute10Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Attributes"
+    },
+    {
+      "name": "CreateDefaultEiightConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_eiight_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultEiightConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultNineConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_nine_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultNineConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "CreateDefaultTenConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_default_ten_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateDefaultTenConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Attributes Config"
+    },
+    {
+      "name": "AddPointsAttribute1",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_1",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute1Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute2",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_2",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute2Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute3",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_3",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute3Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute4",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_4",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute4Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute5",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_5",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute5Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute6",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_6",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute6Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute7",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_7",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute7Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute8",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_8",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute8Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute9",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_9",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute9Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "AddPointsAttribute10",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "add_points_attribute_10",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/AddPointsAttribute10Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Add Points"
+    },
+    {
+      "name": "DisplayLogicAttribute1",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_1",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute1Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute2",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_2",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute2Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute3",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_3",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute3Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute4",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_4",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute4Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute5",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_5",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute5Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute6",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_6",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute6Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute7",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_7",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute7Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute8",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_8",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute8Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute9",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_9",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute9Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicAttribute10",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_attribute_10",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttribute10Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "CreateAttributesDisplayConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayOneConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_one_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayOneConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayTwoConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_two_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayTwoConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayThreeConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_three_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayThreeConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayForthConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_forth_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayForthConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayFifthConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_fifth_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayFifthConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplaySixthConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_sixth_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplaySixthConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplaySeventhConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_seventh_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplaySeventhConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayEigthConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_eigth_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayEigthConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayNineConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_nine_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayNineConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayTenConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_ten_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayTenConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayElevenConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_eleven_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayElevenConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayTwelveConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_twelve_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayTwelveConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayThirteenConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_thirteen_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayThirteenConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayFourteenConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_fourteen_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayFourteenConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateAttributesDisplayFifteenConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_attributes_display_fifteen_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateAttributesDisplayFifteenConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations/Display"
+    },
+    {
+      "name": "CreateGlobalConfig",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "create_global_config",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CreateGlobalConfigProcedure.java"
+        ]
+      },
+      "path": "~/Configurations"
+    },
+    {
+      "name": "DisplayLogicLockAttribute1",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_1",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute1Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute2",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_2",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute2Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute3",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_3",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute3Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute4",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_4",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute4Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute5",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_5",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute5Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute6",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_6",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute6Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute7",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_7",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute7Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute8",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_8",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute8Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute9",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_9",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute9Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "DisplayLogicLockAttribute10",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_lock_attribute_10",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttribute10Procedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic/Display Leveling Logics"
+    },
+    {
+      "name": "PressToGetKeyBindName",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "press_to_get_key_bind_name",
+      "metadata": {
+        "return_type": "string",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/PressToGetKeyBindNameProcedure.java"
+        ]
+      },
+      "path": "~/Procedures/Keybinds"
+    },
+    {
+      "name": "DisplayLogicKeybindOverlay",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "display_logic_keybind_overlay",
+      "metadata": {
+        "return_type": "logic",
+        "dependencies": [],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/DisplayLogicKeybindOverlayProcedure.java"
+        ]
+      },
+      "path": "~/Procedures/GUI"
+    },
+    {
+      "name": "TomeOfAscension",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "tome_of_ascension",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/rpg_attribute_system/models/item/tome_of_ascension.json",
+          "src/main/java/tn/nightbeam/ras/item/TomeOfAscensionItem.java"
+        ]
+      },
+      "path": "~/Items"
+    },
+    {
+      "name": "ScrollOfRebirth",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scroll_of_rebirth",
+      "metadata": {
+        "files": [
+          "src/main/java/tn/nightbeam/ras/item/ScrollOfRebirthItem.java",
+          "src/main/resources/assets/rpg_attribute_system/models/item/scroll_of_rebirth.json"
+        ]
+      },
+      "path": "~/Items"
+    },
+    {
+      "name": "RASCreativeTab",
+      "type": "tab",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "ras_creative_tab",
+      "metadata": {
+        "files": []
+      }
+    },
+    {
+      "name": "RPGLevel",
+      "type": "attribute",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "rpg_level",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/Attributes"
+    },
+    {
+      "name": "Attribute1",
+      "type": "attribute",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "attribute_1",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/Attributes"
+    },
+    {
+      "name": "Attribute2",
+      "type": "attribute",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "attribute_2",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/Attributes"
+    },
+    {
+      "name": "Attribute3",
+      "type": "attribute",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "attribute_3",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/Attributes"
+    },
+    {
+      "name": "Attribute4",
+      "type": "attribute",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "attribute_4",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/Attributes"
+    },
+    {
+      "name": "Attribute5",
+      "type": "attribute",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "attribute_5",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/Attributes"
+    },
+    {
+      "name": "Attribute6",
+      "type": "attribute",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "attribute_6",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/Attributes"
+    },
+    {
+      "name": "Attribute7",
+      "type": "attribute",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "attribute_7",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/Attributes"
+    },
+    {
+      "name": "Attribute8",
+      "type": "attribute",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "attribute_8",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/Attributes"
+    },
+    {
+      "name": "Attribute9",
+      "type": "attribute",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "attribute_9",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/Attributes"
+    },
+    {
+      "name": "Attribute10",
+      "type": "attribute",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "attribute_10",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/Attributes"
+    },
+    {
+      "name": "CheckAttributesInit",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "check_attributes_init",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/CheckAttributesInitProcedure.java"
+        ]
+      },
+      "path": "~/Procedures/Leveling Logic"
+    },
+    {
+      "name": "UnlockAttribute",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "unlock_attribute",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/UnlockAttributeProcedure.java"
+        ]
+      },
+      "path": "~/Commands"
+    },
+    {
+      "name": "LockAttribute",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "lock_attribute",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          },
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/LockAttributeProcedure.java"
+        ]
+      },
+      "path": "~/Commands"
+    },
+    {
+      "name": "UnlockAttributeTarget",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "unlock_attribute_target",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/UnlockAttributeTargetProcedure.java"
+        ]
+      },
+      "path": "~/Commands"
+    },
+    {
+      "name": "LockAttributeTarget",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "lock_attribute_target",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "arguments",
+            "type": "cmdcontext"
+          }
+        ],
+        "files": [
+          "src/main/java/tn/nightbeam/ras/procedures/LockAttributeTargetProcedure.java"
+        ]
+      },
+      "path": "~/Commands"
+    }
+  ],
+  "variable_elements": [
+    {
+      "name": "attribute_1",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "20.0"
+    },
+    {
+      "name": "attribute_6",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0.0"
+    },
+    {
+      "name": "attribute_5",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0.1"
+    },
+    {
+      "name": "attribute_2",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "2.0"
+    },
+    {
+      "name": "attribute_4",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "attribute_3",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "4.0"
+    },
+    {
+      "name": "Level",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "SparePoints",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "1.0"
+    },
+    {
+      "name": "currentXpTLevel",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0.0"
+    },
+    {
+      "name": "nextevelXp",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "100.0"
+    },
+    {
+      "name": "attribute_7",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0.0"
+    },
+    {
+      "name": "attribute_8",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "attribute_9",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "attribute_10",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "0"
+    },
+    {
+      "name": "modifier",
+      "type": "number",
+      "scope": "player_persistent",
+      "value": "1.0"
+    },
+    {
+      "name": "counter",
+      "type": "number",
+      "scope": "global",
+      "value": "0"
+    }
+  ],
+  "sound_elements": [],
+  "tag_elements": {},
+  "tab_element_order": {},
+  "language_map": {
+    "en_us": {
+      "key.memory_of_the_past.next_value": "Next value is : ",
+      "key.categories.ras": "Memory Of The Past",
+      "gui.rpg_attribute_system.player_stats_gui.label_available_points": "Available Points:",
+      "gui.rpg_attribute_system.player_stats_gui.label_level": "Level",
+      "gui.rpg_attribute_system.player_stats_gui.tooltip_indicates_the_number_of_points_y": "§7Indicates the number of points you can allocate to improve your stats",
+      "gui.rpg_attribute_system.player_stats_gui.tooltip_represents_your_overall_progress": "§7Represents your overall progress and power",
+      "key.rpg_attribute_system.open_stats_menu_keybind": "Open Stats Menu",
+      "gui.rpg_attribute_system.player_attributes_viewer_gui.label_available_points": "Available Points:",
+      "gui.rpg_attribute_system.player_attributes_viewer_gui.label_level": "Level :",
+      "gui.rpg_attribute_system.player_attributes_viewer_gui.tooltip_represents_your_overall_progress": "§7Represents your overall progress and power",
+      "gui.rpg_attribute_system.player_attributes_viewer_gui.tooltip_indicates_the_number_of_points_y": "§7Indicates the number of points you can allocate to improve your stats",
+      "item.rpg_attribute_system.tome_of_ascension": "Tome of Ascension",
+      "item.rpg_attribute_system.tome_of_ascension.description_0": "§6Harness the power within this tome to §aascend §eyour level.",
+      "item.rpg_attribute_system.scroll_of_rebirth": "Scroll of Rebirth",
+      "item.rpg_attribute_system.scroll_of_rebirth.description_0": "§eA mystical scroll that gently§b resets §eyour points, allowing you to start anew.",
+      "item_group.rpg_attribute_system.ras_creative_tab": "RPG Attribute System",
+      "attribute.rpg_attribute_system.rpg_level": "RPGLevel",
+      "subtitles.page_open": "page_open_sfx",
+      "attribute.rpg_attribute_system.attribute_1": "Attribute1",
+      "attribute.rpg_attribute_system.attribute_2": "Attribute2",
+      "attribute.rpg_attribute_system.attribute_3": "Attribute3",
+      "attribute.rpg_attribute_system.attribute_4": "Attribute4",
+      "attribute.rpg_attribute_system.attribute_5": "Attribute5",
+      "attribute.rpg_attribute_system.attribute_6": "Attribute6",
+      "attribute.rpg_attribute_system.attribute_7": "Attribute7",
+      "attribute.rpg_attribute_system.attribute_8": "Attribute8",
+      "attribute.rpg_attribute_system.attribute_9": "Attribute9",
+      "attribute.rpg_attribute_system.attribute_10": "Attribute10"
+    }
+  },
+  "metadata": {
+    "files": [
+      "src/main/java/tn/nightbeam/ras/network/RpgAttributeSystemModVariables.java",
+      "src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModTabs.java",
+      "src/main/java/tn/nightbeam/ras/RpgAttributeSystemMod.java",
+      "src/main/resources/META-INF/mods.toml",
+      "src/main/resources/pack.mcmeta",
+      "src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModAttributes.java",
+      "src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModScreens.java",
+      "src/main/java/tn/nightbeam/ras/network/MenuStateUpdateMessage.java",
+      "src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModMenus.java",
+      "src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModKeyMappings.java",
+      "src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModItems.java"
+    ]
+  },
+  "foldersRoot": {
+    "name": "~",
+    "children": [
+      {
+        "name": "GUI",
+        "children": []
+      },
+      {
+        "name": "Items",
+        "children": []
+      },
+      {
+        "name": "Keybinds",
+        "children": []
+      },
+      {
+        "name": "Procedures",
+        "children": [
+          {
+            "name": "Text Logic",
+            "children": [
+              {
+                "name": "Next",
+                "children": []
+              },
+              {
+                "name": "LevelInfo",
+                "children": []
+              },
+              {
+                "name": "AtrributesNames",
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "Leveling Logic",
+            "children": [
+              {
+                "name": "Display Leveling Logics",
+                "children": []
+              },
+              {
+                "name": "Add Points",
+                "children": []
+              },
+              {
+                "name": "Attributes",
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "Drop Logic",
+            "children": []
+          },
+          {
+            "name": "GUI",
+            "children": [
+              {
+                "name": "GetPlayerAttributesDisplay",
+                "children": [
+                  {
+                    "name": "Return Text",
+                    "children": []
+                  },
+                  {
+                    "name": "Return Display Logic",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "name": "UI Bar",
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "Keybinds",
+            "children": []
+          },
+          {
+            "name": "Items",
+            "children": [
+              {
+                "name": "ItemLock",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Configurations",
+        "children": [
+          {
+            "name": "Attributes Config",
+            "children": []
+          },
+          {
+            "name": "Display",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "Commands",
+        "children": []
+      },
+      {
+        "name": "Recipes",
+        "children": []
+      },
+      {
+        "name": "Attributes",
+        "children": []
+      }
+    ]
+  },
+  "workspaceSettings": {
+    "modid": "rpg_attribute_system",
+    "modName": "RPG Attribute System",
+    "version": "2.0.0",
+    "description": "A lightweight RPG-style system that scales player attributes based on level.",
+    "author": "NAIZO",
+    "websiteURL": "https://www.nightbeam.cloud",
+    "license": "All Rights Reserved",
+    "serverSideOnly": false,
+    "modPicture": "logo",
+    "requiredMods": [
+      "jauml"
+    ],
+    "dependencies": [],
+    "dependants": [],
+    "mcreatorDependencies": [
+      "jauml"
+    ],
+    "currentGenerator": "forge-1.20.1",
+    "credits": "thank you : @porogulaemeo",
+    "modElementsPackage": "tn.nightbeam.ras"
+  },
+  "mcreatorVersion": 202500228610
+}
