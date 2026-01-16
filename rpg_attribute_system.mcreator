@@ -4307,7 +4307,8 @@
       "attribute.rpg_attribute_system.attribute_7": "Attribute7",
       "attribute.rpg_attribute_system.attribute_8": "Attribute8",
       "attribute.rpg_attribute_system.attribute_9": "Attribute9",
-      "attribute.rpg_attribute_system.attribute_10": "Attribute10"
+      "attribute.rpg_attribute_system.attribute_10": "Attribute10",
+      "itemGroup.rpg_attribute_system.ras_creative_tab": "RPG Attribute System"
     }
   },
   "metadata": {
@@ -4448,7 +4449,7 @@
   "workspaceSettings": {
     "modid": "rpg_attribute_system",
     "modName": "RPG Attribute System",
-    "version": "2.0.0",
+    "version": "2.0.0hf",
     "description": "A lightweight RPG-style system that scales player attributes based on level.",
     "author": "NAIZO",
     "websiteURL": "https://www.nightbeam.cloud",
