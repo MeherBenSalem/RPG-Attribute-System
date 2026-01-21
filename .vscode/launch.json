@@ -4,44 +4,72 @@
     {
       "type": "java",
       "request": "launch",
-      "name": "Client",
+      "name": "forge - Client",
       "presentation": {
-        "group": "Mod Development - motp",
+        "group": "Mod Development - forge",
         "order": 0
       },
-      "projectName": "motp",
+      "projectName": "forge",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@E:\\Minecraft\\My Mods\\motp\\build\\moddev\\clientRunProgramArgs.txt"
+        "@D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\build\\moddev\\clientRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@E:\\Minecraft\\My Mods\\motp\\build\\moddev\\clientRunVmArgs.txt",
-        "-Dfml.modFolders\u003dmcreator%%E:\\Minecraft\\My Mods\\motp\\bin\\main"
+        "@D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003drpg_attribute_system%%D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\bin\\main"
       ],
-      "cwd": "${workspaceFolder}\\run",
-      "env": {},
+      "cwd": "${workspaceFolder}\\forge\\run",
+      "env": {
+        "MOD_CLASSES": "rpg_attribute_system%%D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\bin\\main"
+      },
       "console": "internalConsole",
       "shortenCommandLine": "none"
     },
     {
       "type": "java",
       "request": "launch",
-      "name": "Server",
+      "name": "forge - Data",
       "presentation": {
-        "group": "Mod Development - motp",
+        "group": "Mod Development - forge",
         "order": 1
       },
-      "projectName": "motp",
+      "projectName": "forge",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@E:\\Minecraft\\My Mods\\motp\\build\\moddev\\serverRunProgramArgs.txt"
+        "@D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\build\\moddev\\dataRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@E:\\Minecraft\\My Mods\\motp\\build\\moddev\\serverRunVmArgs.txt",
-        "-Dfml.modFolders\u003dmcreator%%E:\\Minecraft\\My Mods\\motp\\bin\\main"
+        "@D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\build\\moddev\\dataRunVmArgs.txt",
+        "-Dfml.modFolders\u003drpg_attribute_system%%D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\bin\\main"
       ],
-      "cwd": "${workspaceFolder}\\run",
-      "env": {},
+      "cwd": "${workspaceFolder}\\forge\\run",
+      "env": {
+        "MOD_CLASSES": "rpg_attribute_system%%D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "forge - Server",
+      "presentation": {
+        "group": "Mod Development - forge",
+        "order": 2
+      },
+      "projectName": "forge",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\build\\moddev\\serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003drpg_attribute_system%%D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\forge\\run",
+      "env": {
+        "MOD_CLASSES": "rpg_attribute_system%%D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\bin\\main"
+      },
       "console": "internalConsole",
       "shortenCommandLine": "none"
     }

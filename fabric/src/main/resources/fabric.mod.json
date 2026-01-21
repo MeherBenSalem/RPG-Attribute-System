@@ -1,0 +1,37 @@
+{
+    "schemaVersion": 1,
+    "id": "rpg_attribute_system",
+    "version": "${version}",
+    "name": "${mod_name}",
+    "description": "${description}",
+    "authors": [
+        "${mod_author}"
+    ],
+    "contact": {
+        "homepage": "https://www.nightbeam.cloud/",
+        "sources": "https://github.com/Start-Step-Studios/RPG-Attribute-System"
+    },
+    "license": "${license}",
+    "icon": "assets/rpg_attribute_system/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "tn.nightbeam.ras.RpgAttributeSystemModFabric"
+        ],
+        "client": [
+            "tn.nightbeam.ras.RpgAttributeSystemModFabricClient"
+        ]
+    },
+    "mixins": [
+        "rpg_attribute_system.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.14",
+        "fabric": "*",
+        "minecraft": "${minecraft_version}",
+        "java": ">=17"
+    },
+    "suggests": {
+        "another-mod": "*"
+    }
+}

@@ -1,12 +1,61 @@
+# Gradle
+.gradle/
+build/
+**/build/
+out/
+
+# Gradle outputs
+# Ignore gradle.properties ONLY if it contains secrets. 
+# Usually it contains version info and SHOULD be committed.
+# gradle.properties
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# IDE - VS Code
+.vscode/
+*.code-workspace
+
+# IDE - Eclipse
+.settings/
+.classpath
+.project
+bin/
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Minecraft/Loom Run Directories
+run/
+run-*/
+runs/
+logs/
+crash-reports/
+debug.log*
+latest.log
+
+# Fabric & Loader Caches
+.fabric/
+.mixin.out
+.accesswidener
+
+# MCreator Workspace Files (If applicable)
+.mcreator/
 memory_of_the_past.mcreator
-.gradle
-.mcreator
-.eclipse
-.settings
-bin
-elements
-run
-runs
+elements/
 mcreator.gradle
-/build/
-**/build
+
+# Temporary & Backups
+*.bak
+*.tmp
+*.log
