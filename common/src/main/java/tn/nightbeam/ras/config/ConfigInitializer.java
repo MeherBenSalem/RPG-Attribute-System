@@ -5,6 +5,11 @@ import tn.nightbeam.ras.platform.Services;
 public class ConfigInitializer {
 
     public static void init() {
+        tn.nightbeam.ras.Constants.LOG.info("[RAS] ConfigInitializer.init() - Starting config initialization");
+        tn.nightbeam.ras.Constants.LOG.info("[RAS] Config service implementation: {}",
+                Services.CONFIG.getClass().getName());
+        tn.nightbeam.ras.Constants.LOG.info("[RAS] Config directory: {}", Services.CONFIG.getConfigDirectory());
+
         createGlobalSettings();
         createAttributeSettings();
         createDefaultAttributes();
@@ -14,6 +19,8 @@ public class ConfigInitializer {
         createAttributesDisplayConfig();
         createDisplaySettings();
         createOverlayConfig();
+
+        tn.nightbeam.ras.Constants.LOG.info("[RAS] ConfigInitializer.init() - Config initialization complete");
     }
 
     private static void createGlobalSettings() {

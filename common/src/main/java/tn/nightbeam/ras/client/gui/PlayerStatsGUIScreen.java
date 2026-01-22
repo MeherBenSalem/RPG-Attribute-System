@@ -24,7 +24,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.stream.Collectors;
@@ -47,11 +46,11 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     private static final int BASE_Y = 22;
 
     // Utility Buttons
-    ImageButton imagebutton_button_for_stats;
-    ImageButton imagebutton_button_left;
-    ImageButton imagebutton_button_right;
-    ImageButton imagebutton_page_prev;
-    ImageButton imagebutton_page_next;
+    LegacyImageButton imagebutton_button_for_stats;
+    LegacyImageButton imagebutton_button_left;
+    LegacyImageButton imagebutton_button_right;
+    LegacyImageButton imagebutton_page_prev;
+    LegacyImageButton imagebutton_page_next;
 
     public PlayerStatsGUIScreen(PlayerStatsGUIMenu container, Inventory inventory, Component text) {
         super(container, inventory, text);
@@ -59,7 +58,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         this.x = container.x;
         this.y = container.y;
         this.z = container.z;
-        this.entity = container.entity;
+        this.entity = inventory.player;
         this.imageWidth = 234;
         this.imageHeight = 166;
     }
@@ -115,7 +114,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         boolean customTooltipShown = false;
 
@@ -186,7 +185,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         RenderSystem.defaultBlendFunc();
 
         // Main background
-        guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg.png"), this.leftPos + -61,
+        guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg.png"), this.leftPos + -61,
                 this.topPos + -21, 0, 0, 350, 210, 350, 210);
 
         // Dynamic attribute backgrounds (only for visible page)
@@ -207,13 +206,13 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
 
             // Attribute background (show for both locked and unlocked)
             if (isUnlocked || isLocked) {
-                guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+                guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                         this.leftPos + getAttrBgX(col), bgY, 0, 0, 97, 30, 97, 30);
             }
 
             // Icon background (show for both)
             if (isUnlocked || isLocked) {
-                guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/iconbg.png"),
+                guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/iconbg.png"),
                         this.leftPos + getIconBgX(col), iconBgY, 0, 0, 24, 24, 24, 24);
             }
 
@@ -225,7 +224,8 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
 
             // Locked overlay (draw on top)
             if (isLocked) {
-                guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes_locked.png"),
+                guiGraphics.blit(
+                        ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes_locked.png"),
                         this.leftPos + getAttrBgX(col), bgY, 0, 0, 97, 30, 97, 30);
             }
         }
@@ -234,7 +234,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         double percentage = ReturnPercentageProcedure.execute(entity);
         int barWidth = (int) Math.round((percentage / 100.0) * 80);
         if (barWidth > 0) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/ui_bar_99.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/ui_bar_99.png"),
                     this.leftPos + -46, this.topPos + -1, 0, 0, barWidth, 12, 80, 12);
         }
 
@@ -244,7 +244,8 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     @Override
     public boolean keyPressed(int key, int b, int c) {
         if (key == 256) {
-            this.minecraft.player.closeContainer();
+            if (this.minecraft != null && this.minecraft.player != null)
+                this.minecraft.player.closeContainer();
             return true;
         }
         return super.keyPressed(key, b, c);
@@ -293,8 +294,28 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     }
 
     @Override
+    public void setMenuStateUpdateActive(boolean active) {
+        this.menuStateUpdateActive = active;
+    }
+
+    @Override
+    public boolean isMenuStateUpdateActive() {
+        return this.menuStateUpdateActive;
+    }
+
+    @Override
     public void init() {
         super.init();
+
+        // Texture ResourceLocations for buttons
+        ResourceLocation buttonNotclicked = ResourceLocation
+                .tryParse("rpg_attribute_system:textures/screens/atlas/imagebutton_button_notclicked.png");
+        ResourceLocation buttonStats = ResourceLocation
+                .tryParse("rpg_attribute_system:textures/screens/atlas/imagebutton_button_for_stats.png");
+        ResourceLocation buttonLeft = ResourceLocation
+                .tryParse("rpg_attribute_system:textures/screens/atlas/imagebutton_button_left.png");
+        ResourceLocation buttonRight = ResourceLocation
+                .tryParse("rpg_attribute_system:textures/screens/atlas/imagebutton_button_right.png");
 
         // Dynamic Attribute Buttons - ONLY for current page, skip locked attributes
         List<String> visible = getVisibleAttributes();
@@ -313,10 +334,9 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
             int buttonX = getButtonX(col);
             int buttonY = BASE_Y + (row * ROW_HEIGHT) + 9;
 
-            ImageButton attrButton = new ImageButton(this.leftPos + buttonX, this.topPos + buttonY, 16, 14, 0, 0, 14,
-                    new ResourceLocation(
-                            "rpg_attribute_system:textures/screens/atlas/imagebutton_button_notclicked.png"),
-                    16, 28,
+            LegacyImageButton attrButton = new LegacyImageButton(
+                    this.leftPos + buttonX, this.topPos + buttonY, 16, 14,
+                    0, 0, 14, buttonNotclicked, 16, 28,
                     e -> {
                         int px = PlayerStatsGUIScreen.this.x;
                         int py = PlayerStatsGUIScreen.this.y;
@@ -329,9 +349,10 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         }
 
         // Stats Button
-        imagebutton_button_for_stats = new ImageButton(this.leftPos + -74, this.topPos + -4, 13, 13, 0, 0, 13,
-                new ResourceLocation("rpg_attribute_system:textures/screens/atlas/imagebutton_button_for_stats.png"),
-                13, 26, e -> {
+        imagebutton_button_for_stats = new LegacyImageButton(
+                this.leftPos + -74, this.topPos + -4, 13, 13,
+                0, 0, 13, buttonStats, 13, 26,
+                e -> {
                     int x = PlayerStatsGUIScreen.this.x;
                     int y = PlayerStatsGUIScreen.this.y;
                     if (ReturnGlobalSectionsDisplayProcedure.execute()) {
@@ -341,8 +362,9 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         this.addRenderableWidget(imagebutton_button_for_stats);
 
         // Modifier Buttons
-        imagebutton_button_left = new ImageButton(this.leftPos + 251, this.topPos + 14, 6, 8, 0, 0, 8,
-                new ResourceLocation("rpg_attribute_system:textures/screens/atlas/imagebutton_button_left.png"), 6, 16,
+        imagebutton_button_left = new LegacyImageButton(
+                this.leftPos + 251, this.topPos + 14, 6, 8,
+                0, 0, 8, buttonLeft, 6, 16,
                 e -> {
                     int x = PlayerStatsGUIScreen.this.x;
                     int y = PlayerStatsGUIScreen.this.y;
@@ -350,8 +372,9 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
                 });
         this.addRenderableWidget(imagebutton_button_left);
 
-        imagebutton_button_right = new ImageButton(this.leftPos + 272, this.topPos + 14, 6, 8, 0, 0, 8,
-                new ResourceLocation("rpg_attribute_system:textures/screens/atlas/imagebutton_button_right.png"), 6, 16,
+        imagebutton_button_right = new LegacyImageButton(
+                this.leftPos + 272, this.topPos + 14, 6, 8,
+                0, 0, 8, buttonRight, 6, 16,
                 e -> {
                     int x = PlayerStatsGUIScreen.this.x;
                     int y = PlayerStatsGUIScreen.this.y;
@@ -362,9 +385,9 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         // Pagination Buttons (smaller, closer to text, only show if needed)
         if (getTotalPages() > 1) {
             // Previous Page - smaller button (6x8), closer to text
-            imagebutton_page_prev = new ImageButton(this.leftPos + 90, this.topPos + 175, 6, 8, 0, 0, 8,
-                    new ResourceLocation("rpg_attribute_system:textures/screens/atlas/imagebutton_button_left.png"), 6,
-                    16,
+            imagebutton_page_prev = new LegacyImageButton(
+                    this.leftPos + 90, this.topPos + 175, 6, 8,
+                    0, 0, 8, buttonLeft, 6, 16,
                     e -> {
                         if (currentPage > 0) {
                             currentPage--;
@@ -374,9 +397,9 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
             this.addRenderableWidget(imagebutton_page_prev);
 
             // Next Page - smaller button (6x8), offset to right
-            imagebutton_page_next = new ImageButton(this.leftPos + 120, this.topPos + 175, 6, 8, 0, 0, 8,
-                    new ResourceLocation("rpg_attribute_system:textures/screens/atlas/imagebutton_button_right.png"), 6,
-                    16,
+            imagebutton_page_next = new LegacyImageButton(
+                    this.leftPos + 120, this.topPos + 175, 6, 8,
+                    0, 0, 8, buttonRight, 6, 16,
                     e -> {
                         if (currentPage < getTotalPages() - 1) {
                             currentPage++;

@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.GuiGraphics;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -27,7 +26,7 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
     private final int x, y, z;
     private final Player entity;
     private boolean menuStateUpdateActive = false;
-    ImageButton imagebutton_button_for_combat;
+    LegacyImageButton imagebutton_button_for_combat;
 
     public PlayerAttributesViewerGUIScreen(PlayerAttributesViewerGUIMenu container, Inventory inventory,
             Component text) {
@@ -48,8 +47,18 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
     }
 
     @Override
+    public void setMenuStateUpdateActive(boolean active) {
+        this.menuStateUpdateActive = active;
+    }
+
+    @Override
+    public boolean isMenuStateUpdateActive() {
+        return this.menuStateUpdateActive;
+    }
+
+    @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         boolean customTooltipShown = false;
         if (mouseX > leftPos + -34 && mouseX < leftPos + 5 && mouseY > topPos + -3 && mouseY < topPos + 8) {
@@ -73,66 +82,66 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg2.png"), this.leftPos + -61,
+        guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg2.png"), this.leftPos + -61,
                 this.topPos + -21, 0, 0, 350, 210, 350, 210);
         if (ReturnDisplaySectionGenericProcedure.execute(1)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + -36, this.topPos + 14, 0, 0, 97, 30, 97, 30);
         }
         if (ReturnDisplaySectionGenericProcedure.execute(2)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + 71, this.topPos + 14, 0, 0, 97, 30, 97, 30);
         }
         if (ReturnDisplaySectionGenericProcedure.execute(3)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + 179, this.topPos + 14, 0, 0, 97, 30, 97, 30);
         }
         if (ReturnDisplaySectionGenericProcedure.execute(4)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + -36, this.topPos + 47, 0, 0, 97, 30, 97, 30);
         }
         if (ReturnDisplaySectionGenericProcedure.execute(5)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + 71, this.topPos + 47, 0, 0, 97, 30, 97, 30);
         }
         if (ReturnDisplaySectionGenericProcedure.execute(6)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + 179, this.topPos + 47, 0, 0, 97, 30, 97, 30);
         }
         if (ReturnDisplaySectionGenericProcedure.execute(7)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + -36, this.topPos + 79, 0, 0, 97, 30, 97, 30);
         }
         if (ReturnDisplaySectionGenericProcedure.execute(8)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + 71, this.topPos + 79, 0, 0, 97, 30, 97, 30);
         }
         if (ReturnDisplaySectionGenericProcedure.execute(9)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + 179, this.topPos + 79, 0, 0, 97, 30, 97, 30);
         }
         if (ReturnDisplaySectionGenericProcedure.execute(10)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + -36, this.topPos + 112, 0, 0, 97, 30, 97, 30);
         }
         if (ReturnDisplaySectionGenericProcedure.execute(11)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + 71, this.topPos + 112, 0, 0, 97, 30, 97, 30);
         }
         if (ReturnDisplaySectionGenericProcedure.execute(12)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + 179, this.topPos + 112, 0, 0, 97, 30, 97, 30);
         }
         if (ReturnDisplaySectionGenericProcedure.execute(13)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + -36, this.topPos + 144, 0, 0, 97, 30, 97, 30);
         }
         if (ReturnDisplaySectionGenericProcedure.execute(14)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + 71, this.topPos + 144, 0, 0, 97, 30, 97, 30);
         }
         if (ReturnDisplaySectionGenericProcedure.execute(15)) {
-            guiGraphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bg_attributes.png"),
+            guiGraphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bg_attributes.png"),
                     this.leftPos + 179, this.topPos + 144, 0, 0, 97, 30, 97, 30);
         }
         RenderSystem.disableBlend();
@@ -207,9 +216,14 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
     @Override
     public void init() {
         super.init();
-        imagebutton_button_for_combat = new ImageButton(this.leftPos + -74, this.topPos + 14, 13, 13, 0, 0, 13,
-                new ResourceLocation("rpg_attribute_system:textures/screens/atlas/imagebutton_button_for_combat.png"),
-                13, 26, e -> {
+        // Texture ResourceLocation
+        ResourceLocation buttonCombat = ResourceLocation
+                .tryParse("rpg_attribute_system:textures/screens/atlas/imagebutton_button_for_combat.png");
+
+        imagebutton_button_for_combat = new LegacyImageButton(
+                this.leftPos + -74, this.topPos + 14, 13, 13,
+                0, 0, 13, buttonCombat, 13, 26,
+                e -> {
                     int x = PlayerAttributesViewerGUIScreen.this.x;
                     int y = PlayerAttributesViewerGUIScreen.this.y;
                     if (true) {

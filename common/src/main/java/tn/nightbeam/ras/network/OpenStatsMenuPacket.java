@@ -7,7 +7,8 @@ import tn.nightbeam.ras.RpgAttributeSystemMod;
 import tn.nightbeam.ras.procedures.OpenStatsMenuProcedure;
 
 public class OpenStatsMenuPacket {
-    public static final ResourceLocation ID = new ResourceLocation(RpgAttributeSystemMod.MOD_ID, "open_stats_menu");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID,
+            "open_stats_menu");
 
     public OpenStatsMenuPacket() {
     }

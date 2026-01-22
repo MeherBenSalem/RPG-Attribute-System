@@ -72,6 +72,7 @@ public class LevelUpProcedureProcedure {
             }
             {
                 PlayerVariables vars = Services.PLATFORM.getPlayerVariables(target);
+                vars.Level = vars.Level + 1;
                 vars.SparePoints = vars.SparePoints
                         + Services.CONFIG.getNumberValue("ras", "settings", "points_per_level");
                 Services.PLATFORM.syncPlayerVariables(vars, target);

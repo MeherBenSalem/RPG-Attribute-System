@@ -53,6 +53,19 @@ public class PlayerAttributesViewerGUIMenu extends AbstractContainerMenu impleme
         }
     }
 
+    // Constructor for Fabric 1.21.x ExtendedScreenHandlerType
+    public PlayerAttributesViewerGUIMenu(int id, Inventory inv, BlockPos pos) {
+        super(RpgAttributeSystemModMenus.PLAYER_ATTRIBUTES_VIEWER_GUI.get(), id);
+        this.entity = inv.player;
+        this.world = inv.player.level();
+        if (pos != null) {
+            this.x = pos.getX();
+            this.y = pos.getY();
+            this.z = pos.getZ();
+            access = ContainerLevelAccess.create(world, pos);
+        }
+    }
+
     @Override
     public boolean stillValid(Player player) {
         if (this.bound) {
