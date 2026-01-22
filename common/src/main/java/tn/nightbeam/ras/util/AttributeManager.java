@@ -26,15 +26,12 @@ public class AttributeManager {
             double maxLvl = Services.CONFIG.getNumberValue("ras/attributes", filename, "max_level");
             boolean locked = Services.CONFIG.getBooleanValue("ras/attributes", filename, "lock");
             String icon = Services.CONFIG.getStringValue("ras/attributes", filename, "icon_path");
-            String displayName = Services.CONFIG.getStringValue("ras/attributes", filename, "display_name");
 
             tn.nightbeam.ras.config.AttributeData data = tn.nightbeam.ras.config.AttributeData.fromConfig(id, baseInc,
-                    maxLvl, locked, icon, displayName);
-            CACHE.put(id, data);
+                    maxLvl, locked, icon);
             CACHE.put(id, data);
         }
-        tn.nightbeam.ras.Constants.LOG.info("Attribute Manager: Loaded {} attribute configs into cache. ConfigDir: {}",
-                CACHE.size(), Services.CONFIG.getConfigDirectory());
+        Constants.LOG.info("Attribute Manager: Loaded {} attribute configs into cache.", CACHE.size());
     }
 
     // Called by Client when receiving packet
@@ -160,15 +157,14 @@ public class AttributeManager {
         if (iconPath != null && !iconPath.isEmpty()) {
             // Check if it contains a namespace
             if (iconPath.contains(":")) {
-                return net.minecraft.resources.ResourceLocation.tryParse(iconPath);
+                return new net.minecraft.resources.ResourceLocation(iconPath);
             } else {
-                return net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("rpg_attribute_system",
-                        "textures/" + iconPath);
+                return new net.minecraft.resources.ResourceLocation("rpg_attribute_system", "textures/" + iconPath);
             }
         }
 
         // Default fallback
-        return net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("rpg_attribute_system",
+        return new net.minecraft.resources.ResourceLocation("rpg_attribute_system",
                 "textures/screens/att_" + attributeId + ".png");
     }
 }

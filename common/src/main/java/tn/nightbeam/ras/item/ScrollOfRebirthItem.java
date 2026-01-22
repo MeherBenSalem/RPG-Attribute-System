@@ -23,9 +23,8 @@ public class ScrollOfRebirthItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> list,
-            TooltipFlag flag) {
-        super.appendHoverText(itemstack, context, list, flag);
+    public void appendHoverText(ItemStack itemstack, Level level, List<Component> list, TooltipFlag flag) {
+        super.appendHoverText(itemstack, level, list, flag);
         list.add(Component.translatable("item.rpg_attribute_system.scroll_of_rebirth.description_0"));
     }
 

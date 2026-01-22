@@ -21,11 +21,10 @@ public class ReturnSectionDisplayGenericProcedure {
 
         // Safety check for attribute existence to avoid crashes if config is wrong
         net.minecraft.world.entity.ai.attributes.Attribute attribute = BuiltInRegistries.ATTRIBUTE
-                .get(ResourceLocation.fromNamespaceAndPath(namespace, attrName));
+                .get(new ResourceLocation(namespace, attrName));
         double baseValue = 0;
         if (attribute != null && entity instanceof LivingEntity living) {
-            net.minecraft.world.entity.ai.attributes.AttributeInstance instance = living
-                    .getAttribute(net.minecraft.core.Holder.direct(attribute));
+            net.minecraft.world.entity.ai.attributes.AttributeInstance instance = living.getAttribute(attribute);
             if (instance != null) {
                 baseValue = instance.getBaseValue();
             }

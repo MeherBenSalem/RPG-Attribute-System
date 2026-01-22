@@ -32,11 +32,11 @@ public class SetXpCmdProcedure {
         if (world instanceof Level _level) {
             if (!_level.isClientSide()) {
                 _level.playSound(null, BlockPos.containing(x, y, z),
-                        BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.tryParse("entity.experience_orb.pickup")),
+                        BuiltInRegistries.SOUND_EVENT.get(new ResourceLocation("entity.experience_orb.pickup")),
                         SoundSource.NEUTRAL, 1, 1);
             } else {
                 _level.playLocalSound(x, y, z,
-                        BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.tryParse("entity.experience_orb.pickup")),
+                        BuiltInRegistries.SOUND_EVENT.get(new ResourceLocation("entity.experience_orb.pickup")),
                         SoundSource.NEUTRAL, 1, 1, false);
             }
         }

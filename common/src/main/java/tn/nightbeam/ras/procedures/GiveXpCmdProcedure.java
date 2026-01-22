@@ -19,21 +19,11 @@ public class GiveXpCmdProcedure {
         if (entity == null)
             return;
         double AddedXp = DoubleArgumentType.getDouble(arguments, "amount");
-        execute(world, x, y, z, AddedXp, entity);
-    }
-
-    public static void execute(LevelAccessor world, double x, double y, double z, double AddedXp, Entity entity) {
-        if (entity == null)
-            return;
-
         {
             PlayerVariables vars = Services.PLATFORM.getPlayerVariables(entity);
             double _setval = vars.currentXpTLevel + AddedXp;
             vars.currentXpTLevel = _setval;
             Services.PLATFORM.syncPlayerVariables(vars, entity);
-            if (entity instanceof net.minecraft.world.entity.player.Player player && !world.isClientSide())
-                player.displayClientMessage(
-                        net.minecraft.network.chat.Component.literal("\u00A7a+" + (int) AddedXp + " VP"), true);
         }
         if (Services.PLATFORM.getPlayerVariables(entity).Level >= Services.CONFIG.getNumberValue("ras", "settings",
                 "max_player_level")) {
@@ -42,11 +32,11 @@ public class GiveXpCmdProcedure {
         if (world instanceof Level _level) {
             if (!_level.isClientSide()) {
                 _level.playSound(null, BlockPos.containing(x, y, z),
-                        BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.tryParse("entity.experience_orb.pickup")),
+                        BuiltInRegistries.SOUND_EVENT.get(new ResourceLocation("entity.experience_orb.pickup")),
                         SoundSource.NEUTRAL, 1, 1);
             } else {
                 _level.playLocalSound(x, y, z,
-                        BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.tryParse("entity.experience_orb.pickup")),
+                        BuiltInRegistries.SOUND_EVENT.get(new ResourceLocation("entity.experience_orb.pickup")),
                         SoundSource.NEUTRAL, 1, 1, false);
             }
         }

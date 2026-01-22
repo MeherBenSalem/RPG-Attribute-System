@@ -55,20 +55,6 @@ public class PlayerStatsGUIMenu extends AbstractContainerMenu implements MenuAcc
         PlayerStatsGUIThisGUIIsOpenedProcedure.execute(entity);
     }
 
-    // Constructor for Fabric 1.21.x ExtendedScreenHandlerType
-    public PlayerStatsGUIMenu(int id, Inventory inv, BlockPos pos) {
-        super(RpgAttributeSystemModMenus.PLAYER_STATS_GUI.get(), id);
-        this.entity = inv.player;
-        this.world = inv.player.level();
-        if (pos != null) {
-            this.x = pos.getX();
-            this.y = pos.getY();
-            this.z = pos.getZ();
-            access = ContainerLevelAccess.create(world, pos);
-        }
-        PlayerStatsGUIThisGUIIsOpenedProcedure.execute(entity);
-    }
-
     @Override
     public boolean stillValid(Player player) {
         if (this.bound) {

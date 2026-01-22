@@ -2,12 +2,15 @@ package tn.nightbeam.ras;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import tn.nightbeam.ras.network.*;
+import tn.nightbeam.ras.platform.FabricPlatformHelper;
+import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.platform.Services;
 import tn.nightbeam.ras.init.RpgAttributeSystemModKeyMappings;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import tn.nightbeam.ras.network.OpenStatsMenuPacket;
 
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import tn.nightbeam.ras.client.LevelOverlayRenderer;
@@ -15,37 +18,41 @@ import tn.nightbeam.ras.client.LevelOverlayRenderer;
 public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        // Client Network Receivers
-        ClientPlayNetworking.registerGlobalReceiver(FabricSyncVarsPayload.TYPE,
-                (payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(FabricPlatformHelper.SYNC_PACKET_ID,
+                (client, handler, buf, responseSender) -> {
                     PlayerVariables vars = new PlayerVariables();
-                    if (payload.vars() != null) {
-                        vars.readNBT(payload.vars());
-                        context.client().execute(() -> {
-                            if (context.player() != null) {
-                                tn.nightbeam.ras.Constants.LOG.info(
-                                        "Client Receiver: Syncing vars for {}, SparePoints={}",
-                                        context.player().getName().getString(), vars.SparePoints);
-                                PlayerVariables attached = Services.PLATFORM.getPlayerVariables(context.player());
-                                attached.readNBT(vars.writeNBT());
-                            }
-                        });
+                    if (buf.isReadable()) {
+                        net.minecraft.nbt.CompoundTag tag = buf.readNbt();
+                        if (tag != null) {
+                            vars.readNBT(tag);
+                            client.execute(() -> {
+                                if (client.player != null) {
+                                    PlayerVariables attached = Services.PLATFORM.getPlayerVariables(client.player);
+                                    attached.readNBT(vars.writeNBT());
+                                }
+                            });
+                        }
                     }
                 });
 
-        ClientPlayNetworking.registerGlobalReceiver(FabricMenuStateUpdatePayload.TYPE,
-                (payload, context) -> {
-                    context.client().execute(() -> {
-                        if (context.client().screen instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
-                            accessor.updateMenuState(payload.elementType(), payload.name(), payload.elementState());
+        ClientPlayNetworking.registerGlobalReceiver(
+                tn.nightbeam.ras.network.FabricMenuStateUpdatePacket.ID,
+                (client, handler, buf, responseSender) -> {
+                    tn.nightbeam.ras.network.FabricMenuStateUpdatePacket.Data data = new tn.nightbeam.ras.network.FabricMenuStateUpdatePacket.Data(
+                            buf);
+                    client.execute(() -> {
+                        if (client.screen instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
+                            accessor.updateMenuState(data.elementType, data.name, data.elementState);
                         }
                     });
                 });
 
-        ClientPlayNetworking.registerGlobalReceiver(FabricSyncConfigPayload.TYPE,
-                (payload, context) -> {
-                    context.client().execute(() -> {
-                        tn.nightbeam.ras.util.AttributeManager.setClientCache(payload.attributes());
+        ClientPlayNetworking.registerGlobalReceiver(FabricPlatformHelper.SYNC_CONFIG_PACKET_ID,
+                (client, handler, buf, responseSender) -> {
+                    tn.nightbeam.ras.network.AttributeConfigSyncPacket packet = new tn.nightbeam.ras.network.AttributeConfigSyncPacket(
+                            buf);
+                    client.execute(() -> {
+                        tn.nightbeam.ras.network.AttributeConfigSyncPacket.handle(packet, () -> null);
                     });
                 });
 
@@ -60,14 +67,12 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND.consumeClick()) {
-                ClientPlayNetworking.send(new FabricOpenStatsMenuPayload());
+                ClientPlayNetworking.send(OpenStatsMenuPacket.ID, PacketByteBufs.create());
             }
         });
 
-        HudRenderCallback.EVENT.register((graphics, tickCounter) -> {
-            LevelOverlayRenderer.render(graphics, tickCounter.getGameTimeDeltaTicks());
+        HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
+            LevelOverlayRenderer.render(graphics, tickDelta);
         });
-
-        tn.nightbeam.ras.events.FabricClientRpgAttributeSystemModEvents.register();
     }
 }

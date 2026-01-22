@@ -70,8 +70,6 @@ public class GenericButtonActionPacket {
 
         // PlayerStatsGUI logic (ID >= 100, 9, 10, 11)
         if (buttonID >= 100) {
-            tn.nightbeam.ras.Constants.LOG.info("GenericButtonActionPacket: Received button action for buttonID {}",
-                    buttonID);
             int attributeId = buttonID - 100;
             AddPointsAttributeGenericProcedure.execute(world, entity, attributeId);
             return;

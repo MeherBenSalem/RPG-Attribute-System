@@ -56,7 +56,7 @@ public class LevelOverlayRenderer {
 
         if (DisplayXpOverlayProcedure.execute()) {
             // Always render the background bar
-            graphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/ui_bar_0.png"),
+            graphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/ui_bar_0.png"),
                     drawX, drawY, 0, 0, 80, 12, 80, 12);
 
             // Get the actual percentage (0-100) and calculate bar width
@@ -64,7 +64,7 @@ public class LevelOverlayRenderer {
             int barWidth = (int) Math.round((percentage / 100.0) * 80); // 80 is the full bar width
             if (barWidth > 0) {
                 // Render the full bar texture clipped to the current percentage width
-                graphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/ui_bar_99.png"),
+                graphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/ui_bar_99.png"),
                         drawX, drawY, // position
                         0, 0, // texture offset
                         barWidth, 12, // width clipped to percentage, full height
@@ -73,12 +73,12 @@ public class LevelOverlayRenderer {
         }
         if (true) {
             if (YouHavePointsProcedure.execute(entity)) {
-                graphics.blit(ResourceLocation.tryParse("rpg_attribute_system:textures/screens/levelup.png"),
+                graphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/levelup.png"),
                         drawX + 1, drawY - 10, 0, 0, 7, 8, 7, 8);
             }
             if (DisplayLogicKeybindOverlayProcedure.execute()) {
                 graphics.blit(
-                        ResourceLocation.tryParse("rpg_attribute_system:textures/screens/bookoverlay.png"),
+                        new ResourceLocation("rpg_attribute_system:textures/screens/bookoverlay.png"),
                         drawX + 82, drawY, 0, 0,
                         8, 12, 8, 12);
             }

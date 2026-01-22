@@ -1,58 +1,139 @@
 package tn.nightbeam.ras.procedures;
 
+import tn.nightbeam.ras.platform.Services;
+import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.init.RpgAttributeSystemModAttributes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.core.Holder;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.CommandSourceStack;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
-
 public class UnlockAttributeTargetProcedure {
 	public static void execute(CommandContext<CommandSourceStack> arguments) {
-		double attrIndex = DoubleArgumentType.getDouble(arguments, "attribute");
-
-		Entity targetEntity = null;
-		try {
-			targetEntity = EntityArgument.getEntity(arguments, "target");
-		} catch (CommandSyntaxException e) {
-			e.printStackTrace();
-			return;
-		}
-
-		if (targetEntity == null)
-			return;
-
-		Attribute targetAttribute = getAttributeByIndex((int) attrIndex);
-		if (targetAttribute == null)
-			return;
-
-		if (targetEntity instanceof LivingEntity living) {
-			if (living.getAttributes().hasAttribute(Holder.direct(targetAttribute))) {
-				var instance = living.getAttribute(Holder.direct(targetAttribute));
-				if (instance != null) {
-					instance.setBaseValue(0);
+		double AddedXp = 0;
+		if (DoubleArgumentType.getDouble(arguments, "attribute") == 1) {
+			if ((new Object() {
+				public Entity getEntity() {
+					try {
+						return EntityArgument.getEntity(arguments, "target");
+					} catch (CommandSyntaxException e) {
+						e.printStackTrace();
+						return null;
+					}
 				}
-			}
+			}.getEntity()) instanceof LivingEntity _livingEntity2 && _livingEntity2.getAttributes().hasAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_1.get()))
+				_livingEntity2.getAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_1.get()).setBaseValue(0);
+		} else if (DoubleArgumentType.getDouble(arguments, "attribute") == 2) {
+			if ((new Object() {
+				public Entity getEntity() {
+					try {
+						return EntityArgument.getEntity(arguments, "target");
+					} catch (CommandSyntaxException e) {
+						e.printStackTrace();
+						return null;
+					}
+				}
+			}.getEntity()) instanceof LivingEntity _livingEntity5 && _livingEntity5.getAttributes().hasAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_2.get()))
+				_livingEntity5.getAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_2.get()).setBaseValue(0);
+		} else if (DoubleArgumentType.getDouble(arguments, "attribute") == 3) {
+			if ((new Object() {
+				public Entity getEntity() {
+					try {
+						return EntityArgument.getEntity(arguments, "target");
+					} catch (CommandSyntaxException e) {
+						e.printStackTrace();
+						return null;
+					}
+				}
+			}.getEntity()) instanceof LivingEntity _livingEntity8 && _livingEntity8.getAttributes().hasAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_3.get()))
+				_livingEntity8.getAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_3.get()).setBaseValue(0);
+		} else if (DoubleArgumentType.getDouble(arguments, "attribute") == 4) {
+			if ((new Object() {
+				public Entity getEntity() {
+					try {
+						return EntityArgument.getEntity(arguments, "target");
+					} catch (CommandSyntaxException e) {
+						e.printStackTrace();
+						return null;
+					}
+				}
+			}.getEntity()) instanceof LivingEntity _livingEntity11 && _livingEntity11.getAttributes().hasAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_4.get()))
+				_livingEntity11.getAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_4.get()).setBaseValue(0);
+		} else if (DoubleArgumentType.getDouble(arguments, "attribute") == 5) {
+			if ((new Object() {
+				public Entity getEntity() {
+					try {
+						return EntityArgument.getEntity(arguments, "target");
+					} catch (CommandSyntaxException e) {
+						e.printStackTrace();
+						return null;
+					}
+				}
+			}.getEntity()) instanceof LivingEntity _livingEntity14 && _livingEntity14.getAttributes().hasAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_5.get()))
+				_livingEntity14.getAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_5.get()).setBaseValue(0);
+		} else if (DoubleArgumentType.getDouble(arguments, "attribute") == 6) {
+			if ((new Object() {
+				public Entity getEntity() {
+					try {
+						return EntityArgument.getEntity(arguments, "target");
+					} catch (CommandSyntaxException e) {
+						e.printStackTrace();
+						return null;
+					}
+				}
+			}.getEntity()) instanceof LivingEntity _livingEntity17 && _livingEntity17.getAttributes().hasAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_6.get()))
+				_livingEntity17.getAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_6.get()).setBaseValue(0);
+		} else if (DoubleArgumentType.getDouble(arguments, "attribute") == 7) {
+			if ((new Object() {
+				public Entity getEntity() {
+					try {
+						return EntityArgument.getEntity(arguments, "target");
+					} catch (CommandSyntaxException e) {
+						e.printStackTrace();
+						return null;
+					}
+				}
+			}.getEntity()) instanceof LivingEntity _livingEntity20 && _livingEntity20.getAttributes().hasAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_7.get()))
+				_livingEntity20.getAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_7.get()).setBaseValue(0);
+		} else if (DoubleArgumentType.getDouble(arguments, "attribute") == 8) {
+			if ((new Object() {
+				public Entity getEntity() {
+					try {
+						return EntityArgument.getEntity(arguments, "target");
+					} catch (CommandSyntaxException e) {
+						e.printStackTrace();
+						return null;
+					}
+				}
+			}.getEntity()) instanceof LivingEntity _livingEntity23 && _livingEntity23.getAttributes().hasAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_8.get()))
+				_livingEntity23.getAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_8.get()).setBaseValue(0);
+		} else if (DoubleArgumentType.getDouble(arguments, "attribute") == 9) {
+			if ((new Object() {
+				public Entity getEntity() {
+					try {
+						return EntityArgument.getEntity(arguments, "target");
+					} catch (CommandSyntaxException e) {
+						e.printStackTrace();
+						return null;
+					}
+				}
+			}.getEntity()) instanceof LivingEntity _livingEntity26 && _livingEntity26.getAttributes().hasAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_9.get()))
+				_livingEntity26.getAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_9.get()).setBaseValue(0);
+		} else if (DoubleArgumentType.getDouble(arguments, "attribute") == 10) {
+			if ((new Object() {
+				public Entity getEntity() {
+					try {
+						return EntityArgument.getEntity(arguments, "target");
+					} catch (CommandSyntaxException e) {
+						e.printStackTrace();
+						return null;
+					}
+				}
+			}.getEntity()) instanceof LivingEntity _livingEntity29 && _livingEntity29.getAttributes().hasAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_10.get()))
+				_livingEntity29.getAttribute(RpgAttributeSystemModAttributes.ATTRIBUTE_10.get()).setBaseValue(0);
 		}
-	}
-
-	private static Attribute getAttributeByIndex(int index) {
-		return switch (index) {
-			case 1 -> RpgAttributeSystemModAttributes.ATTRIBUTE_1.get();
-			case 2 -> RpgAttributeSystemModAttributes.ATTRIBUTE_2.get();
-			case 3 -> RpgAttributeSystemModAttributes.ATTRIBUTE_3.get();
-			case 4 -> RpgAttributeSystemModAttributes.ATTRIBUTE_4.get();
-			case 5 -> RpgAttributeSystemModAttributes.ATTRIBUTE_5.get();
-			case 6 -> RpgAttributeSystemModAttributes.ATTRIBUTE_6.get();
-			case 7 -> RpgAttributeSystemModAttributes.ATTRIBUTE_7.get();
-			case 8 -> RpgAttributeSystemModAttributes.ATTRIBUTE_8.get();
-			case 9 -> RpgAttributeSystemModAttributes.ATTRIBUTE_9.get();
-			case 10 -> RpgAttributeSystemModAttributes.ATTRIBUTE_10.get();
-			default -> null;
-		};
 	}
 }
+

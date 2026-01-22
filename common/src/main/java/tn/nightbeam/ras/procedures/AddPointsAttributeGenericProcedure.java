@@ -22,9 +22,6 @@ public class AddPointsAttributeGenericProcedure {
             double currentAttributeValue = getAttributeValue(vars, attributeId);
 
             for (int index0 = 0; index0 < (int) vars.modifier; index0++) {
-                tn.nightbeam.ras.Constants.LOG.info(
-                        "AddPoints: EntityID: {}, VarsHash: {}, SparePoints: {}, CurrentValue: {}", entity.getId(),
-                        System.identityHashCode(vars), vars.SparePoints, currentAttributeValue);
                 if (vars.SparePoints >= 1 && currentAttributeValue < Services.CONFIG.getNumberValue("ras/attributes",
                         filename, "max_level")) {
 
@@ -56,30 +53,14 @@ public class AddPointsAttributeGenericProcedure {
                     // Level.
                     // But here it increments PER POINT? "Level up" logic? Use the generic 'Level'
                     // field.
+                    vars.Level = vars.Level + 1;
                     Services.PLATFORM.syncPlayerVariables(vars, entity);
 
-                    // Update RPG_LEVEL attribute
-                    if (entity instanceof net.minecraft.world.entity.LivingEntity _livingEntity
-                            && _livingEntity.getAttributes()
-                                    .hasAttribute(net.minecraft.core.Holder.direct(
-                                            tn.nightbeam.ras.init.RpgAttributeSystemModAttributes.RPG_LEVEL.get()))) {
-                        _livingEntity
-                                .getAttribute(net.minecraft.core.Holder
-                                        .direct(tn.nightbeam.ras.init.RpgAttributeSystemModAttributes.RPG_LEVEL.get()))
-                                .setBaseValue(vars.Level);
-                    }
-
-                    // Apply effects for THIS attribute
-                    OnPlayerSpawnAttributeGenericProcedure.execute(entity, attributeId);
+                    OnPlayerSpawnProcedure.execute(entity);
 
                     // Refetch value for loop condition safety (though vars reference is same object
                     // usually)
                     currentAttributeValue = getAttributeValue(vars, attributeId);
-                } else {
-                    tn.nightbeam.ras.Constants.LOG.info(
-                            "AddPointsAttributeGenericProcedure: Cannot add point. SparePoints={}, CurrentVal={}, Max={}",
-                            vars.SparePoints, currentAttributeValue,
-                            Services.CONFIG.getNumberValue("ras/attributes", filename, "max_level"));
                 }
             }
         }
