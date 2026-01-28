@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="forge"></stringAttribute>
+    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="net.neoforged.devlaunch.Main"></stringAttribute>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value=" &quot;@D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\build\\moddev\\dataRunProgramArgs.txt&quot;"></stringAttribute>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value=" &quot;@D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\build\\moddev\\dataRunVmArgs.txt&quot; &quot;-Dfml.modFolders=rpg_attribute_system%%D:\\Minecraft\\My Mods\\RPG Attribute System\\forge\\bin\\main&quot;"></stringAttribute>
+    <mapAttribute key="org.eclipse.debug.core.environmentVariables">
+        <mapEntry key="MOD_CLASSES" value="rpg_attribute_system%%D:\Minecraft\My Mods\RPG Attribute System\forge\bin\main"></mapEntry>
+    </mapAttribute>
+    <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="D:\Minecraft\My Mods\RPG Attribute System\forge\run"></stringAttribute>
+    <booleanAttribute key="org.eclipse.jdt.launching.STOP_IN_MAIN" value="false"></booleanAttribute>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"></booleanAttribute>
+</launchConfiguration>
