@@ -7,11 +7,11 @@
         "block": [
             {
                 "namespace": "minecraft",
-                "path": "recipes/.*"
+                "path": "^recipes/.*"
             },
             {
                 "namespace": "minecraft",
-                "path": "advancements/.*"
+                "path": "^advancements/.*"
             }
         ]
     }
