@@ -14,11 +14,12 @@ public class OnPlayerSpawnProcedure {
         tn.nightbeam.ras.Constants.LOG.info("OnPlayerSpawnProcedure: execute called for entity {}",
                 entity.getName().getString());
 
-        // Check if player is new or reset (Level <= 0)
-        double currentLevel = Services.PLATFORM.getPlayerVariables(entity).Level;
+        // Only initialize attribute values for brand-new players or explicit resets.
+        PlayerVariables vars = Services.PLATFORM.getPlayerVariables(entity);
+        double currentLevel = vars.Level;
         tn.nightbeam.ras.Constants.LOG.info("OnPlayerSpawnProcedure: current Level = {}", currentLevel);
 
-        if (currentLevel <= 0) {
+        if (currentLevel <= 0 && vars.attributes.isEmpty()) {
             initializeAttributes(entity);
 
             // Initialize Level and SparePoints if needed

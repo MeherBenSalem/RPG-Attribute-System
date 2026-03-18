@@ -1,0 +1,43 @@
+String wrapperCmd(String rootDirName) {
+    File root = file(rootDirName)
+    if (System.getProperty('os.name').toLowerCase().contains('win')) {
+        return new File(root, 'gradlew.bat').absolutePath
+    }
+    return new File(root, 'gradlew').absolutePath
+}
+
+tasks.register('build1201', Exec) {
+    workingDir = file('1.20.1')
+    commandLine wrapperCmd('1.20.1'), 'build'
+}
+
+tasks.register('build1211', Exec) {
+    workingDir = file('1.21.1')
+    commandLine wrapperCmd('1.21.1'), 'build'
+}
+
+tasks.register('testVersions') {
+    group = 'verification'
+    description = 'Build both 1.20.1 and 1.21.1 roots for quick verification.'
+    dependsOn 'build1201', 'build1211'
+}
+
+tasks.register('run1201Fabric', Exec) {
+    workingDir = file('1.20.1')
+    commandLine wrapperCmd('1.20.1'), ':fabric:runClient'
+}
+
+tasks.register('run1201Forge', Exec) {
+    workingDir = file('1.20.1')
+    commandLine wrapperCmd('1.20.1'), ':forge:runClient'
+}
+
+tasks.register('run1211Fabric', Exec) {
+    workingDir = file('1.21.1')
+    commandLine wrapperCmd('1.21.1'), ':fabric:runClient'
+}
+
+tasks.register('run1211NeoForge', Exec) {
+    workingDir = file('1.21.1')
+    commandLine wrapperCmd('1.21.1'), ':neoforge:runClient'
+}

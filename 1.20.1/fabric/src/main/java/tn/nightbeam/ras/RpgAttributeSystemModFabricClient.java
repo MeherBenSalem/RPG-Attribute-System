@@ -66,6 +66,9 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
                 tn.nightbeam.ras.client.gui.PlayerAttributesViewerGUIScreen::new);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.screen != null) {
+                return;
+            }
             while (RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND.consumeClick()) {
                 ClientPlayNetworking.send(OpenStatsMenuPacket.ID, PacketByteBufs.create());
             }

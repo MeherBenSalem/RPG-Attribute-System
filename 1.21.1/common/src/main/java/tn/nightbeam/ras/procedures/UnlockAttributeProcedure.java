@@ -1,54 +1,23 @@
 package tn.nightbeam.ras.procedures;
 
 import tn.nightbeam.ras.platform.Services;
-import tn.nightbeam.ras.network.PlayerVariables;
-import tn.nightbeam.ras.network.PlayerVariables;
-import tn.nightbeam.ras.init.RpgAttributeSystemModAttributes;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.commands.CommandSourceStack;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.core.Holder;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 
 public class UnlockAttributeProcedure {
 	public static void execute(CommandContext<CommandSourceStack> arguments, Entity entity) {
-		if (entity == null)
+		int attributeId = (int) DoubleArgumentType.getDouble(arguments, "attribute");
+		if (attributeId < 1)
 			return;
-		double attrIndex = DoubleArgumentType.getDouble(arguments, "attribute");
 
-		Attribute targetAttribute = null;
-		if (attrIndex == 1)
-			targetAttribute = RpgAttributeSystemModAttributes.ATTRIBUTE_1.get();
-		else if (attrIndex == 2)
-			targetAttribute = RpgAttributeSystemModAttributes.ATTRIBUTE_2.get();
-		else if (attrIndex == 3)
-			targetAttribute = RpgAttributeSystemModAttributes.ATTRIBUTE_3.get();
-		else if (attrIndex == 4)
-			targetAttribute = RpgAttributeSystemModAttributes.ATTRIBUTE_4.get();
-		else if (attrIndex == 5)
-			targetAttribute = RpgAttributeSystemModAttributes.ATTRIBUTE_5.get();
-		else if (attrIndex == 6)
-			targetAttribute = RpgAttributeSystemModAttributes.ATTRIBUTE_6.get();
-		else if (attrIndex == 7)
-			targetAttribute = RpgAttributeSystemModAttributes.ATTRIBUTE_7.get();
-		else if (attrIndex == 8)
-			targetAttribute = RpgAttributeSystemModAttributes.ATTRIBUTE_8.get();
-		else if (attrIndex == 9)
-			targetAttribute = RpgAttributeSystemModAttributes.ATTRIBUTE_9.get();
-		else if (attrIndex == 10)
-			targetAttribute = RpgAttributeSystemModAttributes.ATTRIBUTE_10.get();
+		Services.CONFIG.setBooleanValue("ras/attributes", "attribute_" + attributeId, "lock", false);
+		tn.nightbeam.ras.util.AttributeManager.refreshServerConfig();
 
-		if (targetAttribute != null && entity instanceof LivingEntity living) {
-			if (living.getAttributes().hasAttribute(net.minecraft.core.Holder.direct(targetAttribute))) {
-				var instance = living.getAttribute(net.minecraft.core.Holder.direct(targetAttribute));
-				if (instance != null) {
-					instance.setBaseValue(0);
-				}
-			}
+		for (ServerPlayer player : arguments.getSource().getServer().getPlayerList().getPlayers()) {
+			Services.PLATFORM.syncAttributeConfig(player);
 		}
 	}
 }

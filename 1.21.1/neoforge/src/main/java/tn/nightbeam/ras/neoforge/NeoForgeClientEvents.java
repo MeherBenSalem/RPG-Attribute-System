@@ -34,6 +34,9 @@ public class NeoForgeClientEvents {
     public static class GameEvents {
         @SubscribeEvent
         public static void onClientTick(ClientTickEvent.Post event) {
+            if (net.minecraft.client.Minecraft.getInstance().screen != null) {
+                return;
+            }
             while (RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND.consumeClick()) {
                 PacketDistributor.sendToServer(new NeoForgeNetworking.OpenStatsPayload());
             }

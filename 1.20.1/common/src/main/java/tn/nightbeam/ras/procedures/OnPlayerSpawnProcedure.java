@@ -11,8 +11,9 @@ public class OnPlayerSpawnProcedure {
         if (entity == null)
             return;
 
-        // Check if player is new or reset (Level <= 0)
-        if (Services.PLATFORM.getPlayerVariables(entity).Level <= 0) {
+        // Only initialize attribute values for brand-new players or explicit resets.
+        PlayerVariables vars = Services.PLATFORM.getPlayerVariables(entity);
+        if (vars.Level <= 0 && vars.attributes.isEmpty()) {
             initializeAttributes(entity);
 
             // Initialize Level and SparePoints if needed

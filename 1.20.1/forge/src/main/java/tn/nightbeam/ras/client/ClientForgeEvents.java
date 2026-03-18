@@ -1,5 +1,6 @@
 package tn.nightbeam.ras.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -13,6 +14,9 @@ public class ClientForgeEvents {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
+            if (Minecraft.getInstance().screen != null) {
+                return;
+            }
             while (RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND.consumeClick()) {
                 RpgAttributeSystemModForge.PACKET_HANDLER.sendToServer(new OpenStatsMenuKeybindMessage(0, 0));
             }
