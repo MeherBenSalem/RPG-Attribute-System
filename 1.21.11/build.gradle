@@ -1,0 +1,36 @@
+plugins {
+    // see https://fabricmc.net/develop/ for new versions
+    id 'fabric-loom' version '1.13-SNAPSHOT' apply false
+    // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
+    id 'net.neoforged.moddev' version '2.0.123' apply false
+}
+
+tasks.register("run1211FabricClient") {
+    group = "application"
+    description = "Run 1.21.11 Fabric client"
+    dependsOn ":fabric:runClient"
+}
+
+tasks.register("run1211FabricServer") {
+    group = "application"
+    description = "Run 1.21.11 Fabric server"
+    dependsOn ":fabric:runServer"
+}
+
+tasks.register("run1211NeoForgeClient") {
+    group = "application"
+    description = "Run 1.21.11 NeoForge client"
+    dependsOn ":neoforge:runClient"
+}
+
+tasks.register("run1211NeoForgeServer") {
+    group = "application"
+    description = "Run 1.21.11 NeoForge server"
+    dependsOn ":neoforge:runServer"
+}
+
+tasks.register("run1211NeoForgeData") {
+    group = "application"
+    description = "Run 1.21.11 NeoForge data generation"
+    dependsOn ":neoforge:runData"
+}
