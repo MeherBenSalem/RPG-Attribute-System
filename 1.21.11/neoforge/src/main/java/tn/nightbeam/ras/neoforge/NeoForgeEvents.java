@@ -54,17 +54,10 @@ public class NeoForgeEvents {
 
     @SubscribeEvent
     public static void onPlayerClone(PlayerEvent.Clone event) {
-        // Copy player variables on death/respawn
-        PlayerVariables original = Services.PLATFORM.getPlayerVariables(event.getOriginal());
-        PlayerVariables clone = Services.PLATFORM.getPlayerVariables(event.getEntity());
-
-        // Copy all data
-        clone.attributes.putAll(original.attributes);
-        clone.Level = original.Level;
-        clone.SparePoints = original.SparePoints;
-        clone.currentXpTLevel = original.currentXpTLevel;
-        clone.nextevelXp = original.nextevelXp;
-        clone.modifier = original.modifier;
+        // Use NBT round-trip for a clean, complete copy — consistent with Fabric's COPY_FROM handler.
+        // readNBT now clears the attribute map first, so no stale keys survive.
+        Services.PLATFORM.getPlayerVariables(event.getEntity())
+                .readNBT(Services.PLATFORM.getPlayerVariables(event.getOriginal()).writeNBT());
     }
 
     @SubscribeEvent

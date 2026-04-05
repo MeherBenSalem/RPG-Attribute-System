@@ -157,6 +157,9 @@ public class FabricRpgAttributeSystemModEvents {
                 Services.PLATFORM.syncPlayerVariables(vars, newPlayer);
             }
             OnPlayerSpawnProcedure.execute(newPlayer);
+            // Sync updated vars to client after respawn — the new player entity has a fresh
+            // client-side attachment; without this the client shows default (Level 0) stats.
+            Services.PLATFORM.syncPlayerVariables(Services.PLATFORM.getPlayerVariables(newPlayer), newPlayer);
         });
 
         net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {

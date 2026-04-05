@@ -34,6 +34,7 @@ public class NeoForgeDataAttachments {
                                                         return vars;
                                                 }
                                         })
-                                        .copyOnDeath()
+                                        // copyOnDeath() removed: clone is handled explicitly in
+                                        // NeoForgeEvents.onPlayerClone for deterministic NBT round-trip copy.
                                         .build());
 }

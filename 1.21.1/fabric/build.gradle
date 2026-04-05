@@ -10,7 +10,7 @@ dependencies {
     }
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-    modImplementation "curse.maven:jauml-1281310:7467667"
+    modImplementation files(rootProject.file('../libs/jauml-fabric-1.21.1-1.3.0.jar'))
 }
 
 // Handle duplicate resources from common module

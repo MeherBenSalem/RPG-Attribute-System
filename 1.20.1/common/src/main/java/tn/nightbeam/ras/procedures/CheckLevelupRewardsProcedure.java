@@ -72,6 +72,7 @@ public class CheckLevelupRewardsProcedure {
 
     private static void executeCommand(Entity entity, String command) {
         if (!entity.level().isClientSide() && entity.getServer() != null) {
+            command = command.replace("@p", "@s");
             entity.getServer().getCommands().performPrefixedCommand(
                     new CommandSourceStack(CommandSource.NULL, entity.position(), entity.getRotationVector(),
                             entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,

@@ -43,6 +43,8 @@ public class PlayerVariables {
             // Read Dynamic Attributes
             if (nbt.contains("attributes_dynamic")) {
                 CompoundTag attributesTag = nbt.getCompound("attributes_dynamic");
+                // Clear stale keys before repopulating so no ghost values survive across syncs/clones.
+                attributes.clear();
                 for (String key : attributesTag.getAllKeys()) {
                     attributes.put(key, attributesTag.getDouble(key));
                 }

@@ -5,10 +5,12 @@ import tn.nightbeam.ras.platform.Services;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AttributeManager {
-    public static final List<String> ATTRIBUTE_IDS = new ArrayList<>();
-    private static final Map<Integer, tn.nightbeam.ras.config.AttributeData> CACHE = new HashMap<>();
+    public static final List<String> ATTRIBUTE_IDS = Collections.synchronizedList(new ArrayList<>());
+    private static final Map<Integer, tn.nightbeam.ras.config.AttributeData> CACHE = new ConcurrentHashMap<>();
 
     // Called by Server on Startup/Reload
     public static void refreshServerConfig() {

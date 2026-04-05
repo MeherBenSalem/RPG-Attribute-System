@@ -28,11 +28,13 @@ public class AddPointsAttributeGenericProcedure {
                     // Execute Command if configured
                     Entity _ent = entity;
                     if (!_ent.level().isClientSide() && _ent.getServer() != null) {
+                        String _onLevelCmd = Services.CONFIG.getStringValue("ras/attributes", filename, "on_level_event");
+                        _onLevelCmd = _onLevelCmd.replace("@p", "@s");
                         _ent.getServer().getCommands().performPrefixedCommand(new CommandSourceStack(
                                 CommandSource.NULL, _ent.position(), _ent.getRotationVector(),
                                 _ent.level() instanceof ServerLevel ? (ServerLevel) _ent.level() : null, 4,
                                 _ent.getName().getString(), _ent.getDisplayName(), _ent.level().getServer(), _ent),
-                                Services.CONFIG.getStringValue("ras/attributes", filename, "on_level_event"));
+                                _onLevelCmd);
                     }
 
                     // Decrement Spare Points

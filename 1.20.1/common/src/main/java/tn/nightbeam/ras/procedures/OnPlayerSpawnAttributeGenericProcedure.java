@@ -97,6 +97,8 @@ public class OnPlayerSpawnAttributeGenericProcedure {
             }
 
             // 8. Execute
+            // Replace @p with @s so commands always target the source entity, not the nearest player.
+            finalCommand = finalCommand.replace("@p", "@s");
             if (!entity.level().isClientSide() && entity.getServer() != null) {
                 entity.getServer().getCommands().performPrefixedCommand(
                         new CommandSourceStack(

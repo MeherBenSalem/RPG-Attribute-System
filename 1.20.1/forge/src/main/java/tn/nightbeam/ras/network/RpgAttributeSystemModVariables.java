@@ -82,13 +82,9 @@ public class RpgAttributeSystemModVariables {
 					.getCapability(PLAYER_VARIABLES_CAPABILITY, null).orElse(new PlayerVariables()));
 			PlayerVariables clone = ((PlayerVariables) event.getEntity()
 					.getCapability(PLAYER_VARIABLES_CAPABILITY, null).orElse(new PlayerVariables()));
-			// Dynamic attribute map copy
-			clone.attributes.putAll(original.attributes);
-			clone.Level = original.Level;
-			clone.SparePoints = original.SparePoints;
-			clone.currentXpTLevel = original.currentXpTLevel;
-			clone.nextevelXp = original.nextevelXp;
-			clone.modifier = original.modifier;
+			// Use NBT round-trip for a clean, complete copy — readNBT clears the
+			// attribute map first, preventing stale key survival across respawns.
+			clone.readNBT(original.writeNBT());
 		}
 	}
 
@@ -152,13 +148,8 @@ public class RpgAttributeSystemModVariables {
 				if (!context.getDirection().getReceptionSide().isServer()) {
 					PlayerVariables variables = ((PlayerVariables) Minecraft.getInstance().player
 							.getCapability(PLAYER_VARIABLES_CAPABILITY, null).orElse(new PlayerVariables()));
-					// Dynamic attribute map copy
-					variables.attributes.putAll(message.data.attributes);
-					variables.Level = message.data.Level;
-					variables.SparePoints = message.data.SparePoints;
-					variables.currentXpTLevel = message.data.currentXpTLevel;
-					variables.nextevelXp = message.data.nextevelXp;
-					variables.modifier = message.data.modifier;
+					// Use readNBT for a complete sync — attributes.clear() is called inside readNBT.
+					variables.readNBT(message.data.writeNBT());
 				}
 			});
 			context.setPacketHandled(true);
