@@ -3,6 +3,8 @@
 build/
 **/build/
 out/
+dist/
+libs/
 
 # Gradle outputs
 # Ignore gradle.properties ONLY if it contains secrets. 
