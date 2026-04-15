@@ -11,8 +11,10 @@ import net.minecraft.commands.CommandSource;
 
 public class AddPointsAttributeGenericProcedure {
     public static void execute(LevelAccessor world, Entity entity, int attributeId) {
-        if (entity == null)
+        if (!(entity instanceof net.minecraft.world.entity.player.Player player) || world.isClientSide())
             return;
+
+        entity = player;
 
         if (!world.isClientSide()) {
             String filename = "attribute_" + attributeId;
@@ -30,12 +32,16 @@ public class AddPointsAttributeGenericProcedure {
 
                     // Execute Command if configured
                     Entity _ent = entity;
-                    if (!_ent.level().isClientSide() && _ent.getServer() != null) {
+                    String _onLevelCmd = Services.CONFIG.getStringValue("ras/attributes", filename, "on_level_event");
+                    if (_ent instanceof net.minecraft.world.entity.player.Player) {
+                        _onLevelCmd = _onLevelCmd.replace("@p", "@s");
+                    }
+                    if (!_ent.level().isClientSide() && _ent.getServer() != null && !_onLevelCmd.isBlank()) {
                         _ent.getServer().getCommands().performPrefixedCommand(new CommandSourceStack(
                                 CommandSource.NULL, _ent.position(), _ent.getRotationVector(),
                                 _ent.level() instanceof ServerLevel ? (ServerLevel) _ent.level() : null, 4,
                                 _ent.getName().getString(), _ent.getDisplayName(), _ent.level().getServer(), _ent),
-                                Services.CONFIG.getStringValue("ras/attributes", filename, "on_level_event"));
+                                _onLevelCmd);
                     }
 
                     // Decrement Spare Points

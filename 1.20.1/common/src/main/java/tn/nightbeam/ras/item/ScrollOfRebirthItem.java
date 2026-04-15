@@ -30,8 +30,9 @@ public class ScrollOfRebirthItem extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player entity, InteractionHand hand) {
-        InteractionResultHolder<ItemStack> ar = super.use(world, entity, hand);
-        OnOrbResetProcedure.execute(entity);
-        return ar;
+        if (!world.isClientSide()) {
+            OnOrbResetProcedure.execute(entity);
+        }
+        return InteractionResultHolder.sidedSuccess(entity.getItemInHand(hand), world.isClientSide());
     }
 }

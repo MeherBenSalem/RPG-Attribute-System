@@ -16,6 +16,7 @@ public class OnPlayerSpawnProcedure {
         tn.nightbeam.ras.Constants.LOG.info("OnPlayerSpawnProcedure: applying stats for {} ({})",
                 player.getName().getString(), player.getStringUUID());
 
+        // Only initialize attribute values for the triggering player.
         PlayerVariables vars = Services.PLATFORM.getPlayerVariables(player);
         double currentLevel = vars.Level;
         tn.nightbeam.ras.Constants.LOG.info("OnPlayerSpawnProcedure: current Level = {}", currentLevel);

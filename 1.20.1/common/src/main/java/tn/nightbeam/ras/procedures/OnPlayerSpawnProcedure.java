@@ -8,8 +8,10 @@ import net.minecraft.world.entity.Entity;
 
 public class OnPlayerSpawnProcedure {
     public static void execute(Entity entity) {
-        if (entity == null)
+        if (!(entity instanceof net.minecraft.world.entity.player.Player player) || player.level().isClientSide())
             return;
+
+        entity = player;
 
         // Only initialize attribute values for brand-new players or explicit resets.
         PlayerVariables vars = Services.PLATFORM.getPlayerVariables(entity);

@@ -5,6 +5,11 @@ import tn.nightbeam.ras.platform.Services;
 public class ConfigInitializer {
 
     public static void init() {
+        tn.nightbeam.ras.Constants.LOG.info("[RAS] ConfigInitializer.init() - Starting config initialization");
+        tn.nightbeam.ras.Constants.LOG.info("[RAS] Config service implementation: {}",
+                Services.CONFIG.getClass().getName());
+        tn.nightbeam.ras.Constants.LOG.info("[RAS] Config directory: {}", Services.CONFIG.getConfigDirectory());
+
         createGlobalSettings();
         createAttributeSettings();
         createDefaultAttributes();
@@ -14,6 +19,8 @@ public class ConfigInitializer {
         createAttributesDisplayConfig();
         createDisplaySettings();
         createOverlayConfig();
+
+        tn.nightbeam.ras.Constants.LOG.info("[RAS] ConfigInitializer.init() - Config initialization complete");
     }
 
     private static void createGlobalSettings() {
@@ -106,6 +113,8 @@ public class ConfigInitializer {
                 } else {
                     Services.CONFIG.addStringToArray(dir, file, "cmd_to_exc", "");
                 }
+            } else {
+                migrateLegacyAttributeCommand(dir, file, i);
             }
 
             if (!Services.CONFIG.arrayKeyExists(dir, file, "on_level_event")) {
@@ -174,15 +183,49 @@ public class ConfigInitializer {
 
     private static String getDefaultCommand(int id) {
         return switch (id) {
-            case 1 -> "/attribute @s generic.max_health base set [param(2)]";
-            case 2 -> "/attribute @s generic.attack_damage base set [param(1)]";
-            case 3 -> "/attribute @s generic.attack_speed base set [param(0.1)]";
-            case 4 -> "/attribute @s generic.armor base set [param(1)]";
-            case 5 -> "/attribute @s generic.movement_speed base set [param(0.005)]";
-            case 6 -> "/attribute @s generic.knockback_resistance base set [param(0.05)]";
-            case 7 -> "/attribute @s generic.luck base set [param(1)]";
+            case 1 -> "/attribute @s minecraft:max_health base set [param(2)]";
+            case 2 -> "/attribute @s minecraft:attack_damage base set [param(1)]";
+            case 3 -> "/attribute @s minecraft:attack_speed base set [param(0.1)]";
+            case 4 -> "/attribute @s minecraft:armor base set [param(1)]";
+            case 5 -> "/attribute @s minecraft:movement_speed base set [param(0.005)]";
+            case 6 -> "/attribute @s minecraft:knockback_resistance base set [param(0.05)]";
+            case 7 -> "/attribute @s minecraft:luck base set [param(1)]";
             default -> "";
         };
+    }
+
+    private static void migrateLegacyAttributeCommand(String dir, String file, int id) {
+        String expected = getDefaultCommand(id);
+        if (expected.isEmpty()) {
+            return;
+        }
+
+        java.util.List<String> commands = Services.CONFIG.getStringArray(dir, file, "cmd_to_exc");
+        if (commands == null || commands.isEmpty()) {
+            Services.CONFIG.addStringToArray(dir, file, "cmd_to_exc", expected);
+            return;
+        }
+
+        boolean hasExpected = false;
+        boolean hasLegacyGeneric = false;
+
+        for (String command : commands) {
+            if (command == null) {
+                continue;
+            }
+            if (command.equals(expected)) {
+                hasExpected = true;
+            }
+            if (command.contains("generic.")) {
+                hasLegacyGeneric = true;
+            }
+        }
+
+        // Preserve user custom entries but append the corrected one when the old
+        // generic.* attribute id format is still present.
+        if (!hasExpected && hasLegacyGeneric) {
+            Services.CONFIG.addStringToArray(dir, file, "cmd_to_exc", expected);
+        }
     }
 
     private static String getDefaultEvent(int id) {
@@ -269,84 +312,84 @@ public class ConfigInitializer {
             Services.CONFIG.setBooleanValue(dir, file, "enabled", true);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "rewards")) {
-            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]1[levelEnd]give @p minecraft:coal 16");
-            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]2[levelEnd]give @p minecraft:iron_axe 1");
-            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]3[levelEnd]give @p minecraft:iron_ingot 16");
+            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]1[levelEnd]give @s minecraft:coal 16");
+            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]2[levelEnd]give @s minecraft:iron_axe 1");
+            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]3[levelEnd]give @s minecraft:iron_ingot 16");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]4[levelEnd]give @p minecraft:iron_pickaxe 1");
-            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]5[levelEnd]give @p minecraft:redstone 16");
-            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]6[levelEnd]give @p minecraft:gold_ingot 6");
-            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]7[levelEnd]give @p minecraft:diamond 2");
-            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]8[levelEnd]give @p minecraft:diamond 3");
+                    "[level]4[levelEnd]give @s minecraft:iron_pickaxe 1");
+            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]5[levelEnd]give @s minecraft:redstone 16");
+            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]6[levelEnd]give @s minecraft:gold_ingot 6");
+            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]7[levelEnd]give @s minecraft:diamond 2");
+            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]8[levelEnd]give @s minecraft:diamond 3");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]9[levelEnd]give @p minecraft:lapis_lazuli 32");
+                    "[level]9[levelEnd]give @s minecraft:lapis_lazuli 32");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]10[levelEnd]give @p minecraft:golden_apple 2");
+                    "[level]10[levelEnd]give @s minecraft:golden_apple 2");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]11[levelEnd]give @p minecraft:gold_ingot 16");
-            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]12[levelEnd]give @p minecraft:diamond 2");
-            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]13[levelEnd]give @p minecraft:emerald 16");
-            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]14[levelEnd]give @p minecraft:diamond 2");
+                    "[level]11[levelEnd]give @s minecraft:gold_ingot 16");
+            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]12[levelEnd]give @s minecraft:diamond 2");
+            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]13[levelEnd]give @s minecraft:emerald 16");
+            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]14[levelEnd]give @s minecraft:diamond 2");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]15[levelEnd]give @p minecraft:diamond_axe 1");
+                    "[level]15[levelEnd]give @s minecraft:diamond_axe 1");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]16[levelEnd]give @p minecraft:enchanted_golden_apple 1");
+                    "[level]16[levelEnd]give @s minecraft:enchanted_golden_apple 1");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]17[levelEnd]give @p minecraft:redstone_block 3");
-            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]18[levelEnd]give @p minecraft:iron_block 5");
-            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]19[levelEnd]give @p minecraft:gold_block 3");
+                    "[level]17[levelEnd]give @s minecraft:redstone_block 3");
+            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]18[levelEnd]give @s minecraft:iron_block 5");
+            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]19[levelEnd]give @s minecraft:gold_block 3");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]20[levelEnd]give @p minecraft:diamond_chestplate 1");
+                    "[level]20[levelEnd]give @s minecraft:diamond_chestplate 1");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]21[levelEnd]give @p minecraft:diamond_helmet 1");
+                    "[level]21[levelEnd]give @s minecraft:diamond_helmet 1");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]22[levelEnd]give @p minecraft:diamond_boots 1");
+                    "[level]22[levelEnd]give @s minecraft:diamond_boots 1");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]23[levelEnd]give @p minecraft:diamond_leggings 1");
+                    "[level]23[levelEnd]give @s minecraft:diamond_leggings 1");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]24[levelEnd]give @p minecraft:diamond_pickaxe 1");
+                    "[level]24[levelEnd]give @s minecraft:diamond_pickaxe 1");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]25[levelEnd]give @p minecraft:totem_of_undying 1");
+                    "[level]25[levelEnd]give @s minecraft:totem_of_undying 1");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]26[levelEnd]give @p minecraft:ancient_debris 2");
-            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]27[levelEnd]give @p minecraft:diamond 32");
+                    "[level]26[levelEnd]give @s minecraft:ancient_debris 2");
+            Services.CONFIG.addStringToArray(dir, file, "rewards", "[level]27[levelEnd]give @s minecraft:diamond 32");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]30[levelEnd]give @p minecraft:ancient_debris 4");
+                    "[level]30[levelEnd]give @s minecraft:ancient_debris 4");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]100[levelEnd]give @p memory_of_the_past:level_100_trophy_reward 1");
+                    "[level]100[levelEnd]give @s memory_of_the_past:level_100_trophy_reward 1");
             Services.CONFIG.addStringToArray(dir, file, "rewards",
-                    "[level]200[levelEnd]give @p memory_of_the_past:level_200_trophy_reward 1");
+                    "[level]200[levelEnd]give @s memory_of_the_past:level_200_trophy_reward 1");
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "random_rewards_level")) {
             Services.CONFIG.setNumberValue(dir, file, "random_rewards_level", 31);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "random_rewards")) {
             Services.CONFIG.addStringToArray(dir, file, "random_rewards",
-                    "[chance]2[chanceEnd]give @p minecraft:netherite_sword 1");
+                    "[chance]2[chanceEnd]give @s minecraft:netherite_sword 1");
             Services.CONFIG.addStringToArray(dir, file, "random_rewards",
-                    "[chance]2[chanceEnd]give @p minecraft:netherite_pickaxe 1");
+                    "[chance]2[chanceEnd]give @s minecraft:netherite_pickaxe 1");
             Services.CONFIG.addStringToArray(dir, file, "random_rewards",
-                    "[chance]20[chanceEnd]give @p minecraft:enchanted_golden_apple 2");
+                    "[chance]20[chanceEnd]give @s minecraft:enchanted_golden_apple 2");
             Services.CONFIG.addStringToArray(dir, file, "random_rewards",
-                    "[chance]5[chanceEnd]give @p minecraft:elytra 1");
+                    "[chance]5[chanceEnd]give @s minecraft:elytra 1");
             Services.CONFIG.addStringToArray(dir, file, "random_rewards",
-                    "[chance]25[chanceEnd]give @p minecraft:diamond_block 3");
+                    "[chance]25[chanceEnd]give @s minecraft:diamond_block 3");
             Services.CONFIG.addStringToArray(dir, file, "random_rewards",
-                    "[chance]10[chanceEnd]give @p minecraft:totem_of_undying 1");
+                    "[chance]10[chanceEnd]give @s minecraft:totem_of_undying 1");
             Services.CONFIG.addStringToArray(dir, file, "random_rewards",
-                    "[chance]5[chanceEnd]give @p minecraft:netherite_ingot 1");
+                    "[chance]5[chanceEnd]give @s minecraft:netherite_ingot 1");
             Services.CONFIG.addStringToArray(dir, file, "random_rewards",
-                    "[chance]5[chanceEnd]give @p minecraft:trident 1");
+                    "[chance]5[chanceEnd]give @s minecraft:trident 1");
             Services.CONFIG.addStringToArray(dir, file, "random_rewards",
-                    "[chance]1[chanceEnd]give @p minecraft:beacon 1");
+                    "[chance]1[chanceEnd]give @s minecraft:beacon 1");
             Services.CONFIG.addStringToArray(dir, file, "random_rewards",
-                    "[chance]10[chanceEnd]give @p minecraft:totem_of_undying 1");
+                    "[chance]10[chanceEnd]give @s minecraft:totem_of_undying 1");
             Services.CONFIG.addStringToArray(dir, file, "random_rewards",
-                    "[chance]20[chanceEnd]give @p minecraft:golden_apple 5");
+                    "[chance]20[chanceEnd]give @s minecraft:golden_apple 5");
             Services.CONFIG.addStringToArray(dir, file, "random_rewards",
-                    "[chance]35[chanceEnd]give @p minecraft:golden_carrot 16");
+                    "[chance]35[chanceEnd]give @s minecraft:golden_carrot 16");
             Services.CONFIG.addStringToArray(dir, file, "random_rewards",
-                    "[chance]2[chanceEnd]give @p minecraft:netherite_axe 1");
+                    "[chance]2[chanceEnd]give @s minecraft:netherite_axe 1");
         }
     }
 
@@ -366,6 +409,8 @@ public class ConfigInitializer {
             }
             if (!Services.CONFIG.arrayKeyExists(dir, file, "attribute_name")) {
                 Services.CONFIG.setStringValue(dir, file, "attribute_name", getDefaultAttributeName(i));
+            } else {
+                migrateLegacyDisplayAttributeName(dir, file, i);
             }
             if (!Services.CONFIG.arrayKeyExists(dir, file, "display_modifer")) {
                 Services.CONFIG.setNumberValue(dir, file, "display_modifer", 1);
@@ -396,16 +441,28 @@ public class ConfigInitializer {
 
     private static String getDefaultAttributeName(int id) {
         return switch (id) {
-            case 1 -> "generic.max_health";
-            case 2 -> "generic.attack_damage";
-            case 3 -> "generic.attack_speed";
-            case 4 -> "generic.armor";
-            case 5 -> "generic.movement_speed";
-            case 6 -> "generic.knockback_resistance";
-            case 7 -> "generic.armor_toughness";
-            case 8 -> "generic.luck";
+            case 1 -> "max_health";
+            case 2 -> "attack_damage";
+            case 3 -> "attack_speed";
+            case 4 -> "armor";
+            case 5 -> "movement_speed";
+            case 6 -> "knockback_resistance";
+            case 7 -> "armor_toughness";
+            case 8 -> "luck";
             default -> "";
         };
+    }
+
+    private static void migrateLegacyDisplayAttributeName(String dir, String file, int id) {
+        String expected = getDefaultAttributeName(id);
+        if (expected.isEmpty()) {
+            return;
+        }
+
+        String current = Services.CONFIG.getStringValue(dir, file, "attribute_name");
+        if (current != null && current.startsWith("generic.")) {
+            Services.CONFIG.setStringValue(dir, file, "attribute_name", expected);
+        }
     }
 
     private static void createDisplaySettings() {

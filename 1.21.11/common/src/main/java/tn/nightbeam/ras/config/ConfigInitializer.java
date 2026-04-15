@@ -183,13 +183,13 @@ public class ConfigInitializer {
 
     private static String getDefaultCommand(int id) {
         return switch (id) {
-            case 1 -> "/attribute @p minecraft:max_health base set [param(2)]";
-            case 2 -> "/attribute @p minecraft:attack_damage base set [param(1)]";
-            case 3 -> "/attribute @p minecraft:attack_speed base set [param(0.1)]";
-            case 4 -> "/attribute @p minecraft:armor base set [param(1)]";
-            case 5 -> "/attribute @p minecraft:movement_speed base set [param(0.005)]";
-            case 6 -> "/attribute @p minecraft:knockback_resistance base set [param(0.05)]";
-            case 7 -> "/attribute @p minecraft:luck base set [param(1)]";
+            case 1 -> "/attribute @s minecraft:max_health base set [param(2)]";
+            case 2 -> "/attribute @s minecraft:attack_damage base set [param(1)]";
+            case 3 -> "/attribute @s minecraft:attack_speed base set [param(0.1)]";
+            case 4 -> "/attribute @s minecraft:armor base set [param(1)]";
+            case 5 -> "/attribute @s minecraft:movement_speed base set [param(0.005)]";
+            case 6 -> "/attribute @s minecraft:knockback_resistance base set [param(0.05)]";
+            case 7 -> "/attribute @s minecraft:luck base set [param(1)]";
             default -> "";
         };
     }
@@ -229,7 +229,7 @@ public class ConfigInitializer {
     }
 
     private static String getDefaultEvent(int id) {
-        return id == 1 ? "effect give @p minecraft:instant_health 2 3" : "";
+        return id == 1 ? "effect give @s minecraft:instant_health 2 3" : "";
     }
 
     private static String getDefaultTip(int id) {

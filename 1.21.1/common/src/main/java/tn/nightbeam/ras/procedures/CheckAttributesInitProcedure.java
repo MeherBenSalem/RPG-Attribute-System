@@ -9,8 +9,10 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 
 public class CheckAttributesInitProcedure {
 	public static void execute(Entity entity) {
-		if (entity == null)
+		if (!(entity instanceof net.minecraft.world.entity.player.Player player) || player.level().isClientSide())
 			return;
+
+		entity = player;
 
 		String directory = "ras/attributes";
 

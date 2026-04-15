@@ -8,8 +8,10 @@ import net.minecraft.world.entity.Entity;
 
 public class OnPlayerSpawnProcedure {
     public static void execute(Entity entity) {
-        if (entity == null)
+        if (!(entity instanceof net.minecraft.world.entity.player.Player player) || player.level().isClientSide())
             return;
+
+        entity = player;
 
         tn.nightbeam.ras.Constants.LOG.info("OnPlayerSpawnProcedure: execute called for entity {}",
                 entity.getName().getString());

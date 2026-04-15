@@ -8,8 +8,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
 public class CheckAttributesInitProcedure {
 	public static void execute(Entity entity) {
-		if (entity == null)
+		if (!(entity instanceof net.minecraft.world.entity.player.Player player) || player.level().isClientSide())
 			return;
+		entity = player;
 		double index = 0;
 		double commandParam = 0;
 		double finalValue = 0;

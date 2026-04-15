@@ -35,6 +35,11 @@ PlayerVariables capability = Services.PLATFORM.getPlayerVariables(entity);
 			
 }
 		}
+		{
+PlayerVariables capability = Services.PLATFORM.getPlayerVariables(entity);
+			capability.attributes.clear();
+			Services.PLATFORM.syncPlayerVariables(capability, entity);
+		}
 		OnPlayerSpawnProcedure.execute(entity);
 	}
 }
