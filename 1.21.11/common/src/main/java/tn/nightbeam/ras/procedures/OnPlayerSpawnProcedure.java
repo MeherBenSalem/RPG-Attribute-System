@@ -13,33 +13,15 @@ public class OnPlayerSpawnProcedure {
             return;
         }
 
-        tn.nightbeam.ras.Constants.LOG.info("OnPlayerSpawnProcedure: applying stats for {} ({})",
+        tn.nightbeam.ras.Constants.LOG.info("RAS load/apply: start player={} uuid={}",
                 player.getName().getString(), player.getStringUUID());
 
+        LevelingService.initializeOrMigrate(player);
         PlayerVariables vars = Services.PLATFORM.getPlayerVariables(player);
-        double currentLevel = vars.Level;
-        tn.nightbeam.ras.Constants.LOG.info("OnPlayerSpawnProcedure: current Level = {}", currentLevel);
+        tn.nightbeam.ras.Constants.LOG.info("RAS load/apply: loaded uuid={} level={} sparePoints={} attributes={}",
+                player.getStringUUID(), vars.Level, vars.SparePoints, vars.attributes.size());
 
-        if (currentLevel <= 0 && vars.attributes.isEmpty()) {
-            initializeAttributes(player);
-
-            double initVal = Services.CONFIG.getNumberValue("ras/attributes", "settings", "init_val_starting_level");
-            tn.nightbeam.ras.Constants.LOG.info("OnPlayerSpawnProcedure: init_val_starting_level from config = {}",
-                    initVal);
-
-            if (!(Services.PLATFORM.getPlayerVariables(player).SparePoints > initVal)) {
-                double _setval = Services.CONFIG.getNumberValue("ras", "settings", "first_level_vp");
-                tn.nightbeam.ras.Constants.LOG.info("OnPlayerSpawnProcedure: Setting nextevelXp = {}", _setval);
-                PlayerVariables capability = Services.PLATFORM.getPlayerVariables(player);
-                capability.nextevelXp = _setval;
-                Services.PLATFORM.syncPlayerVariables(capability, player);
-            }
-            if (Services.PLATFORM.getPlayerVariables(player).SparePoints <= 0) {
-                tn.nightbeam.ras.Constants.LOG.info("OnPlayerSpawnProcedure: SparePoints <= 0, setting to {}", initVal);
-                PlayerVariables capability = Services.PLATFORM.getPlayerVariables(player);
-                capability.SparePoints = initVal;
-                Services.PLATFORM.syncPlayerVariables(capability, player);
-            }
+        if (initializeMissingAttributes(player, vars)) {
             CheckAttributesInitProcedure.execute(player);
         }
 
@@ -60,25 +42,42 @@ public class OnPlayerSpawnProcedure {
 
             OnPlayerSpawnAttributeGenericProcedure.execute(player, i);
         }
+        Services.PLATFORM.syncPlayerVariables(vars, player);
+        tn.nightbeam.ras.Constants.LOG.info("RAS load/apply: complete uuid={} attributes={}",
+                player.getStringUUID(), vars.attributes.size());
     }
 
-    private static void initializeAttributes(Entity entity) {
+    public static void resetAttributesToInitial(Entity entity) {
+        if (!(entity instanceof Player player) || player.level().isClientSide()) {
+            return;
+        }
+        PlayerVariables vars = Services.PLATFORM.getPlayerVariables(player);
+        vars.attributes.clear();
         for (String attrIdStr : new java.util.ArrayList<>(tn.nightbeam.ras.util.AttributeManager.getAttributeIds())) {
-            int i = 0;
             try {
-                i = Integer.parseInt(attrIdStr.replace("attribute_", ""));
+                vars.attributes.put(attrIdStr,
+                        Services.CONFIG.getNumberValue("ras/attributes", attrIdStr, "init_val_attribute"));
             } catch (NumberFormatException e) {
                 continue;
             }
-
-            setAttribute(entity, attrIdStr, "init_val_attribute", i);
         }
+        Services.PLATFORM.syncPlayerVariables(vars, player);
+        tn.nightbeam.ras.Constants.LOG.info("RAS reset: restored initial attributes for uuid={} count={}",
+                player.getStringUUID(), vars.attributes.size());
     }
 
-    private static void setAttribute(Entity entity, String attrName, String configKey, int attrIndex) {
-        double _setval = Services.CONFIG.getNumberValue("ras/attributes", attrName, configKey);
-        PlayerVariables capability = Services.PLATFORM.getPlayerVariables(entity);
-        capability.attributes.put(attrName, _setval);
-        Services.PLATFORM.syncPlayerVariables(capability, entity);
+    private static boolean initializeMissingAttributes(Entity entity, PlayerVariables vars) {
+        boolean changed = false;
+        for (String attrIdStr : new java.util.ArrayList<>(tn.nightbeam.ras.util.AttributeManager.getAttributeIds())) {
+            if (!vars.attributes.containsKey(attrIdStr)) {
+                vars.attributes.put(attrIdStr,
+                        Services.CONFIG.getNumberValue("ras/attributes", attrIdStr, "init_val_attribute"));
+                changed = true;
+            }
+        }
+        if (changed) {
+            Services.PLATFORM.syncPlayerVariables(vars, entity);
+        }
+        return changed;
     }
 }

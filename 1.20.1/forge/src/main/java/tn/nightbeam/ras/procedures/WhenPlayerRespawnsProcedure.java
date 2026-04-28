@@ -25,42 +25,7 @@ public class WhenPlayerRespawnsProcedure {
 		if (entity == null)
 			return;
 		if (JaumlConfigLib.getBooleanValue("ras", "settings", "on_death_reset")) {
-			{
-				double _setval = 0;
-				{
-PlayerVariables capability = Services.PLATFORM.getPlayerVariables(entity);
-					capability.Level = _setval;
-					Services.PLATFORM.syncPlayerVariables(capability, entity);
-				
-}
-			}
-			{
-				double _setval = 0;
-				{
-PlayerVariables capability = Services.PLATFORM.getPlayerVariables(entity);
-					capability.currentXpTLevel = _setval;
-					Services.PLATFORM.syncPlayerVariables(capability, entity);
-				
-}
-			}
-			{
-				double _setval = 100;
-				{
-PlayerVariables capability = Services.PLATFORM.getPlayerVariables(entity);
-					capability.nextevelXp = _setval;
-					Services.PLATFORM.syncPlayerVariables(capability, entity);
-				
-}
-			}
-			{
-				double _setval = 0;
-				{
-PlayerVariables capability = Services.PLATFORM.getPlayerVariables(entity);
-					capability.SparePoints = _setval;
-					Services.PLATFORM.syncPlayerVariables(capability, entity);
-				
-}
-			}
+			LevelingService.resetProgress(entity);
 		}
 		OnPlayerSpawnProcedure.execute(entity);
 	}

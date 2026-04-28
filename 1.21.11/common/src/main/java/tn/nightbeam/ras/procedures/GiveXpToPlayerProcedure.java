@@ -23,10 +23,8 @@ public class GiveXpToPlayerProcedure {
 				}
 			}.getEntity());
 			if (_ent != null) {
-				ProcedureCommandHelper.executeAsEntity(_ent,
-						"ras add xp " + DoubleArgumentType.getDouble(arguments, "amount"));
+				LevelingService.addXp(_ent, DoubleArgumentType.getDouble(arguments, "amount"));
 			}
 		}
 	}
 }
-

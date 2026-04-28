@@ -22,9 +22,8 @@ public class NeoForgeEvents {
         if (!event.getEntity().level().isClientSide() && event.getEntity() instanceof ServerPlayer serverPlayer) {
             // Sync config and variables
             Services.PLATFORM.syncAttributeConfig(serverPlayer);
-            Services.PLATFORM.syncPlayerVariables(Services.PLATFORM.getPlayerVariables(serverPlayer), serverPlayer);
-            // Run spawn procedure
             tn.nightbeam.ras.procedures.OnPlayerSpawnProcedure.execute(serverPlayer);
+            Services.PLATFORM.syncPlayerVariables(Services.PLATFORM.getPlayerVariables(serverPlayer), serverPlayer);
         }
     }
 
@@ -33,12 +32,7 @@ public class NeoForgeEvents {
         if (!event.getEntity().level().isClientSide() && event.getEntity() instanceof ServerPlayer serverPlayer) {
             // Logic from WhenPlayerRespawnsProcedure
             if (Services.CONFIG.getBooleanValue("ras", "settings", "on_death_reset")) {
-                PlayerVariables vars = Services.PLATFORM.getPlayerVariables(serverPlayer);
-                vars.Level = 0;
-                vars.currentXpTLevel = 0;
-                vars.nextevelXp = 100;
-                vars.SparePoints = 0;
-                Services.PLATFORM.syncPlayerVariables(vars, serverPlayer);
+                tn.nightbeam.ras.procedures.LevelingService.resetProgress(serverPlayer);
             }
             tn.nightbeam.ras.procedures.OnPlayerSpawnProcedure.execute(serverPlayer);
             Services.PLATFORM.syncPlayerVariables(Services.PLATFORM.getPlayerVariables(serverPlayer), serverPlayer);
@@ -48,6 +42,7 @@ public class NeoForgeEvents {
     @SubscribeEvent
     public static void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
         if (!event.getEntity().level().isClientSide() && event.getEntity() instanceof ServerPlayer serverPlayer) {
+            tn.nightbeam.ras.procedures.OnPlayerSpawnProcedure.execute(serverPlayer);
             Services.PLATFORM.syncPlayerVariables(Services.PLATFORM.getPlayerVariables(serverPlayer), serverPlayer);
         }
     }
@@ -58,24 +53,27 @@ public class NeoForgeEvents {
         // readNBT now clears the attribute map first, so no stale keys survive.
         Services.PLATFORM.getPlayerVariables(event.getEntity())
                 .readNBT(Services.PLATFORM.getPlayerVariables(event.getOriginal()).writeNBT());
-    }
-
-    @SubscribeEvent
-    public static void onLivingDeath(net.neoforged.neoforge.event.entity.living.LivingDeathEvent event) {
-        if (event.getSource().getEntity() instanceof ServerPlayer player) {
-            double xpAmount = 10.0;
-            tn.nightbeam.ras.procedures.GiveXpCmdProcedure.execute(player.level(), player.getX(), player.getY(),
-                    player.getZ(),
-                    xpAmount, player);
+        if (!event.getEntity().level().isClientSide()) {
+            tn.nightbeam.ras.procedures.OnPlayerSpawnProcedure.execute(event.getEntity());
+            Services.PLATFORM.syncPlayerVariables(Services.PLATFORM.getPlayerVariables(event.getEntity()),
+                    event.getEntity());
         }
     }
 
     @SubscribeEvent
+    public static void onLivingDeath(net.neoforged.neoforge.event.entity.living.LivingDeathEvent event) {
+        tn.nightbeam.ras.procedures.GameplayRulesProcedure.handleEntityKill(event.getEntity().level(),
+                event.getSource().getEntity(), event.getEntity());
+    }
+
+    @SubscribeEvent
     public static void onBlockBreak(net.neoforged.neoforge.event.level.BlockEvent.BreakEvent event) {
-        if (shouldCancelBlockBreak(event.getState(), event.getPlayer())) {
+        if (shouldCancelBlockBreak(event.getState(), event.getPlayer())
+                || tn.nightbeam.ras.procedures.GameplayRulesProcedure.shouldCancelBlockBreak(event.getState(),
+                        event.getPlayer())) {
             if (!event.getPlayer().level().isClientSide()) {
-                event.getPlayer().sendSystemMessage(
-                        net.minecraft.network.chat.Component.literal("\u00A74You can't break this block yet"));
+                tn.nightbeam.ras.procedures.GameplayRulesProcedure.sendBlockRequirementMessage(event.getState(),
+                        event.getPlayer());
             }
             event.setCanceled(true);
         }

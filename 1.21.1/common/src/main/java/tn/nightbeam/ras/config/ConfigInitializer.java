@@ -15,6 +15,7 @@ public class ConfigInitializer {
         createDefaultAttributes();
         createDropRateConfig();
         createItemsLockConfig();
+        createBlocksLockConfig();
         createLevelUpRewardsConfig();
         createAttributesDisplayConfig();
         createDisplaySettings();
@@ -62,6 +63,42 @@ public class ConfigInitializer {
                     "[range]101-200[rangeEnd][scale]1.01[scaleEnd]");
             Services.CONFIG.addStringToArray(dir, file, "levels_scale_interval",
                     "[range]201-500[rangeEnd][scale]1.001[scaleEnd]");
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_start_level")) {
+            Services.CONFIG.setNumberValue(dir, file, "exp_curve_start_level", 1);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_max_level")) {
+            Services.CONFIG.setNumberValue(dir, file, "exp_curve_max_level", 500);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_first_level_xp")) {
+            Services.CONFIG.setNumberValue(dir, file, "exp_curve_first_level_xp",
+                    Services.CONFIG.getNumberValue(dir, file, "first_level_vp"));
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_default_scale")) {
+            Services.CONFIG.setNumberValue(dir, file, "exp_curve_default_scale",
+                    Services.CONFIG.getNumberValue(dir, file, "levels_scale_default"));
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_scale_intervals")) {
+            for (String interval : Services.CONFIG.getArrayAsList(dir, file, "levels_scale_interval")) {
+                Services.CONFIG.addStringToArray(dir, file, "exp_curve_scale_intervals", interval);
+            }
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_required_per_level")) {
+            Services.CONFIG.addStringToArray(dir, file, "exp_required_per_level",
+                    "[level]1[levelEnd][xp]" + (int) Services.CONFIG.getNumberValue(dir, file, "first_level_vp")
+                            + "[xpEnd]");
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "allowSummonXP")) {
+            Services.CONFIG.setBooleanValue(dir, file, "allowSummonXP", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "shared_xp_enabled")) {
+            Services.CONFIG.setBooleanValue(dir, file, "shared_xp_enabled", false);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "shared_xp_radius")) {
+            Services.CONFIG.setNumberValue(dir, file, "shared_xp_radius", 16);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "shared_xp_percentage")) {
+            Services.CONFIG.setNumberValue(dir, file, "shared_xp_percentage", 50);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "show_vp_inaction_bar")) {
             Services.CONFIG.setBooleanValue(dir, file, "show_vp_inaction_bar", true);
@@ -113,6 +150,8 @@ public class ConfigInitializer {
                 } else {
                     Services.CONFIG.addStringToArray(dir, file, "cmd_to_exc", "");
                 }
+            } else {
+                migrateLegacyAttributeCommand(dir, file, i);
             }
 
             if (!Services.CONFIG.arrayKeyExists(dir, file, "on_level_event")) {
@@ -181,15 +220,49 @@ public class ConfigInitializer {
 
     private static String getDefaultCommand(int id) {
         return switch (id) {
-            case 1 -> "/attribute @s generic.max_health base set [param(2)]";
-            case 2 -> "/attribute @s generic.attack_damage base set [param(1)]";
-            case 3 -> "/attribute @s generic.attack_speed base set [param(0.1)]";
-            case 4 -> "/attribute @s generic.armor base set [param(1)]";
-            case 5 -> "/attribute @s generic.movement_speed base set [param(0.005)]";
-            case 6 -> "/attribute @s generic.knockback_resistance base set [param(0.05)]";
-            case 7 -> "/attribute @s generic.luck base set [param(1)]";
+            case 1 -> "/attribute @s minecraft:max_health base set [param(2)]";
+            case 2 -> "/attribute @s minecraft:attack_damage base set [param(1)]";
+            case 3 -> "/attribute @s minecraft:attack_speed base set [param(0.1)]";
+            case 4 -> "/attribute @s minecraft:armor base set [param(1)]";
+            case 5 -> "/attribute @s minecraft:movement_speed base set [param(0.005)]";
+            case 6 -> "/attribute @s minecraft:knockback_resistance base set [param(0.05)]";
+            case 7 -> "/attribute @s minecraft:luck base set [param(1)]";
             default -> "";
         };
+    }
+
+    private static void migrateLegacyAttributeCommand(String dir, String file, int id) {
+        String expected = getDefaultCommand(id);
+        if (expected.isEmpty()) {
+            return;
+        }
+
+        java.util.List<String> commands = Services.CONFIG.getStringArray(dir, file, "cmd_to_exc");
+        if (commands == null || commands.isEmpty()) {
+            Services.CONFIG.addStringToArray(dir, file, "cmd_to_exc", expected);
+            return;
+        }
+
+        boolean hasExpected = false;
+        boolean hasLegacyGeneric = false;
+
+        for (String command : commands) {
+            if (command == null) {
+                continue;
+            }
+            if (command.equals(expected)) {
+                hasExpected = true;
+            }
+            if (command.contains("generic.")) {
+                hasLegacyGeneric = true;
+            }
+        }
+
+        // Preserve user custom entries but append the corrected one when the old
+        // generic.* attribute id format is still present.
+        if (!hasExpected && hasLegacyGeneric) {
+            Services.CONFIG.addStringToArray(dir, file, "cmd_to_exc", expected);
+        }
     }
 
     private static String getDefaultEvent(int id) {
@@ -265,6 +338,26 @@ public class ConfigInitializer {
                     "[item]minecraft:netherite_shovel[itemEnd][attribute]2[attributeEnd][level]20[levelEnd]");
             Services.CONFIG.addStringToArray(dir, file, "items_list",
                     "[item]minecraft:netherite_hoe[itemEnd][attribute]2[attributeEnd][level]20[levelEnd]");
+        }
+    }
+
+    private static void createBlocksLockConfig() {
+        String dir = "ras";
+        String file = "blocks_lock";
+        Services.CONFIG.createConfigFile(dir, file);
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "enabled")) {
+            Services.CONFIG.setBooleanValue(dir, file, "enabled", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "show_feedback")) {
+            Services.CONFIG.setBooleanValue(dir, file, "show_feedback", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "blocks_list")) {
+            Services.CONFIG.addStringToArray(dir, file, "blocks_list",
+                    "[block]minecraft:diamond_ore[blockEnd][level]10[levelEnd]");
+            Services.CONFIG.addStringToArray(dir, file, "blocks_list",
+                    "[block]minecraft:deepslate_diamond_ore[blockEnd][level]10[levelEnd]");
+            Services.CONFIG.addStringToArray(dir, file, "blocks_list",
+                    "[block]minecraft:ancient_debris[blockEnd][level]20[levelEnd]");
         }
     }
 
@@ -373,6 +466,8 @@ public class ConfigInitializer {
             }
             if (!Services.CONFIG.arrayKeyExists(dir, file, "attribute_name")) {
                 Services.CONFIG.setStringValue(dir, file, "attribute_name", getDefaultAttributeName(i));
+            } else {
+                migrateLegacyDisplayAttributeName(dir, file, i);
             }
             if (!Services.CONFIG.arrayKeyExists(dir, file, "display_modifer")) {
                 Services.CONFIG.setNumberValue(dir, file, "display_modifer", 1);
@@ -403,16 +498,28 @@ public class ConfigInitializer {
 
     private static String getDefaultAttributeName(int id) {
         return switch (id) {
-            case 1 -> "generic.max_health";
-            case 2 -> "generic.attack_damage";
-            case 3 -> "generic.attack_speed";
-            case 4 -> "generic.armor";
-            case 5 -> "generic.movement_speed";
-            case 6 -> "generic.knockback_resistance";
-            case 7 -> "generic.armor_toughness";
-            case 8 -> "generic.luck";
+            case 1 -> "max_health";
+            case 2 -> "attack_damage";
+            case 3 -> "attack_speed";
+            case 4 -> "armor";
+            case 5 -> "movement_speed";
+            case 6 -> "knockback_resistance";
+            case 7 -> "armor_toughness";
+            case 8 -> "luck";
             default -> "";
         };
+    }
+
+    private static void migrateLegacyDisplayAttributeName(String dir, String file, int id) {
+        String expected = getDefaultAttributeName(id);
+        if (expected.isEmpty()) {
+            return;
+        }
+
+        String current = Services.CONFIG.getStringValue(dir, file, "attribute_name");
+        if (current != null && current.startsWith("generic.")) {
+            Services.CONFIG.setStringValue(dir, file, "attribute_name", expected);
+        }
     }
 
     private static void createDisplaySettings() {

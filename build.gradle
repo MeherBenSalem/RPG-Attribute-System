@@ -33,29 +33,22 @@ tasks.register('build1211v', Exec) {
 
 tasks.register('build261', Exec) {
     group = 'build'
-    description = 'Build all 26.1 loaders (Fabric + NeoForge).'
-    workingDir = file('26.1')
-    commandLine wrapperCmd('26.1'), 'build'
-}
-
-tasks.register('build2611', Exec) {
-    group = 'build'
-    description = 'Build all 26.1.1 loaders (Fabric + NeoForge).'
-    workingDir = file('26.1.1')
-    commandLine wrapperCmd('26.1.1'), 'build'
+    description = 'Build all 26.1.2 loaders (Fabric + NeoForge).'
+    workingDir = file('26.1.2')
+    commandLine wrapperCmd('26.1.2'), 'build'
 }
 
 tasks.register('dist') {
     group = 'build'
     description = 'Build ALL versions and copy every mod JAR into dist/.'
-    dependsOn 'build1201', 'build1211', 'build1211v', 'build2611'
+    dependsOn 'build1201', 'build1211', 'build1211v', 'build261'
     doLast {
-        def outDir = file('dist')
+        def outDir = file('all-jars')
         outDir.mkdirs()
         ['1.20.1/fabric', '1.20.1/forge',
          '1.21.1/fabric', '1.21.1/neoforge',
          '1.21.11/fabric', '1.21.11/neoforge',
-         '26.1.1/fabric', '26.1.1/neoforge'].each { modDir ->
+         '26.1.2/fabric', '26.1.2/neoforge'].each { modDir ->
             def libsDir = file("${modDir}/build/libs")
             if (libsDir.exists()) {
                 fileTree(libsDir).matching {
@@ -79,14 +72,14 @@ tasks.register('dist') {
 
 tasks.register('buildAll') {
     group = 'build'
-    description = 'Build ALL versions (1.20.1, 1.21.1, 1.21.11, 26.1.1) and collect JARs into dist/.'
+    description = 'Build ALL versions (1.20.1, 1.21.1, 1.21.11, 26.1.2) and collect JARs into dist/.'
     dependsOn 'dist'
 }
 
 tasks.register('testVersions') {
     group = 'verification'
     description = 'Build all four version roots for quick verification.'
-    dependsOn 'build1201', 'build1211', 'build1211v', 'build2611'
+    dependsOn 'build1201', 'build1211', 'build1211v', 'build261'
 }
 
 // ──────────────────────────────────────────────
@@ -124,22 +117,12 @@ tasks.register('run1211vNeoForge', Exec) {
 }
 
 tasks.register('run261Fabric', Exec) {
-    workingDir = file('26.1')
-    commandLine wrapperCmd('26.1'), ':fabric:runClient'
+    workingDir = file('26.1.2')
+    commandLine wrapperCmd('26.1.2'), ':fabric:runClient'
 }
 
 tasks.register('run261NeoForge', Exec) {
-    workingDir = file('26.1')
-    commandLine wrapperCmd('26.1'), ':neoforge:runClient'
-}
-
-tasks.register('run2611Fabric', Exec) {
-    workingDir = file('26.1.1')
-    commandLine wrapperCmd('26.1.1'), ':fabric:runClient'
-}
-
-tasks.register('run2611NeoForge', Exec) {
-    workingDir = file('26.1.1')
-    commandLine wrapperCmd('26.1.1'), ':neoforge:runClient'
+    workingDir = file('26.1.2')
+    commandLine wrapperCmd('26.1.2'), ':neoforge:runClient'
 }
 

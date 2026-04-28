@@ -47,18 +47,7 @@ public class AddPointsAttributeGenericProcedure {
                     setAttributeValue(vars, attributeId, newValue);
                     Services.PLATFORM.syncPlayerVariables(vars, entity);
 
-                    // Increment Level (wait, is 'Level' global or per attribute? The original code
-                    // did 'vars.Level + 1')
-                    // Original: Services.PLATFORM.getPlayerVariables(entity).Level + 1;
-                    // It seems to be a global level? Or attribute level?
-                    // "Level" field in PlayerVariables usually implies Character Level or Total
-                    // Level.
-                    // But here it increments PER POINT? "Level up" logic? Use the generic 'Level'
-                    // field.
-                    vars.Level = vars.Level + 1;
-                    Services.PLATFORM.syncPlayerVariables(vars, entity);
-
-                    OnPlayerSpawnProcedure.execute(entity);
+                    OnPlayerSpawnAttributeGenericProcedure.execute(entity, attributeId);
 
                     // Refetch value for loop condition safety (though vars reference is same object
                     // usually)

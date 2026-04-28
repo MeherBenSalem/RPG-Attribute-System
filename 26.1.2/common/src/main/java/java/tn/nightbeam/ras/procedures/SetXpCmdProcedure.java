@@ -21,15 +21,7 @@ public class SetXpCmdProcedure {
             return;
 
         double val = DoubleArgumentType.getDouble(arguments, "amount");
-        {
-            PlayerVariables vars = Services.PLATFORM.getPlayerVariables(entity);
-            vars.currentXpTLevel = val;
-            Services.PLATFORM.syncPlayerVariables(vars, entity);
-        }
-        if (Services.PLATFORM.getPlayerVariables(entity).Level >= Services.CONFIG.getNumberValue("ras", "settings",
-                "max_player_level")) {
-            return;
-        }
+        LevelingService.setTotalXp(entity, val);
         if (world instanceof Level _level) {
             SoundEvent xpSound = BuiltInRegistries.SOUND_EVENT
                     .get(Identifier.tryParse("entity.experience_orb.pickup"))
@@ -45,16 +37,6 @@ public class SetXpCmdProcedure {
                 _level.playLocalSound(x, y, z,
                         xpSound, SoundSource.NEUTRAL, 1, 1, false);
             }
-        }
-        while (Services.PLATFORM.getPlayerVariables(entity).currentXpTLevel >= Services.PLATFORM
-                .getPlayerVariables(entity).nextevelXp) {
-            {
-                PlayerVariables vars = Services.PLATFORM.getPlayerVariables(entity);
-                double _setval = vars.currentXpTLevel - vars.nextevelXp;
-                vars.currentXpTLevel = _setval;
-                Services.PLATFORM.syncPlayerVariables(vars, entity);
-            }
-            LevelUpProcedureProcedure.execute(world, entity);
         }
     }
 }

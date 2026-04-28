@@ -10,6 +10,8 @@ public class PlayerVariables {
     public double currentXpTLevel = 0.0;
     public double nextevelXp = 100.0;
     public double modifier = 1.0;
+    public double totalXp = -1.0;
+    public double pointsGrantedThroughLevel = -1.0;
 
     // Dynamic Attribute Map
     public java.util.Map<String, Double> attributes = new java.util.HashMap<>();
@@ -21,6 +23,8 @@ public class PlayerVariables {
         nbt.putDouble("currentXpTLevel", currentXpTLevel);
         nbt.putDouble("nextevelXp", nextevelXp);
         nbt.putDouble("modifier", modifier);
+        nbt.putDouble("totalXp", totalXp);
+        nbt.putDouble("pointsGrantedThroughLevel", pointsGrantedThroughLevel);
 
         // Write Dynamic Attributes
         CompoundTag attributesTag = new CompoundTag();
@@ -39,12 +43,16 @@ public class PlayerVariables {
             currentXpTLevel = nbt.getDouble("currentXpTLevel");
             nextevelXp = nbt.getDouble("nextevelXp");
             modifier = nbt.getDouble("modifier");
+            totalXp = nbt.contains("totalXp") ? nbt.getDouble("totalXp") : -1.0;
+            pointsGrantedThroughLevel = nbt.contains("pointsGrantedThroughLevel")
+                    ? nbt.getDouble("pointsGrantedThroughLevel")
+                    : -1.0;
+
+            attributes.clear();
 
             // Read Dynamic Attributes
             if (nbt.contains("attributes_dynamic")) {
                 CompoundTag attributesTag = nbt.getCompound("attributes_dynamic");
-                // Clear stale keys before repopulating so no ghost values survive across syncs/clones.
-                attributes.clear();
                 for (String key : attributesTag.getAllKeys()) {
                     attributes.put(key, attributesTag.getDouble(key));
                 }

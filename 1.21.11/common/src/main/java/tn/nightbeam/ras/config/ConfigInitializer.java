@@ -15,6 +15,7 @@ public class ConfigInitializer {
         createDefaultAttributes();
         createDropRateConfig();
         createItemsLockConfig();
+        createBlocksLockConfig();
         createLevelUpRewardsConfig();
         createAttributesDisplayConfig();
         createDisplaySettings();
@@ -62,6 +63,42 @@ public class ConfigInitializer {
                     "[range]101-200[rangeEnd][scale]1.01[scaleEnd]");
             Services.CONFIG.addStringToArray(dir, file, "levels_scale_interval",
                     "[range]201-500[rangeEnd][scale]1.001[scaleEnd]");
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_start_level")) {
+            Services.CONFIG.setNumberValue(dir, file, "exp_curve_start_level", 1);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_max_level")) {
+            Services.CONFIG.setNumberValue(dir, file, "exp_curve_max_level", 500);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_first_level_xp")) {
+            Services.CONFIG.setNumberValue(dir, file, "exp_curve_first_level_xp",
+                    Services.CONFIG.getNumberValue(dir, file, "first_level_vp"));
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_default_scale")) {
+            Services.CONFIG.setNumberValue(dir, file, "exp_curve_default_scale",
+                    Services.CONFIG.getNumberValue(dir, file, "levels_scale_default"));
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_scale_intervals")) {
+            for (String interval : Services.CONFIG.getArrayAsList(dir, file, "levels_scale_interval")) {
+                Services.CONFIG.addStringToArray(dir, file, "exp_curve_scale_intervals", interval);
+            }
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_required_per_level")) {
+            Services.CONFIG.addStringToArray(dir, file, "exp_required_per_level",
+                    "[level]1[levelEnd][xp]" + (int) Services.CONFIG.getNumberValue(dir, file, "first_level_vp")
+                            + "[xpEnd]");
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "allowSummonXP")) {
+            Services.CONFIG.setBooleanValue(dir, file, "allowSummonXP", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "shared_xp_enabled")) {
+            Services.CONFIG.setBooleanValue(dir, file, "shared_xp_enabled", false);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "shared_xp_radius")) {
+            Services.CONFIG.setNumberValue(dir, file, "shared_xp_radius", 16);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "shared_xp_percentage")) {
+            Services.CONFIG.setNumberValue(dir, file, "shared_xp_percentage", 50);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "show_vp_inaction_bar")) {
             Services.CONFIG.setBooleanValue(dir, file, "show_vp_inaction_bar", true);
@@ -301,6 +338,26 @@ public class ConfigInitializer {
                     "[item]minecraft:netherite_shovel[itemEnd][attribute]2[attributeEnd][level]20[levelEnd]");
             Services.CONFIG.addStringToArray(dir, file, "items_list",
                     "[item]minecraft:netherite_hoe[itemEnd][attribute]2[attributeEnd][level]20[levelEnd]");
+        }
+    }
+
+    private static void createBlocksLockConfig() {
+        String dir = "ras";
+        String file = "blocks_lock";
+        Services.CONFIG.createConfigFile(dir, file);
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "enabled")) {
+            Services.CONFIG.setBooleanValue(dir, file, "enabled", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "show_feedback")) {
+            Services.CONFIG.setBooleanValue(dir, file, "show_feedback", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "blocks_list")) {
+            Services.CONFIG.addStringToArray(dir, file, "blocks_list",
+                    "[block]minecraft:diamond_ore[blockEnd][level]10[levelEnd]");
+            Services.CONFIG.addStringToArray(dir, file, "blocks_list",
+                    "[block]minecraft:deepslate_diamond_ore[blockEnd][level]10[levelEnd]");
+            Services.CONFIG.addStringToArray(dir, file, "blocks_list",
+                    "[block]minecraft:ancient_debris[blockEnd][level]20[levelEnd]");
         }
     }
 

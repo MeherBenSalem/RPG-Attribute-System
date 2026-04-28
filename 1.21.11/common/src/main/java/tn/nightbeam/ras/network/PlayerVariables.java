@@ -10,6 +10,8 @@ public class PlayerVariables {
     public double currentXpTLevel = 0.0;
     public double nextevelXp = 100.0;
     public double modifier = 1.0;
+    public double totalXp = -1.0;
+    public double pointsGrantedThroughLevel = -1.0;
 
     // Dynamic Attribute Map
     public java.util.Map<String, Double> attributes = new java.util.HashMap<>();
@@ -21,6 +23,8 @@ public class PlayerVariables {
         nbt.putDouble("currentXpTLevel", currentXpTLevel);
         nbt.putDouble("nextevelXp", nextevelXp);
         nbt.putDouble("modifier", modifier);
+        nbt.putDouble("totalXp", totalXp);
+        nbt.putDouble("pointsGrantedThroughLevel", pointsGrantedThroughLevel);
 
         // Write Dynamic Attributes
         CompoundTag attributesTag = new CompoundTag();
@@ -39,6 +43,10 @@ public class PlayerVariables {
             currentXpTLevel = nbt.getDouble("currentXpTLevel").orElse(0.0);
             nextevelXp = nbt.getDouble("nextevelXp").orElse(100.0);
             modifier = nbt.getDouble("modifier").orElse(1.0);
+            totalXp = nbt.contains("totalXp") ? nbt.getDouble("totalXp").orElse(-1.0) : -1.0;
+            pointsGrantedThroughLevel = nbt.contains("pointsGrantedThroughLevel")
+                    ? nbt.getDouble("pointsGrantedThroughLevel").orElse(-1.0)
+                    : -1.0;
 
             attributes.clear();
 

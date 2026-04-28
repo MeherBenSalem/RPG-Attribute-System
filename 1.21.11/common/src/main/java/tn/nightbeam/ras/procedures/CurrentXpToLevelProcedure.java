@@ -7,8 +7,8 @@ public class CurrentXpToLevelProcedure {
 	public static String execute(Entity entity) {
 		if (entity == null)
 			return "";
+		LevelingService.initializeOrMigrate(entity);
 		return new java.text.DecimalFormat("##").format(Services.PLATFORM.getPlayerVariables(entity).currentXpTLevel) + "/"
 				+ new java.text.DecimalFormat("##").format(Services.PLATFORM.getPlayerVariables(entity).nextevelXp);
 	}
 }
-

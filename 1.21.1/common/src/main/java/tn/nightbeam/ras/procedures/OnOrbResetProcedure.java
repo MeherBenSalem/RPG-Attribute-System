@@ -16,31 +16,6 @@ public class OnOrbResetProcedure {
 			ItemStack _stktoremove = new ItemStack(RpgAttributeSystemModItems.SCROLL_OF_REBIRTH.get());
 			_player.getInventory().clearOrCountMatchingItems(p -> _stktoremove.getItem() == p.getItem(), 1, _player.inventoryMenu.getCraftSlots());
 		}
-		{
-			double _setval = Services.PLATFORM.getPlayerVariables(entity).SparePoints
-					+ Services.PLATFORM.getPlayerVariables(entity).Level;
-			{
-PlayerVariables capability = Services.PLATFORM.getPlayerVariables(entity);
-				capability.SparePoints = _setval;
-				Services.PLATFORM.syncPlayerVariables(capability, entity);
-			
-}
-		}
-		{
-			double _setval = 0;
-			{
-PlayerVariables capability = Services.PLATFORM.getPlayerVariables(entity);
-				capability.Level = _setval;
-				Services.PLATFORM.syncPlayerVariables(capability, entity);
-			
-}
-		}
-		{
-PlayerVariables capability = Services.PLATFORM.getPlayerVariables(entity);
-			capability.attributes.clear();
-			Services.PLATFORM.syncPlayerVariables(capability, entity);
-		}
-		OnPlayerSpawnProcedure.execute(entity);
+		LevelingService.respec(entity);
 	}
 }
-

@@ -20,7 +20,7 @@ import java.util.List;
 public class DisableBlockBreakProcedure {
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        execute(event, event.getState(), event.getPlayer());
+        // Handled centrally by NeoForgeEvents to keep loader hooks thin.
     }
 
     private static void execute(ICancellableEvent event, BlockState blockstate, Entity entity) {

@@ -35,7 +35,6 @@ import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class RpgAttributeSystemModVariables {
-	public static double counter = 0;
 
 	@SubscribeEvent
 	public static void init(FMLCommonSetupEvent event) {
@@ -55,24 +54,28 @@ public class RpgAttributeSystemModVariables {
 		public static void onPlayerLoggedInSyncPlayerVariables(PlayerEvent.PlayerLoggedInEvent event) {
 			if (!event.getEntity().level().isClientSide()) {
 				tn.nightbeam.ras.platform.Services.PLATFORM.syncAttributeConfig((ServerPlayer) event.getEntity());
+				tn.nightbeam.ras.procedures.OnPlayerSpawnProcedure.execute(event.getEntity());
 				syncPlayerVariables((PlayerVariables) event.getEntity().getCapability(PLAYER_VARIABLES_CAPABILITY, null)
 						.orElse(new PlayerVariables()), event.getEntity());
-				tn.nightbeam.ras.procedures.OnPlayerSpawnProcedure.execute(event.getEntity());
 			}
 		}
 
 		@SubscribeEvent
 		public static void onPlayerRespawnedSyncPlayerVariables(PlayerEvent.PlayerRespawnEvent event) {
-			if (!event.getEntity().level().isClientSide())
+			if (!event.getEntity().level().isClientSide()) {
+				tn.nightbeam.ras.procedures.OnPlayerSpawnProcedure.execute(event.getEntity());
 				syncPlayerVariables((PlayerVariables) event.getEntity().getCapability(PLAYER_VARIABLES_CAPABILITY, null)
 						.orElse(new PlayerVariables()), event.getEntity());
+			}
 		}
 
 		@SubscribeEvent
 		public static void onPlayerChangedDimensionSyncPlayerVariables(PlayerEvent.PlayerChangedDimensionEvent event) {
-			if (!event.getEntity().level().isClientSide())
+			if (!event.getEntity().level().isClientSide()) {
+				tn.nightbeam.ras.procedures.OnPlayerSpawnProcedure.execute(event.getEntity());
 				syncPlayerVariables((PlayerVariables) event.getEntity().getCapability(PLAYER_VARIABLES_CAPABILITY, null)
 						.orElse(new PlayerVariables()), event.getEntity());
+			}
 		}
 
 		@SubscribeEvent
@@ -85,6 +88,8 @@ public class RpgAttributeSystemModVariables {
 			// Use NBT round-trip for a clean, complete copy — readNBT clears the
 			// attribute map first, preventing stale key survival across respawns.
 			clone.readNBT(original.writeNBT());
+			tn.nightbeam.ras.procedures.OnPlayerSpawnProcedure.execute(event.getEntity());
+			syncPlayerVariables(clone, event.getEntity());
 		}
 	}
 

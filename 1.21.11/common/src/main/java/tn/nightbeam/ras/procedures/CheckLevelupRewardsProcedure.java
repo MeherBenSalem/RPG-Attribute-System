@@ -29,7 +29,7 @@ public class CheckLevelupRewardsProcedure {
                         }
 
                         PlayerVariables vars = Services.PLATFORM.getPlayerVariables(target);
-                        if (vars.SparePoints + vars.Level == requiredLevel) {
+                        if (vars.Level == requiredLevel) {
                             String command = iterator.substring(iterator.indexOf("[levelEnd]") + 10);
                             executeCommand(target, command);
                             break;
@@ -42,7 +42,7 @@ public class CheckLevelupRewardsProcedure {
                 double randomRewardsLevel = Services.CONFIG.getNumberValue("ras", "levelup_rewards",
                         "random_rewards_level");
                 PlayerVariables vars = Services.PLATFORM.getPlayerVariables(target);
-                if (vars.SparePoints + vars.Level >= randomRewardsLevel) {
+                if (vars.Level >= randomRewardsLevel) {
                     for (String iterator : Services.CONFIG.getArrayAsList("ras", "levelup_rewards", "random_rewards")) {
                         if (iterator.contains("[chance]") && iterator.contains("[chanceEnd]")) {
                             double chance = 0;

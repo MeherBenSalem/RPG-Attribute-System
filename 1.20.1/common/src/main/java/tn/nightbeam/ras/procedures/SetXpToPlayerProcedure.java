@@ -24,9 +24,8 @@ public class SetXpToPlayerProcedure {
 					}
 				}
 			}.getEntity());
-			if (!_ent.level().isClientSide() && _ent.getServer() != null) {
-				_ent.getServer().getCommands().performPrefixedCommand(new CommandSourceStack(CommandSource.NULL, _ent.position(), _ent.getRotationVector(), _ent.level() instanceof ServerLevel ? (ServerLevel) _ent.level() : null, 4,
-						_ent.getName().getString(), _ent.getDisplayName(), _ent.level().getServer(), _ent), ("ras set xp " + DoubleArgumentType.getDouble(arguments, "amount")));
+			if (_ent != null) {
+				LevelingService.setTotalXp(_ent, DoubleArgumentType.getDouble(arguments, "amount"));
 			}
 		}
 	}

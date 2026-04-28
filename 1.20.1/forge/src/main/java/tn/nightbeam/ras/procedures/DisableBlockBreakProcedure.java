@@ -34,6 +34,13 @@ public class DisableBlockBreakProcedure {
 	private static void execute(@Nullable Event event, BlockState blockstate, Entity entity) {
 		if (entity == null)
 			return;
+		if (entity instanceof Player player && GameplayRulesProcedure.shouldCancelBlockBreak(blockstate, player)) {
+			if (!player.level().isClientSide())
+				GameplayRulesProcedure.sendBlockRequirementMessage(blockstate, player);
+			if (event != null && event.isCancelable())
+				event.setCanceled(true);
+			return;
+		}
 		boolean cancelEvent = false;
 		double attribute = 0;
 		double level = 0;

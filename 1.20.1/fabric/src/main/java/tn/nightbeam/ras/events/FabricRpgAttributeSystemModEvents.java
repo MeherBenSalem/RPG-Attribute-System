@@ -12,7 +12,10 @@ import net.minecraft.world.entity.LivingEntity;
 import tn.nightbeam.ras.platform.Services;
 import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.procedures.OnPlayerSpawnProcedure;
+import tn.nightbeam.ras.procedures.GameplayRulesProcedure;
+import tn.nightbeam.ras.procedures.LevelingService;
 import tn.nightbeam.ras.RpgAttributeSystemMod;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 
 public class FabricRpgAttributeSystemModEvents {
     // Ported from DisableBlockBreakProcedure
@@ -85,17 +88,14 @@ public class FabricRpgAttributeSystemModEvents {
             PlayerVariables oldVars = Services.PLATFORM.getPlayerVariables(oldPlayer);
             PlayerVariables newVars = Services.PLATFORM.getPlayerVariables(newPlayer);
             newVars.readNBT(oldVars.writeNBT());
+            OnPlayerSpawnProcedure.execute(newPlayer);
+            Services.PLATFORM.syncPlayerVariables(newVars, newPlayer);
         });
 
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
             // Logic from WhenPlayerRespawnsProcedure
             if (Services.CONFIG.getBooleanValue("ras", "settings", "on_death_reset")) {
-                PlayerVariables vars = Services.PLATFORM.getPlayerVariables(newPlayer);
-                vars.Level = 0;
-                vars.currentXpTLevel = 0;
-                vars.nextevelXp = 100;
-                vars.SparePoints = 0;
-                Services.PLATFORM.syncPlayerVariables(vars, newPlayer);
+                LevelingService.resetProgress(newPlayer);
             }
             OnPlayerSpawnProcedure.execute(newPlayer);
             // Sync updated vars to client after respawn — the new player entity has a fresh
@@ -105,17 +105,25 @@ public class FabricRpgAttributeSystemModEvents {
 
         net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             Services.PLATFORM.syncAttributeConfig(handler.getPlayer());
-            // Also ensure vars are synced? Typically handled by other events but good
-            // safety.
+            OnPlayerSpawnProcedure.execute(handler.getPlayer());
             Services.PLATFORM.syncPlayerVariables(Services.PLATFORM.getPlayerVariables(handler.getPlayer()),
                     handler.getPlayer());
-            OnPlayerSpawnProcedure.execute(handler.getPlayer());
+        });
+
+        net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(
+                (player, origin, destination) -> {
+                    OnPlayerSpawnProcedure.execute(player);
+                    Services.PLATFORM.syncPlayerVariables(Services.PLATFORM.getPlayerVariables(player), player);
+                });
+
+        ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killedEntity) -> {
+            GameplayRulesProcedure.handleEntityKill(world, entity, killedEntity);
         });
 
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
-            if (shouldCancelBlockBreak(state, player)) {
+            if (shouldCancelBlockBreak(state, player) || GameplayRulesProcedure.shouldCancelBlockBreak(state, player)) {
                 if (!world.isClientSide()) {
-                    player.displayClientMessage(Component.literal("\u00A74You can't break this block yet"), true);
+                    GameplayRulesProcedure.sendBlockRequirementMessage(state, player);
                 }
                 return false; // False cancels the event in Fabric API
             }

@@ -41,27 +41,10 @@ public class GiveXpVanillaProcedure {
 
 		if (useVanillaXp) {
 			AddedXp = droppedexperience;
-			{
-				PlayerVariables srcVars = Services.PLATFORM.getPlayerVariables(sourceentity);
-				double _setval = srcVars.currentXpTLevel + AddedXp;
-				srcVars.currentXpTLevel = _setval;
-				Services.PLATFORM.syncPlayerVariables(srcVars, sourceentity);
-				tn.nightbeam.ras.Constants.LOG.info("GiveXpVanillaProcedure: Added {} XP to player. New Total: {}",
-						AddedXp, _setval);
-			}
+			LevelingService.addXp(sourceentity, AddedXp);
 			if (JaumlConfigLib.getBooleanValue("ras", "settings", "show_vp_inaction_bar")) {
 				if (sourceentity instanceof Player _player && !_player.level().isClientSide())
 					_player.displayClientMessage(Component.literal(("\u00A7a+" + AddedXp + " VP")), true);
-			}
-			while (Services.PLATFORM.getPlayerVariables(sourceentity).currentXpTLevel >= Services.PLATFORM
-					.getPlayerVariables(sourceentity).nextevelXp) {
-				{
-					PlayerVariables srcVars = Services.PLATFORM.getPlayerVariables(sourceentity);
-					double _setval = srcVars.currentXpTLevel - srcVars.nextevelXp;
-					srcVars.currentXpTLevel = _setval;
-					Services.PLATFORM.syncPlayerVariables(srcVars, sourceentity);
-				}
-				LevelUpProcedureProcedure.execute(world, sourceentity);
 			}
 		} else {
 			tn.nightbeam.ras.Constants.LOG.info("GiveXpVanillaProcedure: Skipped because use_vanilla_xp is false");

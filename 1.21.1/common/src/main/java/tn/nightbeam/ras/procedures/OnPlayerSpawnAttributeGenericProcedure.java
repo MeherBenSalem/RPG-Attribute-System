@@ -36,6 +36,7 @@ public class OnPlayerSpawnAttributeGenericProcedure {
         if (pointsInvested < 0)
             pointsInvested = 0;
 
+        int commandIndex = 0;
         for (String stringCommand : Services.CONFIG.getArrayAsList(directory, filename, "cmd_to_exc")) {
             if (stringCommand == null || stringCommand.isEmpty())
                 continue;
@@ -72,6 +73,10 @@ public class OnPlayerSpawnAttributeGenericProcedure {
             }
 
             finalCommand = finalCommand.replace("@p", "@s");
+            removeOldRasModifier(entity, finalCommand, attributeId, commandIndex++);
+            tn.nightbeam.ras.Constants.LOG.info(
+                    "RAS load/apply: uuid={} attribute={} saved={} points={} command={}",
+                    entity.getStringUUID(), filename, currentTotalValue, pointsInvested, finalCommand);
             if (!entity.level().isClientSide() && entity.getServer() != null) {
                 entity.getServer().getCommands().performPrefixedCommand(
                         new CommandSourceStack(
@@ -87,6 +92,40 @@ public class OnPlayerSpawnAttributeGenericProcedure {
                         finalCommand);
             }
         }
+    }
+
+    private static void removeOldRasModifier(Entity entity, String command, int attributeId, int commandIndex) {
+        String attributeName = parseAttributeName(command);
+        if (attributeName == null) {
+            return;
+        }
+        java.util.UUID modifierId = java.util.UUID.nameUUIDFromBytes(
+                ("rpg_attribute_system:attribute_" + attributeId + ":command_" + commandIndex)
+                        .getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        String removeCommand = "attribute @s " + attributeName + " modifier remove " + modifierId;
+        if (!entity.level().isClientSide() && entity.getServer() != null) {
+            entity.getServer().getCommands().performPrefixedCommand(
+                    new CommandSourceStack(
+                            CommandSource.NULL,
+                            entity.position(),
+                            entity.getRotationVector(),
+                            entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
+                            4,
+                            entity.getName().getString(),
+                            entity.getDisplayName(),
+                            entity.level().getServer(),
+                            entity),
+                    removeCommand);
+        }
+        tn.nightbeam.ras.Constants.LOG.info("RAS load/apply: removed stale modifier uuid={} attribute={} modifier={}",
+                entity.getStringUUID(), attributeName, modifierId);
+    }
+
+    private static String parseAttributeName(String command) {
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("^/?attribute\\s+\\S+\\s+([^\\s]+)\\s+", java.util.regex.Pattern.CASE_INSENSITIVE)
+                .matcher(command.trim());
+        return matcher.find() ? matcher.group(1) : null;
     }
 
     private static double getPlayerAttribute(Entity entity, int attributeId) {
