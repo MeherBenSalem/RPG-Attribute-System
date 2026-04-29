@@ -17,10 +17,6 @@ public class AddPointsAttributeGenericProcedure {
         double currentAttributeValue = getAttributeValue(vars, attributeId);
 
         for (int index0 = 0; index0 < (int) vars.modifier; index0++) {
-            tn.nightbeam.ras.Constants.LOG.info(
-                    "AddPoints: EntityID={}, Player={}, VarsHash={}, SparePoints={}, CurrentValue={}",
-                    player.getId(), player.getName().getString(), System.identityHashCode(vars), vars.SparePoints,
-                    currentAttributeValue);
             if (vars.SparePoints >= 1 && currentAttributeValue < Services.CONFIG.getNumberValue("ras/attributes",
                     filename, "max_level")) {
 
@@ -49,11 +45,6 @@ public class AddPointsAttributeGenericProcedure {
 
                 OnPlayerSpawnAttributeGenericProcedure.execute(player, attributeId);
                 currentAttributeValue = getAttributeValue(vars, attributeId);
-            } else {
-                tn.nightbeam.ras.Constants.LOG.info(
-                        "AddPointsAttributeGenericProcedure: Cannot add point. SparePoints={}, CurrentVal={}, Max={}",
-                        vars.SparePoints, currentAttributeValue,
-                        Services.CONFIG.getNumberValue("ras/attributes", filename, "max_level"));
             }
         }
     }

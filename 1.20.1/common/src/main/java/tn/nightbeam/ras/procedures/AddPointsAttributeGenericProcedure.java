@@ -5,9 +5,6 @@ import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.platform.Services;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.CommandSource;
 
 public class AddPointsAttributeGenericProcedure {
     public static void execute(LevelAccessor world, Entity entity, int attributeId) {
@@ -27,14 +24,9 @@ public class AddPointsAttributeGenericProcedure {
 
                     // Execute Command if configured
                     Entity _ent = entity;
-                    if (!_ent.level().isClientSide() && _ent.getServer() != null) {
-                        String _onLevelCmd = Services.CONFIG.getStringValue("ras/attributes", filename, "on_level_event");
-                        _onLevelCmd = _onLevelCmd.replace("@p", "@s");
-                        _ent.getServer().getCommands().performPrefixedCommand(new CommandSourceStack(
-                                CommandSource.NULL, _ent.position(), _ent.getRotationVector(),
-                                _ent.level() instanceof ServerLevel ? (ServerLevel) _ent.level() : null, 4,
-                                _ent.getName().getString(), _ent.getDisplayName(), _ent.level().getServer(), _ent),
-                                _onLevelCmd);
+                    String _onLevelCmd = Services.CONFIG.getStringValue("ras/attributes", filename, "on_level_event");
+                    if (!_onLevelCmd.isBlank()) {
+                        ProcedureCommandHelper.executeAsEntity(_ent, _onLevelCmd);
                     }
 
                     // Decrement Spare Points

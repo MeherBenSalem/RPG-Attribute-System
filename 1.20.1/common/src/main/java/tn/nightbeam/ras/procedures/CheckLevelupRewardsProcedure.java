@@ -7,9 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.CommandSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
 
@@ -71,14 +68,6 @@ public class CheckLevelupRewardsProcedure {
     }
 
     private static void executeCommand(Entity entity, String command) {
-        if (entity == null || command == null || command.isBlank() || entity.level().isClientSide()
-                || entity.getServer() == null) {
-            return;
-        }
-        entity.getServer().getCommands().performPrefixedCommand(
-                new CommandSourceStack(CommandSource.NULL, entity.position(), entity.getRotationVector(),
-                        entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null, 4,
-                        entity.getName().getString(), entity.getDisplayName(), entity.level().getServer(), entity),
-                command.replace("@p", "@s"));
+        ProcedureCommandHelper.executeReward(entity, command);
     }
 }

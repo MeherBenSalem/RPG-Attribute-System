@@ -13,13 +13,8 @@ public class OnPlayerSpawnProcedure {
             return;
         }
 
-        tn.nightbeam.ras.Constants.LOG.info("RAS load/apply: start player={} uuid={}",
-                player.getName().getString(), player.getStringUUID());
-
         LevelingService.initializeOrMigrate(player);
         PlayerVariables vars = Services.PLATFORM.getPlayerVariables(player);
-        tn.nightbeam.ras.Constants.LOG.info("RAS load/apply: loaded uuid={} level={} sparePoints={} attributes={}",
-                player.getStringUUID(), vars.Level, vars.SparePoints, vars.attributes.size());
 
         if (initializeMissingAttributes(player, vars)) {
             CheckAttributesInitProcedure.execute(player);
@@ -43,8 +38,6 @@ public class OnPlayerSpawnProcedure {
             OnPlayerSpawnAttributeGenericProcedure.execute(player, i);
         }
         Services.PLATFORM.syncPlayerVariables(vars, player);
-        tn.nightbeam.ras.Constants.LOG.info("RAS load/apply: complete uuid={} attributes={}",
-                player.getStringUUID(), vars.attributes.size());
     }
 
     public static void resetAttributesToInitial(Entity entity) {
@@ -62,8 +55,6 @@ public class OnPlayerSpawnProcedure {
             }
         }
         Services.PLATFORM.syncPlayerVariables(vars, player);
-        tn.nightbeam.ras.Constants.LOG.info("RAS reset: restored initial attributes for uuid={} count={}",
-                player.getStringUUID(), vars.attributes.size());
     }
 
     private static boolean initializeMissingAttributes(Entity entity, PlayerVariables vars) {

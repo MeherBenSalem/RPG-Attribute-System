@@ -19,10 +19,6 @@ public class OnPlayerSpawnAttributeGenericProcedure {
             return;
         }
 
-        tn.nightbeam.ras.Constants.LOG.info(
-                "OnPlayerSpawnAttributeGenericProcedure: entity={} uuid={} attributeId={}",
-                player.getName().getString(), player.getStringUUID(), attributeId);
-
         String directory = "ras/attributes";
         String filename = "attribute_" + attributeId;
 
@@ -70,9 +66,6 @@ public class OnPlayerSpawnAttributeGenericProcedure {
             }
 
             removeOldRasModifier(player, finalCommand, attributeId, commandIndex++);
-            tn.nightbeam.ras.Constants.LOG.info(
-                    "RAS load/apply: uuid={} attribute={} saved={} points={} command={}",
-                    player.getStringUUID(), filename, currentTotalValue, pointsInvested, finalCommand);
             ProcedureCommandHelper.executeAsEntity(player, finalCommand);
         }
     }
@@ -86,8 +79,6 @@ public class OnPlayerSpawnAttributeGenericProcedure {
                 ("rpg_attribute_system:attribute_" + attributeId + ":command_" + commandIndex)
                         .getBytes(java.nio.charset.StandardCharsets.UTF_8));
         ProcedureCommandHelper.executeAsEntity(entity, "attribute @s " + attributeName + " modifier remove " + modifierId);
-        tn.nightbeam.ras.Constants.LOG.info("RAS load/apply: removed stale modifier uuid={} attribute={} modifier={}",
-                entity.getStringUUID(), attributeName, modifierId);
     }
 
     private static String parseAttributeName(String command) {

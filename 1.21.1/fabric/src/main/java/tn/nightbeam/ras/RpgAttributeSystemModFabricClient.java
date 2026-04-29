@@ -23,9 +23,6 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
                         vars.readNBT(payload.vars());
                         context.client().execute(() -> {
                             if (context.player() != null) {
-                                tn.nightbeam.ras.Constants.LOG.info(
-                                        "Client Receiver: Syncing vars for {}, SparePoints={}",
-                                        context.player().getName().getString(), vars.SparePoints);
                                 PlayerVariables attached = Services.PLATFORM.getPlayerVariables(context.player());
                                 attached.readNBT(vars.writeNBT());
                             }

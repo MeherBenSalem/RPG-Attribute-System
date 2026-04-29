@@ -44,8 +44,6 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public void syncPlayerVariables(PlayerVariables variables, Entity entity) {
         if (entity instanceof ServerPlayer player) {
-            tn.nightbeam.ras.Constants.LOG.info("FabricPlatformHelper: Syncing vars for {}, SparePoints={}",
-                    player.getName().getString(), variables.SparePoints);
             ServerPlayNetworking.send(player, new FabricSyncVarsPayload((CompoundTag) variables.writeNBT()));
         }
     }

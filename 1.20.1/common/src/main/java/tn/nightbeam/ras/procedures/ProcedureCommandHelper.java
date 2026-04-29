@@ -3,8 +3,10 @@ package tn.nightbeam.ras.procedures;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -28,24 +30,20 @@ public final class ProcedureCommandHelper {
     }
 
     private static void executeAsEntity(Entity entity, String command, boolean preferDirectGive) {
-        if (entity == null || command == null || command.isBlank() || entity.level().isClientSide()) {
+        if (entity == null || command == null || command.isBlank() || entity.level().isClientSide()
+                || entity.getServer() == null) {
             return;
         }
-        if (!(entity.level() instanceof ServerLevel serverLevel)) {
-            return;
-        }
-
         String normalizedCommand = normalizeForSelfTarget(entity, command);
         if (preferDirectGive && tryGiveDirectly(entity, normalizedCommand)) {
             return;
         }
 
-        var source = serverLevel.getServer().createCommandSourceStack()
-                .withEntity(entity)
-                .withPosition(entity.position())
-                .withRotation(entity.getRotationVector())
+        CommandSourceStack source = new CommandSourceStack(CommandSource.NULL, entity.position(),
+                entity.getRotationVector(), entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
+                4, entity.getName().getString(), entity.getDisplayName(), entity.level().getServer(), entity)
                 .withSuppressedOutput();
-        serverLevel.getServer().getCommands().performPrefixedCommand(source, normalizedCommand);
+        entity.getServer().getCommands().performPrefixedCommand(source, normalizedCommand);
     }
 
     private static boolean tryGiveDirectly(Entity entity, String command) {
@@ -58,12 +56,12 @@ public final class ProcedureCommandHelper {
             return false;
         }
 
-        Identifier itemId = Identifier.tryParse(matcher.group(1));
+        ResourceLocation itemId = ResourceLocation.tryParse(matcher.group(1));
         if (itemId == null) {
             return false;
         }
 
-        Item item = BuiltInRegistries.ITEM.get(itemId).map(reference -> reference.value()).orElse(Items.AIR);
+        Item item = BuiltInRegistries.ITEM.get(itemId);
         if (item == Items.AIR && !"minecraft:air".equals(itemId.toString())) {
             return false;
         }
@@ -89,7 +87,7 @@ public final class ProcedureCommandHelper {
     }
 
     private static String normalizeForSelfTarget(Entity entity, String command) {
-        if (!(entity instanceof net.minecraft.world.entity.player.Player)) {
+        if (!(entity instanceof Player)) {
             return command.trim();
         }
 

@@ -25,12 +25,8 @@ public class GiveXpVanillaProcedure {
         if (sourceentity == null)
             return;
 
-        tn.nightbeam.ras.Constants.LOG.info("GiveXpVanillaProcedure: Executing. Source: {}, DroppedXP: {}",
-                sourceentity, droppedexperience);
-
         double AddedXp = 0;
         boolean useVanillaXp = Services.CONFIG.getBooleanValue("ras", "settings", "use_vanilla_xp");
-        tn.nightbeam.ras.Constants.LOG.info("GiveXpVanillaProcedure: use_vanilla_xp config = {}", useVanillaXp);
 
         if (useVanillaXp) {
             AddedXp = droppedexperience;
@@ -39,8 +35,6 @@ public class GiveXpVanillaProcedure {
                 if (sourceentity instanceof Player _player && !_player.level().isClientSide())
                     _player.sendSystemMessage(Component.literal(("\u00A7a+" + AddedXp + " VP")));
             }
-        } else {
-            tn.nightbeam.ras.Constants.LOG.info("GiveXpVanillaProcedure: Skipped because use_vanilla_xp is false");
         }
     }
 }

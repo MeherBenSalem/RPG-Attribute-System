@@ -5,9 +5,6 @@ import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.platform.Services;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.CommandSource;
 
 public class AddPointsAttributeGenericProcedure {
     public static void execute(LevelAccessor world, Entity entity, int attributeId) {
@@ -24,9 +21,6 @@ public class AddPointsAttributeGenericProcedure {
             double currentAttributeValue = getAttributeValue(vars, attributeId);
 
             for (int index0 = 0; index0 < (int) vars.modifier; index0++) {
-                tn.nightbeam.ras.Constants.LOG.info(
-                        "AddPoints: EntityID: {}, VarsHash: {}, SparePoints: {}, CurrentValue: {}", entity.getId(),
-                        System.identityHashCode(vars), vars.SparePoints, currentAttributeValue);
                 if (vars.SparePoints >= 1 && currentAttributeValue < Services.CONFIG.getNumberValue("ras/attributes",
                         filename, "max_level")) {
 
@@ -36,12 +30,8 @@ public class AddPointsAttributeGenericProcedure {
                     if (_ent instanceof net.minecraft.world.entity.player.Player) {
                         _onLevelCmd = _onLevelCmd.replace("@p", "@s");
                     }
-                    if (!_ent.level().isClientSide() && _ent.getServer() != null && !_onLevelCmd.isBlank()) {
-                        _ent.getServer().getCommands().performPrefixedCommand(new CommandSourceStack(
-                                CommandSource.NULL, _ent.position(), _ent.getRotationVector(),
-                                _ent.level() instanceof ServerLevel ? (ServerLevel) _ent.level() : null, 4,
-                                _ent.getName().getString(), _ent.getDisplayName(), _ent.level().getServer(), _ent),
-                                _onLevelCmd);
+                    if (!_onLevelCmd.isBlank()) {
+                        ProcedureCommandHelper.executeAsEntity(_ent, _onLevelCmd);
                     }
 
                     // Decrement Spare Points
@@ -81,11 +71,6 @@ public class AddPointsAttributeGenericProcedure {
                     // Refetch value for loop condition safety (though vars reference is same object
                     // usually)
                     currentAttributeValue = getAttributeValue(vars, attributeId);
-                } else {
-                    tn.nightbeam.ras.Constants.LOG.info(
-                            "AddPointsAttributeGenericProcedure: Cannot add point. SparePoints={}, CurrentVal={}, Max={}",
-                            vars.SparePoints, currentAttributeValue,
-                            Services.CONFIG.getNumberValue("ras/attributes", filename, "max_level"));
                 }
             }
         }

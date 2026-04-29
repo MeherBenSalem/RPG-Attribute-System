@@ -33,7 +33,6 @@ public class AttributeManager {
                     maxLvl, locked, icon);
             CACHE.put(id, data);
         }
-        Constants.LOG.info("Attribute Manager: Loaded {} attribute configs into cache.", CACHE.size());
     }
 
     // Called by Client when receiving packet
@@ -55,7 +54,6 @@ public class AttributeManager {
             ATTRIBUTE_IDS.add("attribute_" + data.attributeId);
         }
         sortAttributeIds();
-        Constants.LOG.info("Attribute Manager: Synced {} attributes from server.", CACHE.size());
     }
 
     private static void sortAttributeIds() {
@@ -83,8 +81,6 @@ public class AttributeManager {
         File folder = configDir.resolve("ras").resolve("attributes").toFile();
 
         if (!folder.exists()) {
-            Constants.LOG.info("Attribute Manager: Config folder not found at {}, skipping scan.",
-                    folder.getAbsolutePath());
             return;
         }
 
@@ -100,7 +96,6 @@ public class AttributeManager {
                 if (!ATTRIBUTE_IDS.contains(name)) {
                     ATTRIBUTE_IDS.add(name);
                 }
-                Constants.LOG.info("Attribute Manager: Discovered attribute file: {}", name);
             }
         }
     }

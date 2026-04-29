@@ -19,7 +19,6 @@ public class GiveXpToPlayerProcedure {
 					try {
 						return EntityArgument.getEntity(arguments, "player");
 					} catch (CommandSyntaxException e) {
-						e.printStackTrace();
 						return null;
 					}
 				}

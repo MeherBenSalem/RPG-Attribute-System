@@ -74,7 +74,6 @@ public class RpgAttributeSystemModNeoForge {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        LOGGER.info("RPG Attribute System NeoForge setup complete");
     }
 
     // Work queue for server-side scheduled tasks

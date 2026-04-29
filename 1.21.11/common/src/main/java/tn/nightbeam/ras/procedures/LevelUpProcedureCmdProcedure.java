@@ -24,7 +24,6 @@ public class LevelUpProcedureCmdProcedure {
             LevelingService.setTotalXp(entity, LevelingService.getTotalXpForLevel((int) nextLevel));
 
         } catch (CommandSyntaxException e) {
-            e.printStackTrace();
         }
     }
 }

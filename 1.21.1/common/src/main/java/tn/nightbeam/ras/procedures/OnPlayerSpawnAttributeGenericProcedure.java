@@ -7,9 +7,6 @@ import tn.nightbeam.ras.platform.Services;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.CommandSource;
 
 import java.util.function.Supplier;
 
@@ -74,23 +71,7 @@ public class OnPlayerSpawnAttributeGenericProcedure {
 
             finalCommand = finalCommand.replace("@p", "@s");
             removeOldRasModifier(entity, finalCommand, attributeId, commandIndex++);
-            tn.nightbeam.ras.Constants.LOG.info(
-                    "RAS load/apply: uuid={} attribute={} saved={} points={} command={}",
-                    entity.getStringUUID(), filename, currentTotalValue, pointsInvested, finalCommand);
-            if (!entity.level().isClientSide() && entity.getServer() != null) {
-                entity.getServer().getCommands().performPrefixedCommand(
-                        new CommandSourceStack(
-                                CommandSource.NULL,
-                                entity.position(),
-                                entity.getRotationVector(),
-                                entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
-                                4,
-                                entity.getName().getString(),
-                                entity.getDisplayName(),
-                                entity.level().getServer(),
-                                entity),
-                        finalCommand);
-            }
+            ProcedureCommandHelper.executeAsEntity(entity, finalCommand);
         }
     }
 
@@ -103,22 +84,7 @@ public class OnPlayerSpawnAttributeGenericProcedure {
                 ("rpg_attribute_system:attribute_" + attributeId + ":command_" + commandIndex)
                         .getBytes(java.nio.charset.StandardCharsets.UTF_8));
         String removeCommand = "attribute @s " + attributeName + " modifier remove " + modifierId;
-        if (!entity.level().isClientSide() && entity.getServer() != null) {
-            entity.getServer().getCommands().performPrefixedCommand(
-                    new CommandSourceStack(
-                            CommandSource.NULL,
-                            entity.position(),
-                            entity.getRotationVector(),
-                            entity.level() instanceof ServerLevel ? (ServerLevel) entity.level() : null,
-                            4,
-                            entity.getName().getString(),
-                            entity.getDisplayName(),
-                            entity.level().getServer(),
-                            entity),
-                    removeCommand);
-        }
-        tn.nightbeam.ras.Constants.LOG.info("RAS load/apply: removed stale modifier uuid={} attribute={} modifier={}",
-                entity.getStringUUID(), attributeName, modifierId);
+        ProcedureCommandHelper.executeAsEntity(entity, removeCommand);
     }
 
     private static String parseAttributeName(String command) {

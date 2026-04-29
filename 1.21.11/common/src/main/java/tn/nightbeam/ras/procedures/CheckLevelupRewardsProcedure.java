@@ -68,6 +68,6 @@ public class CheckLevelupRewardsProcedure {
     }
 
     private static void executeCommand(Entity entity, String command) {
-        ProcedureCommandHelper.executeAsEntity(entity, command);
+        ProcedureCommandHelper.executeReward(entity, command);
     }
 }
