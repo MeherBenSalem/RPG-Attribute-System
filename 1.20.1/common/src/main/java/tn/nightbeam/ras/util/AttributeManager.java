@@ -28,9 +28,10 @@ public class AttributeManager {
             double maxLvl = Services.CONFIG.getNumberValue("ras/attributes", filename, "max_level");
             boolean locked = Services.CONFIG.getBooleanValue("ras/attributes", filename, "lock");
             String icon = Services.CONFIG.getStringValue("ras/attributes", filename, "icon_path");
+            int minLevelToUnlock = (int) Services.CONFIG.getNumberValue("ras/attributes", filename, "min_level_to_unlock");
 
             tn.nightbeam.ras.config.AttributeData data = tn.nightbeam.ras.config.AttributeData.fromConfig(id, baseInc,
-                    maxLvl, locked, icon);
+                    maxLvl, locked, icon, minLevelToUnlock);
             CACHE.put(id, data);
         }
     }

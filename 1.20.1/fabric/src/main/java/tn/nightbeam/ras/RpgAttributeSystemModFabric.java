@@ -19,6 +19,7 @@ public class RpgAttributeSystemModFabric implements ModInitializer {
 
         RpgAttributeSystemModItems.register((name, item) -> Registry.register(BuiltInRegistries.ITEM,
                 new ResourceLocation(RpgAttributeSystemMod.MOD_ID, name), item.get()));
+        tn.nightbeam.ras.init.RpgAttributeSystemModTabsFabric.register();
 
         tn.nightbeam.ras.events.FabricRpgAttributeSystemModEvents.register();
         tn.nightbeam.ras.init.RpgAttributeSystemModMenusFabric.register();
@@ -54,7 +55,12 @@ public class RpgAttributeSystemModFabric implements ModInitializer {
         net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.registerGlobalReceiver(
                 tn.nightbeam.ras.network.OpenStatsMenuPacket.ID,
                 (server, player, handler, buf, responseSender) -> {
-                    server.execute(() -> tn.nightbeam.ras.network.OpenStatsMenuPacket.handle(player));
+                    server.execute(() -> {
+                        tn.nightbeam.ras.util.AttributeManager.refreshServerConfig();
+                        tn.nightbeam.ras.procedures.OnPlayerSpawnProcedure.execute(player);
+                        tn.nightbeam.ras.platform.Services.PLATFORM.syncAttributeConfig(player);
+                        tn.nightbeam.ras.network.OpenStatsMenuPacket.handle(player);
+                    });
                 });
     }
 }

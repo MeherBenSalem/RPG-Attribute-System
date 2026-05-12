@@ -22,7 +22,7 @@ public class RpgAttributeSystemModCommands {
                                             return 0;
                                         }))))
                         .then(Commands.literal("attributes")
-                                .then(Commands.argument("attribute_Id", DoubleArgumentType.doubleArg(1, 10))
+                                .then(Commands.argument("attribute_Id", DoubleArgumentType.doubleArg(1))
                                         .then(Commands.argument("count", DoubleArgumentType.doubleArg())
                                                 .executes(arguments -> {
                                                     Level world = arguments.getSource().getLevel();
@@ -70,7 +70,7 @@ public class RpgAttributeSystemModCommands {
                     return 0;
                 })))
                 .then(Commands.literal("unlock")
-                        .then(Commands.argument("attribute", DoubleArgumentType.doubleArg(1, 10))
+                        .then(Commands.argument("attribute", DoubleArgumentType.doubleArg(1))
                                 .executes(arguments -> {
                                     Entity entity = arguments.getSource().getEntity();
                                     UnlockAttributeProcedure.execute(arguments, entity);
@@ -80,7 +80,7 @@ public class RpgAttributeSystemModCommands {
                                     return 0;
                                 }))))
                 .then(Commands.literal("lock")
-                        .then(Commands.argument("attribute", DoubleArgumentType.doubleArg(1, 10))
+                        .then(Commands.argument("attribute", DoubleArgumentType.doubleArg(1))
                                 .executes(arguments -> {
                                     Entity entity = arguments.getSource().getEntity();
                                     LockAttributeProcedure.execute(arguments, entity);

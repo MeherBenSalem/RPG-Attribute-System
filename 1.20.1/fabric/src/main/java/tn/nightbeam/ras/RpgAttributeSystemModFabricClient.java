@@ -53,6 +53,9 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
                             buf);
                     client.execute(() -> {
                         tn.nightbeam.ras.network.AttributeConfigSyncPacket.handle(packet, () -> null);
+                        if (client.screen instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
+                            accessor.updateAttributeConfig();
+                        }
                     });
                 });
 
@@ -77,5 +80,7 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
             LevelOverlayRenderer.render(graphics, tickDelta);
         });
+
+        tn.nightbeam.ras.events.FabricClientItemTooltipEvents.register();
     }
 }

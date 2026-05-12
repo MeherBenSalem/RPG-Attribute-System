@@ -23,7 +23,8 @@
         ]
     },
     "mixins": [
-        "rpg_attribute_system.mixins.json"
+        "rpg_attribute_system.mixins.json",
+        "rpg_attribute_system.fabric.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=0.14",

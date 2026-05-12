@@ -27,7 +27,8 @@ public class AttributeConfigSyncPacket {
             double maxLvl = buffer.readDouble();
             boolean locked = buffer.readBoolean();
             String iconPath = buffer.readUtf();
-            dataList.add(new AttributeData(id, baseInc, maxLvl, locked, iconPath));
+            int minLevel = buffer.readInt();
+            dataList.add(new AttributeData(id, baseInc, maxLvl, locked, iconPath, minLevel));
         }
     }
 
@@ -39,6 +40,7 @@ public class AttributeConfigSyncPacket {
             buffer.writeDouble(data.maxLevel);
             buffer.writeBoolean(data.isLocked);
             buffer.writeUtf(data.iconPath != null ? data.iconPath : "");
+            buffer.writeInt(data.minLevelToUnlock);
         }
     }
 

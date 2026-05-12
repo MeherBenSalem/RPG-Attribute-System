@@ -20,7 +20,7 @@ public class ReturnNextAttributeGenericProcedure {
         double baseValuePerPoint = data.baseIncrement;
         double maxLevel = data.maxLevel;
 
-        return Component.translatable("key.memory_of_the_past.next_value").getString() + ""
+        return Component.translatable("tooltip.rpg_attribute_system.next_value").getString() + ""
                 + new java.text.DecimalFormat("##.##").format(currentValue + baseValuePerPoint)
                 + " (max: " + maxLevel + " )";
     }

@@ -3,6 +3,8 @@ package tn.nightbeam.ras.procedures;
 import tn.nightbeam.ras.platform.Services;
 import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.init.RpgAttributeSystemModAttributes;
+import tn.nightbeam.ras.util.AttributeManager;
+import tn.nightbeam.ras.config.AttributeData;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
 
@@ -11,14 +13,17 @@ public class OnPlayerSpawnProcedure {
         if (!(entity instanceof net.minecraft.world.entity.player.Player player) || player.level().isClientSide())
             return;
 
-        entity = player;
-
         LevelingService.initializeOrMigrate(entity);
         PlayerVariables vars = Services.PLATFORM.getPlayerVariables(entity);
 
-        if (initializeMissingAttributes(entity, vars)) {
+        // Initialize missing attributes (internal; does NOT sync — we sync once at end)
+        boolean attrChanged = initializeMissingAttributes(entity, vars);
+        if (attrChanged) {
             CheckAttributesInitProcedure.execute(entity);
         }
+
+        // Auto-unlock attributes whose level requirement is now met
+        applyLevelUnlocks(vars);
 
         // Sync Level capability to Attribute (for display/other mods)
         if (entity instanceof LivingEntity _livingEntity13
@@ -27,18 +32,17 @@ public class OnPlayerSpawnProcedure {
                     .setBaseValue((Services.PLATFORM.getPlayerVariables(entity).Level));
 
         // Execute spawn attribute procedures for all attributes
-        // Use AttributeManager to get valid IDs
-        for (String attrIdStr : tn.nightbeam.ras.util.AttributeManager.getAttributeIds()) {
-            // Extract ID number. Assuming format "attribute_X"
+        for (String attrIdStr : AttributeManager.getAttributeIds()) {
             int i = 0;
             try {
                 i = Integer.parseInt(attrIdStr.replace("attribute_", ""));
             } catch (NumberFormatException e) {
                 continue;
             }
-
             OnPlayerSpawnAttributeGenericProcedure.execute(entity, i);
         }
+
+        // Single final sync — avoids double-sync that occurred when initializeMissingAttributes also synced
         Services.PLATFORM.syncPlayerVariables(vars, entity);
     }
 
@@ -48,7 +52,8 @@ public class OnPlayerSpawnProcedure {
         }
         PlayerVariables vars = Services.PLATFORM.getPlayerVariables(player);
         vars.attributes.clear();
-        for (String attrIdStr : tn.nightbeam.ras.util.AttributeManager.getAttributeIds()) {
+        vars.playerUnlockedAttributes.clear();
+        for (String attrIdStr : AttributeManager.getAttributeIds()) {
             try {
                 vars.attributes.put(attrIdStr,
                         Services.CONFIG.getNumberValue("ras/attributes", attrIdStr, "init_val_attribute"));
@@ -59,18 +64,41 @@ public class OnPlayerSpawnProcedure {
         Services.PLATFORM.syncPlayerVariables(vars, player);
     }
 
+    /**
+     * Returns true if any attribute was missing and had its initial value inserted.
+     * Does NOT sync — callers are responsible for syncing.
+     */
     private static boolean initializeMissingAttributes(Entity entity, PlayerVariables vars) {
         boolean changed = false;
-        for (String attrIdStr : tn.nightbeam.ras.util.AttributeManager.getAttributeIds()) {
+        for (String attrIdStr : AttributeManager.getAttributeIds()) {
             if (!vars.attributes.containsKey(attrIdStr)) {
                 vars.attributes.put(attrIdStr,
                         Services.CONFIG.getNumberValue("ras/attributes", attrIdStr, "init_val_attribute"));
                 changed = true;
             }
         }
-        if (changed) {
-            Services.PLATFORM.syncPlayerVariables(vars, entity);
-        }
         return changed;
+    }
+
+    /**
+     * Checks all globally-locked attributes and auto-unlocks any whose
+     * minLevelToUnlock is met by the player's current level.
+     */
+    private static void applyLevelUnlocks(PlayerVariables vars) {
+        int playerLevel = (int) vars.Level;
+        for (String attrIdStr : AttributeManager.getAttributeIds()) {
+            int id;
+            try {
+                id = Integer.parseInt(attrIdStr.replace("attribute_", ""));
+            } catch (NumberFormatException e) {
+                continue;
+            }
+            AttributeData data = AttributeManager.getAttributeData(id);
+            if (data == null || !data.isLocked || data.minLevelToUnlock <= 0)
+                continue;
+            if (playerLevel >= data.minLevelToUnlock) {
+                vars.playerUnlockedAttributes.add(attrIdStr);
+            }
+        }
     }
 }

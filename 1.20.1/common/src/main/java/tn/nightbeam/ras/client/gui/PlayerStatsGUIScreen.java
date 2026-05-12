@@ -13,6 +13,7 @@ import tn.nightbeam.ras.procedures.ReturnGlobalSectionsDisplayProcedure;
 import tn.nightbeam.ras.procedures.ReturnExtraPointsProcedure;
 import tn.nightbeam.ras.procedures.ReturnCurrentModifierProcedure;
 import tn.nightbeam.ras.procedures.ReturnCurrentLevelProcedure;
+import tn.nightbeam.ras.procedures.ReturnAttributeNameGenericProcedure;
 
 import tn.nightbeam.ras.procedures.CurrentXpToLevelProcedure;
 import tn.nightbeam.ras.util.AttributeManager;
@@ -70,6 +71,12 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         menuStateUpdateActive = false;
     }
 
+    @Override
+    public void updateAttributeConfig() {
+        currentPage = Math.min(currentPage, getTotalPages() - 1);
+        rebuildWidgets();
+    }
+
     private List<String> getVisibleAttributes() {
         List<String> allAttrs = AttributeManager.getAttributeIds();
         int start = currentPage * ATTRS_PER_PAGE;
@@ -111,6 +118,13 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
 
     private int getButtonX(int col) {
         return col == 0 ? 83 : 256;
+    }
+
+    private String getAttributeLabel(int attributeId, int maxWidth) {
+        String name = ReturnAttributeNameGenericProcedure.execute(attributeId);
+        String value = ReturnCurrentAttributeGenericProcedure.execute(entity, attributeId);
+        String label = (name == null || name.isBlank()) ? value : name + value;
+        return this.font.plainSubstrByWidth(label, maxWidth);
     }
 
     @Override
@@ -275,8 +289,8 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
 
             // Only show value for unlocked attributes
             if (DisplayLogicAttributeGenericProcedure.execute(entity, attrId)) {
-                String value = ReturnCurrentAttributeGenericProcedure.execute(entity, attrId);
-                guiGraphics.drawString(this.font, value, getLabelX(col), labelY, -1, false);
+                String label = getAttributeLabel(attrId, 86);
+                guiGraphics.drawString(this.font, label, getLabelX(col), labelY, -1, false);
             }
             // Locked attributes show no number (hidden)
         }

@@ -140,8 +140,9 @@ public class LevelingService {
         if (vars.Level > grantFrom) {
             vars.SparePoints += (vars.Level - grantFrom)
                     * Services.CONFIG.getNumberValue(SETTINGS_DIR, SETTINGS_FILE, "points_per_level");
+            int previouslyGranted = (int) grantFrom;
             vars.pointsGrantedThroughLevel = vars.Level;
-            CheckLevelupRewardsProcedure.execute(entity.level(), entity);
+            CheckLevelupRewardsProcedure.execute(entity.level(), entity, previouslyGranted, (int) vars.Level);
         }
     }
 

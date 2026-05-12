@@ -3,7 +3,6 @@ package tn.nightbeam.ras.procedures;
 import tn.nightbeam.ras.platform.Services;
 import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.init.RpgAttributeSystemModAttributes;
-import tn.nightbeam.ras.platform.Services;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
