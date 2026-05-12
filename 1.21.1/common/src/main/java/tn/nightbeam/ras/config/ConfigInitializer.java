@@ -530,6 +530,21 @@ public class ConfigInitializer {
         String dir = "ras/display";
         String file = "overlay";
         Services.CONFIG.createConfigFile(dir, file);
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "hudEnabled")) {
+            Services.CONFIG.setBooleanValue(dir, file, "hudEnabled", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "hudScale")) {
+            Services.CONFIG.setNumberValue(dir, file, "hudScale", 0.75);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "hudXOffset")) {
+            Services.CONFIG.setNumberValue(dir, file, "hudXOffset", 0);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "hudYOffset")) {
+            Services.CONFIG.setNumberValue(dir, file, "hudYOffset", 0);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "avoidJEIOverlap")) {
+            Services.CONFIG.setBooleanValue(dir, file, "avoidJEIOverlap", true);
+        }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "x_offset")) {
             Services.CONFIG.setNumberValue(dir, file, "x_offset", 0);
         }

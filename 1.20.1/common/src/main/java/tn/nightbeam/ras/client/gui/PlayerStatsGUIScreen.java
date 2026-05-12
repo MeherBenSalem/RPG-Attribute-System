@@ -295,6 +295,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     @Override
     public void init() {
         super.init();
+        ScreenMousePosition.restore();
 
         // Dynamic Attribute Buttons - ONLY for current page, skip locked attributes
         List<String> visible = getVisibleAttributes();
@@ -335,6 +336,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
                     int x = PlayerStatsGUIScreen.this.x;
                     int y = PlayerStatsGUIScreen.this.y;
                     if (ReturnGlobalSectionsDisplayProcedure.execute()) {
+                        ScreenMousePosition.capture();
                         Services.PLATFORM.sendButtonAction(9, x, y, z);
                     }
                 });

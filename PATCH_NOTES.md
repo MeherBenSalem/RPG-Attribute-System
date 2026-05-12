@@ -1,9 +1,8 @@
-# RPG Attribute System 3.1.2 Patch Notes
+# Player RPG Attributes System v3.1.3
 
 ## What's Fixed
-- Removed debug logs and development-only output from normal gameplay.
-- Fixed level reward chat spam, including `/give` feedback messages.
-- Improved silent reward handling so configured rewards are still granted without exposing internal commands.
-
-## Version
-- 3.1.2
+- Fixed HUD overlapping with JEI interface.
+- Added configurable HUD scaling and positioning.
+- Improved compatibility with inventory overlays (JEI/REI).
+- Fixed cursor jumping to center when switching tabs.
+- Improved UI compactness and readability.

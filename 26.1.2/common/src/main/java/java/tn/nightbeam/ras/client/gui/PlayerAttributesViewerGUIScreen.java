@@ -228,6 +228,7 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
     @Override
     public void init() {
         super.init();
+        ScreenMousePosition.restore();
         // Texture identifier
         Identifier buttonCombat = Identifier
                 .tryParse("rpg_attribute_system:textures/screens/atlas/imagebutton_button_for_combat.png");
@@ -239,6 +240,7 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
                     int x = PlayerAttributesViewerGUIScreen.this.x;
                     int y = PlayerAttributesViewerGUIScreen.this.y;
                     if (true) {
+                        ScreenMousePosition.capture();
                         Services.PLATFORM.sendButtonAction(0, x, y, z);
                     }
                 });

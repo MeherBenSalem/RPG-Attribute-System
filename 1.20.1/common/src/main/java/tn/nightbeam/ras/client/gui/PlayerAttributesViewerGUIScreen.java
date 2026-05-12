@@ -207,12 +207,14 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
     @Override
     public void init() {
         super.init();
+        ScreenMousePosition.restore();
         imagebutton_button_for_combat = new ImageButton(this.leftPos + -74, this.topPos + 14, 13, 13, 0, 0, 13,
                 new ResourceLocation("rpg_attribute_system:textures/screens/atlas/imagebutton_button_for_combat.png"),
                 13, 26, e -> {
                     int x = PlayerAttributesViewerGUIScreen.this.x;
                     int y = PlayerAttributesViewerGUIScreen.this.y;
                     if (true) {
+                        ScreenMousePosition.capture();
                         Services.PLATFORM.sendButtonAction(0, x, y, z);
                     }
                 });

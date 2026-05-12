@@ -304,6 +304,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     @Override
     public void init() {
         super.init();
+        ScreenMousePosition.restore();
 
         // Texture identifiers for buttons
         Identifier buttonNotclicked = Identifier
@@ -354,6 +355,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
                     int x = PlayerStatsGUIScreen.this.x;
                     int y = PlayerStatsGUIScreen.this.y;
                     if (ReturnGlobalSectionsDisplayProcedure.execute()) {
+                        ScreenMousePosition.capture();
                         Services.PLATFORM.sendButtonAction(9, x, y, z);
                     }
                 });
