@@ -131,7 +131,7 @@ public class LevelOverlayRenderer {
             try {
                 candidate.invoke(target, args);
                 return;
-            } catch (ReflectiveOperationException ignored) {
+            } catch (ReflectiveOperationException | IllegalArgumentException ignored) {
             }
         }
     }
