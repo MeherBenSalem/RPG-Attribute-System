@@ -67,7 +67,7 @@ public class NeoForgeEvents {
     }
 
     @SubscribeEvent
-    public static void onBlockBreak(net.neoforged.neoforge.event.level.BlockEvent.BreakEvent event) {
+    public static void onBlockBreak(net.neoforged.neoforge.event.level.block.BreakBlockEvent event) {
         if (shouldCancelBlockBreak(event.getState(), event.getPlayer())
                 || tn.nightbeam.ras.procedures.GameplayRulesProcedure.shouldCancelBlockBreak(event.getState(),
                         event.getPlayer())) {
