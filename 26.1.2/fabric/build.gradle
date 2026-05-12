@@ -2,11 +2,18 @@ plugins {
     id 'multiloader-loader'
     id 'net.fabricmc.fabric-loom'
 }
+
+repositories {
+    flatDir {
+        dir rootProject.file('../libs')
+    }
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-    implementation files(rootProject.file('../libs/jauml-fabric-26.1-1.3.0.jar'))
+    implementation name: 'jauml-fabric-26.1.2-1.3.0'
 }
 
 loom {

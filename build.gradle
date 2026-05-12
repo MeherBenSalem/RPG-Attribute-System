@@ -38,6 +38,34 @@ tasks.register('build261', Exec) {
     commandLine wrapperCmd('26.1.2'), 'build'
 }
 
+tasks.register('clean1201', Exec) {
+    group = 'build'
+    description = 'Clean all 1.20.1 loaders.'
+    workingDir = file('1.20.1')
+    commandLine wrapperCmd('1.20.1'), 'clean'
+}
+
+tasks.register('clean1211', Exec) {
+    group = 'build'
+    description = 'Clean all 1.21.1 loaders.'
+    workingDir = file('1.21.1')
+    commandLine wrapperCmd('1.21.1'), 'clean'
+}
+
+tasks.register('clean1211v', Exec) {
+    group = 'build'
+    description = 'Clean all 1.21.11 loaders.'
+    workingDir = file('1.21.11')
+    commandLine wrapperCmd('1.21.11'), 'clean'
+}
+
+tasks.register('clean261', Exec) {
+    group = 'build'
+    description = 'Clean all 26.1.2 loaders.'
+    workingDir = file('26.1.2')
+    commandLine wrapperCmd('26.1.2'), 'clean'
+}
+
 tasks.register('dist') {
     group = 'build'
     description = 'Build ALL versions and copy every mod JAR into dist/.'
@@ -74,6 +102,19 @@ tasks.register('buildAll') {
     group = 'build'
     description = 'Build ALL versions (1.20.1, 1.21.1, 1.21.11, 26.1.2) and collect JARs into dist/.'
     dependsOn 'dist'
+}
+
+tasks.register('cleanAll') {
+    group = 'build'
+    description = 'Clean ALL versions (1.20.1, 1.21.1, 1.21.11, 26.1.2) and clean all-jars/.'
+    dependsOn 'clean1201', 'clean1211', 'clean1211v', 'clean261'
+    doLast {
+        def outDir = file('all-jars')
+        if (outDir.exists()) {
+            outDir.deleteDir()
+            println "Cleaned all-jars directory."
+        }
+    }
 }
 
 tasks.register('testVersions') {
