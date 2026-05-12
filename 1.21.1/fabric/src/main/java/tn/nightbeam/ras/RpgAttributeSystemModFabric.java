@@ -47,18 +47,18 @@ public class RpgAttributeSystemModFabric implements ModInitializer {
         // Creative Tab Registration
         net.minecraft.world.item.CreativeModeTab tab = net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup.builder()
                 .title(net.minecraft.network.chat.Component
-                        .translatable("item_group." + RpgAttributeSystemMod.MOD_ID + ".rpg_attribute_system"))
+                        .translatable("item_group.rpg_attribute_system.ras_creative_tab"))
                 .icon(() -> new net.minecraft.world.item.ItemStack(
                         tn.nightbeam.ras.init.RpgAttributeSystemModItems.TOME_OF_ASCENSION.get()))
                 .build();
 
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
-                ResourceLocation.fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "rpg_attribute_system"), tab);
+                ResourceLocation.fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "ras_creative_tab"), tab);
 
         net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
                 .modifyEntriesEvent(net.minecraft.resources.ResourceKey.create(
                         net.minecraft.core.registries.Registries.CREATIVE_MODE_TAB,
-                        ResourceLocation.fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "rpg_attribute_system")))
+                        ResourceLocation.fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "ras_creative_tab")))
                 .register(content -> {
                     content.accept(tn.nightbeam.ras.init.RpgAttributeSystemModItems.TOME_OF_ASCENSION.get());
                     content.accept(tn.nightbeam.ras.init.RpgAttributeSystemModItems.SCROLL_OF_REBIRTH.get());

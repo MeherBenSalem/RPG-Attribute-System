@@ -2,7 +2,6 @@ package tn.nightbeam.ras.procedures;
 
 import tn.nightbeam.ras.platform.Services;
 import tn.nightbeam.ras.network.PlayerVariables;
-import tn.nightbeam.ras.platform.Services;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.entity.Entity;
 
