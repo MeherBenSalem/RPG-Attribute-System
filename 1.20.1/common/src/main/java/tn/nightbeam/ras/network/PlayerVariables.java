@@ -19,7 +19,8 @@ public class PlayerVariables {
     public double pointsGrantedThroughLevel = -1.0;
 
     // Dynamic Attribute Map
-    public java.util.Map<String, Double> attributes = new java.util.HashMap<>();
+    public java.util.Map<String, Double> attributes = new java.util.LinkedHashMap<>();
+    public java.util.Map<String, Double> attributePoints = new java.util.LinkedHashMap<>();
 
     /**
      * Per-player attribute unlock overrides.
@@ -45,6 +46,12 @@ public class PlayerVariables {
         }
         nbt.put("attributes_dynamic", attributesTag);
 
+        CompoundTag attributePointsTag = new CompoundTag();
+        for (java.util.Map.Entry<String, Double> entry : attributePoints.entrySet()) {
+            attributePointsTag.putDouble(entry.getKey(), entry.getValue());
+        }
+        nbt.put("attribute_points_dynamic", attributePointsTag);
+
         // Write per-player unlock overrides
         ListTag unlockList = new ListTag();
         for (String key : playerUnlockedAttributes) {
@@ -69,13 +76,21 @@ public class PlayerVariables {
                     ? nbt.getDouble("pointsGrantedThroughLevel")
                     : -1.0;
 
+            attributes.clear();
+            attributePoints.clear();
+
             // Read Dynamic Attributes
             if (nbt.contains("attributes_dynamic")) {
                 CompoundTag attributesTag = nbt.getCompound("attributes_dynamic");
-                // Clear stale keys before repopulating so no ghost values survive across syncs/clones.
-                attributes.clear();
                 for (String key : attributesTag.getAllKeys()) {
                     attributes.put(key, attributesTag.getDouble(key));
+                }
+            }
+
+            if (nbt.contains("attribute_points_dynamic")) {
+                CompoundTag attributePointsTag = nbt.getCompound("attribute_points_dynamic");
+                for (String key : attributePointsTag.getAllKeys()) {
+                    attributePoints.put(key, attributePointsTag.getDouble(key));
                 }
             }
 

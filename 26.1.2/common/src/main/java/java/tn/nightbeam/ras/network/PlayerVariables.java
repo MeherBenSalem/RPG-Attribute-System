@@ -14,7 +14,8 @@ public class PlayerVariables {
     public double pointsGrantedThroughLevel = -1.0;
 
     // Dynamic Attribute Map
-    public java.util.Map<String, Double> attributes = new java.util.HashMap<>();
+    public java.util.Map<String, Double> attributes = new java.util.LinkedHashMap<>();
+    public java.util.Map<String, Double> attributePoints = new java.util.LinkedHashMap<>();
 
     public Tag writeNBT() {
         CompoundTag nbt = new CompoundTag();
@@ -33,6 +34,12 @@ public class PlayerVariables {
         }
         nbt.put("attributes_dynamic", attributesTag);
 
+        CompoundTag attributePointsTag = new CompoundTag();
+        for (java.util.Map.Entry<String, Double> entry : attributePoints.entrySet()) {
+            attributePointsTag.putDouble(entry.getKey(), entry.getValue());
+        }
+        nbt.put("attribute_points_dynamic", attributePointsTag);
+
         return nbt;
     }
 
@@ -49,6 +56,7 @@ public class PlayerVariables {
                     : -1.0;
 
             attributes.clear();
+            attributePoints.clear();
 
             // Read Dynamic Attributes
             if (nbt.contains("attributes_dynamic")) {
@@ -57,6 +65,18 @@ public class PlayerVariables {
                     for (java.util.Map.Entry<String, Tag> entry : attributesTag.entrySet()) {
                         if (entry.getValue() instanceof net.minecraft.nbt.DoubleTag) {
                             attributes.put(entry.getKey(), attributesTag.getDouble(entry.getKey()).orElse(0.0));
+                        }
+                    }
+                }
+            }
+
+            if (nbt.contains("attribute_points_dynamic")) {
+                CompoundTag attributePointsTag = nbt.getCompound("attribute_points_dynamic").orElse(null);
+                if (attributePointsTag != null) {
+                    for (java.util.Map.Entry<String, Tag> entry : attributePointsTag.entrySet()) {
+                        if (entry.getValue() instanceof net.minecraft.nbt.DoubleTag) {
+                            attributePoints.put(entry.getKey(),
+                                    attributePointsTag.getDouble(entry.getKey()).orElse(0.0));
                         }
                     }
                 }

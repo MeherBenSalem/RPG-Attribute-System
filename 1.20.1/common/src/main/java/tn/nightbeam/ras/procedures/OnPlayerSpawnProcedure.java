@@ -4,6 +4,7 @@ import tn.nightbeam.ras.platform.Services;
 import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.init.RpgAttributeSystemModAttributes;
 import tn.nightbeam.ras.util.AttributeManager;
+import tn.nightbeam.ras.util.AttributeScaling;
 import tn.nightbeam.ras.config.AttributeData;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
@@ -17,7 +18,7 @@ public class OnPlayerSpawnProcedure {
         PlayerVariables vars = Services.PLATFORM.getPlayerVariables(entity);
 
         // Initialize missing attributes (internal; does NOT sync — we sync once at end)
-        boolean attrChanged = initializeMissingAttributes(entity, vars);
+        boolean attrChanged = synchronizeAttributeState(entity, vars);
         if (attrChanged) {
             CheckAttributesInitProcedure.execute(entity);
         }
@@ -52,11 +53,12 @@ public class OnPlayerSpawnProcedure {
         }
         PlayerVariables vars = Services.PLATFORM.getPlayerVariables(player);
         vars.attributes.clear();
+        vars.attributePoints.clear();
         vars.playerUnlockedAttributes.clear();
         for (String attrIdStr : AttributeManager.getAttributeIds()) {
             try {
-                vars.attributes.put(attrIdStr,
-                        Services.CONFIG.getNumberValue("ras/attributes", attrIdStr, "init_val_attribute"));
+                vars.attributePoints.put(attrIdStr, 0.0);
+                vars.attributes.put(attrIdStr, getBaseValue(attrIdStr));
             } catch (NumberFormatException e) {
                 continue;
             }
@@ -68,16 +70,32 @@ public class OnPlayerSpawnProcedure {
      * Returns true if any attribute was missing and had its initial value inserted.
      * Does NOT sync — callers are responsible for syncing.
      */
-    private static boolean initializeMissingAttributes(Entity entity, PlayerVariables vars) {
+    private static boolean synchronizeAttributeState(Entity entity, PlayerVariables vars) {
         boolean changed = false;
         for (String attrIdStr : AttributeManager.getAttributeIds()) {
-            if (!vars.attributes.containsKey(attrIdStr)) {
-                vars.attributes.put(attrIdStr,
-                        Services.CONFIG.getNumberValue("ras/attributes", attrIdStr, "init_val_attribute"));
+            double baseValue = getBaseValue(attrIdStr);
+            double valuePerPoint = Services.CONFIG.getNumberValue("ras/attributes", attrIdStr,
+                    "base_value_per_point");
+
+            if (!vars.attributePoints.containsKey(attrIdStr)) {
+                double currentValue = vars.attributes.getOrDefault(attrIdStr, baseValue);
+                vars.attributePoints.put(attrIdStr,
+                        AttributeScaling.derivePoints(currentValue, baseValue, valuePerPoint));
+                changed = true;
+            }
+
+            double finalValue = AttributeScaling.finalValue(baseValue, vars.attributePoints.get(attrIdStr),
+                    valuePerPoint);
+            if (!vars.attributes.containsKey(attrIdStr) || Double.compare(vars.attributes.get(attrIdStr), finalValue) != 0) {
+                vars.attributes.put(attrIdStr, finalValue);
                 changed = true;
             }
         }
         return changed;
+    }
+
+    private static double getBaseValue(String attrIdStr) {
+        return Services.CONFIG.getNumberValue("ras/attributes", attrIdStr, "init_val_attribute");
     }
 
     /**

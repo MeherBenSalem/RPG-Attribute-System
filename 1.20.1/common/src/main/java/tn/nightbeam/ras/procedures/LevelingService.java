@@ -3,6 +3,7 @@ package tn.nightbeam.ras.procedures;
 import net.minecraft.world.entity.Entity;
 import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.platform.Services;
+import tn.nightbeam.ras.util.AttributeScaling;
 
 public class LevelingService {
     private static final String SETTINGS_DIR = "ras";
@@ -171,11 +172,13 @@ public class LevelingService {
                 + (vars.Level * Services.CONFIG.getNumberValue(SETTINGS_DIR, SETTINGS_FILE, "points_per_level"));
         double allocated = 0;
         for (String attrId : tn.nightbeam.ras.util.AttributeManager.getAttributeIds()) {
-            double current = vars.attributes.getOrDefault(attrId, 0.0);
             double initial = Services.CONFIG.getNumberValue("ras/attributes", attrId, "init_val_attribute");
             double perPoint = Services.CONFIG.getNumberValue("ras/attributes", attrId, "base_value_per_point");
-            if (perPoint > 0 && current > initial) {
-                allocated += Math.round((current - initial) / perPoint);
+            if (vars.attributePoints.containsKey(attrId)) {
+                allocated += Math.max(0, vars.attributePoints.get(attrId));
+            } else {
+                double current = vars.attributes.getOrDefault(attrId, initial);
+                allocated += AttributeScaling.derivePoints(current, initial, perPoint);
             }
         }
         return Math.max(0, earned - allocated);

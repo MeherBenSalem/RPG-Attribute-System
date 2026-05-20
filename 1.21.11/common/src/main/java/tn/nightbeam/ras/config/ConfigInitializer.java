@@ -1,6 +1,15 @@
 package tn.nightbeam.ras.config;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import tn.nightbeam.ras.Constants;
 import tn.nightbeam.ras.platform.Services;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class ConfigInitializer {
 
@@ -18,11 +27,168 @@ public class ConfigInitializer {
 
     }
 
+    private static boolean shouldPopulateConfig(String dir, String file) {
+        boolean created = Services.CONFIG.createConfigFile(dir, file);
+        return created || !isStrictConfigMode();
+    }
+
+    private static boolean isStrictConfigMode() {
+        Path settingsPath = Services.CONFIG.getConfigDirectory().resolve("ras").resolve("settings.json");
+        if (!Files.exists(settingsPath)) {
+            return true;
+        }
+
+        try {
+            JsonElement root = JsonParser.parseString(Files.readString(settingsPath));
+            if (!root.isJsonObject()) {
+                Constants.LOG.warn("RAS config warning: ras/settings.json must be a JSON object; strict config mode is enabled.");
+                return true;
+            }
+            JsonObject settings = root.getAsJsonObject();
+            if (!settings.has("strict_config_mode")) {
+                return true;
+            }
+            JsonElement strict = settings.get("strict_config_mode");
+            if (!strict.isJsonPrimitive() || !strict.getAsJsonPrimitive().isBoolean()) {
+                Constants.LOG.warn("RAS config warning: strict_config_mode must be a boolean; strict config mode is enabled.");
+                return true;
+            }
+            return strict.getAsBoolean();
+        } catch (Exception e) {
+            Constants.LOG.warn("RAS config warning: failed to read ras/settings.json; strict config mode is enabled.", e);
+            return true;
+        }
+    }
+
+    private static boolean hasAttributeConfigFiles() {
+        Path attributesDir = Services.CONFIG.getConfigDirectory().resolve("ras").resolve("attributes");
+        if (!Files.isDirectory(attributesDir)) {
+            return false;
+        }
+
+        try (java.util.stream.Stream<Path> files = Files.list(attributesDir)) {
+            return files.anyMatch(ConfigInitializer::isAttributeConfigFile);
+        } catch (IOException e) {
+            Constants.LOG.warn("RAS config warning: failed to scan attribute config directory {}", attributesDir, e);
+            return true;
+        }
+    }
+
+    private static boolean isAttributeConfigFile(Path path) {
+        String name = path.getFileName().toString();
+        return Files.isRegularFile(path) && name.startsWith("attribute_") && name.endsWith(".json")
+                && !name.endsWith(".default.json");
+    }
+
+    private static void validateAttributeConfigs() {
+        Path attributesDir = Services.CONFIG.getConfigDirectory().resolve("ras").resolve("attributes");
+        if (!Files.isDirectory(attributesDir)) {
+            return;
+        }
+
+        java.util.Map<Integer, Path> seen = new java.util.TreeMap<>();
+        try (java.util.stream.Stream<Path> stream = Files.list(attributesDir)) {
+            stream.filter(ConfigInitializer::isAttributeConfigFile)
+                    .sorted(java.util.Comparator.comparingInt(ConfigInitializer::extractAttributeId)
+                            .thenComparing(path -> path.getFileName().toString()))
+                    .forEach(path -> validateAttributeConfig(path, seen));
+        } catch (IOException e) {
+            Constants.LOG.warn("RAS config warning: failed to validate attribute configs in {}", attributesDir, e);
+        }
+    }
+
+    private static int extractAttributeId(Path path) {
+        String name = path.getFileName().toString();
+        try {
+            return Integer.parseInt(name.substring("attribute_".length(), name.length() - ".json".length()));
+        } catch (Exception e) {
+            return Integer.MAX_VALUE;
+        }
+    }
+
+    private static void validateAttributeConfig(Path path, java.util.Map<Integer, Path> seen) {
+        int id = extractAttributeId(path);
+        if (id == Integer.MAX_VALUE) {
+            Constants.LOG.warn("RAS config warning: malformed attribute config file name {}; expected attribute_<number>.json.",
+                    path.getFileName());
+            return;
+        }
+        Path previous = seen.putIfAbsent(id, path);
+        if (previous != null) {
+            Constants.LOG.warn("RAS config warning: duplicate attribute id {} in {} and {}; using deterministic scan order.",
+                    id, previous.getFileName(), path.getFileName());
+        }
+
+        JsonObject config;
+        try {
+            JsonElement root = JsonParser.parseString(Files.readString(path));
+            if (!root.isJsonObject()) {
+                Constants.LOG.warn("RAS config warning: {} must contain a JSON object.", path.getFileName());
+                return;
+            }
+            config = root.getAsJsonObject();
+        } catch (Exception e) {
+            Constants.LOG.warn("RAS config warning: failed to parse {}; it will be skipped by readers that cannot parse it.",
+                    path.getFileName(), e);
+            return;
+        }
+
+        warnIfNotString(config, path, "display_name");
+        warnIfNotString(config, path, "on_level_event");
+        warnIfNotString(config, path, "tip_to_display");
+        warnIfNotString(config, path, "icon_path");
+        warnIfNotNumber(config, path, "init_val_attribute");
+        warnIfNotNumber(config, path, "max_level");
+        warnIfNotNumber(config, path, "base_value_per_point");
+        warnIfNotBoolean(config, path, "lock");
+        warnIfCommandArrayInvalid(config, path);
+    }
+
+    private static void warnIfNotString(JsonObject config, Path path, String key) {
+        if (config.has(key) && (!config.get(key).isJsonPrimitive() || !config.get(key).getAsJsonPrimitive().isString())) {
+            Constants.LOG.warn("RAS config warning: {} field '{}' should be a string.", path.getFileName(), key);
+        }
+    }
+
+    private static void warnIfNotNumber(JsonObject config, Path path, String key) {
+        if (config.has(key) && (!config.get(key).isJsonPrimitive() || !config.get(key).getAsJsonPrimitive().isNumber())) {
+            Constants.LOG.warn("RAS config warning: {} field '{}' should be a number.", path.getFileName(), key);
+        }
+    }
+
+    private static void warnIfNotBoolean(JsonObject config, Path path, String key) {
+        if (config.has(key) && (!config.get(key).isJsonPrimitive() || !config.get(key).getAsJsonPrimitive().isBoolean())) {
+            Constants.LOG.warn("RAS config warning: {} field '{}' should be a boolean.", path.getFileName(), key);
+        }
+    }
+
+    private static void warnIfCommandArrayInvalid(JsonObject config, Path path) {
+        if (!config.has("cmd_to_exc")) {
+            return;
+        }
+        JsonElement commands = config.get("cmd_to_exc");
+        if (!commands.isJsonArray()) {
+            Constants.LOG.warn("RAS config warning: {} field 'cmd_to_exc' should be an array of strings.",
+                    path.getFileName());
+            return;
+        }
+        JsonArray array = commands.getAsJsonArray();
+        for (JsonElement command : array) {
+            if (!command.isJsonPrimitive() || !command.getAsJsonPrimitive().isString()) {
+                Constants.LOG.warn("RAS config warning: {} field 'cmd_to_exc' contains a non-string entry.",
+                        path.getFileName());
+                return;
+            }
+        }
+    }
+
     private static void createGlobalSettings() {
         String dir = "ras";
         String file = "settings";
 
-        Services.CONFIG.createConfigFile(dir, file);
+        if (!shouldPopulateConfig(dir, file)) {
+            return;
+        }
 
         if (!Services.CONFIG.arrayKeyExists(dir, file, "max_player_level")) {
             Services.CONFIG.setNumberValue(dir, file, "max_player_level", 500);
@@ -112,13 +278,18 @@ public class ConfigInitializer {
         if (!Services.CONFIG.arrayKeyExists(dir, file, "global_stats_ui_color")) {
             Services.CONFIG.setStringValue(dir, file, "global_stats_ui_color", "\u00A74");
         }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "strict_config_mode")) {
+            Services.CONFIG.setBooleanValue(dir, file, "strict_config_mode", true);
+        }
     }
 
     private static void createAttributeSettings() {
         String dir = "ras/attributes";
         String file = "settings";
 
-        Services.CONFIG.createConfigFile(dir, file);
+        if (!shouldPopulateConfig(dir, file)) {
+            return;
+        }
 
         if (!Services.CONFIG.arrayKeyExists(dir, file, "count")) {
             Services.CONFIG.setNumberValue(dir, file, "init_val_starting_level", 1);
@@ -127,6 +298,11 @@ public class ConfigInitializer {
 
     private static void createDefaultAttributes() {
         String dir = "ras/attributes";
+
+        if (hasAttributeConfigFiles()) {
+            validateAttributeConfigs();
+            return;
+        }
 
         for (int i = 1; i <= 7; i++) {
             String file = "attribute_" + i;
@@ -144,8 +320,6 @@ public class ConfigInitializer {
                 } else {
                     Services.CONFIG.addStringToArray(dir, file, "cmd_to_exc", "");
                 }
-            } else {
-                migrateLegacyAttributeCommand(dir, file, i);
             }
 
             if (!Services.CONFIG.arrayKeyExists(dir, file, "on_level_event")) {
@@ -225,40 +399,6 @@ public class ConfigInitializer {
         };
     }
 
-    private static void migrateLegacyAttributeCommand(String dir, String file, int id) {
-        String expected = getDefaultCommand(id);
-        if (expected.isEmpty()) {
-            return;
-        }
-
-        java.util.List<String> commands = Services.CONFIG.getStringArray(dir, file, "cmd_to_exc");
-        if (commands == null || commands.isEmpty()) {
-            Services.CONFIG.addStringToArray(dir, file, "cmd_to_exc", expected);
-            return;
-        }
-
-        boolean hasExpected = false;
-        boolean hasLegacyGeneric = false;
-
-        for (String command : commands) {
-            if (command == null) {
-                continue;
-            }
-            if (command.equals(expected)) {
-                hasExpected = true;
-            }
-            if (command.contains("generic.")) {
-                hasLegacyGeneric = true;
-            }
-        }
-
-        // Preserve user custom entries but append the corrected one when the old
-        // generic.* attribute id format is still present.
-        if (!hasExpected && hasLegacyGeneric) {
-            Services.CONFIG.addStringToArray(dir, file, "cmd_to_exc", expected);
-        }
-    }
-
     private static String getDefaultEvent(int id) {
         return id == 1 ? "effect give @s minecraft:instant_health 2 3" : "";
     }
@@ -280,7 +420,9 @@ public class ConfigInitializer {
     private static void createDropRateConfig() {
         String dir = "ras";
         String file = "droprate";
-        Services.CONFIG.createConfigFile(dir, file);
+        if (!shouldPopulateConfig(dir, file)) {
+            return;
+        }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "bosses_list")) {
             Services.CONFIG.addStringToArray(dir, file, "bosses_list", "minecraft:wither");
             Services.CONFIG.addStringToArray(dir, file, "bosses_list", "minecraft:ender_dragon");
@@ -304,7 +446,9 @@ public class ConfigInitializer {
     private static void createItemsLockConfig() {
         String dir = "ras";
         String file = "items_lock";
-        Services.CONFIG.createConfigFile(dir, file);
+        if (!shouldPopulateConfig(dir, file)) {
+            return;
+        }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "enabled")) {
             Services.CONFIG.setBooleanValue(dir, file, "enabled", true);
         }
@@ -338,7 +482,9 @@ public class ConfigInitializer {
     private static void createBlocksLockConfig() {
         String dir = "ras";
         String file = "blocks_lock";
-        Services.CONFIG.createConfigFile(dir, file);
+        if (!shouldPopulateConfig(dir, file)) {
+            return;
+        }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "enabled")) {
             Services.CONFIG.setBooleanValue(dir, file, "enabled", true);
         }
@@ -358,7 +504,9 @@ public class ConfigInitializer {
     private static void createLevelUpRewardsConfig() {
         String dir = "ras";
         String file = "levelup_rewards";
-        Services.CONFIG.createConfigFile(dir, file);
+        if (!shouldPopulateConfig(dir, file)) {
+            return;
+        }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "enabled")) {
             Services.CONFIG.setBooleanValue(dir, file, "enabled", true);
         }
@@ -448,7 +596,9 @@ public class ConfigInitializer {
         String dir = "ras/display";
         for (int i = 1; i <= 15; i++) {
             String file = "attribute_" + i;
-            Services.CONFIG.createConfigFile(dir, file);
+            if (!shouldPopulateConfig(dir, file)) {
+                continue;
+            }
             if (!Services.CONFIG.arrayKeyExists(dir, file, "enable")) {
                 Services.CONFIG.setBooleanValue(dir, file, "enable", i <= 8);
             }
@@ -460,8 +610,6 @@ public class ConfigInitializer {
             }
             if (!Services.CONFIG.arrayKeyExists(dir, file, "attribute_name")) {
                 Services.CONFIG.setStringValue(dir, file, "attribute_name", getDefaultAttributeName(i));
-            } else {
-                migrateLegacyDisplayAttributeName(dir, file, i);
             }
             if (!Services.CONFIG.arrayKeyExists(dir, file, "display_modifer")) {
                 Services.CONFIG.setNumberValue(dir, file, "display_modifer", 1);
@@ -504,22 +652,12 @@ public class ConfigInitializer {
         };
     }
 
-    private static void migrateLegacyDisplayAttributeName(String dir, String file, int id) {
-        String expected = getDefaultAttributeName(id);
-        if (expected.isEmpty()) {
-            return;
-        }
-
-        String current = Services.CONFIG.getStringValue(dir, file, "attribute_name");
-        if (current != null && current.startsWith("generic.")) {
-            Services.CONFIG.setStringValue(dir, file, "attribute_name", expected);
-        }
-    }
-
     private static void createDisplaySettings() {
         String dir = "ras/display";
         String file = "settings";
-        Services.CONFIG.createConfigFile(dir, file);
+        if (!shouldPopulateConfig(dir, file)) {
+            return;
+        }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "enable")) {
             Services.CONFIG.setBooleanValue(dir, file, "enable", true);
         }
@@ -529,7 +667,9 @@ public class ConfigInitializer {
     private static void createOverlayConfig() {
         String dir = "ras/display";
         String file = "overlay";
-        Services.CONFIG.createConfigFile(dir, file);
+        if (!shouldPopulateConfig(dir, file)) {
+            return;
+        }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "hudEnabled")) {
             Services.CONFIG.setBooleanValue(dir, file, "hudEnabled", true);
         }

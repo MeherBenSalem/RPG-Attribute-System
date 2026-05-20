@@ -2,6 +2,7 @@ package tn.nightbeam.ras.procedures;
 
 import tn.nightbeam.ras.platform.Services;
 import tn.nightbeam.ras.network.PlayerVariables;
+import tn.nightbeam.ras.util.AttributeScaling;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.entity.Entity;
 
@@ -16,7 +17,6 @@ public class AddPointsAttributeGenericProcedure {
             String filename = "attribute_" + attributeId;
             PlayerVariables vars = Services.PLATFORM.getPlayerVariables(entity);
 
-            // Access attribute value by ID
             double currentAttributeValue = getAttributeValue(vars, attributeId);
 
             for (int index0 = 0; index0 < (int) vars.modifier; index0++) {
@@ -37,10 +37,14 @@ public class AddPointsAttributeGenericProcedure {
                     vars.SparePoints = vars.SparePoints - 1;
                     Services.PLATFORM.syncPlayerVariables(vars, entity);
 
-                    // Update Attribute Value
-                    double newValue = currentAttributeValue
-                            + Services.CONFIG.getNumberValue("ras/attributes", filename, "base_value_per_point");
-                    setAttributeValue(vars, attributeId, newValue);
+                    double baseValue = Services.CONFIG.getNumberValue("ras/attributes", filename,
+                            "init_val_attribute");
+                    double valuePerPoint = Services.CONFIG.getNumberValue("ras/attributes", filename,
+                            "base_value_per_point");
+                    double newPoints = getAttributePoints(vars, attributeId) + 1;
+                    setAttributePoints(vars, attributeId, newPoints);
+                    setAttributeValue(vars, attributeId,
+                            AttributeScaling.finalValue(baseValue, newPoints, valuePerPoint));
                     Services.PLATFORM.syncPlayerVariables(vars, entity);
 
                     // Increment Level (wait, is 'Level' global or per attribute? The original code
@@ -80,8 +84,18 @@ public class AddPointsAttributeGenericProcedure {
         return vars.attributes.getOrDefault(key, 0.0);
     }
 
+    private static double getAttributePoints(PlayerVariables vars, int attributeId) {
+        String key = "attribute_" + attributeId;
+        return vars.attributePoints.getOrDefault(key, 0.0);
+    }
+
     private static void setAttributeValue(PlayerVariables vars, int attributeId, double value) {
         String key = "attribute_" + attributeId;
         vars.attributes.put(key, value);
+    }
+
+    private static void setAttributePoints(PlayerVariables vars, int attributeId, double value) {
+        String key = "attribute_" + attributeId;
+        vars.attributePoints.put(key, value);
     }
 }

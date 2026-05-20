@@ -14,7 +14,8 @@ public class PlayerVariables {
     public double pointsGrantedThroughLevel = -1.0;
 
     // Dynamic Attribute Map
-    public java.util.Map<String, Double> attributes = new java.util.HashMap<>();
+    public java.util.Map<String, Double> attributes = new java.util.LinkedHashMap<>();
+    public java.util.Map<String, Double> attributePoints = new java.util.LinkedHashMap<>();
 
     public Tag writeNBT() {
         CompoundTag nbt = new CompoundTag();
@@ -33,6 +34,12 @@ public class PlayerVariables {
         }
         nbt.put("attributes_dynamic", attributesTag);
 
+        CompoundTag attributePointsTag = new CompoundTag();
+        for (java.util.Map.Entry<String, Double> entry : attributePoints.entrySet()) {
+            attributePointsTag.putDouble(entry.getKey(), entry.getValue());
+        }
+        nbt.put("attribute_points_dynamic", attributePointsTag);
+
         return nbt;
     }
 
@@ -49,12 +56,20 @@ public class PlayerVariables {
                     : -1.0;
 
             attributes.clear();
+            attributePoints.clear();
 
             // Read Dynamic Attributes
             if (nbt.contains("attributes_dynamic")) {
                 CompoundTag attributesTag = nbt.getCompound("attributes_dynamic");
                 for (String key : attributesTag.getAllKeys()) {
                     attributes.put(key, attributesTag.getDouble(key));
+                }
+            }
+
+            if (nbt.contains("attribute_points_dynamic")) {
+                CompoundTag attributePointsTag = nbt.getCompound("attribute_points_dynamic");
+                for (String key : attributePointsTag.getAllKeys()) {
+                    attributePoints.put(key, attributePointsTag.getDouble(key));
                 }
             }
 

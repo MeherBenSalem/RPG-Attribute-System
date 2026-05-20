@@ -6,11 +6,11 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.Collections;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 public class AttributeManager {
     public static final List<String> ATTRIBUTE_IDS = Collections.synchronizedList(new ArrayList<>());
-    private static final Map<Integer, tn.nightbeam.ras.config.AttributeData> CACHE = new ConcurrentHashMap<>();
+    private static final Map<Integer, tn.nightbeam.ras.config.AttributeData> CACHE = new ConcurrentSkipListMap<>();
 
     // Called by Server on Startup/Reload
     public static void refreshServerConfig() {
@@ -32,7 +32,6 @@ public class AttributeManager {
 
             tn.nightbeam.ras.config.AttributeData data = tn.nightbeam.ras.config.AttributeData.fromConfig(id, baseInc,
                     maxLvl, locked, icon, displayName);
-            CACHE.put(id, data);
             CACHE.put(id, data);
         }
     }
@@ -95,6 +94,11 @@ public class AttributeManager {
             for (File file : files) {
                 // filename without extension
                 String name = file.getName().replace(".json", "");
+                if (extractNumber(name) == 999) {
+                    Constants.LOG.warn("RAS config warning: malformed attribute config file name {}; expected attribute_<number>.json.",
+                            file.getName());
+                    continue;
+                }
                 if (!ATTRIBUTE_IDS.contains(name)) {
                     ATTRIBUTE_IDS.add(name);
                 }
@@ -104,10 +108,14 @@ public class AttributeManager {
 
     private static int extractNumber(String name) {
         try {
-            // attribute_5.json -> 5
-            String num = name.replaceAll("[^0-9]", "");
-            if (num.isEmpty())
+            String normalized = name.endsWith(".json") ? name.substring(0, name.length() - ".json".length()) : name;
+            if (!normalized.startsWith("attribute_")) {
                 return 999;
+            }
+            String num = normalized.substring("attribute_".length());
+            if (!num.matches("\\d+")) {
+                return 999;
+            }
             return Integer.parseInt(num);
         } catch (Exception e) {
             return 999;

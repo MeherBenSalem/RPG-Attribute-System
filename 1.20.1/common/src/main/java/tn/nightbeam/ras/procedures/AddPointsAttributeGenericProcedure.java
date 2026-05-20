@@ -3,6 +3,7 @@ package tn.nightbeam.ras.procedures;
 import tn.nightbeam.ras.platform.Services;
 import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.util.AttributeManager;
+import tn.nightbeam.ras.util.AttributeScaling;
 import tn.nightbeam.ras.config.AttributeData;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.entity.Entity;
@@ -26,6 +27,7 @@ public class AddPointsAttributeGenericProcedure {
 
         double currentAttributeValue = vars.attributes.getOrDefault(filename, 0.0);
         double maxLevel = Services.CONFIG.getNumberValue("ras/attributes", filename, "max_level");
+        double baseValue = Services.CONFIG.getNumberValue("ras/attributes", filename, "init_val_attribute");
         double baseValuePerPoint = Services.CONFIG.getNumberValue("ras/attributes", filename, "base_value_per_point");
 
         boolean anyChange = false;
@@ -40,7 +42,9 @@ public class AddPointsAttributeGenericProcedure {
             }
 
             vars.SparePoints -= 1;
-            currentAttributeValue += baseValuePerPoint;
+            double newPoints = vars.attributePoints.getOrDefault(filename, 0.0) + 1;
+            vars.attributePoints.put(filename, newPoints);
+            currentAttributeValue = AttributeScaling.finalValue(baseValue, newPoints, baseValuePerPoint);
             anyChange = true;
         }
 
