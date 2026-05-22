@@ -191,7 +191,7 @@ public class ConfigInitializer {
         }
 
         if (!Services.CONFIG.arrayKeyExists(dir, file, "max_player_level")) {
-            Services.CONFIG.setNumberValue(dir, file, "max_player_level", 500);
+            Services.CONFIG.setNumberValue(dir, file, "max_player_level", 50);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "level_per_orb")) {
             Services.CONFIG.setNumberValue(dir, file, "level_per_orb", 1);
@@ -212,7 +212,7 @@ public class ConfigInitializer {
             Services.CONFIG.setNumberValue(dir, file, "levels_scale_default", 1.001);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "first_level_vp")) {
-            Services.CONFIG.setNumberValue(dir, file, "first_level_vp", 90);
+            Services.CONFIG.setNumberValue(dir, file, "first_level_vp", 140);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "levels_scale_interval")) {
             Services.CONFIG.addStringToArray(dir, file, "levels_scale_interval",
@@ -228,7 +228,7 @@ public class ConfigInitializer {
             Services.CONFIG.setNumberValue(dir, file, "exp_curve_start_level", 1);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_max_level")) {
-            Services.CONFIG.setNumberValue(dir, file, "exp_curve_max_level", 500);
+            Services.CONFIG.setNumberValue(dir, file, "exp_curve_max_level", 50);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_first_level_xp")) {
             Services.CONFIG.setNumberValue(dir, file, "exp_curve_first_level_xp",
@@ -244,9 +244,11 @@ public class ConfigInitializer {
             }
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_required_per_level")) {
-            Services.CONFIG.addStringToArray(dir, file, "exp_required_per_level",
-                    "[level]1[levelEnd][xp]" + (int) Services.CONFIG.getNumberValue(dir, file, "first_level_vp")
-                            + "[xpEnd]");
+            for (int lvl = 1; lvl <= 50; lvl++) {
+                int xp = 100 + (lvl * 35) + (lvl * lvl * 5);
+                Services.CONFIG.addStringToArray(dir, file, "exp_required_per_level",
+                        "[level]" + lvl + "[levelEnd][xp]" + xp + "[xpEnd]");
+            }
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "allowSummonXP")) {
             Services.CONFIG.setBooleanValue(dir, file, "allowSummonXP", true);
@@ -304,13 +306,17 @@ public class ConfigInitializer {
             return;
         }
 
-        for (int i = 1; i <= 7; i++) {
+        for (int i = 1; i <= 8; i++) {
             String file = "attribute_" + i;
 
             Services.CONFIG.createConfigFile(dir, file);
 
             if (!Services.CONFIG.arrayKeyExists(dir, file, "display_name")) {
                 Services.CONFIG.setStringValue(dir, file, "display_name", getDefaultDisplayName(i));
+            }
+
+            if (!Services.CONFIG.arrayKeyExists(dir, file, "description")) {
+                Services.CONFIG.setStringValue(dir, file, "description", getAttributeDescription(i));
             }
 
             if (!Services.CONFIG.arrayKeyExists(dir, file, "cmd_to_exc")) {
@@ -339,11 +345,11 @@ public class ConfigInitializer {
             }
 
             if (!Services.CONFIG.arrayKeyExists(dir, file, "base_value_per_point")) {
-                Services.CONFIG.setNumberValue(dir, file, "base_value_per_point", 1);
+                Services.CONFIG.setNumberValue(dir, file, "base_value_per_point", getDefaultValuePerPoint(i));
             }
 
             if (!Services.CONFIG.arrayKeyExists(dir, file, "lock")) {
-                Services.CONFIG.setBooleanValue(dir, file, "lock", i >= 8); // 8-15 locked by default
+                Services.CONFIG.setBooleanValue(dir, file, "lock", i >= 9);
             }
 
             if (!Services.CONFIG.arrayKeyExists(dir, file, "icon_path")) {
@@ -366,10 +372,43 @@ public class ConfigInitializer {
 
     private static int getDefaultMaxLevel(int id) {
         return switch (id) {
-            case 3 -> 20; // Attack Speed
-            case 4 -> 200; // Protection
-            case 5 -> 50; // Agility
+            case 1 -> 40; // Vitality (Health)
+            case 2 -> 40; // Attack Power (Damage)
+            case 3 -> 50; // Attack Speed
+            case 4 -> 40; // Protection (Armor)
+            case 5 -> 20; // Agility (Movement Speed)
+            case 6 -> 80; // Fortitude (Knockback Resistance)
+            case 7 -> 50; // Toughness (Armor Toughness)
+            case 8 -> 50; // Exploration (Luck)
             default -> 100;
+        };
+    }
+
+    private static double getDefaultValuePerPoint(int id) {
+        return switch (id) {
+            case 1 -> 1.0;
+            case 2 -> 0.25;
+            case 3 -> 0.03;
+            case 4 -> 0.25;
+            case 5 -> 0.0025;
+            case 6 -> 0.01;
+            case 7 -> 0.10;
+            case 8 -> 0.10;
+            default -> 1.0;
+        };
+    }
+
+    private static String getAttributeDescription(int id) {
+        return switch (id) {
+            case 1 -> "Base Health: 20.0 (10 hearts). Each point adds 1.0 Health (+0.5 heart). Max level: 40 (60.0 Health total / 30 hearts).";
+            case 2 -> "Base Attack Damage: 1.0. Each point adds 0.25 Attack Damage (+1.0 damage every 4 points). Max level: 40 (+10.0 Damage bonus).";
+            case 3 -> "Base Attack Speed: 4.0. Each point adds 0.03 Attack Speed. Max level: 50 (+1.5 Attack Speed bonus).";
+            case 4 -> "Base Armor: 0.0. Each point adds 0.25 Armor (+1.0 armor every 4 points). Max level: 40 (+10.0 Armor bonus).";
+            case 5 -> "Base Movement Speed: 0.1. Each point adds 0.0025 Movement Speed. Max level: 20 (+0.05 Movement Speed bonus).";
+            case 6 -> "Base Knockback Resistance: 0.0. Each point adds 0.01 Knockback Resistance (1% resistance). Max level: 80 (+0.8 Knockback Resistance bonus / 80% resistance).";
+            case 7 -> "Base Armor Toughness: 0.0. Each point adds 0.10 Armor Toughness (+1.0 toughness every 10 points). Max level: 50 (+5.0 Armor Toughness bonus).";
+            case 8 -> "Base Luck: 0.0. Each point adds 0.10 Luck (+1.0 luck every 10 points). Max level: 50 (+5.0 Luck bonus).";
+            default -> "";
         };
     }
 
@@ -381,20 +420,22 @@ public class ConfigInitializer {
             case 4 -> "Protection : ";
             case 5 -> "Agility : ";
             case 6 -> "Fortitude : ";
-            case 7 -> "Exploration : ";
+            case 7 -> "Toughness : ";
+            case 8 -> "Exploration : ";
             default -> "";
         };
     }
 
     private static String getDefaultCommand(int id) {
         return switch (id) {
-            case 1 -> "/attribute @s minecraft:max_health base set [param(2)]";
-            case 2 -> "/attribute @s minecraft:attack_damage base set [param(1)]";
-            case 3 -> "/attribute @s minecraft:attack_speed base set [param(0.1)]";
-            case 4 -> "/attribute @s minecraft:armor base set [param(1)]";
-            case 5 -> "/attribute @s minecraft:movement_speed base set [param(0.005)]";
-            case 6 -> "/attribute @s minecraft:knockback_resistance base set [param(0.05)]";
-            case 7 -> "/attribute @s minecraft:luck base set [param(1)]";
+            case 1 -> "/attribute @s minecraft:max_health base set [param(1.0)]";
+            case 2 -> "/attribute @s minecraft:attack_damage base set [param(0.25)]";
+            case 3 -> "/attribute @s minecraft:attack_speed base set [param(0.03)]";
+            case 4 -> "/attribute @s minecraft:armor base set [param(0.25)]";
+            case 5 -> "/attribute @s minecraft:movement_speed base set [param(0.0025)]";
+            case 6 -> "/attribute @s minecraft:knockback_resistance base set [param(0.01)]";
+            case 7 -> "/attribute @s minecraft:armor_toughness base set [param(0.1)]";
+            case 8 -> "/attribute @s minecraft:luck base set [param(0.1)]";
             default -> "";
         };
     }
@@ -412,7 +453,8 @@ public class ConfigInitializer {
             case 4 -> "\u00A77Reduces the amount of damage you take from enemy attacks";
             case 5 -> "\u00A77Influences how fast you can move";
             case 6 -> "\u00A77Reduces the distance you are pushed back when hit by an enemy or explosion";
-            case 7 -> "\u00A77Influences the chances of receiving better loot or triggering beneficial events";
+            case 7 -> "\u00A77Increases your armor's effectiveness against high-damage attacks";
+            case 8 -> "\u00A77Influences the chances of receiving better loot or triggering beneficial events";
             default -> "";
         };
     }
