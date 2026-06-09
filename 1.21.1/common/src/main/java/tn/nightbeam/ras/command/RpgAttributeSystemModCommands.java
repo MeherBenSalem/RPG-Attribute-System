@@ -1,5 +1,6 @@
 package tn.nightbeam.ras.command;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import net.minecraft.commands.CommandSourceStack;
@@ -13,7 +14,7 @@ import tn.nightbeam.ras.procedures.*;
 
 public class RpgAttributeSystemModCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("ras").requires(s -> s.hasPermission(4))
+    dispatcher.register(Commands.literal("ras")
                 .then(Commands.literal("add").then(Commands.literal("level")
                         .then(Commands.argument("player", EntityArgument.player())
                                 .then(Commands.argument("amount", DoubleArgumentType.doubleArg(1))
@@ -88,6 +89,31 @@ public class RpgAttributeSystemModCommands {
                                 }).then(Commands.argument("target", EntityArgument.player()).executes(arguments -> {
                                     LockAttributeTargetProcedure.execute(arguments);
                                     return 0;
-                                })))));
+                                }))))
+                .then(Commands.literal("respec").executes(arguments -> {
+                    RespecCmdProcedure.execute(arguments.getSource().getEntity());
+                    return 0;
+                }).then(Commands.argument("player", EntityArgument.player()).executes(arguments -> {
+                    RespecPlayerCmdProcedure.execute(arguments);
+                    return 0;
+                })))
+                .then(Commands.literal("template")
+                        .then(Commands.literal("list").executes(arguments -> {
+                            TemplateListCmdProcedure.execute(arguments);
+                            return 0;
+                        }))
+                        .then(Commands.literal("apply")
+                                .then(Commands.argument("name", StringArgumentType.string())
+                                        .executes(arguments -> {
+                                            TemplateApplyCmdProcedure.executeSelf(arguments.getSource().getEntity(),
+                                                    StringArgumentType.getString(arguments, "name"));
+                                            return 0;
+                                        })
+                                        .then(Commands.argument("player", EntityArgument.player())
+                                                .executes(arguments -> {
+                                                    TemplateApplyCmdProcedure.executeOther(arguments,
+                                                            StringArgumentType.getString(arguments, "name"));
+                                                    return 0;
+                                                }))))));
     }
 }

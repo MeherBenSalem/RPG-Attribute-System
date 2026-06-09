@@ -7,6 +7,8 @@ public class Services {
 
     public static final IPlatformHelper PLATFORM = load(IPlatformHelper.class);
     public static final IConfigService CONFIG = load(IConfigService.class);
+    public static final IPermissionService PERMISSIONS = loadOptional(IPermissionService.class,
+            DefaultPermissionService::new);
 
     public static <T> T load(Class<T> clazz) {
 
@@ -14,5 +16,9 @@ public class Services {
                 .findFirst()
                 .orElseThrow(() -> new NullPointerException("Failed to load service for " + clazz.getName()));
         return loadedService;
+    }
+
+    public static <T> T loadOptional(Class<T> clazz, java.util.function.Supplier<T> fallback) {
+        return ServiceLoader.load(clazz).findFirst().orElseGet(fallback);
     }
 }

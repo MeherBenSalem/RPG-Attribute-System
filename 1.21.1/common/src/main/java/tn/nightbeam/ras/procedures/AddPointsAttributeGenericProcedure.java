@@ -23,19 +23,13 @@ public class AddPointsAttributeGenericProcedure {
                 if (vars.SparePoints >= 1 && currentAttributeValue < Services.CONFIG.getNumberValue("ras/attributes",
                         filename, "max_level")) {
 
-                    // Execute Command if configured
-                    Entity _ent = entity;
                     String _onLevelCmd = Services.CONFIG.getStringValue("ras/attributes", filename, "on_level_event");
-                    if (_ent instanceof net.minecraft.world.entity.player.Player) {
-                        _onLevelCmd = _onLevelCmd.replace("@p", "@s");
-                    }
                     if (!_onLevelCmd.isBlank()) {
-                        ProcedureCommandHelper.executeAsEntity(_ent, _onLevelCmd);
+                        String cmd = _onLevelCmd.replace("@p", "@s");
+                        ProcedureCommandHelper.executeAsEntity(entity, cmd);
                     }
 
-                    // Decrement Spare Points
                     vars.SparePoints = vars.SparePoints - 1;
-                    Services.PLATFORM.syncPlayerVariables(vars, entity);
 
                     double baseValue = Services.CONFIG.getNumberValue("ras/attributes", filename,
                             "init_val_attribute");
@@ -45,19 +39,7 @@ public class AddPointsAttributeGenericProcedure {
                     setAttributePoints(vars, attributeId, newPoints);
                     setAttributeValue(vars, attributeId,
                             AttributeScaling.finalValue(baseValue, newPoints, valuePerPoint));
-                    Services.PLATFORM.syncPlayerVariables(vars, entity);
 
-                    // Increment Level (wait, is 'Level' global or per attribute? The original code
-                    // did 'vars.Level + 1')
-                    // Original: Services.PLATFORM.getPlayerVariables(entity).Level + 1;
-                    // It seems to be a global level? Or attribute level?
-                    // "Level" field in PlayerVariables usually implies Character Level or Total
-                    // Level.
-                    // But here it increments PER POINT? "Level up" logic? Use the generic 'Level'
-                    // field.
-                    Services.PLATFORM.syncPlayerVariables(vars, entity);
-
-                    // Update RPG_LEVEL attribute
                     if (entity instanceof net.minecraft.world.entity.LivingEntity _livingEntity
                             && _livingEntity.getAttributes()
                                     .hasAttribute(net.minecraft.core.Holder.direct(
@@ -68,14 +50,11 @@ public class AddPointsAttributeGenericProcedure {
                                 .setBaseValue(vars.Level);
                     }
 
-                    // Apply effects for THIS attribute
                     OnPlayerSpawnAttributeGenericProcedure.execute(entity, attributeId);
-
-                    // Refetch value for loop condition safety (though vars reference is same object
-                    // usually)
                     currentAttributeValue = getAttributeValue(vars, attributeId);
                 }
             }
+            Services.PLATFORM.syncPlayerVariables(vars, entity);
         }
     }
 

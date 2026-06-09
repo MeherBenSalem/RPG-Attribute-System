@@ -363,6 +363,13 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
                 });
         this.addRenderableWidget(imagebutton_button_for_stats);
 
+        this.addRenderableWidget(net.minecraft.client.gui.components.Button
+                .builder(net.minecraft.network.chat.Component.literal("Stats"), b -> {
+                    if (this.minecraft != null) {
+                        this.minecraft.setScreen(new PlayerStatsOverviewScreen());
+                    }
+                }).bounds(this.leftPos + -74, this.topPos + 12, 50, 16).build());
+
         // Modifier Buttons
         imagebutton_button_left = new LegacyImageButton(
                 this.leftPos + 251, this.topPos + 14, 6, 8,

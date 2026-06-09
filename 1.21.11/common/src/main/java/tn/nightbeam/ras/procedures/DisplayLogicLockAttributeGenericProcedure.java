@@ -7,7 +7,10 @@ public class DisplayLogicLockAttributeGenericProcedure {
     public static boolean execute(Entity entity, int attributeId) {
         if (entity == null)
             return false;
-        // Return true if locked (to show lock icon)
-        return Services.CONFIG.getBooleanValue("ras/attributes", "attribute_" + attributeId, "lock");
+        tn.nightbeam.ras.config.AttributeData data = tn.nightbeam.ras.util.AttributeManager.getAttributeData(attributeId);
+        if (data != null) {
+            return data.isLocked;
+        }
+        return false;
     }
 }

@@ -29,9 +29,11 @@ public class AttributeManager {
             boolean locked = Services.CONFIG.getBooleanValue("ras/attributes", filename, "lock");
             String icon = Services.CONFIG.getStringValue("ras/attributes", filename, "icon_path");
             String displayName = Services.CONFIG.getStringValue("ras/attributes", filename, "display_name");
+            double initValue = Services.CONFIG.getNumberValue("ras/attributes", filename, "init_val_attribute");
+            String tip = Services.CONFIG.getStringValue("ras/attributes", filename, "tip_to_display");
 
             tn.nightbeam.ras.config.AttributeData data = tn.nightbeam.ras.config.AttributeData.fromConfig(id, baseInc,
-                    maxLvl, locked, icon, displayName);
+                    maxLvl, locked, icon, displayName, initValue, tip);
             CACHE.put(id, data);
         }
     }

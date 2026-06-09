@@ -19,12 +19,7 @@ public record FabricSyncConfigPayload(java.util.List<AttributeData> attributes) 
     public static void encode(FriendlyByteBuf buf, FabricSyncConfigPayload payload) {
         buf.writeInt(payload.attributes.size());
         for (AttributeData data : payload.attributes) {
-            buf.writeInt(data.attributeId);
-            buf.writeDouble(data.baseIncrement);
-            buf.writeDouble(data.maxLevel);
-            buf.writeBoolean(data.isLocked);
-            buf.writeUtf(data.iconPath != null ? data.iconPath : "");
-            buf.writeUtf(data.displayName != null ? data.displayName : "");
+            AttributeConfigSyncPacket.encodeAttributeData(buf, data);
         }
     }
 
@@ -32,13 +27,7 @@ public record FabricSyncConfigPayload(java.util.List<AttributeData> attributes) 
         int size = buf.readInt();
         java.util.List<AttributeData> attributes = new java.util.ArrayList<>();
         for (int i = 0; i < size; i++) {
-            int attributeId = buf.readInt();
-            double baseIncrement = buf.readDouble();
-            double maxLevel = buf.readDouble();
-            boolean isLocked = buf.readBoolean();
-            String iconPath = buf.readUtf();
-            String displayName = buf.readUtf();
-            attributes.add(new AttributeData(attributeId, baseIncrement, maxLevel, isLocked, iconPath, displayName));
+            attributes.add(AttributeConfigSyncPacket.decodeAttributeData(buf));
         }
         return new FabricSyncConfigPayload(attributes);
     }

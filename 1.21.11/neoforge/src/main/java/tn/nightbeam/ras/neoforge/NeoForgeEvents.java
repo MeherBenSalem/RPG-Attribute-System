@@ -20,7 +20,6 @@ public class NeoForgeEvents {
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (!event.getEntity().level().isClientSide() && event.getEntity() instanceof ServerPlayer serverPlayer) {
-            // Sync config and variables
             Services.PLATFORM.syncAttributeConfig(serverPlayer);
             tn.nightbeam.ras.procedures.OnPlayerSpawnProcedure.execute(serverPlayer);
             Services.PLATFORM.syncPlayerVariables(Services.PLATFORM.getPlayerVariables(serverPlayer), serverPlayer);

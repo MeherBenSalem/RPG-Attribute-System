@@ -84,18 +84,9 @@ public class LevelingService {
     }
 
     public static void respec(Entity entity) {
-        if (entity == null || entity.level().isClientSide()) {
-            return;
+        if (entity instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+            RespecService.tryRespec(serverPlayer, tn.nightbeam.ras.api.RespecOptions.item());
         }
-
-        initializeOrMigrate(entity);
-        PlayerVariables vars = Services.PLATFORM.getPlayerVariables(entity);
-        OnPlayerSpawnProcedure.resetAttributesToInitial(entity);
-        vars.SparePoints = getStartingPoints()
-                + (vars.pointsGrantedThroughLevel * Services.CONFIG.getNumberValue(SETTINGS_DIR, SETTINGS_FILE,
-                        "points_per_level"));
-        Services.PLATFORM.syncPlayerVariables(vars, entity);
-        OnPlayerSpawnProcedure.execute(entity);
     }
 
     public static double getXpRequiredForLevel(int level) {
@@ -141,9 +132,8 @@ public class LevelingService {
         if (vars.Level > grantFrom) {
             vars.SparePoints += (vars.Level - grantFrom)
                     * Services.CONFIG.getNumberValue(SETTINGS_DIR, SETTINGS_FILE, "points_per_level");
-            int previouslyGranted = (int) grantFrom;
             vars.pointsGrantedThroughLevel = vars.Level;
-            CheckLevelupRewardsProcedure.execute(entity.level(), entity, previouslyGranted, (int) vars.Level);
+            CheckLevelupRewardsProcedure.execute(entity.level(), entity);
         }
     }
 

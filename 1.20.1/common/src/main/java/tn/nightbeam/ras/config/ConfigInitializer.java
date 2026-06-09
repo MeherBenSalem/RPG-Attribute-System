@@ -15,6 +15,9 @@ public class ConfigInitializer {
 
     public static void init() {
         createGlobalSettings();
+        createRespecConfig();
+        createTemplatesConfig();
+        createStatsDisplayConfig();
         createAttributeSettings();
         createDefaultAttributes();
         createDropRateConfig();
@@ -283,6 +286,94 @@ public class ConfigInitializer {
         if (!Services.CONFIG.arrayKeyExists(dir, file, "strict_config_mode")) {
             Services.CONFIG.setBooleanValue(dir, file, "strict_config_mode", true);
         }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "validation_mode")) {
+            Services.CONFIG.setStringValue(dir, file, "validation_mode", "warn");
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "debug_performance")) {
+            Services.CONFIG.setBooleanValue(dir, file, "debug_performance", false);
+        }
+    }
+
+    private static void createRespecConfig() {
+        String dir = "ras";
+        String file = "respec";
+        if (!shouldPopulateConfig(dir, file)) {
+            return;
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "enabled")) {
+            Services.CONFIG.setBooleanValue(dir, file, "enabled", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "permission-required")) {
+            Services.CONFIG.setBooleanValue(dir, file, "permission-required", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "cost-enabled")) {
+            Services.CONFIG.setBooleanValue(dir, file, "cost-enabled", false);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "cost")) {
+            Services.CONFIG.setNumberValue(dir, file, "cost", 1000);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "cost-type")) {
+            Services.CONFIG.setStringValue(dir, file, "cost-type", "none");
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "xp-level-cost")) {
+            Services.CONFIG.setNumberValue(dir, file, "xp-level-cost", 0);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "require-item")) {
+            Services.CONFIG.setBooleanValue(dir, file, "require-item", false);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "item-id")) {
+            Services.CONFIG.setStringValue(dir, file, "item-id", "rpg_attribute_system:scroll_of_rebirth");
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "cooldown-seconds")) {
+            Services.CONFIG.setNumberValue(dir, file, "cooldown-seconds", 0);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "refund-all-points")) {
+            Services.CONFIG.setBooleanValue(dir, file, "refund-all-points", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "cost-command")) {
+            Services.CONFIG.setStringValue(dir, file, "cost-command", "");
+        }
+    }
+
+    private static void createTemplatesConfig() {
+        String dir = "ras";
+        String file = "templates";
+        if (!shouldPopulateConfig(dir, file)) {
+            return;
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "enabled")) {
+            Services.CONFIG.setBooleanValue(dir, file, "enabled", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "permission-required")) {
+            Services.CONFIG.setBooleanValue(dir, file, "permission-required", true);
+        }
+    }
+
+    private static void createStatsDisplayConfig() {
+        String dir = "ras";
+        String file = "stats_display";
+        if (!shouldPopulateConfig(dir, file)) {
+            return;
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "header_color")) {
+            Services.CONFIG.setStringValue(dir, file, "header_color", "#FFD700");
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "bonus_positive_color")) {
+            Services.CONFIG.setStringValue(dir, file, "bonus_positive_color", "#55FF55");
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "bonus_neutral_color")) {
+            Services.CONFIG.setStringValue(dir, file, "bonus_neutral_color", "#AAAAAA");
+        }
+        if (Services.CONFIG.getArrayAsList(dir, file, "totals").isEmpty()) {
+            Services.CONFIG.addStringToArray(dir, file, "totals",
+                    "[label]Total Health Bonus[labelEnd][ids]1[idsEnd][mode]bonus[modeEnd]");
+            Services.CONFIG.addStringToArray(dir, file, "totals",
+                    "[label]Total Damage Bonus[labelEnd][ids]2[idsEnd][mode]bonus[modeEnd]");
+            Services.CONFIG.addStringToArray(dir, file, "totals",
+                    "[label]Total Mana Bonus[labelEnd][ids]3[idsEnd][mode]bonus[modeEnd]");
+            Services.CONFIG.addStringToArray(dir, file, "totals",
+                    "[label]Total Defense Bonus[labelEnd][ids]4[idsEnd][mode]bonus[modeEnd]");
+        }
     }
 
     private static void createAttributeSettings() {
@@ -428,14 +519,14 @@ public class ConfigInitializer {
 
     private static String getDefaultCommand(int id) {
         return switch (id) {
-            case 1 -> "/attribute @s generic.max_health base set [param(1.0)]";
-            case 2 -> "/attribute @s generic.attack_damage base set [param(0.25)]";
-            case 3 -> "/attribute @s generic.attack_speed base set [param(0.03)]";
-            case 4 -> "/attribute @s generic.armor base set [param(0.25)]";
-            case 5 -> "/attribute @s generic.movement_speed base set [param(0.0025)]";
-            case 6 -> "/attribute @s generic.knockback_resistance base set [param(0.01)]";
-            case 7 -> "/attribute @s generic.armor_toughness base set [param(0.1)]";
-            case 8 -> "/attribute @s generic.luck base set [param(0.1)]";
+            case 1 -> "/attribute @s minecraft:max_health base set [param(1.0)]";
+            case 2 -> "/attribute @s minecraft:attack_damage base set [param(0.25)]";
+            case 3 -> "/attribute @s minecraft:attack_speed base set [param(0.03)]";
+            case 4 -> "/attribute @s minecraft:armor base set [param(0.25)]";
+            case 5 -> "/attribute @s minecraft:movement_speed base set [param(0.0025)]";
+            case 6 -> "/attribute @s minecraft:knockback_resistance base set [param(0.01)]";
+            case 7 -> "/attribute @s minecraft:armor_toughness base set [param(0.1)]";
+            case 8 -> "/attribute @s minecraft:luck base set [param(0.1)]";
             default -> "";
         };
     }
@@ -682,14 +773,14 @@ public class ConfigInitializer {
 
     private static String getDefaultAttributeName(int id) {
         return switch (id) {
-            case 1 -> "generic.max_health";
-            case 2 -> "generic.attack_damage";
-            case 3 -> "generic.attack_speed";
-            case 4 -> "generic.armor";
-            case 5 -> "generic.movement_speed";
-            case 6 -> "generic.knockback_resistance";
-            case 7 -> "generic.armor_toughness";
-            case 8 -> "generic.luck";
+            case 1 -> "max_health";
+            case 2 -> "attack_damage";
+            case 3 -> "attack_speed";
+            case 4 -> "armor";
+            case 5 -> "movement_speed";
+            case 6 -> "knockback_resistance";
+            case 7 -> "armor_toughness";
+            case 8 -> "luck";
             default -> "";
         };
     }

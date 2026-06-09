@@ -76,12 +76,7 @@ public class NeoForgeNetworking {
         private static void encode(FriendlyByteBuf buf, SyncConfigPayload payload) {
             buf.writeInt(payload.attributes.size());
             for (AttributeData data : payload.attributes) {
-                buf.writeInt(data.attributeId);
-                buf.writeDouble(data.baseIncrement);
-                buf.writeDouble(data.maxLevel);
-                buf.writeBoolean(data.isLocked);
-                buf.writeUtf(data.iconPath != null ? data.iconPath : "");
-                buf.writeUtf(data.displayName != null ? data.displayName : "");
+                tn.nightbeam.ras.network.AttributeConfigSyncPacket.encodeAttributeData(buf, data);
             }
         }
 
@@ -89,14 +84,7 @@ public class NeoForgeNetworking {
             int size = buf.readInt();
             List<AttributeData> attributes = new ArrayList<>();
             for (int i = 0; i < size; i++) {
-                int attributeId = buf.readInt();
-                double baseIncrement = buf.readDouble();
-                double maxLevel = buf.readDouble();
-                boolean isLocked = buf.readBoolean();
-                String iconPath = buf.readUtf();
-                String displayName = buf.readUtf();
-                attributes
-                        .add(new AttributeData(attributeId, baseIncrement, maxLevel, isLocked, iconPath, displayName));
+                attributes.add(tn.nightbeam.ras.network.AttributeConfigSyncPacket.decodeAttributeData(buf));
             }
             return new SyncConfigPayload(attributes);
         }

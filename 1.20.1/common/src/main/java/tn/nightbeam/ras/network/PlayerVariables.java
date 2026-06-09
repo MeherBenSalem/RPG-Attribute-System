@@ -17,6 +17,7 @@ public class PlayerVariables {
     public double modifier = 1.0;
     public double totalXp = -1.0;
     public double pointsGrantedThroughLevel = -1.0;
+    public long lastRespecEpochMs = 0L;
 
     // Dynamic Attribute Map
     public java.util.Map<String, Double> attributes = new java.util.LinkedHashMap<>();
@@ -38,6 +39,7 @@ public class PlayerVariables {
         nbt.putDouble("modifier", modifier);
         nbt.putDouble("totalXp", totalXp);
         nbt.putDouble("pointsGrantedThroughLevel", pointsGrantedThroughLevel);
+        nbt.putLong("lastRespecEpochMs", lastRespecEpochMs);
 
         // Write Dynamic Attributes
         CompoundTag attributesTag = new CompoundTag();
@@ -75,6 +77,7 @@ public class PlayerVariables {
             pointsGrantedThroughLevel = nbt.contains("pointsGrantedThroughLevel")
                     ? nbt.getDouble("pointsGrantedThroughLevel")
                     : -1.0;
+            lastRespecEpochMs = nbt.contains("lastRespecEpochMs") ? nbt.getLong("lastRespecEpochMs") : 0L;
 
             attributes.clear();
             attributePoints.clear();
