@@ -21,6 +21,3 @@
 - `DisplayLogicLockAttributeGenericProcedure` reading server config on client
 - `ReturnAttributeNameGenericProcedure` / `ReturnAttributeTipGenericProcedure` using synced cache
 - Documentation mismatch for `[param(X)]` and `max_level` semantics
-
-## Previous (v3.3.0)
-See git history for v3.2.0 and v3.3.0 changes.
