@@ -47,22 +47,23 @@
 | `on_level_event` | String | `effect give @s minecraft:instant_health 2 3` | Command run once per allocation (ID 1 only) |
 | `tip_to_display` | String | Tooltip text | Hover tooltip in GUI |
 | `init_val_attribute` | Double | `20.0` (ID 1) | Starting value for new/reset players |
-| `max_level` | Integer | `100` (most) | Max allocatable points |
-| `base_value_per_point` | Double | `1` | Value added per point in attribute map |
+| `max_level` | Integer | `100` (most) | Max total attribute value (not point count) |
+| `base_value_per_point` | Double | `1` | Fallback per-point multiplier when `cmd_to_exc` has no `[param(X)]` |
 | `lock` | Boolean | `false` (1–7), `true` (8–15) | Hidden/locked in GUI |
 | `icon_path` | String | `screens/att_X.png` | Icon texture path |
 
 ### Default Attribute Values
 
-| ID | Name | Init Value | Max Level | Command |
+| ID | Name | Init Value | Max Value | Command |
 |----|------|------------|-----------|---------|
-| 1 | Vitality | `20.0` | `100` | `max_health base set [param(2)]` |
-| 2 | Attack Power | `1.0` | `100` | `attack_damage base set [param(1)]` |
-| 3 | Attack Speed | `4.0` | `20` | `attack_speed base set [param(0.1)]` |
-| 4 | Protection | `0.0` | `200` | `armor base set [param(1)]` |
-| 5 | Agility | `0.1` | `50` | `movement_speed base set [param(0.005)]` |
-| 6 | Fortitude | `0.0` | `100` | `knockback_resistance base set [param(0.05)]` |
-| 7 | Exploration | `0.0` | `100` | `luck base set [param(1)]` |
+| 1 | Vitality | `20.0` | `40` | `max_health base set [param(1.0)]` |
+| 2 | Attack Power | `1.0` | `40` | `attack_damage base set [param(0.25)]` |
+| 3 | Attack Speed | `4.0` | `50` | `attack_speed base set [param(0.03)]` |
+| 4 | Protection | `0.0` | `10` | `minecraft:armor base set [param(0.25)]` |
+| 5 | Agility | `0.1` | `20` | `movement_speed base set [param(0.0025)]` |
+| 6 | Fortitude | `0.0` | `80` | `knockback_resistance base set [param(0.01)]` |
+| 7 | Toughness | `0.0` | `50` | `armor_toughness base set [param(0.1)]` |
+| 8 | Exploration | `0.0` | `50` | `luck base set [param(0.1)]` |
 
 ## Drop Rates (`ras/droprate.json`)
 

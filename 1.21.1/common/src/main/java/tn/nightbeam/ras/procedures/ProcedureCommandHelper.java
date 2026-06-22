@@ -18,6 +18,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import tn.nightbeam.ras.Constants;
+
 public final class ProcedureCommandHelper {
     private static final Pattern SIMPLE_GIVE = Pattern
             .compile("(?i)^/?give\\s+(?:@s|@p)\\s+([a-z0-9_.-]+:[a-z0-9_/.-]+)(?:\\s+(\\d+))?\\s*$");
@@ -46,6 +48,10 @@ public final class ProcedureCommandHelper {
         String normalizedCommand = normalizeForSelfTarget(entity, command);
         if (trySetAttributeBaseDirectly(entity, normalizedCommand)) {
             return;
+        }
+        if (ATTRIBUTE_BASE_SET.matcher(normalizedCommand.trim()).matches()) {
+            Constants.LOG.warn("RAS failed to apply attribute base set directly for {}; falling back to command: {}",
+                    entity.getName().getString(), normalizedCommand);
         }
         if (preferDirectGive && tryGiveDirectly(entity, normalizedCommand)) {
             return;

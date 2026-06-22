@@ -35,29 +35,18 @@ public class AddPointsAttributeGenericProcedure {
 
                     // Decrement Spare Points
                     vars.SparePoints = vars.SparePoints - 1;
-                    Services.PLATFORM.syncPlayerVariables(vars, entity);
 
                     double baseValue = Services.CONFIG.getNumberValue("ras/attributes", filename,
                             "init_val_attribute");
-                    double valuePerPoint = Services.CONFIG.getNumberValue("ras/attributes", filename,
+                    double configPerPoint = Services.CONFIG.getNumberValue("ras/attributes", filename,
                             "base_value_per_point");
+                    java.util.List<String> commands = Services.CONFIG.getArrayAsList("ras/attributes", filename,
+                            "cmd_to_exc");
                     double newPoints = getAttributePoints(vars, attributeId) + 1;
                     setAttributePoints(vars, attributeId, newPoints);
                     setAttributeValue(vars, attributeId,
-                            AttributeScaling.finalValue(baseValue, newPoints, valuePerPoint));
-                    Services.PLATFORM.syncPlayerVariables(vars, entity);
+                            AttributeScaling.finalValueFromCommands(commands, baseValue, newPoints, configPerPoint));
 
-                    // Increment Level (wait, is 'Level' global or per attribute? The original code
-                    // did 'vars.Level + 1')
-                    // Original: Services.PLATFORM.getPlayerVariables(entity).Level + 1;
-                    // It seems to be a global level? Or attribute level?
-                    // "Level" field in PlayerVariables usually implies Character Level or Total
-                    // Level.
-                    // But here it increments PER POINT? "Level up" logic? Use the generic 'Level'
-                    // field.
-                    Services.PLATFORM.syncPlayerVariables(vars, entity);
-
-                    // Update RPG_LEVEL attribute
                     if (entity instanceof net.minecraft.world.entity.LivingEntity _livingEntity
                             && _livingEntity.getAttributes()
                                     .hasAttribute(net.minecraft.core.Holder.direct(
@@ -68,14 +57,11 @@ public class AddPointsAttributeGenericProcedure {
                                 .setBaseValue(vars.Level);
                     }
 
-                    // Apply effects for THIS attribute
                     OnPlayerSpawnAttributeGenericProcedure.execute(entity, attributeId);
-
-                    // Refetch value for loop condition safety (though vars reference is same object
-                    // usually)
                     currentAttributeValue = getAttributeValue(vars, attributeId);
                 }
             }
+            Services.PLATFORM.syncPlayerVariables(vars, entity);
         }
     }
 

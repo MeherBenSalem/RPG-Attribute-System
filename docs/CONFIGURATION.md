@@ -751,7 +751,7 @@ Each attribute file configures one RPG attribute. The mod ships with 7 default a
 | **Type** | String Array |
 | **Default** | Per-ID (see table below) |
 
-**What it does:** The Minecraft commands executed **each time a point is allocated** to this attribute. Uses `@s` to target the player. Supports the `[param(X)]` placeholder which is replaced with the attribute's **full calculated value** (`init_val_attribute + points × base_value_per_point`). The number inside `param()` is ignored.
+**What it does:** The Minecraft commands executed **each time a point is allocated** to this attribute. Uses `@s` to target the player. Supports the `[param(X)]` placeholder which is replaced with the attribute's **full calculated value** (`init_val_attribute + points × valuePerPoint`). When `[param(X)]` is present, **X is the per-point multiplier**; otherwise `base_value_per_point` is used.
 
 **Systems that use it:** `AddPointsAttributeGenericProcedure.execute()`, executed via `ProcedureCommandHelper`
 
@@ -759,16 +759,17 @@ Each attribute file configures one RPG attribute. The mod ships with 7 default a
 
 | ID | Default Command |
 |----|-----------------|
-| 1 | `/attribute @s minecraft:max_health base set [param(2)]` |
-| 2 | `/attribute @s minecraft:attack_damage base set [param(1)]` |
-| 3 | `/attribute @s minecraft:attack_speed base set [param(0.1)]` |
-| 4 | `/attribute @s minecraft:armor base set [param(1)]` |
-| 5 | `/attribute @s minecraft:movement_speed base set [param(0.005)]` |
-| 6 | `/attribute @s minecraft:knockback_resistance base set [param(0.05)]` |
-| 7 | `/attribute @s minecraft:luck base set [param(1)]` |
+| 1 | `/attribute @s minecraft:max_health base set [param(1.0)]` |
+| 2 | `/attribute @s minecraft:attack_damage base set [param(0.25)]` |
+| 3 | `/attribute @s minecraft:attack_speed base set [param(0.03)]` |
+| 4 | `/attribute @s minecraft:armor base set [param(0.25)]` |
+| 5 | `/attribute @s minecraft:movement_speed base set [param(0.0025)]` |
+| 6 | `/attribute @s minecraft:knockback_resistance base set [param(0.01)]` |
+| 7 | `/attribute @s minecraft:armor_toughness base set [param(0.1)]` |
+| 8 | `/attribute @s minecraft:luck base set [param(0.1)]` |
 
 **The `[param(X)]` system:**
-The entire `[param(...)]` token is replaced with the attribute's current total value. For example, with `init_val_attribute: 20`, `base_value_per_point: 1.0`, and 80 points invested, the calculated value is `100.0` and the command becomes:
+The per-point multiplier comes from `X` inside `[param(X)]` when present. The entire `[param(...)]` token is replaced with the current total value when the command runs. For example, with `init_val_attribute: 20`, `[param(1.0)]`, and 80 points invested, the calculated value is `100.0` and the command becomes:
 ```
 /attribute @s minecraft:max_health base set 100.0
 ```
@@ -778,15 +779,15 @@ See `docs/HEALTH_SCALING.md` for worked examples.
 **Examples:**
 ```json
 "cmd_to_exc": [
-  "/attribute @s minecraft:max_health base set [param(4)]"
+  "/attribute @s minecraft:max_health base set [param(2.0)]"
 ]
 ```
-Each point adds 4 max health instead of 2.
+Each point adds 2 max health (independent of `base_value_per_point` when param is set).
 
 You can also add multiple commands:
 ```json
 "cmd_to_exc": [
-  "/attribute @s minecraft:max_health base set [param(2)]",
+  "/attribute @s minecraft:max_health base set [param(1.0)]",
   "/effect give @s minecraft:regeneration 1 0 true"
 ]
 ```
@@ -927,17 +928,15 @@ Players can reach a total attribute value of up to `max_level` (including the ba
 | **Type** | Double |
 | **Default** | `1` |
 
-**What it does:** How much the attribute value increases per point allocated. This value is used in the `[param(X)]` calculation: the actual value added is `param_value × points_spent × base_value_per_point`.
+**What it does:** Fallback per-point multiplier when `cmd_to_exc` has no `[param(X)]`. When `[param(X)]` is present in the command, **X is used as the per-point multiplier** instead.
 
-Wait — to clarify: `base_value_per_point` is the amount added to the raw attribute value per point. The `[param(X)]` placeholder in `cmd_to_exc` computes `X × total_points_spent`. The `base_value_per_point` determines the step size in the attribute map.
-
-**Systems that use it:** `AddPointsAttributeGenericProcedure.execute()`, `LevelingService.calculateAvailablePoints()`, `AttributeManager.refreshServerConfig()`
+**Systems that use it:** `AddPointsAttributeGenericProcedure.execute()`, `OnPlayerSpawnAttributeGenericProcedure.execute()`, `OnPlayerSpawnProcedure.synchronizeAttributeState()`
 
 **Examples:**
 ```json
-"base_value_per_point": 2
+"base_value_per_point": 0.25
 ```
-Each point allocated adds 2 to the attribute's internal value.
+Used only when `cmd_to_exc` omits `[param(...)]`. With `[param(1.0)]` in the command, each point adds 1.0 regardless of this field.
 
 **Performance impact:** None.
 **Multiplayer impact:** Server-side only. Synced to clients. Safe to change live.

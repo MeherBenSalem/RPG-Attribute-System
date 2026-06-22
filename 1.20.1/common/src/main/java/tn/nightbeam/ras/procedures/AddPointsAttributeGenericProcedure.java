@@ -28,7 +28,8 @@ public class AddPointsAttributeGenericProcedure {
         double currentAttributeValue = vars.attributes.getOrDefault(filename, 0.0);
         double maxLevel = Services.CONFIG.getNumberValue("ras/attributes", filename, "max_level");
         double baseValue = Services.CONFIG.getNumberValue("ras/attributes", filename, "init_val_attribute");
-        double baseValuePerPoint = Services.CONFIG.getNumberValue("ras/attributes", filename, "base_value_per_point");
+        double configPerPoint = Services.CONFIG.getNumberValue("ras/attributes", filename, "base_value_per_point");
+        java.util.List<String> commands = Services.CONFIG.getArrayAsList("ras/attributes", filename, "cmd_to_exc");
 
         boolean anyChange = false;
         for (int index0 = 0; index0 < (int) vars.modifier; index0++) {
@@ -44,7 +45,8 @@ public class AddPointsAttributeGenericProcedure {
             vars.SparePoints -= 1;
             double newPoints = vars.attributePoints.getOrDefault(filename, 0.0) + 1;
             vars.attributePoints.put(filename, newPoints);
-            currentAttributeValue = AttributeScaling.finalValue(baseValue, newPoints, baseValuePerPoint);
+            currentAttributeValue = AttributeScaling.finalValueFromCommands(commands, baseValue, newPoints,
+                    configPerPoint);
             anyChange = true;
         }
 

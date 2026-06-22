@@ -73,9 +73,11 @@ public class OnPlayerSpawnProcedure {
     private static boolean synchronizeAttributeState(Entity entity, PlayerVariables vars) {
         boolean changed = false;
         for (String attrIdStr : AttributeManager.getAttributeIds()) {
-            double baseValue = getBaseValue(attrIdStr);
-            double valuePerPoint = Services.CONFIG.getNumberValue("ras/attributes", attrIdStr,
+            double baseValue = Services.CONFIG.getNumberValue("ras/attributes", attrIdStr, "init_val_attribute");
+            double configPerPoint = Services.CONFIG.getNumberValue("ras/attributes", attrIdStr,
                     "base_value_per_point");
+            java.util.List<String> commands = Services.CONFIG.getArrayAsList("ras/attributes", attrIdStr, "cmd_to_exc");
+            double valuePerPoint = AttributeScaling.resolveValuePerPointFromCommands(commands, configPerPoint);
 
             if (!vars.attributePoints.containsKey(attrIdStr)) {
                 double currentValue = vars.attributes.getOrDefault(attrIdStr, baseValue);

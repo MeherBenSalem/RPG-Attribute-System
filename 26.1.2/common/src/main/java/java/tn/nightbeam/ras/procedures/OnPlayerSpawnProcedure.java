@@ -62,19 +62,21 @@ public class OnPlayerSpawnProcedure {
     private static boolean synchronizeAttributeState(Entity entity, PlayerVariables vars) {
         boolean changed = false;
         for (String attrIdStr : new java.util.ArrayList<>(tn.nightbeam.ras.util.AttributeManager.getAttributeIds())) {
-            double baseValue = getBaseValue(attrIdStr);
-            double valuePerPoint = Services.CONFIG.getNumberValue("ras/attributes", attrIdStr,
-                    "base_value_per_point");
+        double baseValue = getBaseValue(attrIdStr);
+        double configPerPoint = Services.CONFIG.getNumberValue("ras/attributes", attrIdStr,
+                "base_value_per_point");
+        java.util.List<String> commands = Services.CONFIG.getArrayAsList("ras/attributes", attrIdStr, "cmd_to_exc");
+        double valuePerPoint = AttributeScaling.resolveValuePerPointFromCommands(commands, configPerPoint);
 
-            if (!vars.attributePoints.containsKey(attrIdStr)) {
-                double currentValue = vars.attributes.getOrDefault(attrIdStr, baseValue);
-                vars.attributePoints.put(attrIdStr,
-                        AttributeScaling.derivePoints(currentValue, baseValue, valuePerPoint));
-                changed = true;
-            }
+        if (!vars.attributePoints.containsKey(attrIdStr)) {
+            double currentValue = vars.attributes.getOrDefault(attrIdStr, baseValue);
+            vars.attributePoints.put(attrIdStr,
+                    AttributeScaling.derivePoints(currentValue, baseValue, valuePerPoint));
+            changed = true;
+        }
 
-            double finalValue = AttributeScaling.finalValue(baseValue, vars.attributePoints.get(attrIdStr),
-                    valuePerPoint);
+        double finalValue = AttributeScaling.finalValue(baseValue, vars.attributePoints.get(attrIdStr),
+                valuePerPoint);
             if (!vars.attributes.containsKey(attrIdStr) || Double.compare(vars.attributes.get(attrIdStr), finalValue) != 0) {
                 vars.attributes.put(attrIdStr, finalValue);
                 changed = true;

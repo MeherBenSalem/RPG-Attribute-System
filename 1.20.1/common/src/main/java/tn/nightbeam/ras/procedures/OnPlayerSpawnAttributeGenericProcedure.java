@@ -13,18 +13,19 @@ public class OnPlayerSpawnAttributeGenericProcedure {
         String directory = "ras/attributes";
         String filename = "attribute_" + attributeId;
 
-        // 1. Fetch Config Values
         double initValue = Services.CONFIG.getNumberValue(directory, filename, "init_val_attribute");
         double baseIncrement = Services.CONFIG.getNumberValue(directory, filename, "base_value_per_point");
+        java.util.List<String> commands = Services.CONFIG.getArrayAsList(directory, filename, "cmd_to_exc");
+        double valuePerPoint = AttributeScaling.resolveValuePerPointFromCommands(commands, baseIncrement);
 
         PlayerVariables vars = Services.PLATFORM.getPlayerVariables(entity);
         double pointsInvested = vars.attributePoints.getOrDefault(filename, 0.0);
-        double finalCalculatedValue = AttributeScaling.finalValue(initValue, pointsInvested, baseIncrement);
+        double finalCalculatedValue = AttributeScaling.finalValue(initValue, pointsInvested, valuePerPoint);
         vars.attributes.put(filename, finalCalculatedValue);
 
         // 4. Iterate and Execute Commands
         int commandIndex = 0;
-        for (String stringCommand : Services.CONFIG.getArrayAsList(directory, filename, "cmd_to_exc")) {
+        for (String stringCommand : commands) {
             if (stringCommand == null || stringCommand.isEmpty())
                 continue;
 

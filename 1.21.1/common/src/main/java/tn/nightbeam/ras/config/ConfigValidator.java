@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
+import tn.nightbeam.ras.util.AttributeScaling;
 
 public final class ConfigValidator {
     private static final Pattern PARAM_PATTERN = Pattern.compile("\\[param\\([^)]*\\)\\]");
@@ -99,10 +100,22 @@ public final class ConfigValidator {
                     if (!cmd.isBlank() && !PARAM_PATTERN.matcher(cmd).find() && !cmd.contains("base set")) {
                         warn(name + " cmd_to_exc entry may be missing [param(...)] placeholder: " + cmd);
                     }
+                    warnIfParamDiffersFromConfig(name, cmd, perPoint);
                 }
             }
         } else {
             warn(name + " missing cmd_to_exc array.");
+        }
+    }
+
+    private void warnIfParamDiffersFromConfig(String name, String command, double configPerPoint) {
+        if (command == null || command.isBlank()) {
+            return;
+        }
+        double paramPerPoint = AttributeScaling.resolveValuePerPoint(command, configPerPoint);
+        if (Math.abs(paramPerPoint - configPerPoint) > 1e-9) {
+            warn(name + ": [param(" + paramPerPoint + ")] differs from base_value_per_point ("
+                    + configPerPoint + "); param is used as the per-point multiplier.");
         }
     }
 

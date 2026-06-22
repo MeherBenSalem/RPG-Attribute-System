@@ -33,12 +33,14 @@ public class AddPointsAttributeGenericProcedure {
 
                     double baseValue = Services.CONFIG.getNumberValue("ras/attributes", filename,
                             "init_val_attribute");
-                    double valuePerPoint = Services.CONFIG.getNumberValue("ras/attributes", filename,
+                    double configPerPoint = Services.CONFIG.getNumberValue("ras/attributes", filename,
                             "base_value_per_point");
+                    java.util.List<String> commands = Services.CONFIG.getArrayAsList("ras/attributes", filename,
+                            "cmd_to_exc");
                     double newPoints = getAttributePoints(vars, attributeId) + 1;
                     setAttributePoints(vars, attributeId, newPoints);
                     setAttributeValue(vars, attributeId,
-                            AttributeScaling.finalValue(baseValue, newPoints, valuePerPoint));
+                            AttributeScaling.finalValueFromCommands(commands, baseValue, newPoints, configPerPoint));
 
                     if (entity instanceof net.minecraft.world.entity.LivingEntity _livingEntity
                             && _livingEntity.getAttributes()

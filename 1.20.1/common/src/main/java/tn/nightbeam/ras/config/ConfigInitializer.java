@@ -18,6 +18,7 @@ public class ConfigInitializer {
         createRespecConfig();
         createTemplatesConfig();
         createStatsDisplayConfig();
+        migrateLegacyDisplayAttributeNames();
         createAttributeSettings();
         createDefaultAttributes();
         createDropRateConfig();
@@ -393,6 +394,7 @@ public class ConfigInitializer {
         String dir = "ras/attributes";
 
         if (hasAttributeConfigFiles()) {
+            migrateLegacyAttributeCommands();
             validateAttributeConfigs();
             return;
         }
@@ -466,7 +468,7 @@ public class ConfigInitializer {
             case 1 -> 40; // Vitality (Health)
             case 2 -> 40; // Attack Power (Damage)
             case 3 -> 50; // Attack Speed
-            case 4 -> 40; // Protection (Armor)
+            case 4 -> 10; // Protection (Armor) — max total armor value (+10 at 40 points)
             case 5 -> 20; // Agility (Movement Speed)
             case 6 -> 80; // Fortitude (Knockback Resistance)
             case 7 -> 50; // Toughness (Armor Toughness)
@@ -494,7 +496,7 @@ public class ConfigInitializer {
             case 1 -> "Base Health: 20.0 (10 hearts). Each point adds 1.0 Health (+0.5 heart). Max level: 40 (60.0 Health total / 30 hearts).";
             case 2 -> "Base Attack Damage: 1.0. Each point adds 0.25 Attack Damage (+1.0 damage every 4 points). Max level: 40 (+10.0 Damage bonus).";
             case 3 -> "Base Attack Speed: 4.0. Each point adds 0.03 Attack Speed. Max level: 50 (+1.5 Attack Speed bonus).";
-            case 4 -> "Base Armor: 0.0. Each point adds 0.25 Armor (+1.0 armor every 4 points). Max level: 40 (+10.0 Armor bonus).";
+            case 4 -> "Base Armor: 0.0. Each point adds 0.25 Armor (+1.0 armor every 4 points). Max value: 10.0 (+10.0 Armor bonus at 40 points).";
             case 5 -> "Base Movement Speed: 0.1. Each point adds 0.0025 Movement Speed. Max level: 20 (+0.05 Movement Speed bonus).";
             case 6 -> "Base Knockback Resistance: 0.0. Each point adds 0.01 Knockback Resistance (1% resistance). Max level: 80 (+0.8 Knockback Resistance bonus / 80% resistance).";
             case 7 -> "Base Armor Toughness: 0.0. Each point adds 0.10 Armor Toughness (+1.0 toughness every 10 points). Max level: 50 (+5.0 Armor Toughness bonus).";
@@ -827,6 +829,108 @@ public class ConfigInitializer {
         if (!Services.CONFIG.arrayKeyExists(dir, file, "anchor")) {
             Services.CONFIG.setStringValue(dir, file, "anchor", "TL");
         }
+    }
+
+    private static void migrateLegacyAttributeCommands() {
+        Path attributesDir = Services.CONFIG.getConfigDirectory().resolve("ras").resolve("attributes");
+        if (!Files.isDirectory(attributesDir)) {
+            return;
+        }
+        try (java.util.stream.Stream<Path> stream = Files.list(attributesDir)) {
+            stream.filter(ConfigInitializer::isAttributeConfigFile)
+                    .forEach(ConfigInitializer::migrateLegacyAttributeCommandsInFile);
+        } catch (IOException e) {
+            Constants.LOG.warn("RAS config warning: failed to migrate legacy attribute commands", e);
+        }
+    }
+
+    private static void migrateLegacyAttributeCommandsInFile(Path path) {
+        try {
+            JsonElement root = JsonParser.parseString(Files.readString(path));
+            if (!root.isJsonObject()) {
+                return;
+            }
+            JsonObject config = root.getAsJsonObject();
+            if (!config.has("cmd_to_exc") || !config.get("cmd_to_exc").isJsonArray()) {
+                return;
+            }
+            JsonArray array = config.getAsJsonArray("cmd_to_exc");
+            boolean changed = false;
+            JsonArray migratedArray = new JsonArray();
+            for (JsonElement element : array) {
+                if (element.isJsonPrimitive()) {
+                    String original = element.getAsString();
+                    String migrated = migrateLegacyAttributeCommand(original);
+                    migratedArray.add(migrated);
+                    if (!migrated.equals(original)) {
+                        changed = true;
+                    }
+                } else {
+                    migratedArray.add(element);
+                }
+            }
+            if (changed) {
+                config.add("cmd_to_exc", migratedArray);
+                Files.writeString(path, new com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(config));
+                Constants.LOG.info("RAS migrated legacy attribute commands in {}", path.getFileName());
+            }
+        } catch (Exception e) {
+            Constants.LOG.warn("RAS config warning: failed to migrate {}", path.getFileName(), e);
+        }
+    }
+
+    static String migrateLegacyAttributeCommand(String command) {
+        if (command == null) {
+            return null;
+        }
+        String migrated = command.replace("minecraft:generic.", "minecraft:");
+        migrated = migrated.replaceAll("(?i)@s\\s+generic\\.", "@s minecraft:");
+        migrated = migrated.replaceAll("(?i)@p\\s+generic\\.", "@p minecraft:");
+        return migrated;
+    }
+
+    private static void migrateLegacyDisplayAttributeNames() {
+        Path displayDir = Services.CONFIG.getConfigDirectory().resolve("ras").resolve("display");
+        if (!Files.isDirectory(displayDir)) {
+            return;
+        }
+        try (java.util.stream.Stream<Path> stream = Files.list(displayDir)) {
+            stream.filter(path -> {
+                String name = path.getFileName().toString();
+                return Files.isRegularFile(path) && name.startsWith("attribute_") && name.endsWith(".json");
+            }).forEach(ConfigInitializer::migrateLegacyDisplayAttributeNameInFile);
+        } catch (IOException e) {
+            Constants.LOG.warn("RAS config warning: failed to migrate legacy display attribute names", e);
+        }
+    }
+
+    private static void migrateLegacyDisplayAttributeNameInFile(Path path) {
+        try {
+            JsonElement root = JsonParser.parseString(Files.readString(path));
+            if (!root.isJsonObject()) {
+                return;
+            }
+            JsonObject config = root.getAsJsonObject();
+            if (!config.has("attribute_name") || !config.get("attribute_name").isJsonPrimitive()) {
+                return;
+            }
+            String original = config.get("attribute_name").getAsString();
+            String migrated = migrateLegacyDisplayAttributeName(original);
+            if (!migrated.equals(original)) {
+                config.addProperty("attribute_name", migrated);
+                Files.writeString(path, new com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(config));
+                Constants.LOG.info("RAS migrated legacy display attribute name in {}", path.getFileName());
+            }
+        } catch (Exception e) {
+            Constants.LOG.warn("RAS config warning: failed to migrate {}", path.getFileName(), e);
+        }
+    }
+
+    static String migrateLegacyDisplayAttributeName(String name) {
+        if (name != null && name.startsWith("generic.")) {
+            return name.substring("generic.".length());
+        }
+        return name;
     }
 
 }
