@@ -1,13 +1,8 @@
 package tn.nightbeam.ras.api;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -72,18 +67,11 @@ public final class RasApi {
     }
 
     private static int readRpgLevel(LivingEntity living) {
-        Attribute rpgLevelAttr = RpgAttributeSystemModAttributes.RPG_LEVEL.get();
-        ResourceLocation key = BuiltInRegistries.ATTRIBUTE.getKey(rpgLevelAttr);
-        if (key == null) {
-            return 0;
-        }
-        ResourceKey<Attribute> attributeKey = ResourceKey.create(Registries.ATTRIBUTE, key);
-        Holder<Attribute> holder = BuiltInRegistries.ATTRIBUTE.getHolderOrThrow(attributeKey);
-        AttributeInstance instance = living.getAttribute(holder);
+        AttributeInstance instance = living.getAttribute(Holder.direct(RpgAttributeSystemModAttributes.RPG_LEVEL.get()));
         return instance != null ? (int) Math.floor(instance.getValue()) : 0;
     }
 
-    private static double readAttribute(LivingEntity living, Holder<Attribute> attribute) {
+    private static double readAttribute(LivingEntity living, Holder<net.minecraft.world.entity.ai.attributes.Attribute> attribute) {
         AttributeInstance instance = living.getAttribute(attribute);
         return instance != null ? instance.getValue() : 0.0;
     }
