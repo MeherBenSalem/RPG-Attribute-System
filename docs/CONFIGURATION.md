@@ -1,7 +1,7 @@
 # RPG Attribute System — Configuration Guide
 
 > **Version:** 3.1.1 | **Mod ID:** `rpg_attribute_system`
-> **Supported Loaders:** Fabric, NeoForge (1.21.1 / 1.21.11 / 26.1.2), Forge (1.20.1)
+> **Supported Loaders:** Fabric, NeoForge (1.21.1 / 26.2), Forge (1.20.1)
 
 ---
 
@@ -72,7 +72,7 @@ These settings control core leveling, XP, death behavior, XP sharing, and HUD ov
 | Property | Value |
 |----------|-------|
 | **Type** | Integer |
-| **Default** | `500` |
+| **Default** | `100` |
 | **Allowed** | `1` – `Integer.MAX_VALUE` |
 
 **What it does:** Sets the maximum RPG level a player can reach. The effective cap is the lower of `max_player_level` and `exp_curve_max_level`.
@@ -205,7 +205,7 @@ Players get 2 attribute points per level.
 | Property | Value |
 |----------|-------|
 | **Type** | Double |
-| **Default** | `90` |
+| **Default** | `140` |
 | **Allowed** | `1` – `Double.MAX_VALUE` |
 
 **What it does:** The base XP required to reach level 1 (and the starting point for the XP curve). This value seeds `exp_curve_first_level_xp` on first launch.
@@ -232,7 +232,7 @@ Level 1 costs 50 XP instead of 90.
 | Property | Value |
 |----------|-------|
 | **Type** | Double |
-| **Default** | `1.001` |
+| **Default** | `1.02` |
 | **Allowed** | `> 1.0` (recommended) |
 
 **What it does:** The fallback XP multiplier applied to each level's requirement when no specific scale interval matches. A value of `1.1` means each level requires 10% more XP than the previous.
@@ -315,7 +315,7 @@ Levels 1–10 all cost `exp_curve_first_level_xp` XP. The curve kicks in at leve
 | Property | Value |
 |----------|-------|
 | **Type** | Integer |
-| **Default** | `500` |
+| **Default** | `100` |
 | **Allowed** | `1` – `Integer.MAX_VALUE` |
 
 **What it does:** The maximum level used by the XP curve calculation. The effective max level is `min(max_player_level, exp_curve_max_level)`.
@@ -336,7 +336,7 @@ Levels 1–10 all cost `exp_curve_first_level_xp` XP. The curve kicks in at leve
 | Property | Value |
 |----------|-------|
 | **Type** | Double |
-| **Default** | Mirrors `first_level_vp` (90) |
+| **Default** | Mirrors `first_level_vp` (140) |
 | **Allowed** | `≥ 1` |
 
 **What it does:** The XP required for the first level of the curve. This is the actual value used by the leveling engine (unlike `first_level_vp` which only seeds it once).
@@ -361,7 +361,7 @@ Level 1 requires 200 XP.
 | Property | Value |
 |----------|-------|
 | **Type** | Double |
-| **Default** | Mirrors `levels_scale_default` (1.001) |
+| **Default** | Mirrors `levels_scale_default` (1.02) |
 | **Allowed** | `> 1.0` |
 
 **What it does:** The fallback XP multiplier when no scale interval matches. This is the actual value used by the engine (unlike `levels_scale_default` which only seeds it once).
@@ -407,7 +407,7 @@ Level 1 requires 200 XP.
 | Property | Value |
 |----------|-------|
 | **Type** | String Array |
-| **Default** | `["[level]1[levelEnd][xp]90[xpEnd]"]` |
+| **Default** | 100 generated entries for levels 1–100 |
 
 **What it does:** Allows setting explicit XP requirements for specific levels, overriding the curve formula. Each entry uses the format:
 ```
@@ -870,7 +870,8 @@ Grants Absorption II for 10 seconds when a point is allocated.
 | 4 | Protection | `0.0` |
 | 5 | Agility | `0.1` |
 | 6 | Fortitude | `0.0` |
-| 7 | Exploration | `0.0` |
+| 7 | Toughness | `0.0` |
+| 8 | Exploration | `0.0` |
 
 **Side effects:** This value is used as the "zero point" for calculating how many points have been spent. Changing it mid-game will cause incorrect point recalculation until the player respecs.
 
@@ -900,13 +901,14 @@ Players start with 30 health instead of 20.
 
 | ID | Attribute | Default |
 |----|-----------|---------|
-| 1 | Vitality | `100` |
-| 2 | Attack Power | `100` |
-| 3 | Attack Speed | `20` |
-| 4 | Protection | `200` |
-| 5 | Agility | `50` |
-| 6 | Fortitude | `100` |
-| 7 | Exploration | `100` |
+| 1 | Vitality | `40` |
+| 2 | Attack Power | `40` |
+| 3 | Attack Speed | `40` |
+| 4 | Protection | `10` |
+| 5 | Agility | `12` |
+| 6 | Fortitude | `80` |
+| 7 | Toughness | `50` |
+| 8 | Exploration | `50` |
 
 **Side effects:** Changing this mid-game does not retroactively remove points already allocated above the new cap.
 
@@ -1158,16 +1160,16 @@ Half VP from all kills.
 **Default entries:**
 | Item | Required Attribute | Required Level |
 |------|-------------------|----------------|
-| `minecraft:diamond_sword` | 2 (Attack Power) | 10 |
-| `minecraft:diamond_pickaxe` | 2 (Attack Power) | 10 |
-| `minecraft:diamond_axe` | 2 (Attack Power) | 10 |
-| `minecraft:diamond_shovel` | 2 (Attack Power) | 10 |
-| `minecraft:diamond_hoe` | 2 (Attack Power) | 10 |
-| `minecraft:netherite_sword` | 2 (Attack Power) | 20 |
-| `minecraft:netherite_pickaxe` | 2 (Attack Power) | 20 |
-| `minecraft:netherite_axe` | 2 (Attack Power) | 20 |
-| `minecraft:netherite_shovel` | 2 (Attack Power) | 20 |
-| `minecraft:netherite_hoe` | 2 (Attack Power) | 20 |
+| `minecraft:diamond_sword` | 2 (Attack Power) | 12 |
+| `minecraft:diamond_pickaxe` | 2 (Attack Power) | 12 |
+| `minecraft:diamond_axe` | 2 (Attack Power) | 12 |
+| `minecraft:diamond_shovel` | 2 (Attack Power) | 12 |
+| `minecraft:diamond_hoe` | 2 (Attack Power) | 12 |
+| `minecraft:netherite_sword` | 2 (Attack Power) | 30 |
+| `minecraft:netherite_pickaxe` | 2 (Attack Power) | 30 |
+| `minecraft:netherite_axe` | 2 (Attack Power) | 30 |
+| `minecraft:netherite_shovel` | 2 (Attack Power) | 30 |
+| `minecraft:netherite_hoe` | 2 (Attack Power) | 30 |
 
 **Examples:**
 ```json
@@ -1239,9 +1241,9 @@ Half VP from all kills.
 **Default entries:**
 | Block | Required Level |
 |-------|----------------|
-| `minecraft:diamond_ore` | 10 |
-| `minecraft:deepslate_diamond_ore` | 10 |
-| `minecraft:ancient_debris` | 20 |
+| `minecraft:diamond_ore` | 12 |
+| `minecraft:deepslate_diamond_ore` | 12 |
+| `minecraft:ancient_debris` | 30 |
 
 **Systems that use it:** `GameplayRulesProcedure.getRequiredBlockLevel()`
 
@@ -1815,7 +1817,7 @@ These are **not** typos to fix — they are the actual key names the code reads.
 
 ### Unused Options (1.21.1+)
 
-These options are written to config files but **never read** by any gameplay code in 1.21.1 / 1.21.11 / 26.1.2:
+These options are written to config files but **never read** by any gameplay code in 1.21.1 / 26.2:
 
 | File | Key | Status |
 |------|-----|--------|
@@ -1861,4 +1863,4 @@ Admin commands that interact with player data (not config files):
 
 ---
 
-*Generated for RPG Attribute System v3.1.1 — 1.21.1 / 1.21.11 / 26.1.2*
+*Generated for RPG Attribute System — 1.20.1 / 1.21.1 / 26.2*

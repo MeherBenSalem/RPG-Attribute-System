@@ -13,10 +13,14 @@ import com.mojang.blaze3d.platform.GlStateManager;
 
 public class LevelOverlayRenderer {
     private static final int MARGIN = 6;
-    private static final int BAR_WIDTH = 80;
-    private static final int BAR_HEIGHT = 12;
+    private static final int BAR_WIDTH = 153;
+    private static final int BAR_HEIGHT = 11;
     private static final int POINTS_Y = 0;
     private static final int BAR_Y = 8;
+    private static final ResourceLocation XP_EMPTY = new ResourceLocation("rpg_attribute_system",
+            "textures/screens/rpg_attributes/slider_empty.png");
+    private static final ResourceLocation XP_FULL = new ResourceLocation("rpg_attribute_system",
+            "textures/screens/rpg_attributes/slider_full.png");
 
     public static void render(GuiGraphics graphics, float partialTick) {
         Minecraft mc = Minecraft.getInstance();
@@ -49,7 +53,7 @@ public class LevelOverlayRenderer {
         boolean showPoints = YouHavePointsProcedure.execute(entity);
         boolean showKeybind = DisplayLogicKeybindOverlayProcedure.execute();
         String keyText = showKeybind ? PressToGetKeyBindNameProcedure.execute() : "";
-        int hudWidth = Math.max(BAR_WIDTH, showKeybind ? 90 + mc.font.width(keyText) : 0);
+        int hudWidth = Math.max(BAR_WIDTH, showKeybind ? BAR_WIDTH + 11 + mc.font.width(keyText) : 0);
         int hudHeight = BAR_Y + BAR_HEIGHT;
         int scaledWidth = Math.round(hudWidth * scale);
         int scaledHeight = Math.round(hudHeight * scale);
@@ -78,13 +82,13 @@ public class LevelOverlayRenderer {
         graphics.pose().scale(scale, scale, 1.0F);
 
         if (showXp) {
-            graphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/ui_bar_0.png"),
+            graphics.blit(XP_EMPTY,
                     drawX, drawY + BAR_Y, 0, 0, BAR_WIDTH, BAR_HEIGHT, BAR_WIDTH, BAR_HEIGHT);
 
             double percentage = ReturnPercentageProcedure.execute(entity);
             int barWidth = (int) Math.round((percentage / 100.0) * BAR_WIDTH);
             if (barWidth > 0) {
-                graphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/ui_bar_99.png"),
+                graphics.blit(XP_FULL,
                         drawX, drawY + BAR_Y, 0, 0, barWidth, BAR_HEIGHT, BAR_WIDTH, BAR_HEIGHT);
             }
         }
@@ -96,12 +100,14 @@ public class LevelOverlayRenderer {
         }
         if (showKeybind) {
             graphics.blit(new ResourceLocation("rpg_attribute_system:textures/screens/bookoverlay.png"),
-                    drawX + 82, drawY + BAR_Y, 0, 0, 8, 12, 8, 12);
-            graphics.drawString(mc.font, keyText, drawX + 91, drawY + BAR_Y + 2, -1, false);
+                    drawX + BAR_WIDTH + 2, drawY + BAR_Y, 0, 0, 8, 12, 8, 12);
+            graphics.drawString(mc.font, keyText, drawX + BAR_WIDTH + 11, drawY + BAR_Y + 2, -1, false);
         }
-        if (showXp)
-            graphics.drawString(mc.font, CurrentXpToLevelProcedure.execute(entity), drawX + 2, drawY + BAR_Y + 3,
-                    -16777216, false);
+        if (showXp) {
+            String xpText = CurrentXpToLevelProcedure.execute(entity) + " XP";
+            graphics.drawString(mc.font, xpText, drawX + BAR_WIDTH / 2 - mc.font.width(xpText) / 2,
+                    drawY + BAR_Y + 2, 0xF2F2D8, true);
+        }
 
         graphics.pose().popPose();
         RenderSystem.depthMask(true);

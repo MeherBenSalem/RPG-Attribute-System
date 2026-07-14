@@ -1,3 +1,9 @@
+# RPG Attribute System 4.0
+
+Version 4.0 supports Minecraft 1.20.1 on Fabric and Forge. The release defaults use a 100-level RPG cap, generated EXP requirements through level 100, and conservative movement/attack-speed scaling. Existing server configurations and player data are preserved.
+
+See the repository [PATCH_NOTES_4.0.md](../PATCH_NOTES_4.0.md) and [docs/CONFIGURATION.md](../docs/CONFIGURATION.md) before upgrading.
+
 # MultiLoader Template
 
 This project provides a Gradle project template that can compile mods for both Forge and Fabric using a common sourceset. This project does not require any third party libraries or dependencies. If you have any questions or want to discuss the project join our [Discord](https://discord.myceliummod.network).

@@ -6,21 +6,21 @@
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `max_player_level` | Integer | `500` | Maximum RPG level |
+| `max_player_level` | Integer | `100` | Maximum RPG level |
 | `level_per_orb` | Integer | `1` | Levels granted by Orb of Leveling item |
 | `vp_diminishing_factor` | Integer | `20` | **UNUSED** — legacy, no code reads this |
 | `points_per_level` | Integer | `1` | Attribute points per level-up |
 | `use_vanilla_xp` | Boolean | `false` | Disable VP from mob kills |
 | `on_death_reset` | Boolean | `false` | Reset all progress on death |
-| `levels_scale_default` | Double | `1.001` | Fallback XP curve multiplier (seeds `exp_curve_default_scale`) |
-| `first_level_vp` | Integer | `90` | Base XP for level 1 (seeds `exp_curve_first_level_xp`) |
+| `levels_scale_default` | Double | `1.02` | Fallback XP curve multiplier (seeds `exp_curve_default_scale`) |
+| `first_level_vp` | Integer | `140` | Base XP for level 1 (seeds `exp_curve_first_level_xp`) |
 | `levels_scale_interval` | String[] | 4 ranges | XP scale intervals (seeds `exp_curve_scale_intervals`) |
 | `exp_curve_start_level` | Integer | `1` | Level where XP curve begins |
-| `exp_curve_max_level` | Integer | `500` | Max level for XP curve |
-| `exp_curve_first_level_xp` | Double | `90` | **Active** XP cost for level 1 |
-| `exp_curve_default_scale` | Double | `1.001` | **Active** fallback XP multiplier |
+| `exp_curve_max_level` | Integer | `100` | Max level for XP curve |
+| `exp_curve_first_level_xp` | Double | `140` | **Active** XP cost for level 1 |
+| `exp_curve_default_scale` | Double | `1.02` | **Active** fallback XP multiplier |
 | `exp_curve_scale_intervals` | String[] | 4 ranges | **Active** XP scale intervals |
-| `exp_required_per_level` | String[] | `["[level]1[levelEnd][xp]90[xpEnd]"]` | Explicit XP overrides per level |
+| `exp_required_per_level` | String[] | 100 generated entries (levels 1–100) | Explicit XP overrides per level |
 | `allowSummonXP` | Boolean | `true` | Tamed/summoned mob kills grant XP to owner |
 | `shared_xp_enabled` | Boolean | `false` | Share XP with nearby players |
 | `shared_xp_radius` | Double | `16` | XP share radius (blocks) |
@@ -57,10 +57,10 @@
 | ID | Name | Init Value | Max Value | Command |
 |----|------|------------|-----------|---------|
 | 1 | Vitality | `20.0` | `40` | `max_health base set [param(1.0)]` |
-| 2 | Attack Power | `1.0` | `40` | `attack_damage base set [param(0.25)]` |
-| 3 | Attack Speed | `4.0` | `50` | `attack_speed base set [param(0.03)]` |
+| 2 | Attack Power | `1.0` | `40` | `attack_damage base set [param(0.20)]` |
+| 3 | Attack Speed | `4.0` | `40` | `attack_speed base set [param(0.02)]` |
 | 4 | Protection | `0.0` | `10` | `minecraft:armor base set [param(0.25)]` |
-| 5 | Agility | `0.1` | `20` | `movement_speed base set [param(0.0025)]` |
+| 5 | Agility | `0.1` | `12` | `movement_speed base set [param(0.0025)]` |
 | 6 | Fortitude | `0.0` | `80` | `knockback_resistance base set [param(0.01)]` |
 | 7 | Toughness | `0.0` | `50` | `armor_toughness base set [param(0.1)]` |
 | 8 | Exploration | `0.0` | `50` | `luck base set [param(0.1)]` |
@@ -81,7 +81,7 @@
 |-----|------|---------|-------------|
 | `enabled` | Boolean | `true` | Master toggle |
 | `show_tooltip` | Boolean | `true` | Show requirement tooltip on locked items |
-| `items_list` | String[] | 10 diamond/netherite entries | Item → attribute → level requirements |
+| `items_list` | String[] | Diamond tools: level 12; Netherite tools: level 30 | Item → attribute → level requirements |
 
 ## Block Locks (`ras/blocks_lock.json`)
 
@@ -89,7 +89,7 @@
 |-----|------|---------|-------------|
 | `enabled` | Boolean | `true` | Master toggle |
 | `show_feedback` | Boolean | `true` | Show "requires level X" message |
-| `blocks_list` | String[] | diamond_ore/10, deepslate_diamond_ore/10, ancient_debris/20 | Block → level requirements |
+| `blocks_list` | String[] | diamond_ore/12, deepslate_diamond_ore/12, ancient_debris/30 | Block → level requirements |
 
 ## Level-Up Rewards (`ras/levelup_rewards.json`)
 
@@ -146,4 +146,4 @@
 
 ---
 
-*Generated for RPG Attribute System v3.1.1*
+*Updated for RPG Attribute System v4.0*

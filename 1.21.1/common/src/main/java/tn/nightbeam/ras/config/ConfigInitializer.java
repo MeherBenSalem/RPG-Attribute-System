@@ -195,7 +195,7 @@ public class ConfigInitializer {
         }
 
         if (!Services.CONFIG.arrayKeyExists(dir, file, "max_player_level")) {
-            Services.CONFIG.setNumberValue(dir, file, "max_player_level", 50);
+            Services.CONFIG.setNumberValue(dir, file, "max_player_level", 100);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "level_per_orb")) {
             Services.CONFIG.setNumberValue(dir, file, "level_per_orb", 1);
@@ -213,26 +213,26 @@ public class ConfigInitializer {
             Services.CONFIG.setBooleanValue(dir, file, "on_death_reset", false);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "levels_scale_default")) {
-            Services.CONFIG.setNumberValue(dir, file, "levels_scale_default", 1.001);
+            Services.CONFIG.setNumberValue(dir, file, "levels_scale_default", 1.02);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "first_level_vp")) {
             Services.CONFIG.setNumberValue(dir, file, "first_level_vp", 140);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "levels_scale_interval")) {
             Services.CONFIG.addStringToArray(dir, file, "levels_scale_interval",
-                    "[range]0-50[rangeEnd][scale]1.1[scaleEnd]");
+                    "[range]0-25[rangeEnd][scale]1.1[scaleEnd]");
             Services.CONFIG.addStringToArray(dir, file, "levels_scale_interval",
-                    "[range]51-100[rangeEnd][scale]1.05[scaleEnd]");
+                    "[range]26-50[rangeEnd][scale]1.07[scaleEnd]");
             Services.CONFIG.addStringToArray(dir, file, "levels_scale_interval",
-                    "[range]101-200[rangeEnd][scale]1.01[scaleEnd]");
+                    "[range]51-75[rangeEnd][scale]1.04[scaleEnd]");
             Services.CONFIG.addStringToArray(dir, file, "levels_scale_interval",
-                    "[range]201-500[rangeEnd][scale]1.001[scaleEnd]");
+                    "[range]76-100[rangeEnd][scale]1.02[scaleEnd]");
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_start_level")) {
             Services.CONFIG.setNumberValue(dir, file, "exp_curve_start_level", 1);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_max_level")) {
-            Services.CONFIG.setNumberValue(dir, file, "exp_curve_max_level", 50);
+            Services.CONFIG.setNumberValue(dir, file, "exp_curve_max_level", 100);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_first_level_xp")) {
             Services.CONFIG.setNumberValue(dir, file, "exp_curve_first_level_xp",
@@ -248,7 +248,7 @@ public class ConfigInitializer {
             }
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_required_per_level")) {
-            for (int lvl = 1; lvl <= 50; lvl++) {
+            for (int lvl = 1; lvl <= 100; lvl++) {
                 int xp = 100 + (lvl * 35) + (lvl * lvl * 5);
                 Services.CONFIG.addStringToArray(dir, file, "exp_required_per_level",
                         "[level]" + lvl + "[levelEnd][xp]" + xp + "[xpEnd]");
@@ -467,9 +467,9 @@ public class ConfigInitializer {
         return switch (id) {
             case 1 -> 40; // Vitality (Health)
             case 2 -> 40; // Attack Power (Damage)
-            case 3 -> 50; // Attack Speed
+            case 3 -> 40; // Attack Speed
             case 4 -> 10; // Protection (Armor) — max total armor value (+10 at 40 points)
-            case 5 -> 20; // Agility (Movement Speed)
+            case 5 -> 12; // Agility (Movement Speed)
             case 6 -> 80; // Fortitude (Knockback Resistance)
             case 7 -> 50; // Toughness (Armor Toughness)
             case 8 -> 50; // Exploration (Luck)
@@ -480,8 +480,8 @@ public class ConfigInitializer {
     private static double getDefaultValuePerPoint(int id) {
         return switch (id) {
             case 1 -> 1.0;
-            case 2 -> 0.25;
-            case 3 -> 0.03;
+            case 2 -> 0.20;
+            case 3 -> 0.02;
             case 4 -> 0.25;
             case 5 -> 0.0025;
             case 6 -> 0.01;
@@ -494,10 +494,10 @@ public class ConfigInitializer {
     private static String getAttributeDescription(int id) {
         return switch (id) {
             case 1 -> "Base Health: 20.0 (10 hearts). Each point adds 1.0 Health (+0.5 heart). Max level: 40 (60.0 Health total / 30 hearts).";
-            case 2 -> "Base Attack Damage: 1.0. Each point adds 0.25 Attack Damage (+1.0 damage every 4 points). Max level: 40 (+10.0 Damage bonus).";
-            case 3 -> "Base Attack Speed: 4.0. Each point adds 0.03 Attack Speed. Max level: 50 (+1.5 Attack Speed bonus).";
+            case 2 -> "Base Attack Damage: 1.0. Each point adds 0.20 Attack Damage (+1.0 damage every 5 points). Max level: 40 (+8.0 Damage bonus).";
+            case 3 -> "Base Attack Speed: 4.0. Each point adds 0.02 Attack Speed. Max level: 40 (+0.8 Attack Speed bonus).";
             case 4 -> "Base Armor: 0.0. Each point adds 0.25 Armor (+1.0 armor every 4 points). Max value: 10.0 (+10.0 Armor bonus at 40 points).";
-            case 5 -> "Base Movement Speed: 0.1. Each point adds 0.0025 Movement Speed. Max level: 20 (+0.05 Movement Speed bonus).";
+            case 5 -> "Base Movement Speed: 0.1. Each point adds 0.0025 Movement Speed. Max level: 12 (+0.03 Movement Speed bonus).";
             case 6 -> "Base Knockback Resistance: 0.0. Each point adds 0.01 Knockback Resistance (1% resistance). Max level: 80 (+0.8 Knockback Resistance bonus / 80% resistance).";
             case 7 -> "Base Armor Toughness: 0.0. Each point adds 0.10 Armor Toughness (+1.0 toughness every 10 points). Max level: 50 (+5.0 Armor Toughness bonus).";
             case 8 -> "Base Luck: 0.0. Each point adds 0.10 Luck (+1.0 luck every 10 points). Max level: 50 (+5.0 Luck bonus).";
@@ -522,8 +522,8 @@ public class ConfigInitializer {
     private static String getDefaultCommand(int id) {
         return switch (id) {
             case 1 -> "/attribute @s minecraft:max_health base set [param(1.0)]";
-            case 2 -> "/attribute @s minecraft:attack_damage base set [param(0.25)]";
-            case 3 -> "/attribute @s minecraft:attack_speed base set [param(0.03)]";
+            case 2 -> "/attribute @s minecraft:attack_damage base set [param(0.20)]";
+            case 3 -> "/attribute @s minecraft:attack_speed base set [param(0.02)]";
             case 4 -> "/attribute @s minecraft:armor base set [param(0.25)]";
             case 5 -> "/attribute @s minecraft:movement_speed base set [param(0.0025)]";
             case 6 -> "/attribute @s minecraft:knockback_resistance base set [param(0.01)]";
@@ -592,25 +592,25 @@ public class ConfigInitializer {
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "items_list")) {
             Services.CONFIG.addStringToArray(dir, file, "items_list",
-                    "[item]minecraft:diamond_sword[itemEnd][attribute]2[attributeEnd][level]10[levelEnd]");
+                    "[item]minecraft:diamond_sword[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]");
             Services.CONFIG.addStringToArray(dir, file, "items_list",
-                    "[item]minecraft:diamond_pickaxe[itemEnd][attribute]2[attributeEnd][level]10[levelEnd]");
+                    "[item]minecraft:diamond_pickaxe[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]");
             Services.CONFIG.addStringToArray(dir, file, "items_list",
-                    "[item]minecraft:diamond_axe[itemEnd][attribute]2[attributeEnd][level]10[levelEnd]");
+                    "[item]minecraft:diamond_axe[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]");
             Services.CONFIG.addStringToArray(dir, file, "items_list",
-                    "[item]minecraft:diamond_shovel[itemEnd][attribute]2[attributeEnd][level]10[levelEnd]");
+                    "[item]minecraft:diamond_shovel[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]");
             Services.CONFIG.addStringToArray(dir, file, "items_list",
-                    "[item]minecraft:diamond_hoe[itemEnd][attribute]2[attributeEnd][level]10[levelEnd]");
+                    "[item]minecraft:diamond_hoe[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]");
             Services.CONFIG.addStringToArray(dir, file, "items_list",
-                    "[item]minecraft:netherite_sword[itemEnd][attribute]2[attributeEnd][level]20[levelEnd]");
+                    "[item]minecraft:netherite_sword[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]");
             Services.CONFIG.addStringToArray(dir, file, "items_list",
-                    "[item]minecraft:netherite_pickaxe[itemEnd][attribute]2[attributeEnd][level]20[levelEnd]");
+                    "[item]minecraft:netherite_pickaxe[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]");
             Services.CONFIG.addStringToArray(dir, file, "items_list",
-                    "[item]minecraft:netherite_axe[itemEnd][attribute]2[attributeEnd][level]20[levelEnd]");
+                    "[item]minecraft:netherite_axe[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]");
             Services.CONFIG.addStringToArray(dir, file, "items_list",
-                    "[item]minecraft:netherite_shovel[itemEnd][attribute]2[attributeEnd][level]20[levelEnd]");
+                    "[item]minecraft:netherite_shovel[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]");
             Services.CONFIG.addStringToArray(dir, file, "items_list",
-                    "[item]minecraft:netherite_hoe[itemEnd][attribute]2[attributeEnd][level]20[levelEnd]");
+                    "[item]minecraft:netherite_hoe[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]");
         }
     }
 
@@ -628,11 +628,11 @@ public class ConfigInitializer {
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "blocks_list")) {
             Services.CONFIG.addStringToArray(dir, file, "blocks_list",
-                    "[block]minecraft:diamond_ore[blockEnd][level]10[levelEnd]");
+                    "[block]minecraft:diamond_ore[blockEnd][level]12[levelEnd]");
             Services.CONFIG.addStringToArray(dir, file, "blocks_list",
-                    "[block]minecraft:deepslate_diamond_ore[blockEnd][level]10[levelEnd]");
+                    "[block]minecraft:deepslate_diamond_ore[blockEnd][level]12[levelEnd]");
             Services.CONFIG.addStringToArray(dir, file, "blocks_list",
-                    "[block]minecraft:ancient_debris[blockEnd][level]20[levelEnd]");
+                    "[block]minecraft:ancient_debris[blockEnd][level]30[levelEnd]");
         }
     }
 

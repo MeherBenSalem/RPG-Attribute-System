@@ -20,17 +20,29 @@ public class ReturnSectionDisplayGenericProcedure {
         double modifier = Services.CONFIG.getNumberValue(dir, filename, "display_modifer");
 
         // Safety check for attribute existence to avoid crashes if config is wrong
-        net.minecraft.world.entity.ai.attributes.Attribute attribute = BuiltInRegistries.ATTRIBUTE
-                .get(new ResourceLocation(namespace, attrName));
-        double baseValue = 0;
+        net.minecraft.world.entity.ai.attributes.Attribute attribute = resolveAttribute(namespace, attrName);
+        double finalValue = 0;
         if (attribute != null && entity instanceof LivingEntity living) {
             net.minecraft.world.entity.ai.attributes.AttributeInstance instance = living.getAttribute(attribute);
             if (instance != null) {
-                baseValue = instance.getBaseValue();
+                finalValue = instance.getValue();
             }
         }
 
         return displayName + ""
-                + new java.text.DecimalFormat("##.#").format(baseValue * modifier);
+                + new java.text.DecimalFormat("##.##").format(finalValue * modifier);
+    }
+
+    private static net.minecraft.world.entity.ai.attributes.Attribute resolveAttribute(String namespace,
+            String attrName) {
+        if (namespace == null || namespace.isBlank() || attrName == null || attrName.isBlank()) {
+            return null;
+        }
+        net.minecraft.world.entity.ai.attributes.Attribute attribute = BuiltInRegistries.ATTRIBUTE
+                .get(new ResourceLocation(namespace, attrName));
+        if (attribute == null && !attrName.contains(".")) {
+            attribute = BuiltInRegistries.ATTRIBUTE.get(new ResourceLocation(namespace, "generic." + attrName));
+        }
+        return attribute;
     }
 }

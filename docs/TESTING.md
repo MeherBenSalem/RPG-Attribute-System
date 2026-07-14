@@ -21,11 +21,10 @@ Run on Fabric and NeoForge/Forge per supported MC branch.
 
 | Branch | Fabric | NeoForge/Forge | Status |
 |--------|--------|----------------|--------|
-| 1.21.11 | Yes | Yes | PASS |
 | 1.21.1 | Yes | Yes | PASS |
 | 1.20.1 | Yes | Forge | PASS |
-| 26.1.2 | Yes | Yes | PASS |
+| 26.2 | Yes | Yes | PASS |
 
 Run compile: `.\gradlew.bat :common:compileJava :fabric:compileJava :neoforge:compileJava`
 
-**Note:** Player Stats Overview GUI ships on 1.21.11 and 1.21.1. Backend respec/templates/validation ships on all branches.
+**Note:** Player Stats Overview GUI ships on 1.21.1. Backend respec/templates/validation ships on all active branches.
