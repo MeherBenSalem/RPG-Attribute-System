@@ -1,11 +1,20 @@
-# RPG Attribute System — Configuration Changelog
+# Version Migration
 
-> Tracks config options added, removed, deprecated, and changed between major versions.
-> Focuses on 1.20.1 → 1.21.1+ migration. Minor version differences (1.21.1 / 1.21.11 / 26.1.2) share identical config structures.
+> Tracks changes between major versions. Focuses on 1.20.1 → 1.21.1+ migration. Minor version differences (1.21.1 / 1.21.11 / 26.2) share identical config structures.
 
 ---
 
-## 1.20.1 → 1.21.1 / 1.21.11 / 26.1.2
+## 4.0.0 → 4.1.0
+
+**Breaking changes:** None. Additive release.
+
+**What changed:** New public read API endpoints (`RasApi.getLevel()`, `RasApi.getCombatSnapshot()`, `RasApi.isAvailable()`). All existing respec and template API behavior is unchanged.
+
+**Migration:** No action required. Update the mod JAR.
+
+---
+
+## 1.20.1 → 1.21.1 / 1.21.11 / 26.2
 
 ### Config System Overhaul
 
@@ -27,19 +36,15 @@
 
 | Key | 1.20.1 Behavior | 1.21.1+ Behavior |
 |-----|-----------------|-------------------|
-| `bosses_list` | **Active** — used by `VanillaDropRatesProcedure` to identify boss entities for special VP drops | **Unused** — written to file but never read |
+| `bosses_list` | **Active** — used by `VanillaDropRatesProcedure` for special boss VP drops | **Unused** — written to file but never read |
 | `min_drop_rate` | **Active** — lower bound for randomized boss VP drops | **Unused** — written to file but never read |
 | `max_drop_rate` | **Active** — upper bound for randomized boss VP drops | **Unused** — written to file but never read |
 | `default_vp_rates` | Active | Active (unchanged) |
 | `dimensions_drop_rates` | Active | Active (unchanged) |
 
-**What happened:** The 1.20.1 `VanillaDropRatesProcedure.java` handled two VP calculation paths:
-1. **Boss entities** (from `bosses_list`) — used randomized VP via `min_drop_rate` / `max_drop_rate`
-2. **Normal entities** — used `default_vp_rates × max_health`
+In 1.20.1, `VanillaDropRatesProcedure.java` used two VP paths: boss entities (randomized `min/max_drop_rate`) and normal entities (`default_vp_rates × max_health`). In 1.21.1+, `GameplayRulesProcedure.calculateKillXp()` uses a single path: `max_health × default_vp_rates × dimension_multiplier`. The boss-specific randomized path was removed.
 
-In 1.21.1+, `GameplayRulesProcedure.calculateKillXp()` uses a single path: `max_health × default_vp_rates × dimension_multiplier`. The boss-specific randomized path was removed.
-
-**Migration impact:** If you relied on boss-specific VP tuning, adjust `dimensions_drop_rates` or `default_vp_rates` instead.
+**Migration:** If you relied on boss-specific VP tuning, adjust `dimensions_drop_rates` or `default_vp_rates` instead.
 
 ---
 
@@ -51,7 +56,7 @@ In 1.21.1+, `GameplayRulesProcedure.calculateKillXp()` uses a single path: `max_
 | Config keys | `enabled`, `show_tooltip`, `items_list` | `enabled`, `show_tooltip`, `items_list` |
 | Behavior | Identical | Identical |
 
-**No config changes.** The logic moved from common procedures to platform-specific event handlers, but the config keys and format are unchanged.
+**No config changes needed.**
 
 ---
 
@@ -63,7 +68,7 @@ In 1.21.1+, `GameplayRulesProcedure.calculateKillXp()` uses a single path: `max_
 | Config keys | `enabled`, `show_feedback`, `blocks_list` | `enabled`, `show_feedback`, `blocks_list` |
 | Behavior | Identical | Identical |
 
-**No config changes.**
+**No config changes needed.**
 
 ---
 
@@ -71,11 +76,11 @@ In 1.21.1+, `GameplayRulesProcedure.calculateKillXp()` uses a single path: `max_
 
 | Aspect | 1.20.1 | 1.21.1+ |
 |--------|--------|---------|
-| Class | `GiveLevelsCommandCommand` (Forge event) + `RpgAttributeSystemModCommands` (common) | `RpgAttributeSystemModCommands` (common only) |
-| Registration | `RegisterCommandsEvent` subscriber | Direct `CommandDispatcher` registration |
+| Registration class | `GiveLevelsCommandCommand` (Forge event) + `RpgAttributeSystemModCommands` (common) | `RpgAttributeSystemModCommands` (common only) |
+| Registration method | `RegisterCommandsEvent` subscriber | Direct `CommandDispatcher` registration |
 | Config interaction | None (commands modify player data, not config) | None |
 
-**No config changes.**
+**No user-visible changes.**
 
 ---
 
@@ -83,13 +88,13 @@ In 1.21.1+, `GameplayRulesProcedure.calculateKillXp()` uses a single path: `max_
 
 | Aspect | 1.20.1 | 1.21.1+ |
 |--------|--------|---------|
-| Attribute IDs | `generic.max_health`, `generic.attack_damage`, etc. | `max_health`, `attack_damage`, etc. |
+| Attribute IDs in commands | `generic.max_health`, `generic.attack_damage`, etc. | `max_health`, `attack_damage`, etc. |
 | `cmd_to_exc` format | `/attribute @s generic.max_health base set [param(2)]` | `/attribute @s minecraft:max_health base set [param(2)]` |
 | Auto-migration | N/A | `ConfigInitializer.migrateLegacyAttributeCommand()` appends corrected command if legacy `generic.*` format detected |
 | Display `attribute_name` | `generic.max_health` | `max_health` |
 | Display auto-migration | N/A | `ConfigInitializer.migrateLegacyDisplayAttributeName()` overwrites if `generic.*` prefix detected |
 
-**Migration impact:** Existing 1.20.1 configs with `generic.*` attribute IDs are automatically migrated on first load in 1.21.1+. No manual action required.
+**Migration:** Existing 1.20.1 configs with `generic.*` attribute IDs are automatically migrated on first load in 1.21.1+. No manual action required.
 
 ---
 
@@ -102,31 +107,31 @@ In 1.21.1+, `GameplayRulesProcedure.calculateKillXp()` uses a single path: `max_
 | Migration flags | N/A | `totalXp = -1.0` triggers legacy migration |
 | Auto-migration | N/A | `LevelingService.initializeOrMigrate()` + `PlayerVariables.readNBT()` |
 
-**Migration impact:** Players joining a 1.21.1+ world with 1.20.1 data are automatically migrated. The `totalXp` field is calculated from the old level/XP values.
+**Migration:** Players joining a 1.21.1+ world with 1.20.1 data are automatically migrated. The `totalXp` field is calculated from the old level/XP values.
 
 ---
 
 ### Platform Loader Changes
 
-| Loader | 1.20.1 | 1.21.1 | 1.21.11 | 26.1.2 |
-|--------|--------|--------|---------|--------|
-| Forge | ✅ | ❌ | ❌ | ❌ |
-| NeoForge | ❌ | ✅ | ✅ | ✅ |
-| Fabric | ✅ | ✅ | ✅ | ✅ |
+| Loader | 1.20.1 | 1.21.1 | 26.2 |
+|--------|--------|--------|------|
+| Forge | ✅ | ❌ | ❌ |
+| NeoForge | ❌ | ✅ | ✅ |
+| Fabric | ✅ | ✅ | ✅ |
 
-**Impact:** Forge users on 1.20.1 cannot directly upgrade to 1.21.1+ without switching to NeoForge. Config files are compatible.
+**Impact:** Forge users on 1.20.1 cannot directly upgrade to 1.21.1+ without switching to NeoForge. Config files are fully compatible.
 
 ---
 
 ## 1.21.1 → 1.21.11
 
-**No config changes.** The config structure, keys, defaults, and behavior are identical. The differences between these versions are in platform/networking code, not configuration.
+**No config changes.** The config structure, keys, defaults, and behavior are identical. The differences are in platform/networking code only.
 
 ---
 
-## 1.21.11 → 26.1.2
+## 1.21.11 → 26.2
 
-**No config changes.** The config structure, keys, defaults, and behavior are identical. The 26.1.2 version uses a slightly different package path (`java.tn.nightbeam.ras` instead of `tn.nightbeam.ras`) but this has no effect on configuration.
+**No config changes.** The config structure, keys, defaults, and behavior are identical. The 26.2 version uses a slightly different package path but this has no effect on configuration.
 
 ---
 
@@ -143,4 +148,8 @@ In 1.21.1+, `GameplayRulesProcedure.calculateKillXp()` uses a single path: `max_
 
 ---
 
-*Generated for RPG Attribute System v3.1.1*
+## See Also
+
+- [Changelog](changelog.md) — Version release history
+- [Compatibility](../compatibility.md) — Version matrix and platform support
+- [Installation](installation.md) — Installation and updating
