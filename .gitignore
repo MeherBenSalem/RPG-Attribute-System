@@ -61,3 +61,4 @@ mcreator.gradle
 *.bak
 *.tmp
 *.log
+.commandcode/taste/taste.md
