@@ -87,3 +87,9 @@ These are the actual key names the code reads. Changing the key name will cause 
 - [Main Config Reference](main-config.md) — Global settings and attribute meta
 - [Additional Config Files](additional-config-files.md) — Per-attribute, items, blocks, drops, rewards, display
 - [Common Use Cases](../guides/common-use-cases.md) — Ready-to-use config presets
+- [Client Configuration](client.md) — HUD and display settings
+- [Gameplay Configuration](gameplay.md) — XP, levelling, locks, respec
+
+---
+
+[Previous: Glossary](../glossary.md) | [Documentation Home](../README.md) | [Next: Main Config Reference](main-config.md)
