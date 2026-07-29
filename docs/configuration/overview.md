@@ -35,7 +35,8 @@ RPG Attribute System uses a custom JSON-based configuration system. All config f
 | Global settings | No (server-only logic) | Most: No. XP curve: re-join |
 | Attribute metadata | Yes (via network packets) | Re-join to update |
 | Drop rates | No | No |
-| Item/Block locks | No | No |
+| Item locks (`items_list`, `enabled`, `show_tooltip`) | Yes (via network packets on join) — for tooltips | Re-join after server edit |
+| Block locks | No | No |
 | Level-up rewards | No | No |
 | Display settings | No (client reads own copy) | No |
 | Overlay position | No (client-only) | No |

@@ -75,6 +75,11 @@ public interface IPlatformHelper {
     void syncAttributeConfig(net.minecraft.server.level.ServerPlayer player);
 
     /**
+     * Syncs item-lock configuration to the client.
+     */
+    void syncItemsLockConfig(net.minecraft.server.level.ServerPlayer player);
+
+    /**
      * Sends a button action packet to the server.
      *
      * @param buttonID The ID of the button.

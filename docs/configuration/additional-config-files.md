@@ -451,7 +451,7 @@ In 1.20.1, bosses used randomized VP: `random(min_drop_rate, max_drop_rate) × b
 
 Master toggle for the item lock system. When `true`, players cannot use items in `items_list` unless their attribute level meets the requirement.
 
-**Multiplayer impact:** Server-side only. Safe to change live.
+**Multiplayer impact:** Enforced on the **server**. Also synced to clients on join (with `show_tooltip` and `items_list`) so tooltips stay accurate. Players must **re-join** after you change this on a live server.
 
 ### `show_tooltip`
 
@@ -460,9 +460,9 @@ Master toggle for the item lock system. When `true`, players cannot use items in
 | **Type** | Boolean |
 | **Default** | `true` |
 
-When `true`, locked items show a tooltip indicating the attribute and level required. Green if met, red if not.
+When `true`, locked items show a tooltip indicating the attribute and level required. Green if met, red if not (1.21.1+ / 26.2). On 1.20.1, the lock line appears only when the requirement is **not** met.
 
-**Multiplayer impact:** Client-side only. Safe to change live.
+**Multiplayer impact:** Synced from the **server** config on join (4.1.1+). Re-join after changing it on the server. Clients no longer need a matching local `items_lock.json` for tooltips.
 
 ### `items_list`
 
@@ -473,7 +473,7 @@ When `true`, locked items show a tooltip indicating the attribute and level requ
 
 Format: `[item]ITEM_ID[itemEnd][attribute]ATTRIBUTE_ID[attributeEnd][level]REQUIRED_LEVEL[levelEnd]`
 
-- `ITEM_ID` — Full item registry name (e.g., `minecraft:diamond_sword`)
+- `ITEM_ID` — Full item registry name (e.g., `minecraft:diamond_sword`, or a modded id such as `weaponexpanded:ruby_sword`)
 - `ATTRIBUTE_ID` — The attribute number to check (e.g., `2` for Attack Power)
 - `REQUIRED_LEVEL` — The minimum attribute value required
 
@@ -496,11 +496,12 @@ Format: `[item]ITEM_ID[itemEnd][attribute]ATTRIBUTE_ID[attributeEnd][level]REQUI
 ```json
 [
   "[item]minecraft:bow[itemEnd][attribute]2[attributeEnd][level]5[levelEnd]",
-  "[item]minecraft:trident[itemEnd][attribute]2[attributeEnd][level]15[levelEnd]"
+  "[item]minecraft:trident[itemEnd][attribute]2[attributeEnd][level]15[levelEnd]",
+  "[item]weaponexpanded:ruby_sword[itemEnd][attribute]2[attributeEnd][level]20[levelEnd]"
 ]
 ```
 
-**Multiplayer impact:** Server-side only. Safe to change live.
+**Multiplayer impact:** List is **server-authoritative**. Enforcement always uses the server file. From **4.1.1**, the list is also synced to clients on join so requirement tooltips appear for modded items that exist only in the server config. Re-join (or restart) after editing. Exact `namespace:path` IDs only — no wildcards.
 
 ---
 

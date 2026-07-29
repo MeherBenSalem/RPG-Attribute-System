@@ -100,7 +100,9 @@ With a scale of 1.1 and level 1 costing 140 VP:
 
 ### Item Locking
 
-Item locking prevents players from using items until they reach a required attribute level. When a locked item is hovered, the tooltip shows green (requirement met) or red (requirement not met).
+Item locking prevents players from using items until they reach a required attribute level. Enforcement is always **server-side**. From **4.1.1**, `enabled`, `show_tooltip`, and `items_list` are synced to clients on join so tooltips match the server list (including modded item IDs that only exist in the server config). Re-join after editing the server file.
+
+When a locked item is hovered and `show_tooltip` is `true`, the tooltip shows green (requirement met) or red (requirement not met) on 1.21.1 / 26.2; on 1.20.1 the lock line appears only when unmet.
 
 **Default locked items:**
 

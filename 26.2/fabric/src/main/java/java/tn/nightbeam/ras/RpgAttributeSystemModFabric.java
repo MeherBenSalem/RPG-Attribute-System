@@ -82,6 +82,8 @@ public class RpgAttributeSystemModFabric implements ModInitializer {
         PayloadTypeRegistry.clientboundPlay().register(FabricMenuStateUpdatePayload.TYPE, FabricMenuStateUpdatePayload.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(FabricSyncVarsPayload.TYPE, FabricSyncVarsPayload.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(FabricSyncConfigPayload.TYPE, FabricSyncConfigPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(FabricSyncItemsLockPayload.TYPE, FabricSyncItemsLockPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(FabricSyncItemsLockPayload.TYPE, FabricSyncItemsLockPayload.CODEC);
 
         // Server Network Receivers
         ServerPlayNetworking.registerGlobalReceiver(FabricMenuStateUpdatePayload.TYPE,

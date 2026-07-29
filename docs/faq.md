@@ -70,6 +70,12 @@ VP is RAS's internal XP currency (stored in player NBT). Vanilla XP is Minecraft
 
 Item locking is enabled by default. Diamond tools require Attack Power level 12. Check `config/ras/items_lock.json` for all lock settings, or set `enabled` to `false` to disable.
 
+### Modded weapons lock but show no requirement tooltip — why?
+
+On multiplayer before **4.1.1**, tooltips read the **client** `items_lock.json` while locks were enforced from the **server**. Vanilla defaults appeared because they ship on both sides; modded IDs added only on the server locked without a tooltip line.
+
+**4.1.1+** syncs the server list to clients on join. Update server and clients to 4.1.1, keep entries on the server config, and re-join. Exact registry IDs only (e.g. `weaponexpanded:ruby_sword`).
+
 ### Why can't I mine diamond ore?
 
 Block locking is enabled by default. Diamond ore requires RPG level 12. Check `config/ras/blocks_lock.json` for all lock settings, or set `enabled` to `false` to disable.

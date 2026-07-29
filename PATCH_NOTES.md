@@ -1,5 +1,22 @@
 # RPG Attribute System — Patch Notes
 
+## 4.1.1
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+
+### Bug fixes
+
+- **Item-lock tooltips for modded / server-only entries** — syncs `items_lock` (`enabled`, `show_tooltip`, `items_list`) from server to client on join so WeaponExpanded and other modded locks show requirement tooltips.
+- **`show_tooltip` honored on 1.21.1 / 26.2** — previously ignored on those lines.
+
+### Upgrade
+
+No config migration. Update server and clients together; re-join after editing server `items_lock.json`.
+
+See also: `RPG-Attribute-System-4.1.1-PatchNotes.md`, `docs/changelog.md`.
+
+---
+
 ## 4.1.0
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)

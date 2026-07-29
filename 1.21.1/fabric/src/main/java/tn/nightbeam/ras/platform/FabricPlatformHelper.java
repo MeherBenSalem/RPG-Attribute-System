@@ -97,6 +97,13 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     @Override
+    public void syncItemsLockConfig(ServerPlayer player) {
+        ItemsLockSyncPacket packet = ItemsLockSyncPacket.fromServerConfig();
+        ServerPlayNetworking.send(player,
+                new FabricSyncItemsLockPayload(packet.enabled(), packet.showTooltip(), packet.itemsList()));
+    }
+
+    @Override
     public void sendButtonAction(int buttonID, int x, int y, int z) {
         net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(
                 new FabricButtonActionPayload(buttonID, x, y, z));

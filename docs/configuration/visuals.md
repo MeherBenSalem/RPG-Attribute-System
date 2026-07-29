@@ -382,18 +382,14 @@ Uses `mymod:textures/gui/str_icon.png` directly.
 
 ### Item Lock Tooltip
 
-When item locking is enabled and `show_tooltip` is `true`, locked items display a coloured tooltip line:
+When item locking is enabled and `show_tooltip` is `true`, locked items display a requirement tooltip line driven by the **server-synced** `items_list` (4.1.1+):
 
-- **Green text:** Requirement is met — the player can use the item.
-- **Red text:** Requirement is not met — the item cannot be used.
+- **1.21.1 / 26.2:** Green when the requirement is met, red when it is not (`Requires {attribute} Level {N}`).
+- **1.20.1:** Lock line is shown only when the requirement is **not** met (legacy format).
 
-This uses the localisation key:
+Add modded weapons (WeaponExpanded, etc.) only on the **server** `config/ras/items_lock.json` — clients receive the list on join. Before 4.1.1, clients needed a matching local copy or tooltips would be missing while locks still worked.
 
-```text
-message.rpg_attribute_system.block_level_required
-```
-
-Which renders as: `Requires RPG level %s`
+Block-level locks (mining gates) are separate and still use client/server block lock config as documented under [Block Locks](additional-config-files.md#block-locks).
 
 ---
 

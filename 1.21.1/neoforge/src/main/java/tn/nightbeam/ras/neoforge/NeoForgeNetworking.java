@@ -11,6 +11,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import tn.nightbeam.ras.RpgAttributeSystemMod;
 import tn.nightbeam.ras.config.AttributeData;
+import tn.nightbeam.ras.network.ItemsLockSyncPacket;
 import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.platform.Services;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +27,8 @@ public class NeoForgeNetworking {
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "sync_vars");
     public static final ResourceLocation SYNC_CONFIG_ID = ResourceLocation
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "sync_config");
+    public static final ResourceLocation SYNC_ITEMS_LOCK_ID = ResourceLocation
+            .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "sync_items_lock");
     public static final ResourceLocation BUTTON_ACTION_ID = ResourceLocation
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "button_action");
     public static final ResourceLocation MENU_UPDATE_ID = ResourceLocation
@@ -40,6 +43,7 @@ public class NeoForgeNetworking {
         // Server -> Client
         registrar.playToClient(SyncVarsPayload.TYPE, SyncVarsPayload.CODEC, NeoForgeNetworking::handleSyncVars);
         registrar.playToClient(SyncConfigPayload.TYPE, SyncConfigPayload.CODEC, NeoForgeNetworking::handleSyncConfig);
+        registrar.playToClient(SyncItemsLockPayload.TYPE, SyncItemsLockPayload.CODEC, NeoForgeNetworking::handleSyncItemsLock);
 
         // Bidirectional (both directions)
         registrar.playBidirectional(MenuUpdatePayload.TYPE, MenuUpdatePayload.CODEC,
@@ -87,6 +91,29 @@ public class NeoForgeNetworking {
                 attributes.add(tn.nightbeam.ras.network.AttributeConfigSyncPacket.decodeAttributeData(buf));
             }
             return new SyncConfigPayload(attributes);
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+    public record SyncItemsLockPayload(boolean enabled, boolean showTooltip, List<String> itemsList)
+            implements CustomPacketPayload {
+        public static final CustomPacketPayload.Type<SyncItemsLockPayload> TYPE = new CustomPacketPayload.Type<>(
+                SYNC_ITEMS_LOCK_ID);
+        public static final StreamCodec<FriendlyByteBuf, SyncItemsLockPayload> CODEC = StreamCodec.of(
+                SyncItemsLockPayload::encode,
+                SyncItemsLockPayload::decode);
+
+        private static void encode(FriendlyByteBuf buf, SyncItemsLockPayload payload) {
+            ItemsLockSyncPacket.encodeItemsLockData(buf, payload.enabled(), payload.showTooltip(), payload.itemsList());
+        }
+
+        private static SyncItemsLockPayload decode(FriendlyByteBuf buf) {
+            ItemsLockSyncPacket packet = ItemsLockSyncPacket.decodeItemsLockData(buf);
+            return new SyncItemsLockPayload(packet.enabled(), packet.showTooltip(), packet.itemsList());
         }
 
         @Override
@@ -177,6 +204,14 @@ public class NeoForgeNetworking {
     private static void handleSyncConfig(SyncConfigPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             tn.nightbeam.ras.util.AttributeManager.setClientCache(payload.attributes);
+        });
+    }
+
+    private static void handleSyncItemsLock(SyncItemsLockPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            ItemsLockSyncPacket.handle(
+                    new ItemsLockSyncPacket(payload.enabled(), payload.showTooltip(), payload.itemsList()),
+                    () -> null);
         });
     }
 

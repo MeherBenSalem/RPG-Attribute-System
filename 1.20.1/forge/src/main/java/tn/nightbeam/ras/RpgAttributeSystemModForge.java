@@ -77,6 +77,16 @@ public class RpgAttributeSystemModForge {
                     });
                     context.setPacketHandled(true);
                 });
+        addNetworkMessage(tn.nightbeam.ras.network.ItemsLockSyncPacket.class,
+                tn.nightbeam.ras.network.ItemsLockSyncPacket::encode,
+                tn.nightbeam.ras.network.ItemsLockSyncPacket::new,
+                (message, contextSupplier) -> {
+                    NetworkEvent.Context context = contextSupplier.get();
+                    context.enqueueWork(() -> {
+                        tn.nightbeam.ras.network.ItemsLockSyncPacket.handle(message, () -> null);
+                    });
+                    context.setPacketHandled(true);
+                });
         addNetworkMessage(tn.nightbeam.ras.network.GenericButtonActionPacket.class,
                 tn.nightbeam.ras.network.GenericButtonActionPacket::encode,
                 tn.nightbeam.ras.network.GenericButtonActionPacket::new,

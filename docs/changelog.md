@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.1.1
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+
+### Bug Fixes
+
+- **Item-lock tooltips for modded / server-only entries** — `items_lock` (`enabled`, `show_tooltip`, `items_list`) is synced from server to client on join. Weapons added only in the server config (e.g. WeaponExpanded) now show requirement tooltips while remaining locked correctly.
+- **`show_tooltip` honored on 1.21.1 / 26.2** — previously ignored on those lines; now respected after sync.
+
+### Notes
+
+- No config migration. Server and clients should both run **4.1.1**. Re-join after editing server `items_lock.json` to refresh tooltips.
+
+---
+
 ## 4.1.0
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)

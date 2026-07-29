@@ -72,6 +72,16 @@
 
 ---
 
+### Modded item is locked but has no requirement tooltip
+
+**Symptom:** A WeaponExpanded (or other mod) weapon in `items_lock.json` cannot be used, but hovering shows no “Requires …” line (vanilla diamond tools still show it).
+
+**Cause (pre-4.1.1):** Tooltips used the **client** `items_lock.json`; enforcement used the **server** file. Server-only modded IDs locked without a tooltip.
+
+**Fix:** Update server and clients to **4.1.1+**. Keep entries on the server config only; re-join so the synced list arrives. Confirm the exact registry id (F3+H). Ensure `show_tooltip` is `true` on the server.
+
+---
+
 ### Can't mine a block
 
 **Symptom:** Block breaking is cancelled with a "requires level X" message.

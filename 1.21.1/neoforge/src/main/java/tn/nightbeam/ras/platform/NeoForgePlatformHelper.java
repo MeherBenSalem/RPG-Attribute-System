@@ -11,6 +11,7 @@ import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.network.PacketDistributor;
 import tn.nightbeam.ras.neoforge.NeoForgeDataAttachments;
 import tn.nightbeam.ras.neoforge.NeoForgeNetworking;
+import tn.nightbeam.ras.network.ItemsLockSyncPacket;
 import tn.nightbeam.ras.network.PlayerVariables;
 
 import java.util.ArrayList;
@@ -82,6 +83,13 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
         PacketDistributor.sendToPlayer(player,
                 new NeoForgeNetworking.SyncConfigPayload(
                         new ArrayList<>(tn.nightbeam.ras.util.AttributeManager.getAllData().values())));
+    }
+
+    @Override
+    public void syncItemsLockConfig(ServerPlayer player) {
+        ItemsLockSyncPacket packet = ItemsLockSyncPacket.fromServerConfig();
+        PacketDistributor.sendToPlayer(player,
+                new NeoForgeNetworking.SyncItemsLockPayload(packet.enabled(), packet.showTooltip(), packet.itemsList()));
     }
 
     @Override

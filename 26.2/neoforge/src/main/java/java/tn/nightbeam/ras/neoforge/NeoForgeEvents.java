@@ -22,6 +22,8 @@ public class NeoForgeEvents {
         if (!event.getEntity().level().isClientSide() && event.getEntity() instanceof ServerPlayer serverPlayer) {
             // Sync config and variables
             Services.PLATFORM.syncAttributeConfig(serverPlayer);
+            Services.PLATFORM.syncItemsLockConfig(serverPlayer);
+            Services.PLATFORM.syncItemsLockConfig(serverPlayer);
             tn.nightbeam.ras.procedures.OnPlayerSpawnProcedure.execute(serverPlayer);
             Services.PLATFORM.syncPlayerVariables(Services.PLATFORM.getPlayerVariables(serverPlayer), serverPlayer);
         }

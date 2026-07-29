@@ -15,6 +15,8 @@ import java.util.function.Consumer;
 public class FabricPlatformHelper implements IPlatformHelper {
     public static final ResourceLocation SYNC_CONFIG_PACKET_ID = new ResourceLocation("rpg_attribute_system",
             "sync_config");
+    public static final ResourceLocation SYNC_ITEMS_LOCK_PACKET_ID = new ResourceLocation("rpg_attribute_system",
+            "sync_items_lock");
     public static final ResourceLocation SYNC_PACKET_ID = new ResourceLocation("rpg_attribute_system", "sync_vars");
     public static final ResourceLocation BUTTON_ACTION_PACKET_ID = new ResourceLocation("rpg_attribute_system",
             "button_action");
@@ -98,6 +100,15 @@ public class FabricPlatformHelper implements IPlatformHelper {
                 new java.util.ArrayList<>(tn.nightbeam.ras.util.AttributeManager.getAllData().values()));
         tn.nightbeam.ras.network.AttributeConfigSyncPacket.encode(packet, buf);
         ServerPlayNetworking.send(player, SYNC_CONFIG_PACKET_ID, buf);
+    }
+
+    @Override
+    public void syncItemsLockConfig(ServerPlayer player) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        tn.nightbeam.ras.network.ItemsLockSyncPacket packet = tn.nightbeam.ras.network.ItemsLockSyncPacket
+                .fromServerConfig();
+        tn.nightbeam.ras.network.ItemsLockSyncPacket.encode(packet, buf);
+        ServerPlayNetworking.send(player, SYNC_ITEMS_LOCK_PACKET_ID, buf);
     }
 
     @Override

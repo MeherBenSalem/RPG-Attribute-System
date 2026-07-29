@@ -54,6 +54,7 @@ public class RpgAttributeSystemModVariables {
 		public static void onPlayerLoggedInSyncPlayerVariables(PlayerEvent.PlayerLoggedInEvent event) {
 			if (!event.getEntity().level().isClientSide()) {
 				tn.nightbeam.ras.platform.Services.PLATFORM.syncAttributeConfig((ServerPlayer) event.getEntity());
+				tn.nightbeam.ras.platform.Services.PLATFORM.syncItemsLockConfig((ServerPlayer) event.getEntity());
 				tn.nightbeam.ras.procedures.OnPlayerSpawnProcedure.execute(event.getEntity());
 				syncPlayerVariables((PlayerVariables) event.getEntity().getCapability(PLAYER_VARIABLES_CAPABILITY, null)
 						.orElse(new PlayerVariables()), event.getEntity());

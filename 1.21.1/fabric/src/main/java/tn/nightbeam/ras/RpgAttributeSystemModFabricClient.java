@@ -46,6 +46,15 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
                     });
                 });
 
+        ClientPlayNetworking.registerGlobalReceiver(FabricSyncItemsLockPayload.TYPE,
+                (payload, context) -> {
+                    context.client().execute(() -> {
+                        ItemsLockSyncPacket.handle(
+                                new ItemsLockSyncPacket(payload.enabled(), payload.showTooltip(), payload.itemsList()),
+                                () -> null);
+                    });
+                });
+
         KeyBindingHelper.registerKeyBinding(RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND);
 
         net.minecraft.client.gui.screens.MenuScreens.register(

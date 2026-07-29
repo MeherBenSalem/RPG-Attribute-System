@@ -74,6 +74,12 @@ public class ForgePlatformHelper implements IPlatformHelper {
     }
 
     @Override
+    public void syncItemsLockConfig(ServerPlayer player) {
+        RpgAttributeSystemModForge.PACKET_HANDLER.send(PacketDistributor.PLAYER.with(() -> player),
+                tn.nightbeam.ras.network.ItemsLockSyncPacket.fromServerConfig());
+    }
+
+    @Override
     public void sendButtonAction(int buttonID, int x, int y, int z) {
         RpgAttributeSystemModForge.PACKET_HANDLER.sendToServer(
                 new tn.nightbeam.ras.network.GenericButtonActionPacket(buttonID, x, y, z));
