@@ -205,6 +205,21 @@ public class FabricConfigService implements IConfigService {
     }
 
     @Override
+    public void setStringArray(String folder, String filename, String key, List<String> values) {
+        JsonObject config = loadConfig(folder, filename);
+        if (config == null) {
+            config = new JsonObject();
+        }
+
+        JsonArray array = new JsonArray();
+        for (String value : values) {
+            array.add(value);
+        }
+        config.add(key, array);
+        saveConfig(folder, filename, config);
+    }
+
+    @Override
     public List<String> getStringArray(String folder, String filename, String key) {
         List<String> result = new ArrayList<>();
         JsonObject config = loadConfig(folder, filename);

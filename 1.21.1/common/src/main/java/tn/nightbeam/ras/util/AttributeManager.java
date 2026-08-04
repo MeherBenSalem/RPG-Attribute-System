@@ -24,7 +24,9 @@ public class AttributeManager {
                 continue;
 
             String filename = "attribute_" + id;
-            double baseInc = Services.CONFIG.getNumberValue("ras/attributes", filename, "base_value_per_point");
+            double configPerPoint = Services.CONFIG.getNumberValue("ras/attributes", filename, "base_value_per_point");
+            java.util.List<String> commands = Services.CONFIG.getArrayAsList("ras/attributes", filename, "cmd_to_exc");
+            double baseInc = AttributeScaling.resolveValuePerPointFromCommands(commands, configPerPoint);
             double maxLvl = Services.CONFIG.getNumberValue("ras/attributes", filename, "max_level");
             boolean locked = Services.CONFIG.getBooleanValue("ras/attributes", filename, "lock");
             String icon = Services.CONFIG.getStringValue("ras/attributes", filename, "icon_path");

@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.1.2
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+
+### Bug Fixes
+
+- **`cmd_to_exc` append on update (#36)** — attribute scaffolding only sets missing keys; existing command arrays are never merged with defaults.
+- **`[param(X)]` in tooltips/cache (#37, #39)** — `baseIncrement` resolved from `cmd_to_exc` so next-value previews match real scaling.
+- **Attributes 9–15 + 1.20.1 sync (#38)** — safe scaffolding for custom attribute slots; 1.20.1 clients receive synced display names and tips.
+
+### Notes
+
+- Update server and clients together on **4.1.2**. Remove duplicate `cmd_to_exc` lines if an older build appended defaults.
+
+---
+
 ## 4.1.1
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)

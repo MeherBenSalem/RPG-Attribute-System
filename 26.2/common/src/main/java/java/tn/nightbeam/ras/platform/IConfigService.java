@@ -108,6 +108,16 @@ public interface IConfigService {
     void addStringToArray(String folder, String filename, String key, String value);
 
     /**
+     * Replaces an array key with the given values.
+     *
+     * @param folder   The folder path relative to config directory
+     * @param filename The config file name without extension
+     * @param key      The array key
+     * @param values   The string values to store
+     */
+    void setStringArray(String folder, String filename, String key, java.util.List<String> values);
+
+    /**
      * Gets a string array from a config file.
      * 
      * @param folder   The folder path relative to config directory

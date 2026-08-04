@@ -393,13 +393,9 @@ public class ConfigInitializer {
     private static void createDefaultAttributes() {
         String dir = "ras/attributes";
 
-        if (hasAttributeConfigFiles()) {
-            migrateLegacyAttributeCommands();
-            validateAttributeConfigs();
-            return;
-        }
+        migrateLegacyAttributeCommands();
 
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= 15; i++) {
             String file = "attribute_" + i;
 
             Services.CONFIG.createConfigFile(dir, file);
@@ -414,11 +410,8 @@ public class ConfigInitializer {
 
             if (!Services.CONFIG.arrayKeyExists(dir, file, "cmd_to_exc")) {
                 String cmd = getDefaultCommand(i);
-                if (!cmd.isEmpty()) {
-                    Services.CONFIG.addStringToArray(dir, file, "cmd_to_exc", cmd);
-                } else {
-                    Services.CONFIG.addStringToArray(dir, file, "cmd_to_exc", "");
-                }
+                java.util.List<String> defaults = cmd.isEmpty() ? java.util.List.of("") : java.util.List.of(cmd);
+                Services.CONFIG.setStringArray(dir, file, "cmd_to_exc", defaults);
             }
 
             if (!Services.CONFIG.arrayKeyExists(dir, file, "on_level_event")) {
@@ -451,6 +444,8 @@ public class ConfigInitializer {
                 Services.CONFIG.setStringValue(dir, file, "icon_path", defaultIcon);
             }
         }
+
+        validateAttributeConfigs();
     }
 
     private static double getDefaultInitValue(int id) {

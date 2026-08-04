@@ -1,5 +1,23 @@
 # RPG Attribute System — Patch Notes
 
+## 4.1.2
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+
+### Bug fixes
+
+- **`cmd_to_exc` no longer appended on update (#36)** — scaffolding only sets missing keys; existing command arrays (even empty) are preserved.
+- **`[param(X)]` scaling in tooltips/cache (#37, #39)** — `baseIncrement` resolved from commands so next-value previews match real per-point growth.
+- **Attributes 9–15 scaffolding + 1.20.1 sync (#38)** — missing attribute/display files created safely; 1.20.1 clients receive synced display names and tips.
+
+### Upgrade
+
+Update server and clients together. Trim any duplicate `cmd_to_exc` lines if a prior build appended defaults.
+
+See also: `RPG-Attribute-System-4.1.2-PatchNotes.md`, `docs/changelog.md`.
+
+---
+
 ## 4.1.1
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)

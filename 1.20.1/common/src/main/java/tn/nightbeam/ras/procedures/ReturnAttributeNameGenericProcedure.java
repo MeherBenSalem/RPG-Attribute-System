@@ -1,9 +1,14 @@
 package tn.nightbeam.ras.procedures;
 
-import tn.nightbeam.ras.platform.Services;
+import tn.nightbeam.ras.config.AttributeData;
+import tn.nightbeam.ras.util.AttributeManager;
 
 public class ReturnAttributeNameGenericProcedure {
     public static String execute(int attributeId) {
-        return Services.CONFIG.getStringValue("ras/attributes", "attribute_" + attributeId, "display_name");
+        AttributeData data = AttributeManager.getAttributeData(attributeId);
+        if (data != null && data.displayName != null && !data.displayName.isBlank()) {
+            return data.displayName;
+        }
+        return "attribute_" + attributeId;
     }
 }
