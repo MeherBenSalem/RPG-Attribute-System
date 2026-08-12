@@ -109,8 +109,75 @@ tasks.register('testVersions') {
 }
 
 // ──────────────────────────────────────────────
-// Run client shortcuts
+// Version sync — keep 1.20.1 / 1.21.1 / 26.2 on the same mod version
+// Usage: ./gradlew syncVersion -PrasVersion=4.1.4
 // ──────────────────────────────────────────────
+
+tasks.register('syncVersion') {
+    group = 'build'
+    description = 'Set version= in all workspace gradle.properties (use -PrasVersion=x.y.z or reads VERSION file).'
+    doLast {
+        def v = project.findProperty('rasVersion')
+        if (!v) {
+            def versionFile = file('VERSION')
+            if (versionFile.exists()) {
+                v = versionFile.text.trim()
+            }
+        }
+        if (!v) {
+            throw new GradleException('Pass -PrasVersion=x.y.z or add a VERSION file at repo root.')
+        }
+        file('VERSION').text = v + System.lineSeparator()
+        ['1.20.1', '1.21.1', '26.2'].each { dir ->
+            def file = file("${dir}/gradle.properties")
+            if (!file.exists()) {
+                throw new GradleException("Missing ${file}")
+            }
+            def lines = file.readLines()
+            def updated = false
+            def out = lines.collect { line ->
+                if (line.startsWith('version=')) {
+                    updated = true
+                    return "version=${v}"
+                }
+                return line
+            }
+            if (!updated) {
+                throw new GradleException("No version= line in ${file}")
+            }
+            file.text = out.join(System.lineSeparator()) + System.lineSeparator()
+            println "Synced ${file} -> ${v}"
+        }
+    }
+}
+
+// ──────────────────────────────────────────────
+// In-game GUI self-tests (demo mode, auto-exit)
+// ──────────────────────────────────────────────
+
+def guiSelfTestTask(String name, String rootDirName, String gradleTask) {
+    tasks.register(name, Exec) {
+        group = 'verification'
+        description = "In-game stats menu self-test: ${rootDirName} ${gradleTask}"
+        workingDir = file(rootDirName)
+        commandLine wrapperCmd(rootDirName), gradleTask, '--no-daemon'
+    }
+}
+
+guiSelfTestTask('guiSelfTest1201Fabric', '1.20.1', ':fabric:runClientSelfTest')
+guiSelfTestTask('guiSelfTest1201Forge', '1.20.1', ':forge:runClientSelfTest')
+guiSelfTestTask('guiSelfTest1211Fabric', '1.21.1', ':fabric:runClientSelfTest')
+guiSelfTestTask('guiSelfTest1211NeoForge', '1.21.1', ':neoforge:runClientSelfTest')
+guiSelfTestTask('guiSelfTest262Fabric', '26.2', ':fabric:runClientSelfTest')
+guiSelfTestTask('guiSelfTest262NeoForge', '26.2', ':neoforge:runClientSelfTest')
+
+tasks.register('guiSelfTestAll') {
+    group = 'verification'
+    description = 'Run in-game stats menu self-test for all six loaders (sequential).'
+    dependsOn 'guiSelfTest1201Fabric', 'guiSelfTest1201Forge', 'guiSelfTest1211Fabric',
+            'guiSelfTest1211NeoForge', 'guiSelfTest262Fabric', 'guiSelfTest262NeoForge'
+}
+
 
 tasks.register('run1201Fabric', Exec) {
     workingDir = file('1.20.1')

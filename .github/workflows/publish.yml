@@ -1,5 +1,8 @@
 # Dual-publish NightBeam mods/plugins to Modrinth + CurseForge on version tags.
-# MultiLoader repos (e.g. Modern-Building-Wands): prefer prebuilt jars in releases/.
+#
+# Rule: EACH jar becomes its OWN Modrinth version and OWN CurseForge file
+# with the correct Minecraft version + loader tags. Never attach multiple
+# loader/MC jars as secondary files on a single version.
 #
 # Org/repo secrets:
 #   MODRINTH_TOKEN
@@ -9,6 +12,8 @@
 # Repo variables:
 #   MODRINTH_ID
 #   CURSEFORGE_ID
+#   DEFAULT_LOADER (optional; e.g. paper for plugins when jar name has no loader)
+#   DEFAULT_GAME_VERSION (optional; e.g. 1.21.1 when jar name has no MC version)
 #
 # Usage after a release build is ready:
 #   git tag v1.2.3 && git push --tags
@@ -60,7 +65,8 @@ jobs:
         run: |
           VERSION="${{ steps.ver.outputs.version }}"
           mapfile -t JARS < <(find releases -maxdepth 1 -type f -name "*-${VERSION}.jar" \
-            ! -name "*-sources.jar" ! -name "*-javadoc.jar" 2>/dev/null | sort)
+            ! -name "*-sources.jar" ! -name "*-javadoc.jar" \
+            ! -name "*-common-*" ! -name "*-dev*.jar" 2>/dev/null | sort)
           if [ ${#JARS[@]} -gt 0 ]; then
             echo "found=true" >> "$GITHUB_OUTPUT"
             EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
@@ -89,7 +95,7 @@ jobs:
         run: |
           set -euo pipefail
           built=0
-          for ws in 1.20.1 1.21.1 26.2; do
+          for ws in 1.20.1 1.21.1 26.1.2 26.2; do
             if [ -f "$ws/gradlew" ] || [ -f "$ws/settings.gradle" ] || [ -f "$ws/settings.gradle.kts" ]; then
               echo "Building workspace $ws"
               (
@@ -123,8 +129,20 @@ jobs:
           if [ ${#JARS[@]} -eq 0 ]; then
             mapfile -t JARS < <(find . -type f -path "*/build/libs/*-${VERSION}.jar" \
               ! -name "*-sources.jar" ! -name "*-javadoc.jar" \
-              ! -name "*-dev.jar" ! -name "*-dev-shadow.jar" | sort)
+              ! -name "*-dev.jar" ! -name "*-dev-shadow.jar" \
+              ! -name "*-common-*" ! -path "*/common/build/*" | sort)
           fi
+          # Drop empty / near-empty jars (broken remapJar outputs)
+          FILTERED=()
+          for j in "${JARS[@]}"; do
+            size=$(stat -c%s "$j" 2>/dev/null || stat -f%z "$j")
+            if [ "$size" -lt 1024 ]; then
+              echo "Skipping empty/tiny jar ($size bytes): $j" >&2
+              continue
+            fi
+            FILTERED+=("$j")
+          done
+          JARS=("${FILTERED[@]}")
           if [ ${#JARS[@]} -eq 0 ]; then
             echo "No jars found for version ${VERSION}" >&2
             exit 1
@@ -139,7 +157,7 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Upload Modrinth + CurseForge
+      - name: Upload Modrinth + CurseForge (one version per jar)
         if: ${{ inputs.dry_run != 'true' }}
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
@@ -149,8 +167,9 @@ jobs:
           CURSEFORGE_ID: ${{ vars.CURSEFORGE_ID }}
           VERSION: ${{ steps.ver.outputs.version }}
           JAR_LIST: ${{ steps.jars.outputs.list }}
-          CHANGELOG_FILE: REConstructed-Wands-${{ steps.ver.outputs.version }}-PatchNotes.md
           PLATFORMS: ${{ inputs.platforms || 'both' }}
+          DEFAULT_LOADER: ${{ vars.DEFAULT_LOADER }}
+          DEFAULT_GAME_VERSION: ${{ vars.DEFAULT_GAME_VERSION }}
         shell: bash
         run: |
           set -euo pipefail
@@ -164,25 +183,53 @@ jobs:
           const doCurse = platforms === 'both' || platforms === 'curseforge';
           const jars = process.env.JAR_LIST.split(/\n/).map(s => s.trim()).filter(Boolean);
           if (!jars.length) throw new Error('No jars to upload');
-          let changelog = `Release ${version}`;
-          if (process.env.CHANGELOG_FILE && fs.existsSync(process.env.CHANGELOG_FILE)) {
-            changelog = fs.readFileSync(process.env.CHANGELOG_FILE, 'utf8');
+
+          function resolveChangelog(ver) {
+            const candidates = [
+              `CHANGELOG.md`,
+              `PATCH_NOTES.md`,
+              ...fs.readdirSync('.').filter((f) =>
+                f.toLowerCase().endsWith(`-${ver}-patchnotes.md`) ||
+                f.toLowerCase() === `${ver}-patchnotes.md`
+              ),
+            ];
+            for (const f of candidates) {
+              if (fs.existsSync(f)) return fs.readFileSync(f, 'utf8');
+            }
+            return `Release ${ver}`;
           }
+          const changelog = resolveChangelog(version);
 
           // Stable CurseForge loader version IDs (Upload API Game Versions docs)
           const LOADER_IDS = { fabric: 7499, forge: 7498, neoforge: 10150, quilt: 9153 };
 
           function detect(jar) {
             const n = path.basename(jar).toLowerCase();
-            let loader = 'fabric';
-            if (n.includes('neoforge')) loader = 'neoforge';
-            else if (n.includes('forge')) loader = 'forge';
-            else if (n.includes('quilt')) loader = 'quilt';
+            const p = jar.replace(/\\/g, '/').toLowerCase();
+            let loader = null;
+            if (n.includes('neoforge') || p.includes('/neoforge/')) loader = 'neoforge';
+            else if (n.includes('fabric') || p.includes('/fabric/')) loader = 'fabric';
+            else if (n.includes('quilt') || p.includes('/quilt/')) loader = 'quilt';
+            else if (n.includes('forge') || p.includes('/forge/')) loader = 'forge';
+            else if (
+              n.includes('paper') || n.includes('bukkit') || n.includes('spigot') ||
+              n.includes('folia') || n.includes('purpur') ||
+              fs.existsSync('src/main/resources/plugin.yml') ||
+              fs.existsSync('plugin.yml')
+            ) {
+              loader = 'paper';
+            } else if (process.env.DEFAULT_LOADER) {
+              loader = process.env.DEFAULT_LOADER.toLowerCase();
+            } else {
+              loader = 'fabric';
+            }
             let gv = null;
-            const m26 = n.match(/(?:^|-)(26\.\d+)(?:-|$)/);
+            const m26 = n.match(/(?:^|-)(26\.\d+(?:\.\d+)?)(?:-|$)/);
             const m1 = n.match(/(?:^|-)(1\.\d+(?:\.\d+)?)(?:-|$)/);
             if (m26) gv = m26[1];
             else if (m1) gv = m1[1];
+            // Plugin-only projects often omit MC in the jar name; allow override
+            if (!gv && process.env.DEFAULT_GAME_VERSION) gv = process.env.DEFAULT_GAME_VERSION;
             return { loader, gv };
           }
 
@@ -209,17 +256,19 @@ jobs:
 
           (async () => {
             if (doModrinth) {
+              let uploaded = 0;
               for (const jar of jars) {
                 const { loader, gv } = detect(jar);
                 const gameVersions = gv ? [gv] : ['1.21.1'];
+                // One Modrinth version per jar — never multi-file attach across loaders/MC lines
                 const body = {
-                  name: `${version} ${loader} ${gameVersions[0]}`,
+                  name: `${version} · ${loader} · ${gameVersions[0]}`,
                   version_number: `${version}+${loader}-${gameVersions[0]}`,
                   changelog,
                   dependencies: [],
                   game_versions: gameVersions,
                   version_type: 'release',
-                  loaders: [loader],
+                  loaders: [loader === 'paper' ? 'paper' : loader],
                   featured: false,
                   status: 'listed',
                   project_id: process.env.MODRINTH_ID,
@@ -236,8 +285,10 @@ jobs:
                 });
                 const mrText = await mrRes.text();
                 if (!mrRes.ok) throw new Error('Modrinth ' + mrRes.status + ' ' + mrText.slice(0, 500));
-                console.log('Modrinth OK', path.basename(jar), mrText.slice(0, 180));
+                console.log('Modrinth OK', body.version_number, path.basename(jar), mrText.slice(0, 160));
+                uploaded += 1;
               }
+              console.log('Modrinth uploaded', uploaded, 'separate version(s)');
             } else {
               console.log('Skipping Modrinth (platforms=' + platforms + ')');
             }
@@ -247,7 +298,6 @@ jobs:
               return;
             }
 
-            // Prefer Upload API game/versions (matches upload token), fallback to CF Core API
             let flat = [];
             const uploadGv = await fetch('https://minecraft.curseforge.com/api/game/versions', {
               headers: { 'X-Api-Token': process.env.CURSEFORGE_TOKEN },
@@ -280,20 +330,18 @@ jobs:
               if (mcId == null) {
                 throw new Error('No CurseForge game version id for ' + want + ' (' + path.basename(jar) + ')');
               }
-              if (loaderId == null) {
-                throw new Error('No CurseForge loader id for ' + loader);
-              }
-              const gameVersions = [mcId, loaderId];
+              // Paper/plugins may not have a CF loader tag; still upload with MC + env tags
+              const gameVersions = [mcId];
+              if (loaderId != null) gameVersions.push(loaderId);
               if (clientId != null) gameVersions.push(clientId);
               if (serverId != null) gameVersions.push(serverId);
-              // Fallback for APIs that accept names for the environment group
               const gameVersionNames = [];
               if (clientId == null) gameVersionNames.push('Client');
               if (serverId == null) gameVersionNames.push('Server');
               const meta = {
                 changelog,
                 changelogType: 'markdown',
-                displayName: path.basename(jar),
+                displayName: `${version} · ${loader} · ${want}`,
                 gameVersions,
                 releaseType: 'release',
               };
@@ -307,9 +355,9 @@ jobs:
               );
               const cfText = await cfRes.text();
               if (!cfRes.ok) throw new Error('CurseForge ' + cfRes.status + ' ' + cfText.slice(0, 500));
-              console.log('CurseForge OK', path.basename(jar), cfText.slice(0, 180));
+              console.log('CurseForge OK', meta.displayName, path.basename(jar), cfText.slice(0, 160));
               uploaded += 1;
             }
-            console.log('CurseForge uploaded', uploaded, 'file(s) to project', process.env.CURSEFORGE_ID);
+            console.log('CurseForge uploaded', uploaded, 'separate file(s) to project', process.env.CURSEFORGE_ID);
           })().catch((e) => { console.error(e); process.exit(1); });
           NODE

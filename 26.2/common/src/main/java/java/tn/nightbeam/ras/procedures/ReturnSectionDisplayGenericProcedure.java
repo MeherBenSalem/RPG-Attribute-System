@@ -1,10 +1,13 @@
 package tn.nightbeam.ras.procedures;
 
-import tn.nightbeam.ras.platform.Services;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import tn.nightbeam.ras.platform.Services;
 
 public class ReturnSectionDisplayGenericProcedure {
     public static String execute(Entity entity, int sectionId) {
@@ -19,12 +22,10 @@ public class ReturnSectionDisplayGenericProcedure {
         String attrName = Services.CONFIG.getStringValue(dir, filename, "attribute_name");
         double modifier = Services.CONFIG.getNumberValue(dir, filename, "display_modifer");
 
-        // Safety check for attribute existence to avoid crashes if config is wrong
-        net.minecraft.world.entity.ai.attributes.Attribute attribute = resolveAttribute(namespace, attrName);
+        Holder<Attribute> holder = resolveAttributeHolder(namespace, attrName);
         double finalValue = 0;
-        if (attribute != null && entity instanceof LivingEntity living) {
-            net.minecraft.world.entity.ai.attributes.AttributeInstance instance = living
-                    .getAttribute(net.minecraft.core.Holder.direct(attribute));
+        if (holder != null && entity instanceof LivingEntity living) {
+            var instance = living.getAttribute(holder);
             if (instance != null) {
                 finalValue = instance.getValue();
             }
@@ -34,21 +35,48 @@ public class ReturnSectionDisplayGenericProcedure {
                 + new java.text.DecimalFormat("##.##").format(finalValue * modifier);
     }
 
-    private static net.minecraft.world.entity.ai.attributes.Attribute resolveAttribute(String namespace,
-            String attrName) {
+    private static Holder<Attribute> resolveAttributeHolder(String namespace, String attrName) {
         if (namespace == null || namespace.isBlank() || attrName == null || attrName.isBlank()) {
             return null;
         }
-        net.minecraft.world.entity.ai.attributes.Attribute attribute = BuiltInRegistries.ATTRIBUTE
-                .get(Identifier.fromNamespaceAndPath(namespace, attrName))
-                .map(net.minecraft.core.Holder.Reference::value)
-                .orElse(null);
-        if (attribute == null && !attrName.contains(".")) {
-            attribute = BuiltInRegistries.ATTRIBUTE
-                    .get(Identifier.fromNamespaceAndPath(namespace, "generic." + attrName))
-                    .map(net.minecraft.core.Holder.Reference::value)
-                    .orElse(null);
+
+        Identifier attributeId = Identifier.fromNamespaceAndPath(namespace, attrName);
+        Holder<Attribute> holder = resolveVanillaAttributeHolder(attributeId);
+        if (holder != null) {
+            return holder;
         }
-        return attribute;
+
+        holder = BuiltInRegistries.ATTRIBUTE.get(attributeId).orElse(null);
+        if (holder == null && !attrName.contains(".")) {
+            attributeId = Identifier.fromNamespaceAndPath(namespace, "generic." + attrName);
+            holder = resolveVanillaAttributeHolder(attributeId);
+            if (holder == null) {
+                holder = BuiltInRegistries.ATTRIBUTE.get(attributeId).orElse(null);
+            }
+        }
+        return holder;
+    }
+
+    private static Holder<Attribute> resolveVanillaAttributeHolder(Identifier attributeId) {
+        if (!"minecraft".equals(attributeId.getNamespace())) {
+            return null;
+        }
+
+        String path = attributeId.getPath();
+        if (path.startsWith("generic.")) {
+            path = path.substring("generic.".length());
+        }
+
+        return switch (path) {
+            case "max_health" -> Attributes.MAX_HEALTH;
+            case "movement_speed" -> Attributes.MOVEMENT_SPEED;
+            case "attack_damage" -> Attributes.ATTACK_DAMAGE;
+            case "attack_speed" -> Attributes.ATTACK_SPEED;
+            case "armor" -> Attributes.ARMOR;
+            case "armor_toughness" -> Attributes.ARMOR_TOUGHNESS;
+            case "knockback_resistance" -> Attributes.KNOCKBACK_RESISTANCE;
+            case "luck" -> Attributes.LUCK;
+            default -> null;
+        };
     }
 }

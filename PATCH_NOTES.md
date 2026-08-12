@@ -1,5 +1,38 @@
 # RPG Attribute System — Patch Notes
 
+## 4.1.4
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+
+### Bug fixes
+
+- **26.2 blank menu / HUD text** — text colors updated to opaque ARGB for MC 26.2 `GuiGraphics` rendering (Attributes menu, Combat Stats tab, level overlay).
+- **Combat Stats all zeros** — vanilla attributes resolved via `Attributes.*` holders so Health, Damage, Armor, etc. show real values on all loaders.
+
+### Upgrade
+
+Replace all RAS jars with **4.1.4** (remove any `*(1).jar` duplicates). Restart fully.
+
+See also: `RPG-Attribute-System-4.1.4-PatchNotes.md`.
+
+---
+
+## 4.1.3
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+
+### Bug fixes
+
+- **Fabric 26.2 launch crash** — removed duplicate `PayloadTypeRegistry` registration of `sync_items_lock` that threw `Packet type … is already registered!` during Fabric `main` entrypoint.
+
+### Upgrade
+
+Replace all RAS jars with **4.1.3** (remove any `*(1).jar` duplicates). Restart fully. Other MC lines are version-synced only.
+
+See also: `RPG-Attribute-System-4.1.3-PatchNotes.md`.
+
+---
+
 ## 4.1.2
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)

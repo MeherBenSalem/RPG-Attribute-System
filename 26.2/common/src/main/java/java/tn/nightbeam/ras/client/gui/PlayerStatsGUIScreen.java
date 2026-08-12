@@ -42,11 +42,13 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     private static final int ROW_Y = 83;
     private static final int ROW_HEIGHT = 24;
     private static final int[] COLUMN_X = { 0, 161 };
-    private static final int DARK_BROWN = 0x3B2415;
-    private static final int DARK_RED = 0x9A1E1E;
-    private static final int DARK_GREEN = 0x267326;
-    private static final int LOCKED_TEXT = 0x6F6257;
-    private static final int XP_TEXT = 0xF2F2D8;
+    // MC 26.2 GuiGraphicsExtractor.text() requires ARGB (alpha in high byte); RGB renders invisible.
+    private static final int DARK_BROWN = 0xFF3B2415;
+    private static final int DARK_RED = 0xFF9A1E1E;
+    private static final int DARK_GREEN = 0xFF267326;
+    private static final int LOCKED_TEXT = 0xFF6F6257;
+    private static final int XP_TEXT = 0xFFF2F2D8;
+    private static final int HEADER_GOLD = 0xFFF3E1B5;
 
     private static final Identifier BACKGROUND = texture("background.png");
     private static final Identifier ICON_BACKGROUND = texture("icons_background.png");
@@ -346,7 +348,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     private void renderModifier(GuiGraphicsExtractor graphics) {
         String modifier = cleanText(ReturnCurrentModifierProcedure.execute(entity));
         modifier = modifier.replaceFirst("^0+(?=\\d)", "");
-        drawCentered(graphics, "Allocate x" + modifier, 175, 13, 0xF3E1B5, true);
+        drawCentered(graphics, "Allocate x" + modifier, 175, 13, HEADER_GOLD, true);
     }
 
     private void renderAttributeRow(GuiGraphicsExtractor graphics, int attributeId, int row, int column) {

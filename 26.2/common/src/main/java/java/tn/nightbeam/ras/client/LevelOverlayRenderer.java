@@ -98,7 +98,7 @@ public class LevelOverlayRenderer {
         if (showXp) {
             String xpText = CurrentXpToLevelProcedure.execute(entity) + " XP";
             graphics.text(mc.font, xpText, drawX + BAR_WIDTH / 2 - mc.font.width(xpText) / 2,
-                    drawY + BAR_Y + 2, 0xF2F2D8, true);
+                    drawY + BAR_Y + 2, 0xFFF2F2D8, true);
         }
 
         popScale(graphics);
