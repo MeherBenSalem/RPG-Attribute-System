@@ -30,34 +30,37 @@ SPINE = (0x74, 0x5C, 0x58)
 MAROON = (0x6B, 0x3A, 0x52)
 MAROON_LIGHT = (0x8A, 0x4F, 0x66)
 
+# Coordinates from the supplied Pixel RPG UI Pack `Ui.png` atlas.
 BOOK_SHEET = (125, 332, 266, 152)
 CREAM_GRID = (8, 320, 16, 16, 6, 18)
-DARK_TAB_ROWS = [73, 105, 137, 169, 201, 233]
-DARK_TAB_COLS = [(8, 107), (119, 218)]
-TITLE_SCROLL = (125, 491, 266, 43)
-ARROW_SHEET = (689, 73, 48, 48)
+TITLE_BANNER = (248, 491, 81, 43)
+ARROW_LEFT_SHEET = (712, 512, 48, 32)
+ARROW_RIGHT_SHEET = (760, 512, 48, 32)
+
+# Cream icon cells used for the book tabs. The tab hitboxes remain 32x64 in
+# the screens, while the pack's actual icons are 16x16 cells.
+TAB_ICON_CELLS = {
+    "tab_attributes.png": (1, 2),
+    "tab_combat.png": (4, 4),
+    "tab_statistics.png": (0, 5),
+    "tab_attributes_active.png": (1, 2),
+    "tab_combat_active.png": (4, 4),
+    "tab_statistics_active.png": (0, 5),
+}
 
 # attribute_id -> (grid_col, grid_row) in cream icon grid
 ATTRIBUTE_CELLS = {
-    1: (3, 1),  # potion
-    2: (2, 0),  # shield
-    3: (2, 1),  # crown
-    4: (0, 1),  # sun
-    5: (0, 0),  # save / sword substitute in row0 - use menu slot with sword from dark
-    6: (3, 0),  # gear
-    7: (1, 0),  # question -> alert
-    8: (5, 0),  # refresh / coin substitute
+    1: (0, 3),  # potion
+    2: (5, 4),  # crossed swords
+    3: (4, 3),  # up arrow
+    4: (5, 0),  # shield
+    5: (5, 2),  # crown
+    6: (1, 2),  # gear
+    7: (4, 5),  # exclamation
+    8: (0, 5),  # coin / shop
 }
 
-TAB_SLICES = {
-    "tab_attributes.png": (8, 169, 100, 24),
-    "tab_combat.png": (8, 137, 100, 24),
-    "tab_statistics.png": (8, 233, 100, 24),
-    "tab_attributes_active.png": (119, 169, 100, 24),
-    "tab_combat_active.png": (119, 137, 100, 24),
-    "tab_statistics_active.png": (119, 233, 100, 24),
-}
-
+PLUS_CELL = (1, 0)
 
 def hex_rgb(value: int) -> tuple[int, int, int]:
     return ((value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF)
@@ -162,6 +165,27 @@ def cream_cell(sheet: Image.Image, col: int, row: int) -> Image.Image:
     return crop_sheet(sheet, (x, y, cw, ch))
 
 
+def tab_from_cell(sheet: Image.Image, col: int, row: int) -> Image.Image:
+    """Build a transparent 32x64 tab hitbox around a real pack icon."""
+    tab = Image.new("RGBA", (32, 64), (0, 0, 0, 0))
+    icon = scale_nearest(cream_cell(sheet, col, row), (32, 32))
+    tab.alpha_composite(icon, (0, 16))
+    return tab
+
+
+def plus_button(sheet: Image.Image, pressed: bool) -> Image.Image:
+    """Use a real cream pack cell as the button and draw a readable plus glyph."""
+    button = scale_nearest(cream_cell(sheet, *PLUS_CELL), (32, 32))
+    draw = ImageDraw.Draw(button)
+    draw.rectangle((5, 5, 26, 26), fill=PAGE)
+    draw.rectangle((13, 7, 18, 24), fill=INK)
+    draw.rectangle((7, 13, 24, 18), fill=INK)
+    if pressed:
+        overlay = Image.new("RGBA", button.size, (*INK, 72))
+        button = Image.alpha_composite(button, overlay)
+    return button
+
+
 def export_assets(sheet: Image.Image, out_dir: Path) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     print(f"Exporting to {out_dir.relative_to(ROOT)}")
@@ -169,27 +193,23 @@ def export_assets(sheet: Image.Image, out_dir: Path) -> None:
     book = crop_sheet(sheet, BOOK_SHEET)
     save(scale_nearest(book, (532, 304)), out_dir / "book.png")
 
-    title = crop_sheet(sheet, TITLE_SCROLL)
-    save(scale_nearest(title, (title.width * 2, title.height * 2)), out_dir / "title_frame.png")
+    title = crop_sheet(sheet, TITLE_BANNER)
+    save(scale_nearest(title, (180, 24)), out_dir / "title_frame.png")
 
-    left = crop_sheet(sheet, ARROW_SHEET)
-    right = crop_sheet(sheet, (ARROW_SHEET[0] + ARROW_SHEET[2] // 2, ARROW_SHEET[1], ARROW_SHEET[2] // 2, ARROW_SHEET[3]))
+    left = crop_sheet(sheet, ARROW_LEFT_SHEET)
+    right = crop_sheet(sheet, ARROW_RIGHT_SHEET)
     save(scale_nearest(left, (24, 24)), out_dir / "arrow_left.png")
     save(scale_nearest(right, (24, 24)), out_dir / "arrow_right.png")
 
-    plus = cream_cell(sheet, 4, 1)
-    save(scale_nearest(plus, (32, 32)), out_dir / "plus_button.png")
-    pressed = plus.copy()
-    pressed = Image.blend(plus.convert("RGBA"), Image.new("RGBA", plus.size, (*INK, 80)), 0.35)
-    save(scale_nearest(pressed, (32, 32)), out_dir / "plus_button_pressed.png")
+    save(plus_button(sheet, False), out_dir / "plus_button.png")
+    save(plus_button(sheet, True), out_dir / "plus_button_pressed.png")
 
     for attr_id, (col, row) in ATTRIBUTE_CELLS.items():
         cell = cream_cell(sheet, col, row)
         save(scale_nearest(cell, (32, 32)), out_dir / f"symbol_{attr_id}.png")
 
-    for name, rect in TAB_SLICES.items():
-        tab = crop_sheet(sheet, rect)
-        save(scale_nearest(tab, (32, 64)), out_dir / name)
+    for name, (col, row) in TAB_ICON_CELLS.items():
+        save(tab_from_cell(sheet, col, row), out_dir / name)
 
     save(draw_bar(306, 22, True), out_dir / "xp_bar_empty.png")
     save(draw_bar(306, 22, False), out_dir / "xp_bar_full.png")
