@@ -1,5 +1,22 @@
 # RPG Attribute System — Patch Notes
 
+## 4.2.0
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) Â· Minecraft 1.21.1 (Fabric, NeoForge) Â· Minecraft 26.2 (Fabric, NeoForge)
+
+### Configuration
+
+- Fresh installations now generate only the first eight built-in attribute files (`attribute_1.json` through `attribute_8.json`).
+- Additional attributes must be created manually and can use the existing configurable display and command settings.
+- The default maximum level for generated attributes is now **500**.
+- Existing attribute files are preserved during upgrades; this change does not delete or rewrite custom attributes 9–15.
+
+### Upgrade
+
+Replace the loader jar for your Minecraft version with **4.2.0**. Existing configuration files remain intact; the new eight-attribute default applies to files created after the upgrade.
+
+---
+
 ## 4.1.4
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)

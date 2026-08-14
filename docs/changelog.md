@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.2.0
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) Â· Minecraft 1.21.1 (Fabric, NeoForge) Â· Minecraft 26.2 (Fabric, NeoForge)
+
+### Configuration
+
+- Fresh installations generate only `attribute_1.json` through `attribute_8.json` by default.
+- Attributes 9–15 are now opt-in and must be created manually.
+- Generated attributes use a default maximum level of **500**.
+- Existing configuration files, including manually created custom attributes, are preserved during upgrades.
+
+---
+
 ## 4.1.2
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)

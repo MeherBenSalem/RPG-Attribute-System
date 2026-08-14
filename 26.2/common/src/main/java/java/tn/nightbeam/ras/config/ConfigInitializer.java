@@ -395,7 +395,7 @@ public class ConfigInitializer {
 
         migrateLegacyAttributeCommands();
 
-        for (int i = 1; i <= 15; i++) {
+        for (int i = 1; i <= 8; i++) {
             String file = "attribute_" + i;
 
             Services.CONFIG.createConfigFile(dir, file);
@@ -459,6 +459,9 @@ public class ConfigInitializer {
     }
 
     private static int getDefaultMaxLevel(int id) {
+        if (id > 0) {
+            return 500;
+        }
         return switch (id) {
             case 1 -> 40; // Vitality (Health)
             case 2 -> 40; // Attack Power (Damage)
@@ -488,14 +491,14 @@ public class ConfigInitializer {
 
     private static String getAttributeDescription(int id) {
         return switch (id) {
-            case 1 -> "Base Health: 20.0 (10 hearts). Each point adds 1.0 Health (+0.5 heart). Max level: 40 (60.0 Health total / 30 hearts).";
-            case 2 -> "Base Attack Damage: 1.0. Each point adds 0.20 Attack Damage (+1.0 damage every 5 points). Max level: 40 (+8.0 Damage bonus).";
-            case 3 -> "Base Attack Speed: 4.0. Each point adds 0.02 Attack Speed. Max level: 40 (+0.8 Attack Speed bonus).";
-            case 4 -> "Base Armor: 0.0. Each point adds 0.25 Armor (+1.0 armor every 4 points). Max value: 10.0 (+10.0 Armor bonus at 40 points).";
-            case 5 -> "Base Movement Speed: 0.1. Each point adds 0.0025 Movement Speed. Max level: 12 (+0.03 Movement Speed bonus).";
-            case 6 -> "Base Knockback Resistance: 0.0. Each point adds 0.01 Knockback Resistance (1% resistance). Max level: 80 (+0.8 Knockback Resistance bonus / 80% resistance).";
-            case 7 -> "Base Armor Toughness: 0.0. Each point adds 0.10 Armor Toughness (+1.0 toughness every 10 points). Max level: 50 (+5.0 Armor Toughness bonus).";
-            case 8 -> "Base Luck: 0.0. Each point adds 0.10 Luck (+1.0 luck every 10 points). Max level: 50 (+5.0 Luck bonus).";
+            case 1 -> "Base Health: 20.0 (10 hearts). Each point adds 1.0 Health (+0.5 heart). Default max level: 500.";
+            case 2 -> "Base Attack Damage: 1.0. Each point adds 0.20 Attack Damage (+1.0 damage every 5 points). Default max level: 500.";
+            case 3 -> "Base Attack Speed: 4.0. Each point adds 0.02 Attack Speed. Default max level: 500.";
+            case 4 -> "Base Armor: 0.0. Each point adds 0.25 Armor (+1.0 armor every 4 points). Default max level: 500.";
+            case 5 -> "Base Movement Speed: 0.1. Each point adds 0.0025 Movement Speed. Default max level: 500.";
+            case 6 -> "Base Knockback Resistance: 0.0. Each point adds 0.01 Knockback Resistance (1% resistance). Default max level: 500.";
+            case 7 -> "Base Armor Toughness: 0.0. Each point adds 0.10 Armor Toughness (+1.0 toughness every 10 points). Default max level: 500.";
+            case 8 -> "Base Luck: 0.0. Each point adds 0.10 Luck (+1.0 luck every 10 points). Default max level: 500.";
             default -> "";
         };
     }
@@ -724,7 +727,7 @@ public class ConfigInitializer {
 
     private static void createAttributesDisplayConfig() {
         String dir = "ras/display";
-        for (int i = 1; i <= 15; i++) {
+        for (int i = 1; i <= 8; i++) {
             String file = "attribute_" + i;
             if (!shouldPopulateConfig(dir, file)) {
                 continue;

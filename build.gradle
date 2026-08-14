@@ -110,7 +110,7 @@ tasks.register('testVersions') {
 
 // ──────────────────────────────────────────────
 // Version sync — keep 1.20.1 / 1.21.1 / 26.2 on the same mod version
-// Usage: ./gradlew syncVersion -PrasVersion=4.1.4
+// Usage: ./gradlew syncVersion -PrasVersion=4.2.0
 // ──────────────────────────────────────────────
 
 tasks.register('syncVersion') {
