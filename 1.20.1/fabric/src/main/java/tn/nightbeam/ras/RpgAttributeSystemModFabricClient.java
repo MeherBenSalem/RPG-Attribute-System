@@ -78,6 +78,7 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
                 tn.nightbeam.ras.client.gui.PlayerAttributesViewerGUIScreen::new);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            tn.nightbeam.ras.client.RasGuiSelfTest.onClientTick(client);
             if (client.screen != null) {
                 return;
             }

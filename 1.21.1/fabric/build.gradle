@@ -45,6 +45,14 @@ loom {
             ideConfigGenerated(true)
             runDir('runs/client')
         }
+        clientSelfTest {
+            client()
+            setConfigName('Fabric Client Self-Test')
+            ideConfigGenerated(true)
+            runDir('runs/client-selftest')
+            vmArgs('-Dras.guiSelfTest=true', '-Dras.loader=fabric', '-Dras.mcVersion=1.21.1')
+            programArgs('--demo')
+        }
         server {
             server()
             setConfigName('Fabric Server')

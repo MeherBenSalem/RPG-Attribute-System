@@ -33,6 +33,13 @@ legacyForge {
         client {
             client()
         }
+        clientSelfTest {
+            client()
+            systemProperty 'ras.guiSelfTest', 'true'
+            systemProperty 'ras.loader', 'forge'
+            systemProperty 'ras.mcVersion', '1.20.1'
+            programArguments.add('--demo')
+        }
         data {
             data()
             programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()

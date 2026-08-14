@@ -22,6 +22,13 @@ neoForge {
         client {
             client()
         }
+        clientSelfTest {
+            client()
+            systemProperty 'ras.guiSelfTest', 'true'
+            systemProperty 'ras.loader', 'neoforge'
+            systemProperty 'ras.mcVersion', '1.21.1'
+            programArguments.add('--demo')
+        }
         data {
             data()
             // DataGen can be run by - "./gradlew :neoforge:runData" in Terminal.
