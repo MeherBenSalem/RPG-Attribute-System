@@ -79,11 +79,11 @@ public final class RasGuiSelfTest {
 
     private static void writeResult(Minecraft client) {
         boolean menuOpen = client.gui.screen() instanceof PlayerStatsGUIScreen;
-        int darkBrown = readColorConstant("DARK_BROWN");
+        int ink = readColorConstant("INK");
         boolean expectArgb = Boolean.getBoolean("ras.expectArgb");
         boolean colorOk = expectArgb
-                ? (darkBrown >>> 24) == 0xFF
-                : (darkBrown & 0xFFFFFF) == 0x3B2415;
+                ? (ink & 0xFFFFFF) == 0x342730
+                : ink == 0x342730;
         boolean pass = menuOpen && colorOk;
         String loader = System.getProperty("ras.loader", "unknown");
         String mc = System.getProperty("ras.mcVersion", "unknown");
@@ -91,7 +91,7 @@ public final class RasGuiSelfTest {
                 + " loader=" + loader
                 + " mc=" + mc
                 + " menuOpen=" + menuOpen
-                + " darkBrown=0x" + Integer.toHexString(darkBrown)
+                + " ink=0x" + Integer.toHexString(ink)
                 + " expectArgb=" + expectArgb;
 
         Constants.LOG.info("[RAS GUI self-test] {}", line);

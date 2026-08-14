@@ -22,11 +22,11 @@ neoForge {
         clientSelfTest {
             client()
             gameDirectory = this.mkdir(this.file('runs/client-selftest'))
-            jvmArgument '-Dras.guiSelfTest=true'
-            jvmArgument '-Dras.loader=neoforge'
-            jvmArgument '-Dras.mcVersion=26.2'
-            jvmArgument '-Dras.expectArgb=true'
-            programArgument '--demo'
+            systemProperty 'ras.guiSelfTest', 'true'
+            systemProperty 'ras.loader', 'neoforge'
+            systemProperty 'ras.mcVersion', '26.2'
+            systemProperty 'ras.expectArgb', 'true'
+            programArguments.add('--demo')
         }
         data {
             clientData()

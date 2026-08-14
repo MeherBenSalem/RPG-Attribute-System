@@ -35,10 +35,10 @@ legacyForge {
         }
         clientSelfTest {
             client()
-            jvmArgument '-Dras.guiSelfTest=true'
-            jvmArgument '-Dras.loader=forge'
-            jvmArgument '-Dras.mcVersion=1.20.1'
-            programArgument '--demo'
+            systemProperty 'ras.guiSelfTest', 'true'
+            systemProperty 'ras.loader', 'forge'
+            systemProperty 'ras.mcVersion', '1.20.1'
+            programArguments.add('--demo')
         }
         data {
             data()

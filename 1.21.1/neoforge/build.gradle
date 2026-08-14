@@ -24,10 +24,10 @@ neoForge {
         }
         clientSelfTest {
             client()
-            jvmArgument '-Dras.guiSelfTest=true'
-            jvmArgument '-Dras.loader=neoforge'
-            jvmArgument '-Dras.mcVersion=1.21.1'
-            programArgument '--demo'
+            systemProperty 'ras.guiSelfTest', 'true'
+            systemProperty 'ras.loader', 'neoforge'
+            systemProperty 'ras.mcVersion', '1.21.1'
+            programArguments.add('--demo')
         }
         data {
             data()
