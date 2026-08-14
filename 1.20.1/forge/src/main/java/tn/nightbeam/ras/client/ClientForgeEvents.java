@@ -14,6 +14,7 @@ public class ClientForgeEvents {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
+            RasGuiSelfTest.onClientTick(Minecraft.getInstance());
             if (Minecraft.getInstance().screen != null) {
                 return;
             }

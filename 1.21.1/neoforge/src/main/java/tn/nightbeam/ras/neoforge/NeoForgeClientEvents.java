@@ -34,6 +34,7 @@ public class NeoForgeClientEvents {
     public static class GameEvents {
         @SubscribeEvent
         public static void onClientTick(ClientTickEvent.Post event) {
+            tn.nightbeam.ras.client.RasGuiSelfTest.onClientTick(net.minecraft.client.Minecraft.getInstance());
             if (net.minecraft.client.Minecraft.getInstance().screen != null) {
                 return;
             }

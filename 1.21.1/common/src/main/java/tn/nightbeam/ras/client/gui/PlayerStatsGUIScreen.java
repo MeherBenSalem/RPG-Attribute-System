@@ -33,38 +33,46 @@ import java.util.stream.Collectors;
 
 public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUIMenu>
         implements tn.nightbeam.ras.init.ScreenAccessor {
-    private static final int DESIGN_WIDTH = 350;
-    private static final int DESIGN_HEIGHT = 209;
+    private static final int BOOK_WIDTH = 532;
+    private static final int BOOK_HEIGHT = 304;
+    private static final int TAB_WIDTH = 32;
+    private static final int DESIGN_WIDTH = BOOK_WIDTH + TAB_WIDTH;
+    private static final int DESIGN_HEIGHT = BOOK_HEIGHT;
     private static final int ATTRS_PER_PAGE = 8;
-    private static final int ROW_Y = 83;
-    private static final int ROW_HEIGHT = 24;
-    private static final int[] COLUMN_X = { 0, 161 };
-    private static final int DARK_BROWN = 0x3B2415;
-    private static final int DARK_RED = 0x9A1E1E;
-    private static final int DARK_GREEN = 0x267326;
-    private static final int LOCKED_TEXT = 0x6F6257;
-    private static final int XP_TEXT = 0xF2F2D8;
+    private static final int ROW_Y = 52;
+    private static final int ROW_HEIGHT = 32;
+    private static final int RIGHT_PAGE_X = 288;
 
-    private static final ResourceLocation BACKGROUND = texture("background.png");
-    private static final ResourceLocation ICON_BACKGROUND = texture("icons_background.png");
-    private static final ResourceLocation BUTTON = texture("button.png");
-    private static final ResourceLocation BUTTON_PRESSED = texture("button_pressed.png");
-    private static final ResourceLocation XP_EMPTY = texture("slider_empty.png");
-    private static final ResourceLocation XP_FULL = texture("slider_full.png");
-    private static final ResourceLocation STAT_EMPTY = texture("slider_2_empty.png");
-    private static final ResourceLocation STAT_FULL = texture("slider_2_full.png");
-    private static final ResourceLocation CLASS_TAB = texture("class_tab.png");
-    private static final ResourceLocation ATTRIBUTES_TAB = texture("attributes_tab.png");
+    private static final int INK = 0x342730;
+    private static final int VALUE_MAROON = 0x6B3A52;
+    private static final int POINTS_GREEN = 0x267326;
+    private static final int LOCKED_TEXT = 0x8A7A66;
+    private static final int XP_TEXT = 0x342730;
+    private static final int HEADER_GOLD = 0xF3E1B5;
+
+    private static final ResourceLocation BOOK = texture("book.png");
+    private static final ResourceLocation TITLE_FRAME = texture("title_frame.png");
+    private static final ResourceLocation XP_EMPTY = texture("xp_bar_empty.png");
+    private static final ResourceLocation XP_FULL = texture("xp_bar_full.png");
+    private static final ResourceLocation STAT_EMPTY = texture("stat_bar_empty.png");
+    private static final ResourceLocation STAT_FULL = texture("stat_bar_full.png");
+    private static final ResourceLocation PLUS = texture("plus_button.png");
+    private static final ResourceLocation PLUS_PRESSED = texture("plus_button_pressed.png");
+    private static final ResourceLocation ARROW_LEFT = texture("arrow_left.png");
+    private static final ResourceLocation ARROW_RIGHT = texture("arrow_right.png");
+    private static final ResourceLocation TAB_ATTRIBUTES = texture("tab_attributes_active.png");
+    private static final ResourceLocation TAB_COMBAT = texture("tab_combat.png");
+    private static final ResourceLocation TAB_STATISTICS = texture("tab_statistics.png");
     private static final ResourceLocation[] DEFAULT_ICONS = {
             null,
-            texture("attribute_1_icon.png"),
-            texture("attribute_5_icon.png"),
-            texture("attribute_2_icon.png"),
-            texture("attribute_6_icon.png"),
-            texture("attribute_3_icon.png"),
-            texture("attribute_7_icon.png"),
-            texture("attribute_4_icon.png"),
-            texture("attribute_8_icon.png")
+            texture("symbol_1.png"),
+            texture("symbol_5.png"),
+            texture("symbol_2.png"),
+            texture("symbol_6.png"),
+            texture("symbol_3.png"),
+            texture("symbol_7.png"),
+            texture("symbol_4.png"),
+            texture("symbol_8.png")
     };
 
     private final Level world;
@@ -94,7 +102,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     }
 
     private static ResourceLocation texture(String name) {
-        return ResourceLocation.tryParse("rpg_attribute_system:textures/screens/rpg_attributes/" + name);
+        return ResourceLocation.tryParse("rpg_attribute_system:textures/screens/pixel_rpg/" + name);
     }
 
     @Override
@@ -121,7 +129,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     private void updatePanelSize() {
         double fit = Math.min(1.0D,
                 Math.min(Math.max(1, width - 8) / (double) DESIGN_WIDTH,
-                        Math.max(1, height - 8) / (double) (DESIGN_HEIGHT + 22)));
+                        Math.max(1, height - 8) / (double) DESIGN_HEIGHT));
         imageWidth = Math.max(1, (int) Math.round(DESIGN_WIDTH * fit));
         imageHeight = Math.max(1, (int) Math.round(DESIGN_HEIGHT * fit));
     }
@@ -185,7 +193,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     }
 
     private ResourceLocation iconFor(int attributeId) {
-        if (attributeId > 0 && attributeId < DEFAULT_ICONS.length) {
+        if (attributeId > 0 && attributeId < DEFAULT_ICONS.length && DEFAULT_ICONS[attributeId] != null) {
             return DEFAULT_ICONS[attributeId];
         }
         return AttributeManager.getAttributeIconLocation(attributeId);
@@ -227,7 +235,6 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     public void init() {
         updatePanelSize();
         super.init();
-        topPos += scaled(11);
         ScreenMousePosition.restore();
 
         List<String> visible = getVisibleAttributes();
@@ -236,54 +243,47 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
             if (id <= 0) {
                 continue;
             }
-            int row = index / 2;
-            int column = index % 2;
-            int columnX = COLUMN_X[column];
-            addRenderableWidget(new AttributePlusButton(id, px(columnX + 151), py(ROW_Y + row * ROW_HEIGHT + 2),
-                    scaled(16), scaled(15)));
+            addRenderableWidget(new AttributePlusButton(id,
+                    px(RIGHT_PAGE_X + 168), py(ROW_Y + index * ROW_HEIGHT + 4),
+                    scaled(24), scaled(24)));
         }
 
-        ResourceLocation sectionTexture = ResourceLocation.tryParse(
-                "rpg_attribute_system:textures/screens/atlas/imagebutton_button_for_stats.png");
-        ResourceLocation leftTexture = ResourceLocation.tryParse(
-                "rpg_attribute_system:textures/screens/atlas/imagebutton_button_left.png");
-        ResourceLocation rightTexture = ResourceLocation.tryParse(
-                "rpg_attribute_system:textures/screens/atlas/imagebutton_button_right.png");
-
-        addRenderableWidget(new InvisibleTabButton(px(82), py(-22), scaled(89), scaled(22), button -> {
-            if (ReturnGlobalSectionsDisplayProcedure.execute()) {
-                ScreenMousePosition.capture();
-                Services.PLATFORM.sendButtonAction(9, x, y, z);
-            }
-        }));
-        addRenderableWidget(new InvisibleTabButton(px(172), py(-22), scaled(96), scaled(22), button -> {
-            // The Attributes tab is already active.
-        }));
-        addRenderableWidget(new LegacyImageButton(px(272), py(-18), scaled(13), scaled(13),
-                0, 0, scaled(13), sectionTexture, scaled(13), scaled(26),
-                button -> {
+        addRenderableWidget(new SideTabButton(px(BOOK_WIDTH), py(28), scaled(TAB_WIDTH), scaled(64),
+                TAB_ATTRIBUTES, Component.literal("Attributes"), button -> {
+                }));
+        addRenderableWidget(new SideTabButton(px(BOOK_WIDTH), py(108), scaled(TAB_WIDTH), scaled(64),
+                TAB_COMBAT, Component.literal("Combat Stats"), button -> {
+                    if (ReturnGlobalSectionsDisplayProcedure.execute()) {
+                        ScreenMousePosition.capture();
+                        Services.PLATFORM.sendButtonAction(9, x, y, z);
+                    }
+                }));
+        addRenderableWidget(new SideTabButton(px(BOOK_WIDTH), py(188), scaled(TAB_WIDTH), scaled(64),
+                TAB_STATISTICS, Component.literal("Statistics"), button -> {
                     if (minecraft != null) {
                         minecraft.setScreen(new PlayerStatsOverviewScreen());
                     }
                 }));
 
-        modifierLeftButton = new LegacyImageButton(px(130), py(16), scaled(6), scaled(8), 0, 0, scaled(8), leftTexture,
-                scaled(6), scaled(16), button -> Services.PLATFORM.sendButtonAction(10, x, y, z));
-        modifierRightButton = new LegacyImageButton(px(214), py(16), scaled(6), scaled(8), 0, 0, scaled(8), rightTexture,
-                scaled(6), scaled(16), button -> Services.PLATFORM.sendButtonAction(11, x, y, z));
+        modifierLeftButton = new LegacyImageButton(px(52), py(24), scaled(24), scaled(24),
+                0, 0, 0, ARROW_LEFT, scaled(24), scaled(24),
+                button -> Services.PLATFORM.sendButtonAction(10, x, y, z));
+        modifierRightButton = new LegacyImageButton(px(196), py(24), scaled(24), scaled(24),
+                0, 0, 0, ARROW_RIGHT, scaled(24), scaled(24),
+                button -> Services.PLATFORM.sendButtonAction(11, x, y, z));
         addRenderableWidget(modifierLeftButton);
         addRenderableWidget(modifierRightButton);
 
         if (getTotalPages() > 1) {
-            pagePreviousButton = new LegacyImageButton(px(160), py(190), scaled(6), scaled(8), 0, 0, scaled(8), leftTexture,
-                    scaled(6), scaled(16), button -> {
+            pagePreviousButton = new LegacyImageButton(px(RIGHT_PAGE_X + 56), py(276), scaled(24), scaled(24),
+                    0, 0, 0, ARROW_LEFT, scaled(24), scaled(24), button -> {
                         if (currentPage > 0) {
                             currentPage--;
                             rebuildWidgets();
                         }
                     });
-            pageNextButton = new LegacyImageButton(px(185), py(190), scaled(6), scaled(8), 0, 0, scaled(8), rightTexture,
-                    scaled(6), scaled(16), button -> {
+            pageNextButton = new LegacyImageButton(px(RIGHT_PAGE_X + 128), py(276), scaled(24), scaled(24),
+                    0, 0, 0, ARROW_RIGHT, scaled(24), scaled(24), button -> {
                         if (currentPage < getTotalPages() - 1) {
                             currentPage++;
                             rebuildWidgets();
@@ -305,37 +305,39 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        drawFullTexture(graphics, BACKGROUND, 0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
-        renderTabs(graphics);
+        drawFullTexture(graphics, BOOK, 0, 0, BOOK_WIDTH, BOOK_HEIGHT);
+        drawFullTexture(graphics, TITLE_FRAME, 34, 16, 180, 24);
+        drawFullTexture(graphics, TITLE_FRAME, RIGHT_PAGE_X + 8, 16, 196, 24);
 
-        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, px(20), py(19), px(69), py(73), scaled(26),
-                0.0625F, px(44) - mouseX, py(43) - mouseY, entity);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, px(44), py(56), px(124), py(136),
+                scaled(30), 0.0625F, px(84) - mouseX, py(96) - mouseY, entity);
 
         renderXpSection(graphics);
         renderAvailablePoints(graphics);
         renderModifier(graphics);
+        drawCentered(graphics, "Attributes", RIGHT_PAGE_X + 106, 22, INK, false);
 
         List<String> visible = getVisibleAttributes();
         for (int index = 0; index < visible.size(); index++) {
             int id = attributeId(visible.get(index));
             if (id > 0) {
-                renderAttributeRow(graphics, id, index / 2, index % 2);
+                renderAttributeRow(graphics, id, index);
             }
         }
 
         if (getTotalPages() > 1) {
-            drawCentered(graphics, (currentPage + 1) + "/" + getTotalPages(), 176, 190, DARK_BROWN, false);
+            drawCentered(graphics, (currentPage + 1) + "/" + getTotalPages(), RIGHT_PAGE_X + 106, 280, INK, false);
         }
         RenderSystem.disableBlend();
     }
 
     private void renderXpSection(GuiGraphics graphics) {
         String levelText = "Level " + number(variables().Level);
-        graphics.drawString(font, levelText, px(84), py(37), DARK_BROWN, false);
+        drawCentered(graphics, levelText, 124, 22, INK, false);
 
-        int barX = px(82);
-        int barY = py(49);
-        int barWidth = scaled(153);
+        int barX = px(34);
+        int barY = py(142);
+        int barWidth = scaled(180);
         int barHeight = scaled(11);
         graphics.blit(XP_EMPTY, barX, barY, 0, 0, barWidth, barHeight, barWidth, barHeight);
         double ratio = Math.max(0.0D, Math.min(1.0D, ReturnPercentageProcedure.execute(entity) / 100.0D));
@@ -344,57 +346,55 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
             graphics.blit(XP_FULL, barX, barY, 0, 0, fillWidth, barHeight, barWidth, barHeight);
         }
         String xp = cleanText(CurrentXpToLevelProcedure.execute(entity)) + " XP";
-        graphics.drawCenteredString(font, xp, barX + barWidth / 2, py(50), XP_TEXT);
+        graphics.drawCenteredString(font, xp, barX + barWidth / 2, py(143), XP_TEXT);
     }
 
     private void renderAvailablePoints(GuiGraphics graphics) {
-        drawCentered(graphics, "Available", 285, 31, DARK_BROWN, false);
-        drawCentered(graphics, "Points", 285, 41, DARK_BROWN, false);
-        drawCentered(graphics, number(variables().SparePoints), 285, 54, DARK_GREEN, false);
+        drawCentered(graphics, "Available", 124, 196, INK, false);
+        drawCentered(graphics, "Points", 124, 208, INK, false);
+        drawCentered(graphics, number(variables().SparePoints), 124, 224, POINTS_GREEN, false);
     }
 
     private void renderModifier(GuiGraphics graphics) {
         String modifier = cleanText(ReturnCurrentModifierProcedure.execute(entity));
         modifier = modifier.replaceFirst("^0+(?=\\d)", "");
-        drawCentered(graphics, "Allocate x" + modifier, 175, 13, 0xF3E1B5, true);
+        drawCentered(graphics, "Allocate x" + modifier, 124, 248, HEADER_GOLD, true);
     }
 
-    private void renderAttributeRow(GuiGraphics graphics, int attributeId, int row, int column) {
-        int columnX = COLUMN_X[column];
-        int y = ROW_Y + row * ROW_HEIGHT;
+    private void renderAttributeRow(GuiGraphics graphics, int attributeId, int row) {
+        int rowY = ROW_Y + row * ROW_HEIGHT;
         boolean locked = isLocked(attributeId);
-        int textColor = locked ? LOCKED_TEXT : DARK_BROWN;
-        int valueColor = locked ? LOCKED_TEXT : DARK_RED;
+        int textColor = locked ? LOCKED_TEXT : INK;
+        int valueColor = locked ? LOCKED_TEXT : VALUE_MAROON;
 
         if (locked) {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.45F);
         }
-        drawFullTexture(graphics, ICON_BACKGROUND, columnX + 27, y, 20, 20);
-        drawFullTexture(graphics, iconFor(attributeId), columnX + 29, y + 2, 16, 15);
-        renderSegmentedBar(graphics, attributeId, columnX + 50, y + 14);
+        drawFullTexture(graphics, iconFor(attributeId), RIGHT_PAGE_X + 8, rowY, 32, 32);
+        renderSegmentedBar(graphics, attributeId, RIGHT_PAGE_X + 44, rowY + 20);
         if (locked) {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         }
 
         String value = number(currentValue(attributeId));
-        int nameX = px(columnX + 50);
-        int valueRight = px(columnX + 146);
-        int maxNameWidth = Math.max(0, valueRight - font.width(value) - scaled(4) - nameX);
+        int nameX = px(RIGHT_PAGE_X + 44);
+        int valueRight = px(RIGHT_PAGE_X + 160);
+        int maxNameWidth = Math.max(0, valueRight - font.width(value) - scaled(6) - nameX);
         String name = font.plainSubstrByWidth(attributeName(attributeId), maxNameWidth);
-        graphics.drawString(font, name, nameX, py(y + 3), textColor, false);
-        graphics.drawString(font, value, valueRight - font.width(value), py(y + 3), valueColor, false);
+        graphics.drawString(font, name, nameX, py(rowY + 6), textColor, false);
+        graphics.drawString(font, value, valueRight - font.width(value), py(rowY + 6), valueColor, false);
     }
 
     private void renderSegmentedBar(GuiGraphics graphics, int attributeId, int designX, int designY) {
-        int x = px(designX);
-        int y = py(designY);
-        int width = scaled(94);
-        int height = scaled(7);
-        graphics.blit(STAT_EMPTY, x, y, 0, 0, width, height, width, height);
+        int barX = px(designX);
+        int barY = py(designY);
+        int barWidth = scaled(116);
+        int barHeight = scaled(7);
+        graphics.blit(STAT_EMPTY, barX, barY, 0, 0, barWidth, barHeight, barWidth, barHeight);
         int segments = (int) Math.round(attributeProgress(attributeId) * 9.0D);
-        int fillWidth = (int) Math.round(width * segments / 9.0D);
+        int fillWidth = (int) Math.round(barWidth * segments / 9.0D);
         if (fillWidth > 0) {
-            graphics.blit(STAT_FULL, x, y, 0, 0, fillWidth, height, width, height);
+            graphics.blit(STAT_FULL, barX, barY, 0, 0, fillWidth, barHeight, barWidth, barHeight);
         }
     }
 
@@ -408,12 +408,6 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         graphics.drawString(font, text, px(x) - font.width(text) / 2, py(y), color, shadow);
     }
 
-    private void renderTabs(GuiGraphics graphics) {
-        drawFullTexture(graphics, CLASS_TAB, 82, -22, 89, 22);
-        drawFullTexture(graphics, ATTRIBUTES_TAB, 172, -22, 96, 22);
-        graphics.fill(px(172), py(-2), px(268), py(0), 0xFFD6A64A);
-    }
-
     private void renderCustomTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
         List<String> visible = getVisibleAttributes();
         for (int index = 0; index < visible.size(); index++) {
@@ -421,14 +415,8 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
             if (id <= 0) {
                 continue;
             }
-            int row = index / 2;
-            int column = index % 2;
-            int columnX = COLUMN_X[column];
-            int rowX = px(columnX + 23);
-            int rowY = py(ROW_Y + row * ROW_HEIGHT);
-            int rowWidth = scaled(123);
-            int rowHeight = scaled(21);
-            if (inside(mouseX, mouseY, rowX, rowY, rowWidth, rowHeight)) {
+            int rowY = ROW_Y + index * ROW_HEIGHT;
+            if (inside(mouseX, mouseY, px(RIGHT_PAGE_X + 4), py(rowY), scaled(164), scaled(28))) {
                 String tip = ReturnAttributeTipGenericProcedure.execute(id);
                 if (tip != null && !tip.isBlank()) {
                     graphics.renderComponentTooltip(font,
@@ -438,9 +426,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
                 return;
             }
 
-            int buttonX = px(columnX + 151);
-            int buttonY = py(ROW_Y + row * ROW_HEIGHT + 2);
-            if (inside(mouseX, mouseY, buttonX, buttonY, scaled(16), scaled(15))) {
+            if (inside(mouseX, mouseY, px(RIGHT_PAGE_X + 168), py(rowY + 4), scaled(24), scaled(24))) {
                 String message;
                 AttributeData data = AttributeManager.getAttributeData(id);
                 if (isLocked(id)) {
@@ -513,20 +499,24 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
             if (!active) {
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.45F);
             }
-            ResourceLocation texture = pressed && active ? BUTTON_PRESSED : BUTTON;
+            ResourceLocation texture = pressed && active ? PLUS_PRESSED : PLUS;
             graphics.blit(texture, getX(), getY(), 0, 0, width, height, width, height);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 
-    private static final class InvisibleTabButton extends Button {
-        private InvisibleTabButton(int x, int y, int width, int height, OnPress onPress) {
-            super(x, y, width, height, Component.empty(), onPress, DEFAULT_NARRATION);
+    private static final class SideTabButton extends Button {
+        private final ResourceLocation texture;
+
+        private SideTabButton(int x, int y, int width, int height, ResourceLocation texture,
+                Component tooltip, OnPress onPress) {
+            super(x, y, width, height, tooltip, onPress, DEFAULT_NARRATION);
+            this.texture = texture;
         }
 
         @Override
         protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            // The composite tab texture is drawn once by the screen for perfectly aligned halves.
+            graphics.blit(texture, getX(), getY(), 0, 0, width, height, width, height);
         }
     }
 }
