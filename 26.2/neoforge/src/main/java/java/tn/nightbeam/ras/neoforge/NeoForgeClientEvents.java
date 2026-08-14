@@ -35,7 +35,9 @@ public class NeoForgeClientEvents {
     public static class GameEvents {
         @SubscribeEvent
         public static void onClientTick(ClientTickEvent.Post event) {
-            if (net.minecraft.client.Minecraft.getInstance().gui.screen() != null) {
+            net.minecraft.client.Minecraft client = net.minecraft.client.Minecraft.getInstance();
+            tn.nightbeam.ras.client.RasGuiSelfTest.onClientTick(client);
+            if (client.gui.screen() != null) {
                 return;
             }
             while (RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND.consumeClick()) {

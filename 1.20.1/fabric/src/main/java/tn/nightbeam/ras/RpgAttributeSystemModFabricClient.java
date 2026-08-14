@@ -14,6 +14,7 @@ import tn.nightbeam.ras.network.OpenStatsMenuPacket;
 
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import tn.nightbeam.ras.client.LevelOverlayRenderer;
+import tn.nightbeam.ras.client.RasGuiSelfTest;
 
 public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
     @Override
@@ -78,6 +79,7 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
                 tn.nightbeam.ras.client.gui.PlayerAttributesViewerGUIScreen::new);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            RasGuiSelfTest.onClientTick(client);
             if (client.screen != null) {
                 return;
             }

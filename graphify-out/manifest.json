@@ -1,0 +1,3912 @@
+{
+  "1.20.1/build.gradle": {
+    "mtime": 1779281638.3940732,
+    "ast_hash": "ea91a025e74c78708cb4a4b867546adf",
+    "semantic_hash": ""
+  },
+  "1.20.1/buildSrc/build.gradle": {
+    "mtime": 1779281638.3950698,
+    "ast_hash": "c97a145a71f52eebb91e5b72f166283f",
+    "semantic_hash": ""
+  },
+  "1.20.1/buildSrc/src/main/groovy/multiloader-common.gradle": {
+    "mtime": 1779281638.3950698,
+    "ast_hash": "4b4dddacc7b43d080819795b91d7afe6",
+    "semantic_hash": ""
+  },
+  "1.20.1/buildSrc/src/main/groovy/multiloader-loader.gradle": {
+    "mtime": 1779281638.3950698,
+    "ast_hash": "35d937388531a3a6bda129401b41b5c8",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/build.gradle": {
+    "mtime": 1779281638.396072,
+    "ast_hash": "967e9c80abba7c4cacfe35fd95cd8039",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/Constants.java": {
+    "mtime": 1781002743.1037192,
+    "ast_hash": "8f4d254a7f7d1a0f5d0da2affe7e129c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/RpgAttributeSystemMod.java": {
+    "mtime": 1781002788.053884,
+    "ast_hash": "bd08c7a51279c86cd95dedb3ba07423f",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/api/CombatSnapshot.java": {
+    "mtime": 1784024028.9136496,
+    "ast_hash": "f6fb600607c9110843931533626be5d3",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/api/RasApi.java": {
+    "mtime": 1784024765.3032815,
+    "ast_hash": "a6ef04444b64f9994509e894c8db2307",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/api/RespecOptions.java": {
+    "mtime": 1781002328.5716088,
+    "ast_hash": "a1d87e79698650a838ab9c32f8b4bc06",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/api/RespecResult.java": {
+    "mtime": 1781002325.986534,
+    "ast_hash": "24055d1067c3a1beaafeea500db54952",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/api/TemplateResult.java": {
+    "mtime": 1781002326.6321921,
+    "ast_hash": "0e5bdb03222e325c0f05913a81f3a97c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/client/LevelOverlayRenderer.java": {
+    "mtime": 1783682986.0323453,
+    "ast_hash": "b4ea97f61b2f7c4232d82b8c90d576f1",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/client/gui/PlayerAttributesViewerGUIScreen.java": {
+    "mtime": 1783682499.6846893,
+    "ast_hash": "7b41d0e75cc4b130b2a09ebe054b56af",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/client/gui/PlayerStatsGUIScreen.java": {
+    "mtime": 1783682862.0858283,
+    "ast_hash": "efebe7ee7031ff17104db51946fc427c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/client/gui/ScreenMousePosition.java": {
+    "mtime": 1781002743.1057184,
+    "ast_hash": "b0d42143deeb3d573700adc8eb1be8db",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/command/RpgAttributeSystemModCommands.java": {
+    "mtime": 1781002788.0558777,
+    "ast_hash": "157588bfd3a53daac136ba2f9b267df4",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/config/AttributeData.java": {
+    "mtime": 1785835225.7309856,
+    "ast_hash": "594afe35331fe0b68166482f45cf9f0b",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/config/ConfigInitializer.java": {
+    "mtime": 1785835200.211561,
+    "ast_hash": "d2327fd511f1b1640729e4c2731df027",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/config/ConfigValidator.java": {
+    "mtime": 1782126571.0612237,
+    "ast_hash": "29768b2291fccd264ea70cd9dd62cb1c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/config/RespecConfig.java": {
+    "mtime": 1781002331.2309148,
+    "ast_hash": "70309cd5a923a83bf4b867a654535f50",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/config/StatsDisplayConfig.java": {
+    "mtime": 1781002403.659469,
+    "ast_hash": "4578e4ea765127293cabcd867c098d98",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/config/TemplateConfig.java": {
+    "mtime": 1781002365.3350983,
+    "ast_hash": "5d7aa315d7d6876567b9cfc92e0eb39c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/init/MenuAccessor.java": {
+    "mtime": 1781002743.107718,
+    "ast_hash": "865c0584f9432fe70c8d2dc4878c722b",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModAttributes.java": {
+    "mtime": 1781002743.107718,
+    "ast_hash": "511927ac70c5475f2d7cff6a3ccdddf1",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModItems.java": {
+    "mtime": 1781002743.1087186,
+    "ast_hash": "fade62a1f34934def3f3d2922612b4b9",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModKeyMappings.java": {
+    "mtime": 1781002743.1087186,
+    "ast_hash": "18b49c9c594b9e97d7e0ee63610fb949",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModMenus.java": {
+    "mtime": 1781002743.1087186,
+    "ast_hash": "5e7abd4cf74d810a651796aa5ebef791",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/init/ScreenAccessor.java": {
+    "mtime": 1781002743.1087186,
+    "ast_hash": "96c6431bdb70fcaa7c1b2e8c7f6fa605",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/item/ScrollOfRebirthItem.java": {
+    "mtime": 1781002743.1102233,
+    "ast_hash": "9ffaf6f92eb9c8d08e2654de73c21fe5",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/item/TomeOfAscensionItem.java": {
+    "mtime": 1781002743.1102233,
+    "ast_hash": "fc12f07b199db6c3bab7f3cebc549a02",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/network/AttributeConfigSyncPacket.java": {
+    "mtime": 1785835231.2207236,
+    "ast_hash": "f28773f6397c43a5e4b2df7ab1dd93e6",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/network/GenericButtonActionPacket.java": {
+    "mtime": 1781002743.1112278,
+    "ast_hash": "d0c65282fd53e586406e4d0559dfcb1a",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/network/ItemsLockSyncPacket.java": {
+    "mtime": 1785340612.1365435,
+    "ast_hash": "a0c64dc11839634d922054a7aec972f5",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/network/OpenStatsMenuPacket.java": {
+    "mtime": 1781002743.1112278,
+    "ast_hash": "eeb3f2111592c9584b29bd760a75345e",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/network/PlayerVariables.java": {
+    "mtime": 1781003256.5298045,
+    "ast_hash": "57ba83030178dcca1263bf0c5daef714",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/platform/DefaultPermissionService.java": {
+    "mtime": 1781002845.7252145,
+    "ast_hash": "b948e05957dc0409876f837be4f1447b",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/platform/IConfigService.java": {
+    "mtime": 1785835158.668326,
+    "ast_hash": "b6c98ef105520c42700b2d6df1bd76b9",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/platform/IPermissionService.java": {
+    "mtime": 1781002333.5711956,
+    "ast_hash": "d7c5ce1e8f9ba9481f97c16c96aac881",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/platform/IPlatformHelper.java": {
+    "mtime": 1785340612.1375437,
+    "ast_hash": "56e314c5e5fe882a5f749b118765ad4a",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/platform/Services.java": {
+    "mtime": 1781002788.0578835,
+    "ast_hash": "605a49e68d61978690666b3710b5fd36",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/AddModiferCountProcedure.java": {
+    "mtime": 1781002743.1142318,
+    "ast_hash": "38e27c82e2f9ea9fea448a1285752249",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/AddPointsAttributeGenericProcedure.java": {
+    "mtime": 1782125993.2649884,
+    "ast_hash": "643103aad529426f3a0696d10a186630",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/AddPointsCmdProcedure.java": {
+    "mtime": 1781002743.1152322,
+    "ast_hash": "a6237bb55c75f47371bf4d1c041f8830",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/CheckAttributesInitProcedure.java": {
+    "mtime": 1781002743.116232,
+    "ast_hash": "6680686e415353968006a30c6ad63bf5",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/CheckLevelupRewardsProcedure.java": {
+    "mtime": 1781002743.116232,
+    "ast_hash": "fca783ecb3d4299479de4321704148d4",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/CurrentXpToLevelProcedure.java": {
+    "mtime": 1781002743.116232,
+    "ast_hash": "af681d630d610cbe864b5a1dcf7d1a76",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttributeGenericProcedure.java": {
+    "mtime": 1781002743.1172314,
+    "ast_hash": "5e5f7df81d01b37d7cb15aa03c694b5b",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/DisplayLogicKeybindOverlayProcedure.java": {
+    "mtime": 1781002743.1172314,
+    "ast_hash": "9af9788076b8e275550b870e0471c333",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttributeGenericProcedure.java": {
+    "mtime": 1781003355.282233,
+    "ast_hash": "698397a6e39e387f17b76ec9eabf71d9",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/DisplayOverlayProcedure.java": {
+    "mtime": 1781002743.1182315,
+    "ast_hash": "690a79fd25cb5caae86081e1923faf15",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/DisplayXpOverlayProcedure.java": {
+    "mtime": 1781002743.1182315,
+    "ast_hash": "dc41db5f87f23f81eb747ae84e0606b2",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/GameplayRulesProcedure.java": {
+    "mtime": 1781002743.1192317,
+    "ast_hash": "61728c712ce2f0589ac0f3a78c4a6404",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/GiveAttributesToPlayerProcedure.java": {
+    "mtime": 1781002743.1192317,
+    "ast_hash": "1a01f2bade76d81f4dfad6fe89ce7b3e",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/GiveXpCmdProcedure.java": {
+    "mtime": 1781002743.1202314,
+    "ast_hash": "95af8afe920d915067c225112551ce15",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/GiveXpToPlayerProcedure.java": {
+    "mtime": 1781002743.1202314,
+    "ast_hash": "edda4cdfdba9005e2ff2abb2fe30bdcb",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/LevelUpProcedureCmdProcedure.java": {
+    "mtime": 1781002743.1202314,
+    "ast_hash": "e36566bb22baa685d811135b7df05fcf",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/LevelUpProcedureProcedure.java": {
+    "mtime": 1781002743.121268,
+    "ast_hash": "38af13de5df57c8788856c637560e90c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/LevelUpUserCommandProcedureProcedure.java": {
+    "mtime": 1781002743.121268,
+    "ast_hash": "9ea6d78506fcb7a37e40389643909aff",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/LevelingService.java": {
+    "mtime": 1781002788.0588868,
+    "ast_hash": "e7a89122961710df9b306588979610e5",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/LockAttributeProcedure.java": {
+    "mtime": 1781002743.1222663,
+    "ast_hash": "cd4140730617f412aa239077e771b9d3",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/LockAttributeTargetProcedure.java": {
+    "mtime": 1781002743.1222663,
+    "ast_hash": "c8f5db5f0e7de7eaf928b941095dff4c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/OnOrbResetProcedure.java": {
+    "mtime": 1781002788.0598857,
+    "ast_hash": "306f600ebc602086e62b87203c6d221a",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttributeGenericProcedure.java": {
+    "mtime": 1782125981.337285,
+    "ast_hash": "c6eb33d755a5c86d0fe130726045dcc4",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnProcedure.java": {
+    "mtime": 1782125987.716987,
+    "ast_hash": "110901178ba39e8d0596f09aca2cfafa",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/OpenAttributesDisplayGUIProcedure.java": {
+    "mtime": 1781002743.1242666,
+    "ast_hash": "221140205f1ad6691f115944776187cd",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/OpenStatsMenuProcedure.java": {
+    "mtime": 1781002743.1242666,
+    "ast_hash": "3c536ee74903536365b2e5cdb1a53514",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/OrbOfLevelingProcedureProcedure.java": {
+    "mtime": 1781002743.125266,
+    "ast_hash": "a9e3e063168128937d4dc3b583f0de83",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/PlayerStatsGUIThisGUIIsOpenedProcedure.java": {
+    "mtime": 1781002743.125266,
+    "ast_hash": "a77796f5c81f6ea3cd5505cd4c577cbe",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/PressToGetKeyBindNameProcedure.java": {
+    "mtime": 1781002743.125266,
+    "ast_hash": "6d4a586963907d77e8a9deb5e1beacac",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ProcedureCommandHelper.java": {
+    "mtime": 1782126118.835434,
+    "ast_hash": "3f8c815d3198c0a20926380ea7f3121e",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/RemoveModiferCountProcedure.java": {
+    "mtime": 1781002743.126266,
+    "ast_hash": "496b626ff540d538574f09e206ba8a73",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ResetGivenPlayerProcedure.java": {
+    "mtime": 1781002743.127266,
+    "ast_hash": "4ddfaf5d1bf189503ba3e02bb1bcfd6c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ResetPlayerCmdProcedure.java": {
+    "mtime": 1781002743.127266,
+    "ast_hash": "e3fe7a52661d8f818244657910488e68",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/RespecCmdProcedure.java": {
+    "mtime": 1781002347.5867407,
+    "ast_hash": "8cb178148c479ceea71325ac0be0c0bc",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/RespecPlayerCmdProcedure.java": {
+    "mtime": 1781002349.8614123,
+    "ast_hash": "41d314383fb85dabe5e6222b73196fa1",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/RespecService.java": {
+    "mtime": 1781002844.731697,
+    "ast_hash": "7faa6252bad61d2639fa23904fc3f731",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeNameGenericProcedure.java": {
+    "mtime": 1785835237.6502752,
+    "ast_hash": "103a3ae580667eda868ffe9bc5f48cbd",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeTipGenericProcedure.java": {
+    "mtime": 1785835239.144203,
+    "ast_hash": "8d0925806b2a18e5a64bae068993c035",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeGenericProcedure.java": {
+    "mtime": 1781002743.1282663,
+    "ast_hash": "919e0db4e268a816044f5e6833d348cc",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentLevelProcedure.java": {
+    "mtime": 1781002743.12927,
+    "ast_hash": "284b8184021e5558cd38fec0b5ecd13c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentModifierProcedure.java": {
+    "mtime": 1781002743.12927,
+    "ast_hash": "db005bd7394159d9e7b3a419da80f684",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySectionGenericProcedure.java": {
+    "mtime": 1781002743.1302705,
+    "ast_hash": "701245e9801189ab3e866fd8047b332f",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnExtraPointsProcedure.java": {
+    "mtime": 1781002743.1307766,
+    "ast_hash": "b8f6091f7796681f9e1e4c3666b13e3e",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnExtraPointsUIProcedure.java": {
+    "mtime": 1781002743.1307766,
+    "ast_hash": "9ed9930e44fc41695cd0e2d9dffd6643",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnGlobalSectionsDisplayProcedure.java": {
+    "mtime": 1781002743.1317816,
+    "ast_hash": "0953bbd650970eb4928b0d8d5246cfc2",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeGenericProcedure.java": {
+    "mtime": 1781002743.1317816,
+    "ast_hash": "0c0631e28f1907936468a18513052c5c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnPercentageProcedure.java": {
+    "mtime": 1781002743.1327808,
+    "ast_hash": "2ebf040b0cc9e3a9fcba904613440abd",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnSectionDisplayGenericProcedure.java": {
+    "mtime": 1783682448.697122,
+    "ast_hash": "7736a520fb4244a0140112a14e0a9794",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/SetXpCmdProcedure.java": {
+    "mtime": 1781002743.1327808,
+    "ast_hash": "b4454f5edff59b11fb00af3ad73b2fc4",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/SetXpToPlayerProcedure.java": {
+    "mtime": 1781002743.1338677,
+    "ast_hash": "17d9ca8c0867757429f5259737b0607c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/TemplateApplyCmdProcedure.java": {
+    "mtime": 1781002472.3667247,
+    "ast_hash": "11c58e40f3f90cc5b5f0b7cec6615cd6",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/TemplateListCmdProcedure.java": {
+    "mtime": 1781002369.8033912,
+    "ast_hash": "c9a2fd007bcf7106fb47463c1c4872a5",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/TemplateService.java": {
+    "mtime": 1781002360.5869772,
+    "ast_hash": "2516883dd27f98d82b0daa43692104c7",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/UnlockAttributeProcedure.java": {
+    "mtime": 1781002743.1338677,
+    "ast_hash": "fb211b40456d34fbe4c16f83ae2ed35e",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/UnlockAttributeTargetProcedure.java": {
+    "mtime": 1781002743.1338677,
+    "ast_hash": "0322bfe7c5c82157ed588ff80ae34050",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/procedures/YouHavePointsProcedure.java": {
+    "mtime": 1781002743.1348758,
+    "ast_hash": "985021b3de77db6528fb414be3928398",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/util/AttributeManager.java": {
+    "mtime": 1785835236.1441922,
+    "ast_hash": "90fda9f24cb43c8d104e87540515837c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/util/AttributeScaling.java": {
+    "mtime": 1782125938.9686387,
+    "ast_hash": "1b788fcf5fb885805dac6c71fa7cf864",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/util/ItemLockTooltipHelper.java": {
+    "mtime": 1785833873.6882198,
+    "ast_hash": "5dc24bd94822ba3c768463e36b660e50",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/util/ItemsLockClientCache.java": {
+    "mtime": 1785833873.6944988,
+    "ast_hash": "1e1aa30f52e8e348df5503f208777423",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/util/RasPermissions.java": {
+    "mtime": 1781002333.4703188,
+    "ast_hash": "677f5d560e8886060069a3113039329c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/world/inventory/PlayerAttributesViewerGUIMenu.java": {
+    "mtime": 1781002743.1358714,
+    "ast_hash": "5efa9385d190132e9053dcdfab02a63d",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/java/tn/nightbeam/ras/world/inventory/PlayerStatsGUIMenu.java": {
+    "mtime": 1781002743.1368763,
+    "ast_hash": "6d934e998b8d87343019e004a8422faf",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/lang/en_us.json": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "07aa52f8f65c15be516ccda845e761da",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/models/item/scroll_of_rebirth.json": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "f02bdf6d0c54b27e8c09391a2fa8673d",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/models/item/tome_of_ascension.json": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "5e8809090f790e985dcf2e48d345aaae",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/data/rpg_attribute_system/recipes/tome_of_rebirth_recipe.json": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "e9cc7f3f8e65df81a12221d6e8590cc6",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/rpg_attribute_system.mixins.json": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "5927d1e58bd518c19b3e8ad847a08a22",
+    "semantic_hash": ""
+  },
+  "1.20.1/fabric/build.gradle": {
+    "mtime": 1779281638.4268274,
+    "ast_hash": "f73e767dc04c37be1aa8289689f6fe17",
+    "semantic_hash": ""
+  },
+  "1.20.1/fabric/src/main/java/tn/nightbeam/ras/RpgAttributeSystemModFabric.java": {
+    "mtime": 1779281638.4268274,
+    "ast_hash": "5ca3731dced111376bf4b9cdddeebf98",
+    "semantic_hash": ""
+  },
+  "1.20.1/fabric/src/main/java/tn/nightbeam/ras/RpgAttributeSystemModFabricClient.java": {
+    "mtime": 1785340612.1385438,
+    "ast_hash": "655dc1395198b328bb11cce81fb7fff7",
+    "semantic_hash": ""
+  },
+  "1.20.1/fabric/src/main/java/tn/nightbeam/ras/events/FabricClientItemTooltipEvents.java": {
+    "mtime": 1785340612.1395426,
+    "ast_hash": "6bee7bdcc38101a4080369dc8cf6d5c9",
+    "semantic_hash": ""
+  },
+  "1.20.1/fabric/src/main/java/tn/nightbeam/ras/events/FabricRpgAttributeSystemModEvents.java": {
+    "mtime": 1785340612.1395426,
+    "ast_hash": "5c0962854dc01a1b6fbbf48f42ff4c2c",
+    "semantic_hash": ""
+  },
+  "1.20.1/fabric/src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModMenusFabric.java": {
+    "mtime": 1779281638.4291432,
+    "ast_hash": "038cd24d3614b0e7ccefcd70e3ac68e3",
+    "semantic_hash": ""
+  },
+  "1.20.1/fabric/src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModTabsFabric.java": {
+    "mtime": 1779281638.4291432,
+    "ast_hash": "813c56a4307eda073dbbd202f21100a6",
+    "semantic_hash": ""
+  },
+  "1.20.1/fabric/src/main/java/tn/nightbeam/ras/mixin/MixinEntity.java": {
+    "mtime": 1779281638.4291432,
+    "ast_hash": "4fd823cafbb6d0f77991e343bed80dec",
+    "semantic_hash": ""
+  },
+  "1.20.1/fabric/src/main/java/tn/nightbeam/ras/network/FabricMenuStateUpdatePacket.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "68c51526a25e63023ff8becf5ae2feec",
+    "semantic_hash": ""
+  },
+  "1.20.1/fabric/src/main/java/tn/nightbeam/ras/platform/FabricConfigService.java": {
+    "mtime": 1785835167.2667732,
+    "ast_hash": "50f4cb30d69bce207731dfc15aaa4c33",
+    "semantic_hash": ""
+  },
+  "1.20.1/fabric/src/main/java/tn/nightbeam/ras/platform/FabricPlatformHelper.java": {
+    "mtime": 1785340612.140908,
+    "ast_hash": "c176caa52a36300732a0a160ce22b4db",
+    "semantic_hash": ""
+  },
+  "1.20.1/fabric/src/main/java/tn/nightbeam/ras/platform/impl/IEntityData.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "52233adfbce58945f2f487ea3d14054c",
+    "semantic_hash": ""
+  },
+  "1.20.1/fabric/src/main/resources/fabric.mod.json": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "df8365cc4e4988e7ce85bb175a6e7f7d",
+    "semantic_hash": ""
+  },
+  "1.20.1/fabric/src/main/resources/rpg_attribute_system.fabric.mixins.json": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "341e00e573e5873cba1c602fcb79dcd2",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/build.gradle": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "8114ef6f4705d9ba9e51c803d62ae2e9",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/RpgAttributeSystemModForge.java": {
+    "mtime": 1785340612.141913,
+    "ast_hash": "8ebcf038c23719c764174e95515e0350",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/client/ClientForgeEvents.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "245793f5f57f129aa8aa983600f89db5",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/client/ClientModEvents.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "bc6fac5cb24b26e13e39f2ef50461dd2",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/client/screens/LevelOverlayOverlay.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "c5bb29badae9250069b8860a51d60cd9",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/command/GiveLevelsCommandCommand.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "f6299ac546aaae7c79d62687f615de24",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModMenusForge.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "50d79a4a1d90443cdb30d6c8efaaa494",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModScreens.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "bebb1436a4e84baa4c92a97249f2d15f",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModTabs.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "13038b3eb2556bf823b1ea8c38c3cb95",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/network/MenuStateUpdateMessage.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "3a6df3621adadea6e0201ee49fd4754a",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/network/OpenStatsMenuKeybindMessage.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "848392200272b5429c0b24c2b242688a",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/network/PlayerAttributesViewerGUIButtonMessage.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "061144cdd6fb9e18760122005dd41b26",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/network/PlayerStatsGUIButtonMessage.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "f5b83a96c9213810e65dd41f12b52514",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/network/RpgAttributeSystemModVariables.java": {
+    "mtime": 1785340612.141913,
+    "ast_hash": "e7203e9b58266dbee17b26b2e8518de4",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/platform/ForgeConfigService.java": {
+    "mtime": 1785835165.0384636,
+    "ast_hash": "74256c0c8d33e00034855db2b9d0acc6",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/platform/ForgePlatformHelper.java": {
+    "mtime": 1785340612.1429129,
+    "ast_hash": "7dc45aeb9f2a73d327173a17c7dd00e1",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/procedures/DisableBlockBreakProcedure.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "18f308e096bd628523dc4a80c53b2cc6",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/procedures/DisableBlockPlacementProcedure.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "50da932c1249c1ebe65aff95134a29f0",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/procedures/DisableEntityAttackProcedure.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "46359cefb54239726449020e9abac314",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/procedures/EntityChangesEquipementProcedure.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "47452d7e4c82e9fd989da17bc956427a",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/procedures/GiveXpNoDropProcedure.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "346bfe2005bf34c86b2947bcd0b729bd",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/procedures/GiveXpVanillaProcedure.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "bd47e9c8610db9d207b13503e66cfb10",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/procedures/ItemRequirementsDisplayProcedure.java": {
+    "mtime": 1785340612.1434174,
+    "ast_hash": "a22d96d8358fa24547073afbc5ffc7e5",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/procedures/ItemUseLockProcedure.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "b454e0f083fe9340c4c02a6b5ffe0e0f",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/procedures/VanillaDropRatesProcedure.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "46404c5fb86b5b145cff74bedda122b0",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/java/tn/nightbeam/ras/procedures/WhenPlayerRespawnsProcedure.java": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "885ed7a696cec65becf64c0691424b89",
+    "semantic_hash": ""
+  },
+  "1.20.1/forge/src/main/resources/rpg_attribute_system.forge.mixins.json": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "5927d1e58bd518c19b3e8ad847a08a22",
+    "semantic_hash": ""
+  },
+  "1.20.1/gradlew": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "acf9007174811a6ebb9c43febccbcf37",
+    "semantic_hash": ""
+  },
+  "1.20.1/settings.gradle": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "98cc7e6ef1cdf0ed6d85e1ddc6a3d4f3",
+    "semantic_hash": ""
+  },
+  "1.21.1/build.gradle": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "f587ce23a00848a2ff80b91270fefa97",
+    "semantic_hash": ""
+  },
+  "1.21.1/buildSrc/build.gradle": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "c97a145a71f52eebb91e5b72f166283f",
+    "semantic_hash": ""
+  },
+  "1.21.1/buildSrc/src/main/groovy/multiloader-common.gradle": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "e5785c7dd073dea347dc957cdc5477f3",
+    "semantic_hash": ""
+  },
+  "1.21.1/buildSrc/src/main/groovy/multiloader-loader.gradle": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "53c2065dab89a326370a0f7710dd5348",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/build.gradle": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "e7c1d370260c9be69b5b91366f89d14d",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/Constants.java": {
+    "mtime": 1781002743.1368763,
+    "ast_hash": "8f4d254a7f7d1a0f5d0da2affe7e129c",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/RpgAttributeSystemMod.java": {
+    "mtime": 1781002788.053884,
+    "ast_hash": "bd08c7a51279c86cd95dedb3ba07423f",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/api/CombatSnapshot.java": {
+    "mtime": 1784024028.8976493,
+    "ast_hash": "f6fb600607c9110843931533626be5d3",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/api/RasApi.java": {
+    "mtime": 1784024761.9332788,
+    "ast_hash": "d0cbc3de0dcc7b7a6a400734e9be31f8",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/api/RespecOptions.java": {
+    "mtime": 1781002328.5716088,
+    "ast_hash": "a1d87e79698650a838ab9c32f8b4bc06",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/api/RespecResult.java": {
+    "mtime": 1781002325.986534,
+    "ast_hash": "24055d1067c3a1beaafeea500db54952",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/api/TemplateResult.java": {
+    "mtime": 1781002326.6321921,
+    "ast_hash": "0e5bdb03222e325c0f05913a81f3a97c",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/client/LevelOverlayRenderer.java": {
+    "mtime": 1783682986.0333455,
+    "ast_hash": "f81c6f9b14b788014336af02d1f2d0e7",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/client/gui/LegacyImageButton.java": {
+    "mtime": 1781002743.1383193,
+    "ast_hash": "6aa923cc675bc608c7cea8eaf1d7a5be",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/client/gui/PlayerAttributesViewerGUIScreen.java": {
+    "mtime": 1783682499.6869414,
+    "ast_hash": "f4513401af05b882907b3f4b5f5daafc",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/client/gui/PlayerStatsGUIScreen.java": {
+    "mtime": 1783682862.0858283,
+    "ast_hash": "883bf3ea4cfb441aec75e5243101b3a0",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/client/gui/PlayerStatsOverviewScreen.java": {
+    "mtime": 1781002444.9067342,
+    "ast_hash": "45f65aa76f4c3fc3d60aba757f004d40",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/client/gui/ScreenMousePosition.java": {
+    "mtime": 1781002743.1403236,
+    "ast_hash": "b0d42143deeb3d573700adc8eb1be8db",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/command/RpgAttributeSystemModCommands.java": {
+    "mtime": 1781002788.0558777,
+    "ast_hash": "157588bfd3a53daac136ba2f9b267df4",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/config/AttributeData.java": {
+    "mtime": 1781002788.0558777,
+    "ast_hash": "04bef8fb918a3d51f4fba9ef3bf6eedd",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/config/ConfigInitializer.java": {
+    "mtime": 1785835186.951311,
+    "ast_hash": "d2327fd511f1b1640729e4c2731df027",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/config/ConfigValidator.java": {
+    "mtime": 1782126550.979473,
+    "ast_hash": "29768b2291fccd264ea70cd9dd62cb1c",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/config/RespecConfig.java": {
+    "mtime": 1781002331.2309148,
+    "ast_hash": "70309cd5a923a83bf4b867a654535f50",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/config/StatsDisplayConfig.java": {
+    "mtime": 1781002403.659469,
+    "ast_hash": "4578e4ea765127293cabcd867c098d98",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/config/TemplateConfig.java": {
+    "mtime": 1781002365.3350983,
+    "ast_hash": "5d7aa315d7d6876567b9cfc92e0eb39c",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/init/MenuAccessor.java": {
+    "mtime": 1781002743.1423328,
+    "ast_hash": "865c0584f9432fe70c8d2dc4878c722b",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModAttributes.java": {
+    "mtime": 1781002743.1423328,
+    "ast_hash": "511927ac70c5475f2d7cff6a3ccdddf1",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModItems.java": {
+    "mtime": 1781002743.1423328,
+    "ast_hash": "fade62a1f34934def3f3d2922612b4b9",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModKeyMappings.java": {
+    "mtime": 1781002743.143333,
+    "ast_hash": "18b49c9c594b9e97d7e0ee63610fb949",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModMenus.java": {
+    "mtime": 1781002743.143333,
+    "ast_hash": "5e7abd4cf74d810a651796aa5ebef791",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/init/ScreenAccessor.java": {
+    "mtime": 1781002743.143333,
+    "ast_hash": "e2102839d63b3aca7e0954a7926d37fd",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/item/ScrollOfRebirthItem.java": {
+    "mtime": 1781002743.1443322,
+    "ast_hash": "f5500ab3fd37931fc3574fa867175eeb",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/item/TomeOfAscensionItem.java": {
+    "mtime": 1781002743.1443322,
+    "ast_hash": "befe870bb28dccc7cb1dd54c26bda612",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/network/AttributeConfigSyncPacket.java": {
+    "mtime": 1781002788.0568767,
+    "ast_hash": "c98dd7784851454b9f9491e3bd2fbfac",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/network/GenericButtonActionPacket.java": {
+    "mtime": 1781002743.1463346,
+    "ast_hash": "d0c65282fd53e586406e4d0559dfcb1a",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/network/ItemsLockSyncPacket.java": {
+    "mtime": 1785340612.14443,
+    "ast_hash": "ab692a5b952cd8abe90fa2ff3e9a113f",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/network/OpenStatsMenuPacket.java": {
+    "mtime": 1781002743.1463346,
+    "ast_hash": "95fbff0cf1b3d2663805b7a4c3f8bbf1",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/network/PlayerVariables.java": {
+    "mtime": 1781002919.5575073,
+    "ast_hash": "57cd374bbb46780b16988e2771b9d98c",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/platform/DefaultPermissionService.java": {
+    "mtime": 1781002845.7252145,
+    "ast_hash": "b948e05957dc0409876f837be4f1447b",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/platform/IConfigService.java": {
+    "mtime": 1785835156.4776883,
+    "ast_hash": "b6c98ef105520c42700b2d6df1bd76b9",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/platform/IPermissionService.java": {
+    "mtime": 1781002333.5711956,
+    "ast_hash": "d7c5ce1e8f9ba9481f97c16c96aac881",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/platform/IPlatformHelper.java": {
+    "mtime": 1785340612.1454308,
+    "ast_hash": "56e314c5e5fe882a5f749b118765ad4a",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/platform/Services.java": {
+    "mtime": 1781002788.0578835,
+    "ast_hash": "605a49e68d61978690666b3710b5fd36",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/AddModiferCountProcedure.java": {
+    "mtime": 1781002743.1483326,
+    "ast_hash": "38e27c82e2f9ea9fea448a1285752249",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/AddPointsAttributeGenericProcedure.java": {
+    "mtime": 1782125962.5856247,
+    "ast_hash": "07e7ab6e300c67ad7b421ba0a9f03aa5",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/AddPointsCmdProcedure.java": {
+    "mtime": 1781002743.1498373,
+    "ast_hash": "734c4f7b98a51f3c37d964ae0d296b1e",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/CheckAttributesInitProcedure.java": {
+    "mtime": 1779283575.4105866,
+    "ast_hash": "1447e6cd514ee9d37e4a1ed3c351c4f3",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/CheckLevelupRewardsProcedure.java": {
+    "mtime": 1781002743.1498373,
+    "ast_hash": "3b43ab71082e8451d74a3cb57ca33798",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/CurrentXpToLevelProcedure.java": {
+    "mtime": 1781002743.1508408,
+    "ast_hash": "af681d630d610cbe864b5a1dcf7d1a76",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/DisplayLogicAttributeGenericProcedure.java": {
+    "mtime": 1781002743.1508408,
+    "ast_hash": "72c27c0a2cc88f1d3fc4973513902444",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/DisplayLogicKeybindOverlayProcedure.java": {
+    "mtime": 1781002743.1508408,
+    "ast_hash": "9af9788076b8e275550b870e0471c333",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttributeGenericProcedure.java": {
+    "mtime": 1781002788.0588868,
+    "ast_hash": "4d3df5caaff24d9b76860256d1e9f3bb",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/DisplayOverlayProcedure.java": {
+    "mtime": 1781002743.1518419,
+    "ast_hash": "690a79fd25cb5caae86081e1923faf15",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/DisplayXpOverlayProcedure.java": {
+    "mtime": 1781002743.1528418,
+    "ast_hash": "dc41db5f87f23f81eb747ae84e0606b2",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/GameplayRulesProcedure.java": {
+    "mtime": 1781002743.1528418,
+    "ast_hash": "cc707b0900d5a8b75434313c323332df",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/GiveAttributesToPlayerProcedure.java": {
+    "mtime": 1781002743.1528418,
+    "ast_hash": "0b3abfa457bd364bb5d37de497beb384",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/GiveXpCmdProcedure.java": {
+    "mtime": 1781002743.153842,
+    "ast_hash": "84ad0843a90bb5889b8b903d402fef81",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/GiveXpToPlayerProcedure.java": {
+    "mtime": 1781002743.153842,
+    "ast_hash": "a943eb67f60f5f3854728408c9f8587a",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/LevelUpProcedureCmdProcedure.java": {
+    "mtime": 1781002743.1548414,
+    "ast_hash": "3ea4e84c348b454159401f28d7585718",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/LevelUpProcedureProcedure.java": {
+    "mtime": 1781002743.1548414,
+    "ast_hash": "1d787a4a9983e675f10752dee0f307df",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/LevelUpUserCommandProcedureProcedure.java": {
+    "mtime": 1781002743.1548414,
+    "ast_hash": "aa20ab6bd0afb876714b33921bd823ab",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/LevelingService.java": {
+    "mtime": 1781002788.0588868,
+    "ast_hash": "e7a89122961710df9b306588979610e5",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/LockAttributeProcedure.java": {
+    "mtime": 1781002743.1558404,
+    "ast_hash": "58ba1194ff9ec1aa822bb37542c97823",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/LockAttributeTargetProcedure.java": {
+    "mtime": 1781002743.1568427,
+    "ast_hash": "8ba739e00d878e5f41ac71fd689ac890",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/OnOrbResetProcedure.java": {
+    "mtime": 1781002788.0598857,
+    "ast_hash": "306f600ebc602086e62b87203c6d221a",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttributeGenericProcedure.java": {
+    "mtime": 1782125959.388353,
+    "ast_hash": "4abfb7ca4fab7ff86699e9d70446758d",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/OnPlayerSpawnProcedure.java": {
+    "mtime": 1782125966.84688,
+    "ast_hash": "78461c2f18015a6f11395eca89d2c6f7",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/OpenAttributesDisplayGUIProcedure.java": {
+    "mtime": 1781002743.157841,
+    "ast_hash": "221140205f1ad6691f115944776187cd",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/OpenStatsMenuProcedure.java": {
+    "mtime": 1781002743.157841,
+    "ast_hash": "3c536ee74903536365b2e5cdb1a53514",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/OrbOfLevelingProcedureProcedure.java": {
+    "mtime": 1781002743.1588407,
+    "ast_hash": "a9e3e063168128937d4dc3b583f0de83",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/PlayerStatsGUIThisGUIIsOpenedProcedure.java": {
+    "mtime": 1781002743.1588407,
+    "ast_hash": "a77796f5c81f6ea3cd5505cd4c577cbe",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/PressToGetKeyBindNameProcedure.java": {
+    "mtime": 1781002743.1598408,
+    "ast_hash": "6d4a586963907d77e8a9deb5e1beacac",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ProcedureCommandHelper.java": {
+    "mtime": 1782126098.2743077,
+    "ast_hash": "6a52c7603e2634ebff61c4183651703b",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/RemoveModiferCountProcedure.java": {
+    "mtime": 1781002743.1598408,
+    "ast_hash": "496b626ff540d538574f09e206ba8a73",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ResetGivenPlayerProcedure.java": {
+    "mtime": 1781002743.1608593,
+    "ast_hash": "4ddfaf5d1bf189503ba3e02bb1bcfd6c",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ResetPlayerCmdProcedure.java": {
+    "mtime": 1781002743.1608593,
+    "ast_hash": "e3fe7a52661d8f818244657910488e68",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/RespecCmdProcedure.java": {
+    "mtime": 1781002347.5867407,
+    "ast_hash": "8cb178148c479ceea71325ac0be0c0bc",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/RespecPlayerCmdProcedure.java": {
+    "mtime": 1781002349.8614123,
+    "ast_hash": "41d314383fb85dabe5e6222b73196fa1",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/RespecService.java": {
+    "mtime": 1781002844.731697,
+    "ast_hash": "7faa6252bad61d2639fa23904fc3f731",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeNameGenericProcedure.java": {
+    "mtime": 1781002788.0598857,
+    "ast_hash": "48889684ce552512114a561052f58b39",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnAttributeTipGenericProcedure.java": {
+    "mtime": 1781002788.0612195,
+    "ast_hash": "895643b683870a130a912398e35bc769",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeGenericProcedure.java": {
+    "mtime": 1781002743.1618595,
+    "ast_hash": "919e0db4e268a816044f5e6833d348cc",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentLevelProcedure.java": {
+    "mtime": 1781002743.163364,
+    "ast_hash": "284b8184021e5558cd38fec0b5ecd13c",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnCurrentModifierProcedure.java": {
+    "mtime": 1781002743.163364,
+    "ast_hash": "db005bd7394159d9e7b3a419da80f684",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnDisplaySectionGenericProcedure.java": {
+    "mtime": 1781002743.1643684,
+    "ast_hash": "701245e9801189ab3e866fd8047b332f",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnExtraPointsProcedure.java": {
+    "mtime": 1781002743.1643684,
+    "ast_hash": "b8f6091f7796681f9e1e4c3666b13e3e",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnExtraPointsUIProcedure.java": {
+    "mtime": 1781002743.1653688,
+    "ast_hash": "9ed9930e44fc41695cd0e2d9dffd6643",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnGlobalSectionsDisplayProcedure.java": {
+    "mtime": 1781002743.1653688,
+    "ast_hash": "0953bbd650970eb4928b0d8d5246cfc2",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnNextAttributeGenericProcedure.java": {
+    "mtime": 1781002743.1663682,
+    "ast_hash": "92610b24803bd1f4b012f643fa668124",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnPercentageProcedure.java": {
+    "mtime": 1781002743.1663682,
+    "ast_hash": "2ebf040b0cc9e3a9fcba904613440abd",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/ReturnSectionDisplayGenericProcedure.java": {
+    "mtime": 1783682448.6981213,
+    "ast_hash": "53d2bd57247bf99b043a09fea5cdebc7",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/SetXpCmdProcedure.java": {
+    "mtime": 1781002743.1673694,
+    "ast_hash": "4bce4bb318db4c2bd89666c899276275",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/SetXpToPlayerProcedure.java": {
+    "mtime": 1781002743.1673694,
+    "ast_hash": "a6c5d319811002ced160bd8c0a467400",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/TemplateApplyCmdProcedure.java": {
+    "mtime": 1781002472.3667247,
+    "ast_hash": "11c58e40f3f90cc5b5f0b7cec6615cd6",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/TemplateListCmdProcedure.java": {
+    "mtime": 1781002369.8033912,
+    "ast_hash": "c9a2fd007bcf7106fb47463c1c4872a5",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/TemplateService.java": {
+    "mtime": 1781002360.5869772,
+    "ast_hash": "2516883dd27f98d82b0daa43692104c7",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/UnlockAttributeProcedure.java": {
+    "mtime": 1781002743.1683676,
+    "ast_hash": "27228c6de0719f36088a5f31ba817880",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/UnlockAttributeTargetProcedure.java": {
+    "mtime": 1781002743.1683676,
+    "ast_hash": "8425bd6a2af80d16e813211f750730bf",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/procedures/YouHavePointsProcedure.java": {
+    "mtime": 1781002743.1683676,
+    "ast_hash": "985021b3de77db6528fb414be3928398",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/util/AttributeManager.java": {
+    "mtime": 1785835211.5099158,
+    "ast_hash": "1104d131cf37834f17967e6ae57717a4",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/util/AttributeScaling.java": {
+    "mtime": 1782125926.7928517,
+    "ast_hash": "9ec4bc5711765cd2d17286620b647b7d",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/util/ItemLockTooltipHelper.java": {
+    "mtime": 1785833873.6944988,
+    "ast_hash": "848f6f33d023d7cbd5f90e4766cb8960",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/util/ItemsLockClientCache.java": {
+    "mtime": 1785833873.6944988,
+    "ast_hash": "1e1aa30f52e8e348df5503f208777423",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/util/RasPermissions.java": {
+    "mtime": 1781002333.4703188,
+    "ast_hash": "677f5d560e8886060069a3113039329c",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/world/inventory/PlayerAttributesViewerGUIMenu.java": {
+    "mtime": 1781002743.1698706,
+    "ast_hash": "6c518e8ffa4205679d5b1080afefb805",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/java/tn/nightbeam/ras/world/inventory/PlayerStatsGUIMenu.java": {
+    "mtime": 1781002743.1698706,
+    "ast_hash": "9be690ceca7beba8b0b68edbdeb0006e",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/lang/en_us.json": {
+    "mtime": 1779281638.4589076,
+    "ast_hash": "f5721c7986dcb9fa21f9465d016146d5",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/models/item/scroll_of_rebirth.json": {
+    "mtime": 1779281638.459907,
+    "ast_hash": "f02bdf6d0c54b27e8c09391a2fa8673d",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/models/item/tome_of_ascension.json": {
+    "mtime": 1779281638.459907,
+    "ast_hash": "5e8809090f790e985dcf2e48d345aaae",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/data/rpg_attribute_system/recipes/tome_of_rebirth_recipe.json": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "e9cc7f3f8e65df81a12221d6e8590cc6",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/build.gradle": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "5d3b0edce337e3c7bb67835210068d1a",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/java/tn/nightbeam/ras/RpgAttributeSystemModFabric.java": {
+    "mtime": 1785340612.1465595,
+    "ast_hash": "a08a20fd73fc2a25a010cdcf3824a30d",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/java/tn/nightbeam/ras/RpgAttributeSystemModFabricClient.java": {
+    "mtime": 1785340612.1465595,
+    "ast_hash": "d292cb91e972e43fe56dc7a4b7759e43",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/java/tn/nightbeam/ras/events/FabricClientRpgAttributeSystemModEvents.java": {
+    "mtime": 1785340612.1475637,
+    "ast_hash": "4ba918724dab3b8aabeb4104e2dd31d9",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/java/tn/nightbeam/ras/events/FabricRpgAttributeSystemModEvents.java": {
+    "mtime": 1785340612.1475637,
+    "ast_hash": "be23f1d70050a21da12f2104658115ab",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/java/tn/nightbeam/ras/init/RpgAttributeSystemModMenusFabric.java": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "980d0e75bd7349df03aaf950d1995f31",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/java/tn/nightbeam/ras/network/FabricButtonActionPayload.java": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "acfb2db2ec9854be74701798ec0bffc4",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/java/tn/nightbeam/ras/network/FabricMenuStateUpdatePayload.java": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "bf1cf95e0adcf1ea18aa0367d27917da",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/java/tn/nightbeam/ras/network/FabricOpenStatsMenuPayload.java": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "6e0cfeb8d113573c961eb9d5984627cc",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/java/tn/nightbeam/ras/network/FabricSyncConfigPayload.java": {
+    "mtime": 1781003025.6576126,
+    "ast_hash": "100b7bd85ab5301663555bf4febf89f3",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/java/tn/nightbeam/ras/network/FabricSyncItemsLockPayload.java": {
+    "mtime": 1785833873.6882198,
+    "ast_hash": "8a5a37a9ac3a2abea1bf9e8cbf3293d3",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/java/tn/nightbeam/ras/network/FabricSyncVarsPayload.java": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "943c72e026c2be3bb1bffa8e6602330b",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/java/tn/nightbeam/ras/platform/FabricConfigService.java": {
+    "mtime": 1785835169.4579055,
+    "ast_hash": "50f4cb30d69bce207731dfc15aaa4c33",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/java/tn/nightbeam/ras/platform/FabricPlatformHelper.java": {
+    "mtime": 1785340612.1486866,
+    "ast_hash": "a0e7e541000ea4801af04f99692a1399",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/java/tn/nightbeam/ras/platform/impl/IEntityData.java": {
+    "mtime": 1779281638.4773598,
+    "ast_hash": "52233adfbce58945f2f487ea3d14054c",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/resources/fabric.mod.json": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "7c0e74cc596bec933bd25e00a54476d7",
+    "semantic_hash": ""
+  },
+  "1.21.1/fabric/src/main/resources/rpg_attribute_system.mixins.json": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "3143bfa9604feb1b5e74ecbbe841a33a",
+    "semantic_hash": ""
+  },
+  "1.21.1/gradlew": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "acf9007174811a6ebb9c43febccbcf37",
+    "semantic_hash": ""
+  },
+  "1.21.1/neoforge/build.gradle": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "fe874ebd300df436d7ff5818cb8c850a",
+    "semantic_hash": ""
+  },
+  "1.21.1/neoforge/src/main/java/tn/nightbeam/ras/RpgAttributeSystemModNeoForge.java": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "eda583a6c09634926124259edbd43dd0",
+    "semantic_hash": ""
+  },
+  "1.21.1/neoforge/src/main/java/tn/nightbeam/ras/neoforge/NeoForgeClientEvents.java": {
+    "mtime": 1785340612.1496916,
+    "ast_hash": "2b0fb213caf87363a2efcf2134cf8dcb",
+    "semantic_hash": ""
+  },
+  "1.21.1/neoforge/src/main/java/tn/nightbeam/ras/neoforge/NeoForgeDataAttachments.java": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "bf804eecd6b6b5632165e1efc68e0a40",
+    "semantic_hash": ""
+  },
+  "1.21.1/neoforge/src/main/java/tn/nightbeam/ras/neoforge/NeoForgeEvents.java": {
+    "mtime": 1785340612.1510217,
+    "ast_hash": "1b630932dec8bb7f654f6eaf6ad5f690",
+    "semantic_hash": ""
+  },
+  "1.21.1/neoforge/src/main/java/tn/nightbeam/ras/neoforge/NeoForgeNetworking.java": {
+    "mtime": 1785340612.1510217,
+    "ast_hash": "c6d13981f281d4b7a4eb3fa521760fc9",
+    "semantic_hash": ""
+  },
+  "1.21.1/neoforge/src/main/java/tn/nightbeam/ras/neoforge/RpgAttributeSystemModMenusNeoForge.java": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "1e405de3207feea4eab7dfe6509c3306",
+    "semantic_hash": ""
+  },
+  "1.21.1/neoforge/src/main/java/tn/nightbeam/ras/neoforge/RpgAttributeSystemNeoForge.java": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "02c0c7224edbbbd2700489adc78127a9",
+    "semantic_hash": ""
+  },
+  "1.21.1/neoforge/src/main/java/tn/nightbeam/ras/neoforge/procedures/DisableBlockBreakProcedure.java": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "61506360b5b5e82da31b82403967dd5c",
+    "semantic_hash": ""
+  },
+  "1.21.1/neoforge/src/main/java/tn/nightbeam/ras/neoforge/procedures/GiveXpVanillaProcedure.java": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "e9b6e10ddc269ce180bffe3ca44df68e",
+    "semantic_hash": ""
+  },
+  "1.21.1/neoforge/src/main/java/tn/nightbeam/ras/platform/NeoForgeConfigService.java": {
+    "mtime": 1785835172.0001929,
+    "ast_hash": "363f1a1c8792ae109093493b75191452",
+    "semantic_hash": ""
+  },
+  "1.21.1/neoforge/src/main/java/tn/nightbeam/ras/platform/NeoForgePlatformHelper.java": {
+    "mtime": 1785340612.1520267,
+    "ast_hash": "cbc10b7aa6ccdd464d8244391cc532cd",
+    "semantic_hash": ""
+  },
+  "1.21.1/neoforge/src/main/resources/rpg_attribute_system.mixins.json": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "bc95c4a088abc082f610aebf844535ed",
+    "semantic_hash": ""
+  },
+  "1.21.1/neoforge/src/main/resources/rpg_attribute_system.neoforge.mixins.json": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "bac7cde0a899194b801997e57ea559ed",
+    "semantic_hash": ""
+  },
+  "1.21.1/settings.gradle": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "8b7ee4784f649d6c9969d0ba54a8898a",
+    "semantic_hash": ""
+  },
+  "26.2/build-logic/build.gradle": {
+    "mtime": 1782202813.4663086,
+    "ast_hash": "c97a145a71f52eebb91e5b72f166283f",
+    "semantic_hash": ""
+  },
+  "26.2/build-logic/src/main/groovy/multiloader-common.gradle": {
+    "mtime": 1782202813.4798179,
+    "ast_hash": "0733bf0d1273cab4c1e3f66cceeb2918",
+    "semantic_hash": ""
+  },
+  "26.2/build-logic/src/main/groovy/multiloader-loader.gradle": {
+    "mtime": 1782202813.4838183,
+    "ast_hash": "4f9e564679ddc034837838c6db8968f9",
+    "semantic_hash": ""
+  },
+  "26.2/build.gradle": {
+    "mtime": 1782202813.440067,
+    "ast_hash": "e25803f77b73df9de9990bdb1c3ab236",
+    "semantic_hash": ""
+  },
+  "26.2/common/build.gradle": {
+    "mtime": 1782202813.4948184,
+    "ast_hash": "3812dce3227c5ce7caf5ff910bef6718",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/Constants.java": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "f838497f807c9dcb880907ae2de67759",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/RpgAttributeSystemMod.java": {
+    "mtime": 1781002788.053884,
+    "ast_hash": "bd08c7a51279c86cd95dedb3ba07423f",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/api/CombatSnapshot.java": {
+    "mtime": 1784026255.238389,
+    "ast_hash": "f6fb600607c9110843931533626be5d3",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/api/RasApi.java": {
+    "mtime": 1784026434.4368658,
+    "ast_hash": "b65748fe975ab7f3d28071b121929ac4",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/api/RespecOptions.java": {
+    "mtime": 1781002328.5716088,
+    "ast_hash": "a1d87e79698650a838ab9c32f8b4bc06",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/api/RespecResult.java": {
+    "mtime": 1781002325.986534,
+    "ast_hash": "24055d1067c3a1beaafeea500db54952",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/api/TemplateResult.java": {
+    "mtime": 1781002326.6321921,
+    "ast_hash": "0e5bdb03222e325c0f05913a81f3a97c",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/client/LevelOverlayRenderer.java": {
+    "mtime": 1783682986.0343456,
+    "ast_hash": "cac1e8bd7790727ceaa71583b1fcd33f",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/client/gui/LegacyImageButton.java": {
+    "mtime": 1781002743.172879,
+    "ast_hash": "c964d55e71d72f2a17e43d6f37374cf5",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/client/gui/PlayerAttributesViewerGUIScreen.java": {
+    "mtime": 1783682499.687955,
+    "ast_hash": "af624057d9c798384b06065f067d3c20",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/client/gui/PlayerStatsGUIScreen.java": {
+    "mtime": 1783682862.086815,
+    "ast_hash": "d4c0d1a526a55f21bc4bced7fdce2857",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/client/gui/ScreenMousePosition.java": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "cfce4d7fc274708853279c9e265ce0cd",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/command/RpgAttributeSystemModCommands.java": {
+    "mtime": 1781002788.0558777,
+    "ast_hash": "157588bfd3a53daac136ba2f9b267df4",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/config/AttributeData.java": {
+    "mtime": 1781002788.0558777,
+    "ast_hash": "04bef8fb918a3d51f4fba9ef3bf6eedd",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/config/ConfigInitializer.java": {
+    "mtime": 1785835209.4347875,
+    "ast_hash": "d2327fd511f1b1640729e4c2731df027",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/config/ConfigValidator.java": {
+    "mtime": 1782126579.8329084,
+    "ast_hash": "29768b2291fccd264ea70cd9dd62cb1c",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/config/RespecConfig.java": {
+    "mtime": 1781002331.2309148,
+    "ast_hash": "70309cd5a923a83bf4b867a654535f50",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/config/StatsDisplayConfig.java": {
+    "mtime": 1781002403.659469,
+    "ast_hash": "4578e4ea765127293cabcd867c098d98",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/config/TemplateConfig.java": {
+    "mtime": 1781002365.3350983,
+    "ast_hash": "5d7aa315d7d6876567b9cfc92e0eb39c",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/init/MenuAccessor.java": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "4244e4af789006deef13e54217f1a453",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/init/RpgAttributeSystemModAttributes.java": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "7482dec3fd2f7a2224d41823c7d0f144",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/init/RpgAttributeSystemModItems.java": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "321381d6e61a339f25434a30284c1505",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/init/RpgAttributeSystemModKeyMappings.java": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "e92cc42bf80702170dceaac35e8500fb",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/init/RpgAttributeSystemModMenus.java": {
+    "mtime": 1779281638.4915154,
+    "ast_hash": "a89d1a5e44b92f33447be2dc6d92e048",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/init/ScreenAccessor.java": {
+    "mtime": 1779281638.4916809,
+    "ast_hash": "fbd612288e47a2d84375f5d4588c22a7",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/item/ScrollOfRebirthItem.java": {
+    "mtime": 1779281638.4919589,
+    "ast_hash": "750058d6dcd482eaa620e1e35257685c",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/item/TomeOfAscensionItem.java": {
+    "mtime": 1779281638.4919589,
+    "ast_hash": "a004165dc47149bc0da0c6020065b5a6",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/network/AttributeConfigSyncPacket.java": {
+    "mtime": 1781002788.0568767,
+    "ast_hash": "c98dd7784851454b9f9491e3bd2fbfac",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/network/GenericButtonActionPacket.java": {
+    "mtime": 1779281638.4919589,
+    "ast_hash": "3e63ba5660880e5454d0a5a0b9ca5b61",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/network/ItemsLockSyncPacket.java": {
+    "mtime": 1785340612.1520267,
+    "ast_hash": "100310a47e3123f2b806d0d8f8f08c0e",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/network/OpenStatsMenuPacket.java": {
+    "mtime": 1779281638.4927459,
+    "ast_hash": "30608eb98050e0bcb4d985c4f224404a",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/network/PlayerVariables.java": {
+    "mtime": 1781002788.0578835,
+    "ast_hash": "43573e7290749d3880e1aeb7a2774080",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/platform/DefaultPermissionService.java": {
+    "mtime": 1781002560.6712582,
+    "ast_hash": "17fd6623fe9f30405c795b2e2073dd10",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/platform/IConfigService.java": {
+    "mtime": 1785835176.9013298,
+    "ast_hash": "7cb0f812543bb3e85ca69208fd76544f",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/platform/IPermissionService.java": {
+    "mtime": 1781002333.5711956,
+    "ast_hash": "d7c5ce1e8f9ba9481f97c16c96aac881",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/platform/IPlatformHelper.java": {
+    "mtime": 1785340612.153026,
+    "ast_hash": "dbd058050b9a8e86559ace501d7ae818",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/platform/Services.java": {
+    "mtime": 1781002788.0578835,
+    "ast_hash": "605a49e68d61978690666b3710b5fd36",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/AddModiferCountProcedure.java": {
+    "mtime": 1779281638.4938495,
+    "ast_hash": "915925a92a0f07da8ae4d5f5be852da0",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/AddPointsAttributeGenericProcedure.java": {
+    "mtime": 1782126053.8617804,
+    "ast_hash": "6bf0d7807d66c00f4676c9fd0dba1412",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/AddPointsCmdProcedure.java": {
+    "mtime": 1779281638.4946225,
+    "ast_hash": "41719e50b51911a6613cf9c55b6a3d5c",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/CheckAttributesInitProcedure.java": {
+    "mtime": 1779283575.4105866,
+    "ast_hash": "1447e6cd514ee9d37e4a1ed3c351c4f3",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/CheckLevelupRewardsProcedure.java": {
+    "mtime": 1779281638.495203,
+    "ast_hash": "50e64a5c1fe793f61a77d7130b310396",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/CurrentXpToLevelProcedure.java": {
+    "mtime": 1779281638.495203,
+    "ast_hash": "755f1d0ec8419608d062df705ec4896b",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/DisplayLogicAttributeGenericProcedure.java": {
+    "mtime": 1779281638.495203,
+    "ast_hash": "b6390e81d3e5a34f41dfbda8772dc47d",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/DisplayLogicKeybindOverlayProcedure.java": {
+    "mtime": 1779281638.4962437,
+    "ast_hash": "58642ef2748da45480483ccf153c8bb7",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/DisplayLogicLockAttributeGenericProcedure.java": {
+    "mtime": 1781002788.0588868,
+    "ast_hash": "4d3df5caaff24d9b76860256d1e9f3bb",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/DisplayOverlayProcedure.java": {
+    "mtime": 1779281638.4962437,
+    "ast_hash": "ece29522ca836b678a16d98c378c466c",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/DisplayXpOverlayProcedure.java": {
+    "mtime": 1779281638.4962437,
+    "ast_hash": "53a581f28a283f01559afdb60c7c74df",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/GameplayRulesProcedure.java": {
+    "mtime": 1781002743.1778746,
+    "ast_hash": "3d6af6dd873d9615f59ed76aff74303e",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/GiveAttributesToPlayerProcedure.java": {
+    "mtime": 1779281638.4972427,
+    "ast_hash": "efce3fa0fec9a6c122b2e19c3eb00af9",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/GiveXpCmdProcedure.java": {
+    "mtime": 1781002743.1778746,
+    "ast_hash": "543a9b6ec840a6d7fb17463683fe57da",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/GiveXpToPlayerProcedure.java": {
+    "mtime": 1779281638.4972427,
+    "ast_hash": "07e9942e88d3454c7d86953d6c0c4020",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/LevelUpProcedureCmdProcedure.java": {
+    "mtime": 1779281638.4972427,
+    "ast_hash": "fd8b979f9d2841fa291be989a92390dd",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/LevelUpProcedureProcedure.java": {
+    "mtime": 1779281638.4972427,
+    "ast_hash": "4828ee4a0f6e3e9672969cb255237ff9",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/LevelUpUserCommandProcedureProcedure.java": {
+    "mtime": 1779281638.4982445,
+    "ast_hash": "7385ebc9f9d9819690320b6e7b287b6b",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/LevelingService.java": {
+    "mtime": 1781002788.0588868,
+    "ast_hash": "e7a89122961710df9b306588979610e5",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/LockAttributeProcedure.java": {
+    "mtime": 1779281638.4982445,
+    "ast_hash": "4d48b341a2493d3ae736262e01c90bec",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/LockAttributeTargetProcedure.java": {
+    "mtime": 1779281638.4982445,
+    "ast_hash": "36354b92ed27d57517f1120ad2d10624",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/OnOrbResetProcedure.java": {
+    "mtime": 1781002788.0598857,
+    "ast_hash": "306f600ebc602086e62b87203c6d221a",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/OnPlayerSpawnAttributeGenericProcedure.java": {
+    "mtime": 1782126024.2767072,
+    "ast_hash": "4abfb7ca4fab7ff86699e9d70446758d",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/OnPlayerSpawnProcedure.java": {
+    "mtime": 1782126045.382031,
+    "ast_hash": "d59c95a2df834e7eb586442cdb6584e9",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/OpenAttributesDisplayGUIProcedure.java": {
+    "mtime": 1779281638.499245,
+    "ast_hash": "6ffd4ff119e9e799a7236c9dbcc47c88",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/OpenStatsMenuProcedure.java": {
+    "mtime": 1779281638.499245,
+    "ast_hash": "4108d0bda687908bcd3d0d85270c91e0",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/OrbOfLevelingProcedureProcedure.java": {
+    "mtime": 1779281638.5002432,
+    "ast_hash": "49273410808330525b51e1382437a83e",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/PlayerStatsGUIThisGUIIsOpenedProcedure.java": {
+    "mtime": 1779281638.5002432,
+    "ast_hash": "9e226f60ef544bcd017a3cb74b76c5df",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/PressToGetKeyBindNameProcedure.java": {
+    "mtime": 1779281638.5002432,
+    "ast_hash": "7c58fbe1b1a108eafd8ce41ca3b88e0b",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ProcedureCommandHelper.java": {
+    "mtime": 1782126815.3250186,
+    "ast_hash": "ba9c46e8dadeb75c217f1808dbe676ba",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/RemoveModiferCountProcedure.java": {
+    "mtime": 1779281638.5002432,
+    "ast_hash": "1ea48fa79c00ef2840b830dd2bbfa791",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ResetGivenPlayerProcedure.java": {
+    "mtime": 1779281638.501248,
+    "ast_hash": "43d4226a7ce335d27f80cd8ce0efa61a",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ResetPlayerCmdProcedure.java": {
+    "mtime": 1779281638.501248,
+    "ast_hash": "9f65df7258d3f24522f6687d50880e9f",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/RespecCmdProcedure.java": {
+    "mtime": 1781003228.8703468,
+    "ast_hash": "f5da92c12c56c39bb1310b56cae0e9ca",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/RespecPlayerCmdProcedure.java": {
+    "mtime": 1781003229.696974,
+    "ast_hash": "ef493b4ce2b71df8ea1f5835a51f160c",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/RespecService.java": {
+    "mtime": 1781003228.4032378,
+    "ast_hash": "c72af75a97d0c5ea0e9aa57ce1a5ac6a",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ReturnAttributeNameGenericProcedure.java": {
+    "mtime": 1781002788.0598857,
+    "ast_hash": "48889684ce552512114a561052f58b39",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ReturnAttributeTipGenericProcedure.java": {
+    "mtime": 1781002788.0612195,
+    "ast_hash": "895643b683870a130a912398e35bc769",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ReturnCurrentAttributeGenericProcedure.java": {
+    "mtime": 1779281638.501248,
+    "ast_hash": "4269ab5f3b3f7a506534b7f385756715",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ReturnCurrentLevelProcedure.java": {
+    "mtime": 1779281638.5022447,
+    "ast_hash": "5ce59572d8248c20a400b5a67b63be3f",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ReturnCurrentModifierProcedure.java": {
+    "mtime": 1779281638.5022447,
+    "ast_hash": "8a1fa130545e52d1dad8fe61e57069f2",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ReturnDisplaySectionGenericProcedure.java": {
+    "mtime": 1779281638.5022447,
+    "ast_hash": "4ee8b1e382b44ee7fefcfd6a6b84c725",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ReturnExtraPointsProcedure.java": {
+    "mtime": 1779281638.5022447,
+    "ast_hash": "216f75076f6a59530316d70268e636a2",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ReturnExtraPointsUIProcedure.java": {
+    "mtime": 1779281638.5022447,
+    "ast_hash": "8af6756f46417bcf1f35861b2f3f9f2d",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ReturnGlobalSectionsDisplayProcedure.java": {
+    "mtime": 1779281638.503245,
+    "ast_hash": "2606d8a6b46bcba742b79acb2afd27c4",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ReturnNextAttributeGenericProcedure.java": {
+    "mtime": 1779281638.503245,
+    "ast_hash": "16e35081bd1c0f1ed0f276a09663878e",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ReturnPercentageProcedure.java": {
+    "mtime": 1779281638.503245,
+    "ast_hash": "4ec65184a79fe703b51b7f8e00612032",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/ReturnSectionDisplayGenericProcedure.java": {
+    "mtime": 1783682448.6991217,
+    "ast_hash": "14839ace950878bf39a34e41fde9b141",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/SetXpCmdProcedure.java": {
+    "mtime": 1779281638.503245,
+    "ast_hash": "211e0aeef260638bf7bac1892aa2238a",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/SetXpToPlayerProcedure.java": {
+    "mtime": 1779281638.503245,
+    "ast_hash": "fc0f7ffeb50791c26ea7efd91fe25221",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/TemplateApplyCmdProcedure.java": {
+    "mtime": 1781003235.5111277,
+    "ast_hash": "6084a092253abf69df4e8d9fd0abbd12",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/TemplateListCmdProcedure.java": {
+    "mtime": 1781003236.7084513,
+    "ast_hash": "08be8704c5af12bea57de439e79a52f4",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/TemplateService.java": {
+    "mtime": 1781002360.5869772,
+    "ast_hash": "2516883dd27f98d82b0daa43692104c7",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/UnlockAttributeProcedure.java": {
+    "mtime": 1779281638.504245,
+    "ast_hash": "d9d6bf222173a49b0dfba5592cd8bc1b",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/UnlockAttributeTargetProcedure.java": {
+    "mtime": 1779281638.504245,
+    "ast_hash": "565df53727d752974dfdc57bc1966827",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/procedures/YouHavePointsProcedure.java": {
+    "mtime": 1779281638.504245,
+    "ast_hash": "933ba98420cee3bedb0b187bff4f4249",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/util/AttributeManager.java": {
+    "mtime": 1785835213.4684374,
+    "ast_hash": "2799d7b88318d4b5f6e7108d5c9eed23",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/util/AttributeScaling.java": {
+    "mtime": 1782125945.7171385,
+    "ast_hash": "9ec4bc5711765cd2d17286620b647b7d",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/util/ItemLockTooltipHelper.java": {
+    "mtime": 1785833873.6882198,
+    "ast_hash": "2f767792783d7ef179bfaca8021ff67e",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/util/ItemsLockClientCache.java": {
+    "mtime": 1785833873.6882198,
+    "ast_hash": "ece9ef0f962fe173275446d2e6d88376",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/util/RasPermissions.java": {
+    "mtime": 1781002333.4703188,
+    "ast_hash": "677f5d560e8886060069a3113039329c",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/world/inventory/PlayerAttributesViewerGUIMenu.java": {
+    "mtime": 1779281638.5052433,
+    "ast_hash": "b6129e969c9c7f44c809583d9be49628",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/java/java/tn/nightbeam/ras/world/inventory/PlayerStatsGUIMenu.java": {
+    "mtime": 1779281638.5052433,
+    "ast_hash": "c7654e20f4e913621ee10940d3e999c0",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/items/scroll_of_rebirth.json": {
+    "mtime": 1779281638.556794,
+    "ast_hash": "3381674bfe37fa9f99efe89b8ef7eb4e",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/items/tome_of_ascension.json": {
+    "mtime": 1779281638.556794,
+    "ast_hash": "22a61b07bb300ba77a3b0aa4cd3dce12",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/lang/en_us.json": {
+    "mtime": 1779281638.556794,
+    "ast_hash": "099d73f0922fd50da99b16c8710c854b",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/models/item/scroll_of_rebirth.json": {
+    "mtime": 1779281638.556794,
+    "ast_hash": "e5400163a00ed17a8846eb36fa326f54",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/models/item/tome_of_ascension.json": {
+    "mtime": 1779281638.557776,
+    "ast_hash": "d28104d993a3844c7f0e82c206c03545",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/data/rpg_attribute_system/recipes/tome_of_rebirth_recipe.json": {
+    "mtime": 1779281638.5737574,
+    "ast_hash": "3d2f604829e861b6aa1d9e7c13a8d62b",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/build.gradle": {
+    "mtime": 1782202813.5843346,
+    "ast_hash": "aa962019e729cdb2b88927dbed6f9683",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/java/java/tn/nightbeam/ras/RpgAttributeSystemModFabric.java": {
+    "mtime": 1785833873.6882198,
+    "ast_hash": "4b0b7acfd3f4585aef1b01154a5f6a8c",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/java/java/tn/nightbeam/ras/RpgAttributeSystemModFabricClient.java": {
+    "mtime": 1785340612.1550262,
+    "ast_hash": "f777353f0ed69eddc058d8ce20891c23",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/java/java/tn/nightbeam/ras/events/FabricClientRpgAttributeSystemModEvents.java": {
+    "mtime": 1785340612.1550262,
+    "ast_hash": "6418e42e41b118455cde244f07b9c81c",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/java/java/tn/nightbeam/ras/events/FabricRpgAttributeSystemModEvents.java": {
+    "mtime": 1785833873.6944988,
+    "ast_hash": "426946a5096db15bc7663da13e9d7712",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/java/java/tn/nightbeam/ras/init/RpgAttributeSystemModMenusFabric.java": {
+    "mtime": 1779281638.5757897,
+    "ast_hash": "4678e9e1e31f20f36cd351b1aebb93e5",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/java/java/tn/nightbeam/ras/network/FabricButtonActionPayload.java": {
+    "mtime": 1779281638.5757897,
+    "ast_hash": "446e84603c70883e6ed6f99692789c38",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/java/java/tn/nightbeam/ras/network/FabricMenuStateUpdatePayload.java": {
+    "mtime": 1779281638.5767896,
+    "ast_hash": "2788da5614c3efc94856c3fc7dcccfc5",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/java/java/tn/nightbeam/ras/network/FabricOpenStatsMenuPayload.java": {
+    "mtime": 1779281638.5767896,
+    "ast_hash": "96e074f9c588407b73ae1efd105d5c6d",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/java/java/tn/nightbeam/ras/network/FabricSyncConfigPayload.java": {
+    "mtime": 1781002788.0612195,
+    "ast_hash": "6fd5f1843e62beb333eb85e971d98390",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/java/java/tn/nightbeam/ras/network/FabricSyncItemsLockPayload.java": {
+    "mtime": 1785833873.6882198,
+    "ast_hash": "e69157f60f3d412ba1bc725e4a78071b",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/java/java/tn/nightbeam/ras/network/FabricSyncVarsPayload.java": {
+    "mtime": 1779281638.5767896,
+    "ast_hash": "b5ab114e8db3cf15df84946eccddef2d",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/java/java/tn/nightbeam/ras/platform/FabricConfigService.java": {
+    "mtime": 1785835245.367019,
+    "ast_hash": "56ff2b75684f47e2bda2dcf8d16356e9",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/java/java/tn/nightbeam/ras/platform/FabricPlatformHelper.java": {
+    "mtime": 1785340612.156463,
+    "ast_hash": "ccbaf4769e954b49c066e3c24d293f3c",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/java/java/tn/nightbeam/ras/platform/impl/IEntityData.java": {
+    "mtime": 1779281638.5777893,
+    "ast_hash": "8ebc3c04b47a1361d8f9de4e03f1890b",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/resources/fabric.mod.json": {
+    "mtime": 1779281638.5784483,
+    "ast_hash": "cac21e94c99500e1d8b741f97f560c50",
+    "semantic_hash": ""
+  },
+  "26.2/fabric/src/main/resources/rpg_attribute_system.mixins.json": {
+    "mtime": 1779281638.5794554,
+    "ast_hash": "272d60163b48ef1f75407d17fba31fe1",
+    "semantic_hash": ""
+  },
+  "26.2/gradlew": {
+    "mtime": 1782202813.4470665,
+    "ast_hash": "45bf2667b1fbec0e07e42808dc662b6b",
+    "semantic_hash": ""
+  },
+  "26.2/neoforge/build.gradle": {
+    "mtime": 1782202813.678842,
+    "ast_hash": "daaa4cb6b82f72e3e878bdacabc138f2",
+    "semantic_hash": ""
+  },
+  "26.2/neoforge/src/main/java/java/tn/nightbeam/ras/RpgAttributeSystemModNeoForge.java": {
+    "mtime": 1779281638.5811121,
+    "ast_hash": "3f37447965a17a5126e1a1b233e4dad3",
+    "semantic_hash": ""
+  },
+  "26.2/neoforge/src/main/java/java/tn/nightbeam/ras/neoforge/NeoForgeClientEvents.java": {
+    "mtime": 1785340612.1585991,
+    "ast_hash": "868727c226c21d64247e58e162d69cd5",
+    "semantic_hash": ""
+  },
+  "26.2/neoforge/src/main/java/java/tn/nightbeam/ras/neoforge/NeoForgeDataAttachments.java": {
+    "mtime": 1779281638.5821114,
+    "ast_hash": "3031c3af15c7b1f62dfbf820098a1143",
+    "semantic_hash": ""
+  },
+  "26.2/neoforge/src/main/java/java/tn/nightbeam/ras/neoforge/NeoForgeEvents.java": {
+    "mtime": 1785833873.6944988,
+    "ast_hash": "73e7e599dd32bad19d3a81e0effd82cb",
+    "semantic_hash": ""
+  },
+  "26.2/neoforge/src/main/java/java/tn/nightbeam/ras/neoforge/NeoForgeNetworking.java": {
+    "mtime": 1785340612.1585991,
+    "ast_hash": "89a8f320f2f262b8d7e4e4bbdb0e2351",
+    "semantic_hash": ""
+  },
+  "26.2/neoforge/src/main/java/java/tn/nightbeam/ras/neoforge/RpgAttributeSystemModMenusNeoForge.java": {
+    "mtime": 1779281638.5831144,
+    "ast_hash": "1e42335500e80a40bf9afa36928f38cc",
+    "semantic_hash": ""
+  },
+  "26.2/neoforge/src/main/java/java/tn/nightbeam/ras/neoforge/RpgAttributeSystemNeoForge.java": {
+    "mtime": 1779281638.5831144,
+    "ast_hash": "7abf3f392c554fe96f03ad27d652296d",
+    "semantic_hash": ""
+  },
+  "26.2/neoforge/src/main/java/java/tn/nightbeam/ras/neoforge/procedures/DisableBlockBreakProcedure.java": {
+    "mtime": 1779281638.5831144,
+    "ast_hash": "3a3d4a4fe5086ffc53ae1a724aebaf33",
+    "semantic_hash": ""
+  },
+  "26.2/neoforge/src/main/java/java/tn/nightbeam/ras/neoforge/procedures/GiveXpVanillaProcedure.java": {
+    "mtime": 1779281638.5831144,
+    "ast_hash": "aa4f1582c54942a871ce14bddd38a9aa",
+    "semantic_hash": ""
+  },
+  "26.2/neoforge/src/main/java/java/tn/nightbeam/ras/platform/NeoForgeConfigService.java": {
+    "mtime": 1785835247.3534093,
+    "ast_hash": "25503bc0ddcbed4acb93bc37229a2d16",
+    "semantic_hash": ""
+  },
+  "26.2/neoforge/src/main/java/java/tn/nightbeam/ras/platform/NeoForgePlatformHelper.java": {
+    "mtime": 1785340612.1596682,
+    "ast_hash": "706f5ba07816e74e2db1f82d67f435e9",
+    "semantic_hash": ""
+  },
+  "26.2/neoforge/src/main/resources/rpg_attribute_system.mixins.json": {
+    "mtime": 1779281638.5851161,
+    "ast_hash": "c8a752ba8009c35be05c5d4f9d7e6d0f",
+    "semantic_hash": ""
+  },
+  "26.2/neoforge/src/main/resources/rpg_attribute_system.neoforge.mixins.json": {
+    "mtime": 1779281638.5851161,
+    "ast_hash": "76001d7d9f6e5555e0800d9c9512abc1",
+    "semantic_hash": ""
+  },
+  "26.2/settings.gradle": {
+    "mtime": 1782203371.625337,
+    "ast_hash": "3d48a09750a95b7851be88405f37b6c3",
+    "semantic_hash": ""
+  },
+  "build.gradle": {
+    "mtime": 1783677816.0239172,
+    "ast_hash": "a6e805ecb62ef0e47f20640194a269e2",
+    "semantic_hash": ""
+  },
+  "gradlew": {
+    "mtime": 1779281638.5871146,
+    "ast_hash": "acf9007174811a6ebb9c43febccbcf37",
+    "semantic_hash": ""
+  },
+  "settings.gradle": {
+    "mtime": 1779281638.5891159,
+    "ast_hash": "403af0ecac1a3fe842574eb9c0eb2a34",
+    "semantic_hash": ""
+  },
+  ".github/instructions/mod-java.instructions.md": {
+    "mtime": 1779281638.3920703,
+    "ast_hash": "434feebad394f02b637bbc3dd7996d3b",
+    "semantic_hash": ""
+  },
+  ".github/instructions/mod-project.instructions.md": {
+    "mtime": 1783677835.0627775,
+    "ast_hash": "04e7950cb20a4fcee4e959f4cb986167",
+    "semantic_hash": ""
+  },
+  ".github/workflows/publish.yml": {
+    "mtime": 1785341134.6163347,
+    "ast_hash": "a13aaf0c733018286490a361028be270",
+    "semantic_hash": ""
+  },
+  "1.20.1/README.md": {
+    "mtime": 1783684347.4410083,
+    "ast_hash": "730892299f1c19fa48ce2567f9a34298",
+    "semantic_hash": ""
+  },
+  "1.20.1/build_log.txt": {
+    "mtime": 1779281638.396072,
+    "ast_hash": "19c84b67f807ae1da737c456624b06be",
+    "semantic_hash": ""
+  },
+  "1.21.1/README.md": {
+    "mtime": 1783684347.4410083,
+    "ast_hash": "fea3aea47a585942a8bd8832c41ba340",
+    "semantic_hash": ""
+  },
+  "1.21.1/build_log.txt": {
+    "mtime": 1779281638.4299998,
+    "ast_hash": "19c84b67f807ae1da737c456624b06be",
+    "semantic_hash": ""
+  },
+  "1.21.1/log.txt": {
+    "mtime": 1779281638.4783049,
+    "ast_hash": "9581e0f8a36bd52dfbe3f2034cb417f7",
+    "semantic_hash": ""
+  },
+  "26.2/README.md": {
+    "mtime": 1783684347.4420125,
+    "ast_hash": "a291978c228c9c18fa31a1eac80ff3f9",
+    "semantic_hash": ""
+  },
+  "PATCH_NOTES.md": {
+    "mtime": 1785835262.6694965,
+    "ast_hash": "9bbcae9465ab9e31e60620e3eeaad14e",
+    "semantic_hash": ""
+  },
+  "RPG-Attribute-System-4.1.1-PatchNotes.md": {
+    "mtime": 1785340612.1596682,
+    "ast_hash": "5e247b09adc39bac6bb510b8f82c8e7a",
+    "semantic_hash": ""
+  },
+  "RPG-Attribute-System-4.1.2-PatchNotes.md": {
+    "mtime": 1785835270.7710137,
+    "ast_hash": "e1e2583e37bda8aad17a15328e9542a4",
+    "semantic_hash": ""
+  },
+  "docs/DOCUMENTATION_REVIEW.md": {
+    "mtime": 1785139227.0516987,
+    "ast_hash": "a288b2a72ddb6705d2132d479f4e6162",
+    "semantic_hash": ""
+  },
+  "docs/README.md": {
+    "mtime": 1785139227.0625694,
+    "ast_hash": "96c14d65cdd44c9ccfa4cdfa8edd221a",
+    "semantic_hash": ""
+  },
+  "docs/api/examples.md": {
+    "mtime": 1784622986.992272,
+    "ast_hash": "83f5f0b05f1818fad6ebbcb93a94867c",
+    "semantic_hash": ""
+  },
+  "docs/api/methods.md": {
+    "mtime": 1784622986.992272,
+    "ast_hash": "cf23008ff27a34d45178adac063230cf",
+    "semantic_hash": ""
+  },
+  "docs/api/overview.md": {
+    "mtime": 1784622986.992272,
+    "ast_hash": "a2f23253e6bdb04d84b392f35d764b25",
+    "semantic_hash": ""
+  },
+  "docs/api/setup.md": {
+    "mtime": 1784622986.992272,
+    "ast_hash": "b18cd4b9f4d653ffa9514f2c9c229ae7",
+    "semantic_hash": ""
+  },
+  "docs/changelog.md": {
+    "mtime": 1785835274.460961,
+    "ast_hash": "1b7e2bdb59f61f58f1e0970ca43bda0d",
+    "semantic_hash": ""
+  },
+  "docs/commands/command-reference.md": {
+    "mtime": 1784622900.829775,
+    "ast_hash": "4c9537be1881b59d1253596bf8590d19",
+    "semantic_hash": ""
+  },
+  "docs/commands/overview.md": {
+    "mtime": 1784622900.829775,
+    "ast_hash": "6e99f57d368c46fa57ec94b9333e4412",
+    "semantic_hash": ""
+  },
+  "docs/compatibility.md": {
+    "mtime": 1784622697.9897692,
+    "ast_hash": "0ec547aad9b119fd764a5a89f16c12c9",
+    "semantic_hash": ""
+  },
+  "docs/configuration/additional-config-files.md": {
+    "mtime": 1785340612.1610363,
+    "ast_hash": "704f9e610b4e4b8ea181b19bf5bdfc23",
+    "semantic_hash": ""
+  },
+  "docs/configuration/advanced.md": {
+    "mtime": 1785139227.073675,
+    "ast_hash": "c111a04911151b968aac93e1c0dd51c0",
+    "semantic_hash": ""
+  },
+  "docs/configuration/client.md": {
+    "mtime": 1785139227.0836775,
+    "ast_hash": "2044ce99ec2a8f1cdbc12ae066532e99",
+    "semantic_hash": ""
+  },
+  "docs/configuration/gameplay.md": {
+    "mtime": 1785340612.162127,
+    "ast_hash": "6b5101f5afbb0b077ffa87aca49c44c8",
+    "semantic_hash": ""
+  },
+  "docs/configuration/main-config.md": {
+    "mtime": 1784622761.8472304,
+    "ast_hash": "0ffc16562e0449b3622a1ea2a8b44f81",
+    "semantic_hash": ""
+  },
+  "docs/configuration/overview.md": {
+    "mtime": 1785340612.162127,
+    "ast_hash": "6a3c6ca7041eae55c8928e526384c7c1",
+    "semantic_hash": ""
+  },
+  "docs/configuration/performance.md": {
+    "mtime": 1785139227.1141064,
+    "ast_hash": "5f103f5323c4522a199d43fbdfdefd6d",
+    "semantic_hash": ""
+  },
+  "docs/configuration/visuals.md": {
+    "mtime": 1785340612.162127,
+    "ast_hash": "ebf1a43360c53a9504f65d517571619d",
+    "semantic_hash": ""
+  },
+  "docs/documentation-coverage.md": {
+    "mtime": 1784623198.4748187,
+    "ast_hash": "f1d33cf0a3769a80eda622edb0d8fb1a",
+    "semantic_hash": ""
+  },
+  "docs/examples.md": {
+    "mtime": 1785139227.135963,
+    "ast_hash": "d58a47944b284f0a812c651479ce8a10",
+    "semantic_hash": ""
+  },
+  "docs/faq.md": {
+    "mtime": 1785340612.1635344,
+    "ast_hash": "a97c645415648e8fff9a792da82eea0c",
+    "semantic_hash": ""
+  },
+  "docs/features.md": {
+    "mtime": 1784622697.990782,
+    "ast_hash": "ac0e79af25e68036b003cc241bbda256",
+    "semantic_hash": ""
+  },
+  "docs/getting-started.md": {
+    "mtime": 1784622697.9897692,
+    "ast_hash": "7ead77eacb733a97c09683c8a716d719",
+    "semantic_hash": ""
+  },
+  "docs/glossary.md": {
+    "mtime": 1785139227.1455095,
+    "ast_hash": "4799d7b69361deae575b2b1200856e0a",
+    "semantic_hash": ""
+  },
+  "docs/guides/common-use-cases.md": {
+    "mtime": 1784623066.5035584,
+    "ast_hash": "4155e0e54ac826e178e4b7b37351bbb9",
+    "semantic_hash": ""
+  },
+  "docs/guides/customization.md": {
+    "mtime": 1784623066.5035584,
+    "ast_hash": "4428b470a716cb19fcf1d2892e47132e",
+    "semantic_hash": ""
+  },
+  "docs/guides/developer-integration.md": {
+    "mtime": 1784623066.506557,
+    "ast_hash": "a1cd54cdbf2871c09a12c756a10ca09d",
+    "semantic_hash": ""
+  },
+  "docs/installation.md": {
+    "mtime": 1784623146.674894,
+    "ast_hash": "33a2afcde8877795eebbd666883eaeaa",
+    "semantic_hash": ""
+  },
+  "docs/migration.md": {
+    "mtime": 1784623146.674894,
+    "ast_hash": "3ed8a149a11d23bf0b16b5ccf7f194bd",
+    "semantic_hash": ""
+  },
+  "docs/performance.md": {
+    "mtime": 1785139227.1574662,
+    "ast_hash": "40613f8d3f5e7f771ae546dfa9014fbe",
+    "semantic_hash": ""
+  },
+  "docs/permissions/permissions-reference.md": {
+    "mtime": 1784622900.829775,
+    "ast_hash": "54f69ab69796a53d282e2ea1480cc995",
+    "semantic_hash": ""
+  },
+  "docs/support.md": {
+    "mtime": 1785139227.1669848,
+    "ast_hash": "b9c27be2175646199a500b2ba0797985",
+    "semantic_hash": ""
+  },
+  "docs/troubleshooting.md": {
+    "mtime": 1785340612.1635344,
+    "ast_hash": "9efdae6b1249b3769fe8edd8d5825e69",
+    "semantic_hash": ""
+  },
+  "docs/updating.md": {
+    "mtime": 1785139227.1759863,
+    "ast_hash": "cd665991bfc7f2da3346513c8912a770",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/item/scroll_of_rebirth.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "aab98aca3ef1a4b83c64e4253dfafc64",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/item/tome_of_ascension.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "18c2ae2a0b479dc9206cac8540e9ae95",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/logo.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "36b3362be8eeab15c377ac8465998903",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_for_combat.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "0e0d821f42c3e87eac87c9ea0980a860",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_for_stats.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "5750acf590cf46fc9dc06c7d76d61df2",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_left.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "d566385c694586fd32ef45462ea4e047",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked1.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked2.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked3.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked4.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked5.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked6.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked7.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked8.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked9.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_right.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "64fdaa38293c0be8b8337d11e56c4073",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed1.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed2.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed3.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed4.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed5.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed6.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_1.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "773d01a8502d2ffa932b44db32af3e25",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_10.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "e01fb95706d762a9bf31a4c5afaf006f",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_2.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "96eb87a871addacda8e0915312e540fd",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_3.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "6457e36a9bcd12c6e6e84ea1415a5860",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_4.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "d60e0b41f5527f6a033d56907b143927",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_5.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "0115722d12bc92dc829549fa7339ef43",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_6.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "a4194e41af9cf895bd4f77dd00dde5fd",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_7.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "14236ab67ef1c58c8a8d444a9568f48e",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_8.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "e01fb95706d762a9bf31a4c5afaf006f",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_9.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "e01fb95706d762a9bf31a4c5afaf006f",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bg.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "8b693d954bcca4da90fc1829194f3ea5",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bg2.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "1c72f4bf8f658f4b2a4481d455ab0ed8",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bg_attributes.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "19de363278a1227653111c2cf764f30e",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bg_attributes_locked.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "fa8d000fe9ce2e38f44e4006bbd0c60a",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bookoverlay.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "fe0d9d5aec0af0dd2a771e9990a94c3f",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_clicked.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "cdc9bd74279671e65efcde2d544cc8d5",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_for_combat.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "632bb3b0ef4c090b966e3f9a8344e68b",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_for_combat_clicked.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "cd1afaf83bcaf80a112893dfd3c50899",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_for_stats.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "b9cc95f33b1593f1df17f194e3744043",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_for_stats_pressed.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "1def592482f958e48b7f36d9ff9c50c7",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_left.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "6c76839debe709607492e87b395ac584",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_notclicked.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "c2bef354e689042eee38d32e2f22aab4",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_right.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "4a17ff973defd3767ac3f7d05b9c2c08",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/iconbg.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "837c4b879153ec1aaaeedbd7be3a03d5",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/levelup.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "6d2ea7d11e617a060f8f6bce11131b74",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_1_icon.png": {
+    "mtime": 1783673359.5139277,
+    "ast_hash": "246b4307c65f586e4899f4531387c3ee",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_2_icon.png": {
+    "mtime": 1783673593.8795986,
+    "ast_hash": "4fcf0ada6ac88d62b0dc93dce2ac5047",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_3_icon.png": {
+    "mtime": 1783673609.3241975,
+    "ast_hash": "9f12f0b441e179607cc050cf7a33a1be",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_4_icon.png": {
+    "mtime": 1783673654.349265,
+    "ast_hash": "27db460abffb78a59c14aaa577c85af8",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_5_icon.png": {
+    "mtime": 1783673644.432938,
+    "ast_hash": "42a85776c06ed9dbe54fa34bcb9e9298",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_6_icon.png": {
+    "mtime": 1783673668.2481825,
+    "ast_hash": "88cc3d00006a171f6ac32e8339d7c896",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_7_icon.png": {
+    "mtime": 1783673685.9400885,
+    "ast_hash": "e25ab8b282e4404abe6566733bd00fc5",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_8_icon.png": {
+    "mtime": 1783673701.7751906,
+    "ast_hash": "29482f9702aeed0dda11681e9fd996c7",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attributes_tab.png": {
+    "mtime": 1783681407.2044067,
+    "ast_hash": "3c055d54c71cc31646710b3bd5bea6cc",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/background.png": {
+    "mtime": 1783673739.9980023,
+    "ast_hash": "4bac58c304fcd9c8c0afd7249a55cc48",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/button.png": {
+    "mtime": 1783673436.9396403,
+    "ast_hash": "27896f789505a7b744e296c7438dbf46",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/button_pressed.png": {
+    "mtime": 1783673451.273309,
+    "ast_hash": "5021b6d24c5c1dfb6cbc1f81557ec8ca",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/class_tab.png": {
+    "mtime": 1783681384.2430797,
+    "ast_hash": "e50dd2f8fe9d7cd3b8e42f39edc0db06",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/icons_background.png": {
+    "mtime": 1783673391.7909772,
+    "ast_hash": "cfd41be6192fe951f7dd04b01eca1feb",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/slider_2_empty.png": {
+    "mtime": 1783673840.062607,
+    "ast_hash": "1d7c069e85c96f61e4df3b6c0b71ae5f",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/slider_2_full.png": {
+    "mtime": 1783673879.8034062,
+    "ast_hash": "6b4aa1eac05497aaff88dbab93613589",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/slider_empty.png": {
+    "mtime": 1783673476.4978073,
+    "ast_hash": "646914abb0aa1ccffaeb91e1cbf901d5",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/slider_full.png": {
+    "mtime": 1783673557.6480842,
+    "ast_hash": "41563dd9fee457bda2388afbfd058af7",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/tabs.png": {
+    "mtime": 1783679301.9372692,
+    "ast_hash": "e0acc4bb625a7fdca2f5790f5c10a370",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_0.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "3d9ebb81c2c157088f2adc7f05e69c21",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_10.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "8776f81cfa4c874c581656f2b6a47fae",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_15.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "30ec6328efcb3310491c866a24fb682f",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_20.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "bf597411e4a5459d91fdd375c9172209",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_25.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "1a53f2e278cefe70b141e9812310dcb8",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_30.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "4988123d3e8e9e714e80b68a8f4714f5",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_35.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "767b422aa3dbef82bb53fb5be1d8062c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_40.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "2d05c1c58a5576e74a2bfa98ca1e3b38",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_45.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "7e3f96f6819eeaa6a859fede08000847",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_5.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "823e02ca9fc4206015e4f65e1be58fbb",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_50.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "dd6f38820dcc146effef48fde5e8f557",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_55.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "193429d84647453f882537645952da1a",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_60.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "fa12a5729a4c7c55ae4f5e0f5d9e008c",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_65.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "4327d3dba29626566bcfbe8efc702eaf",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_70.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "01028b5c2ba565827ba550058d1e40ae",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_75.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "4e5afe0cbddbf8d7d4737f70180150e2",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_80.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "ee155a47b6d9d14a6bca99336d0af5f2",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_85.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "fff094f6ee353551f30f95337720e614",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_90.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "68d689f7b2f90f87e41d67b176060eea",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_95.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "e6eacbb65f3c067a34bbe622929c03ad",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_99.png": {
+    "mtime": 1779281638.4118192,
+    "ast_hash": "7450afbf0a5ce956e3eb7a0efb5e71b8",
+    "semantic_hash": ""
+  },
+  "1.20.1/common/src/main/resources/rpg_attribute_system.png": {
+    "mtime": 1779281638.4268274,
+    "ast_hash": "36b3362be8eeab15c377ac8465998903",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/gui/sprites/screens/atlas/imagebutton_button_for_stats.png": {
+    "mtime": 1779281638.4609048,
+    "ast_hash": "5750acf590cf46fc9dc06c7d76d61df2",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/gui/sprites/screens/atlas/imagebutton_button_left.png": {
+    "mtime": 1779281638.4609048,
+    "ast_hash": "d566385c694586fd32ef45462ea4e047",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/gui/sprites/screens/atlas/imagebutton_button_notclicked.png": {
+    "mtime": 1779281638.4614127,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/gui/sprites/screens/atlas/imagebutton_button_right.png": {
+    "mtime": 1779281638.4614127,
+    "ast_hash": "64fdaa38293c0be8b8337d11e56c4073",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/item/scroll_of_rebirth.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "aab98aca3ef1a4b83c64e4253dfafc64",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/item/tome_of_ascension.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "18c2ae2a0b479dc9206cac8540e9ae95",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/logo.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "36b3362be8eeab15c377ac8465998903",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_for_combat.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "0e0d821f42c3e87eac87c9ea0980a860",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_for_stats.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "5750acf590cf46fc9dc06c7d76d61df2",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_left.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "d566385c694586fd32ef45462ea4e047",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked1.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked2.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked3.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked4.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked5.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked6.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked7.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked8.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked9.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_right.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "64fdaa38293c0be8b8337d11e56c4073",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed1.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed2.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed3.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed4.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed5.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed6.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_1.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "773d01a8502d2ffa932b44db32af3e25",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_10.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "e01fb95706d762a9bf31a4c5afaf006f",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_2.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "96eb87a871addacda8e0915312e540fd",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_3.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "6457e36a9bcd12c6e6e84ea1415a5860",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_4.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "d60e0b41f5527f6a033d56907b143927",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_5.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "0115722d12bc92dc829549fa7339ef43",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_6.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "a4194e41af9cf895bd4f77dd00dde5fd",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_7.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "14236ab67ef1c58c8a8d444a9568f48e",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_8.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "e01fb95706d762a9bf31a4c5afaf006f",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_9.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "e01fb95706d762a9bf31a4c5afaf006f",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bg.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "8b693d954bcca4da90fc1829194f3ea5",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bg2.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "1c72f4bf8f658f4b2a4481d455ab0ed8",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bg_attributes.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "19de363278a1227653111c2cf764f30e",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bg_attributes_locked.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "fa8d000fe9ce2e38f44e4006bbd0c60a",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bookoverlay.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "fe0d9d5aec0af0dd2a771e9990a94c3f",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_clicked.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "cdc9bd74279671e65efcde2d544cc8d5",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_for_combat.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "632bb3b0ef4c090b966e3f9a8344e68b",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_for_combat_clicked.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "cd1afaf83bcaf80a112893dfd3c50899",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_for_stats.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "b9cc95f33b1593f1df17f194e3744043",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_for_stats_pressed.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "1def592482f958e48b7f36d9ff9c50c7",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_left.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "6c76839debe709607492e87b395ac584",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_notclicked.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "c2bef354e689042eee38d32e2f22aab4",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_right.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "4a17ff973defd3767ac3f7d05b9c2c08",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/iconbg.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "837c4b879153ec1aaaeedbd7be3a03d5",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/levelup.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "6d2ea7d11e617a060f8f6bce11131b74",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_1_icon.png": {
+    "mtime": 1783673359.5139277,
+    "ast_hash": "246b4307c65f586e4899f4531387c3ee",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_2_icon.png": {
+    "mtime": 1783673593.8795986,
+    "ast_hash": "4fcf0ada6ac88d62b0dc93dce2ac5047",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_3_icon.png": {
+    "mtime": 1783673609.3241975,
+    "ast_hash": "9f12f0b441e179607cc050cf7a33a1be",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_4_icon.png": {
+    "mtime": 1783673654.349265,
+    "ast_hash": "27db460abffb78a59c14aaa577c85af8",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_5_icon.png": {
+    "mtime": 1783673644.432938,
+    "ast_hash": "42a85776c06ed9dbe54fa34bcb9e9298",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_6_icon.png": {
+    "mtime": 1783673668.2481825,
+    "ast_hash": "88cc3d00006a171f6ac32e8339d7c896",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_7_icon.png": {
+    "mtime": 1783673685.9400885,
+    "ast_hash": "e25ab8b282e4404abe6566733bd00fc5",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_8_icon.png": {
+    "mtime": 1783673701.7751906,
+    "ast_hash": "29482f9702aeed0dda11681e9fd996c7",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attributes_tab.png": {
+    "mtime": 1783681407.2044067,
+    "ast_hash": "3c055d54c71cc31646710b3bd5bea6cc",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/background.png": {
+    "mtime": 1783673739.9980023,
+    "ast_hash": "4bac58c304fcd9c8c0afd7249a55cc48",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/button.png": {
+    "mtime": 1783673436.9396403,
+    "ast_hash": "27896f789505a7b744e296c7438dbf46",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/button_pressed.png": {
+    "mtime": 1783673451.273309,
+    "ast_hash": "5021b6d24c5c1dfb6cbc1f81557ec8ca",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/class_tab.png": {
+    "mtime": 1783681384.2430797,
+    "ast_hash": "e50dd2f8fe9d7cd3b8e42f39edc0db06",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/icons_background.png": {
+    "mtime": 1783673391.7909772,
+    "ast_hash": "cfd41be6192fe951f7dd04b01eca1feb",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/slider_2_empty.png": {
+    "mtime": 1783673840.062607,
+    "ast_hash": "1d7c069e85c96f61e4df3b6c0b71ae5f",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/slider_2_full.png": {
+    "mtime": 1783673879.8034062,
+    "ast_hash": "6b4aa1eac05497aaff88dbab93613589",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/slider_empty.png": {
+    "mtime": 1783673476.4978073,
+    "ast_hash": "646914abb0aa1ccffaeb91e1cbf901d5",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/slider_full.png": {
+    "mtime": 1783673557.6480842,
+    "ast_hash": "41563dd9fee457bda2388afbfd058af7",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/tabs.png": {
+    "mtime": 1783679301.9372692,
+    "ast_hash": "e0acc4bb625a7fdca2f5790f5c10a370",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_0.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "3d9ebb81c2c157088f2adc7f05e69c21",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_10.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "8776f81cfa4c874c581656f2b6a47fae",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_15.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "30ec6328efcb3310491c866a24fb682f",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_20.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "bf597411e4a5459d91fdd375c9172209",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_25.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "1a53f2e278cefe70b141e9812310dcb8",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_30.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "4988123d3e8e9e714e80b68a8f4714f5",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_35.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "767b422aa3dbef82bb53fb5be1d8062c",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_40.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "2d05c1c58a5576e74a2bfa98ca1e3b38",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_45.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "7e3f96f6819eeaa6a859fede08000847",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_5.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "823e02ca9fc4206015e4f65e1be58fbb",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_50.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "dd6f38820dcc146effef48fde5e8f557",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_55.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "193429d84647453f882537645952da1a",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_60.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "fa12a5729a4c7c55ae4f5e0f5d9e008c",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_65.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "4327d3dba29626566bcfbe8efc702eaf",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_70.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "01028b5c2ba565827ba550058d1e40ae",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_75.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "4e5afe0cbddbf8d7d4737f70180150e2",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_80.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "ee155a47b6d9d14a6bca99336d0af5f2",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_85.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "fff094f6ee353551f30f95337720e614",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_90.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "68d689f7b2f90f87e41d67b176060eea",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_95.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "e6eacbb65f3c067a34bbe622929c03ad",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_99.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "7450afbf0a5ce956e3eb7a0efb5e71b8",
+    "semantic_hash": ""
+  },
+  "1.21.1/common/src/main/resources/rpg_attribute_system.png": {
+    "mtime": 1779281638.4617295,
+    "ast_hash": "36b3362be8eeab15c377ac8465998903",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/gui/sprites/screens/atlas/imagebutton_button_for_stats.png": {
+    "mtime": 1779281638.557776,
+    "ast_hash": "5750acf590cf46fc9dc06c7d76d61df2",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/gui/sprites/screens/atlas/imagebutton_button_left.png": {
+    "mtime": 1779281638.557776,
+    "ast_hash": "d566385c694586fd32ef45462ea4e047",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/gui/sprites/screens/atlas/imagebutton_button_notclicked.png": {
+    "mtime": 1779281638.5588088,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/gui/sprites/screens/atlas/imagebutton_button_right.png": {
+    "mtime": 1779281638.5588088,
+    "ast_hash": "64fdaa38293c0be8b8337d11e56c4073",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/item/scroll_of_rebirth.png": {
+    "mtime": 1779281638.5588088,
+    "ast_hash": "aab98aca3ef1a4b83c64e4253dfafc64",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/item/tome_of_ascension.png": {
+    "mtime": 1779281638.5588088,
+    "ast_hash": "18c2ae2a0b479dc9206cac8540e9ae95",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/logo.png": {
+    "mtime": 1779281638.559738,
+    "ast_hash": "36b3362be8eeab15c377ac8465998903",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_for_combat.png": {
+    "mtime": 1779281638.559738,
+    "ast_hash": "0e0d821f42c3e87eac87c9ea0980a860",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_for_stats.png": {
+    "mtime": 1779281638.559738,
+    "ast_hash": "5750acf590cf46fc9dc06c7d76d61df2",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_left.png": {
+    "mtime": 1779281638.559738,
+    "ast_hash": "d566385c694586fd32ef45462ea4e047",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked.png": {
+    "mtime": 1779281638.559738,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked1.png": {
+    "mtime": 1779281638.560759,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked2.png": {
+    "mtime": 1779281638.560759,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked3.png": {
+    "mtime": 1779281638.560759,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked4.png": {
+    "mtime": 1779281638.560759,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked5.png": {
+    "mtime": 1779281638.561778,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked6.png": {
+    "mtime": 1779281638.561778,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked7.png": {
+    "mtime": 1779281638.561778,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked8.png": {
+    "mtime": 1779281638.5627873,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_notclicked9.png": {
+    "mtime": 1779281638.5629659,
+    "ast_hash": "281964b652b5dc4ea771696ac35fe380",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_button_right.png": {
+    "mtime": 1779281638.5629659,
+    "ast_hash": "64fdaa38293c0be8b8337d11e56c4073",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed.png": {
+    "mtime": 1779281638.5629659,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed1.png": {
+    "mtime": 1779281638.5639913,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed2.png": {
+    "mtime": 1779281638.5639913,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed3.png": {
+    "mtime": 1779281638.5639913,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed4.png": {
+    "mtime": 1779281638.5639913,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed5.png": {
+    "mtime": 1779281638.5639913,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/atlas/imagebutton_pressed6.png": {
+    "mtime": 1779281638.5650146,
+    "ast_hash": "3c942426127e4e1bdabaeb1729f29303",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_1.png": {
+    "mtime": 1779281638.5650146,
+    "ast_hash": "773d01a8502d2ffa932b44db32af3e25",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_10.png": {
+    "mtime": 1779281638.5650146,
+    "ast_hash": "e01fb95706d762a9bf31a4c5afaf006f",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_2.png": {
+    "mtime": 1779281638.5650146,
+    "ast_hash": "96eb87a871addacda8e0915312e540fd",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_3.png": {
+    "mtime": 1779281638.5650146,
+    "ast_hash": "6457e36a9bcd12c6e6e84ea1415a5860",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_4.png": {
+    "mtime": 1779281638.5660138,
+    "ast_hash": "d60e0b41f5527f6a033d56907b143927",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_5.png": {
+    "mtime": 1779281638.5660138,
+    "ast_hash": "0115722d12bc92dc829549fa7339ef43",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_6.png": {
+    "mtime": 1779281638.5660138,
+    "ast_hash": "a4194e41af9cf895bd4f77dd00dde5fd",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_7.png": {
+    "mtime": 1779281638.5660138,
+    "ast_hash": "14236ab67ef1c58c8a8d444a9568f48e",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_8.png": {
+    "mtime": 1779281638.5660138,
+    "ast_hash": "e01fb95706d762a9bf31a4c5afaf006f",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/att_9.png": {
+    "mtime": 1779281638.5670142,
+    "ast_hash": "e01fb95706d762a9bf31a4c5afaf006f",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bg.png": {
+    "mtime": 1779281638.5670142,
+    "ast_hash": "8b693d954bcca4da90fc1829194f3ea5",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bg2.png": {
+    "mtime": 1779281638.5670142,
+    "ast_hash": "1c72f4bf8f658f4b2a4481d455ab0ed8",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bg_attributes.png": {
+    "mtime": 1779281638.5670142,
+    "ast_hash": "19de363278a1227653111c2cf764f30e",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bg_attributes_locked.png": {
+    "mtime": 1779281638.5677595,
+    "ast_hash": "fa8d000fe9ce2e38f44e4006bbd0c60a",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/bookoverlay.png": {
+    "mtime": 1779281638.5678153,
+    "ast_hash": "fe0d9d5aec0af0dd2a771e9990a94c3f",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_clicked.png": {
+    "mtime": 1779281638.5678153,
+    "ast_hash": "cdc9bd74279671e65efcde2d544cc8d5",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_for_combat.png": {
+    "mtime": 1779281638.5678153,
+    "ast_hash": "632bb3b0ef4c090b966e3f9a8344e68b",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_for_combat_clicked.png": {
+    "mtime": 1779281638.5678153,
+    "ast_hash": "cd1afaf83bcaf80a112893dfd3c50899",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_for_stats.png": {
+    "mtime": 1779281638.5678153,
+    "ast_hash": "b9cc95f33b1593f1df17f194e3744043",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_for_stats_pressed.png": {
+    "mtime": 1779281638.5688236,
+    "ast_hash": "1def592482f958e48b7f36d9ff9c50c7",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_left.png": {
+    "mtime": 1779281638.5688236,
+    "ast_hash": "6c76839debe709607492e87b395ac584",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_notclicked.png": {
+    "mtime": 1779281638.5688236,
+    "ast_hash": "c2bef354e689042eee38d32e2f22aab4",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/button_right.png": {
+    "mtime": 1779281638.5688236,
+    "ast_hash": "4a17ff973defd3767ac3f7d05b9c2c08",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/iconbg.png": {
+    "mtime": 1779281638.5688236,
+    "ast_hash": "837c4b879153ec1aaaeedbd7be3a03d5",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/levelup.png": {
+    "mtime": 1779281638.5688236,
+    "ast_hash": "6d2ea7d11e617a060f8f6bce11131b74",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_1_icon.png": {
+    "mtime": 1783673359.5139277,
+    "ast_hash": "246b4307c65f586e4899f4531387c3ee",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_2_icon.png": {
+    "mtime": 1783673593.8795986,
+    "ast_hash": "4fcf0ada6ac88d62b0dc93dce2ac5047",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_3_icon.png": {
+    "mtime": 1783673609.3241975,
+    "ast_hash": "9f12f0b441e179607cc050cf7a33a1be",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_4_icon.png": {
+    "mtime": 1783673654.349265,
+    "ast_hash": "27db460abffb78a59c14aaa577c85af8",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_5_icon.png": {
+    "mtime": 1783673644.432938,
+    "ast_hash": "42a85776c06ed9dbe54fa34bcb9e9298",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_6_icon.png": {
+    "mtime": 1783673668.2481825,
+    "ast_hash": "88cc3d00006a171f6ac32e8339d7c896",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_7_icon.png": {
+    "mtime": 1783673685.9400885,
+    "ast_hash": "e25ab8b282e4404abe6566733bd00fc5",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attribute_8_icon.png": {
+    "mtime": 1783673701.7751906,
+    "ast_hash": "29482f9702aeed0dda11681e9fd996c7",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/attributes_tab.png": {
+    "mtime": 1783681407.2044067,
+    "ast_hash": "3c055d54c71cc31646710b3bd5bea6cc",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/background.png": {
+    "mtime": 1783673739.9980023,
+    "ast_hash": "4bac58c304fcd9c8c0afd7249a55cc48",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/button.png": {
+    "mtime": 1783673436.9396403,
+    "ast_hash": "27896f789505a7b744e296c7438dbf46",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/button_pressed.png": {
+    "mtime": 1783673451.273309,
+    "ast_hash": "5021b6d24c5c1dfb6cbc1f81557ec8ca",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/class_tab.png": {
+    "mtime": 1783681384.2430797,
+    "ast_hash": "e50dd2f8fe9d7cd3b8e42f39edc0db06",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/icons_background.png": {
+    "mtime": 1783673391.7909772,
+    "ast_hash": "cfd41be6192fe951f7dd04b01eca1feb",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/slider_2_empty.png": {
+    "mtime": 1783673840.062607,
+    "ast_hash": "1d7c069e85c96f61e4df3b6c0b71ae5f",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/slider_2_full.png": {
+    "mtime": 1783673879.8034062,
+    "ast_hash": "6b4aa1eac05497aaff88dbab93613589",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/slider_empty.png": {
+    "mtime": 1783673476.4978073,
+    "ast_hash": "646914abb0aa1ccffaeb91e1cbf901d5",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/slider_full.png": {
+    "mtime": 1783673557.6480842,
+    "ast_hash": "41563dd9fee457bda2388afbfd058af7",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/rpg_attributes/tabs.png": {
+    "mtime": 1783679301.9372692,
+    "ast_hash": "e0acc4bb625a7fdca2f5790f5c10a370",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_0.png": {
+    "mtime": 1779281638.5698235,
+    "ast_hash": "3d9ebb81c2c157088f2adc7f05e69c21",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_10.png": {
+    "mtime": 1779281638.5698235,
+    "ast_hash": "8776f81cfa4c874c581656f2b6a47fae",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_15.png": {
+    "mtime": 1779281638.5698235,
+    "ast_hash": "30ec6328efcb3310491c866a24fb682f",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_20.png": {
+    "mtime": 1779281638.5698235,
+    "ast_hash": "bf597411e4a5459d91fdd375c9172209",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_25.png": {
+    "mtime": 1779281638.5698235,
+    "ast_hash": "1a53f2e278cefe70b141e9812310dcb8",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_30.png": {
+    "mtime": 1779281638.5698235,
+    "ast_hash": "4988123d3e8e9e714e80b68a8f4714f5",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_35.png": {
+    "mtime": 1779281638.570823,
+    "ast_hash": "767b422aa3dbef82bb53fb5be1d8062c",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_40.png": {
+    "mtime": 1779281638.570823,
+    "ast_hash": "2d05c1c58a5576e74a2bfa98ca1e3b38",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_45.png": {
+    "mtime": 1779281638.570823,
+    "ast_hash": "7e3f96f6819eeaa6a859fede08000847",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_5.png": {
+    "mtime": 1779281638.570823,
+    "ast_hash": "823e02ca9fc4206015e4f65e1be58fbb",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_50.png": {
+    "mtime": 1779281638.570823,
+    "ast_hash": "dd6f38820dcc146effef48fde5e8f557",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_55.png": {
+    "mtime": 1779281638.570823,
+    "ast_hash": "193429d84647453f882537645952da1a",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_60.png": {
+    "mtime": 1779281638.5718231,
+    "ast_hash": "fa12a5729a4c7c55ae4f5e0f5d9e008c",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_65.png": {
+    "mtime": 1779281638.5718231,
+    "ast_hash": "4327d3dba29626566bcfbe8efc702eaf",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_70.png": {
+    "mtime": 1779281638.5718231,
+    "ast_hash": "01028b5c2ba565827ba550058d1e40ae",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_75.png": {
+    "mtime": 1779281638.5718231,
+    "ast_hash": "4e5afe0cbddbf8d7d4737f70180150e2",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_80.png": {
+    "mtime": 1779281638.5718231,
+    "ast_hash": "ee155a47b6d9d14a6bca99336d0af5f2",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_85.png": {
+    "mtime": 1779281638.5718231,
+    "ast_hash": "fff094f6ee353551f30f95337720e614",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_90.png": {
+    "mtime": 1779281638.5728223,
+    "ast_hash": "68d689f7b2f90f87e41d67b176060eea",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_95.png": {
+    "mtime": 1779281638.5728223,
+    "ast_hash": "e6eacbb65f3c067a34bbe622929c03ad",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/assets/rpg_attribute_system/textures/screens/ui_bar_99.png": {
+    "mtime": 1779281638.5728223,
+    "ast_hash": "7450afbf0a5ce956e3eb7a0efb5e71b8",
+    "semantic_hash": ""
+  },
+  "26.2/common/src/main/resources/rpg_attribute_system.png": {
+    "mtime": 1779281638.5737574,
+    "ast_hash": "36b3362be8eeab15c377ac8465998903",
+    "semantic_hash": ""
+  },
+  "newAssets/attribute_1_icon.png": {
+    "mtime": 1783673359.5139277,
+    "ast_hash": "246b4307c65f586e4899f4531387c3ee",
+    "semantic_hash": ""
+  },
+  "newAssets/attribute_2_icon.png": {
+    "mtime": 1783673593.8795986,
+    "ast_hash": "4fcf0ada6ac88d62b0dc93dce2ac5047",
+    "semantic_hash": ""
+  },
+  "newAssets/attribute_3_icon.png": {
+    "mtime": 1783673609.3241975,
+    "ast_hash": "9f12f0b441e179607cc050cf7a33a1be",
+    "semantic_hash": ""
+  },
+  "newAssets/attribute_4_icon.png": {
+    "mtime": 1783673654.349265,
+    "ast_hash": "27db460abffb78a59c14aaa577c85af8",
+    "semantic_hash": ""
+  },
+  "newAssets/attribute_5_icon.png": {
+    "mtime": 1783673644.432938,
+    "ast_hash": "42a85776c06ed9dbe54fa34bcb9e9298",
+    "semantic_hash": ""
+  },
+  "newAssets/attribute_6_icon.png": {
+    "mtime": 1783673668.2481825,
+    "ast_hash": "88cc3d00006a171f6ac32e8339d7c896",
+    "semantic_hash": ""
+  },
+  "newAssets/attribute_7_icon.png": {
+    "mtime": 1783673685.9400885,
+    "ast_hash": "e25ab8b282e4404abe6566733bd00fc5",
+    "semantic_hash": ""
+  },
+  "newAssets/attribute_8_icon.png": {
+    "mtime": 1783673701.7751906,
+    "ast_hash": "29482f9702aeed0dda11681e9fd996c7",
+    "semantic_hash": ""
+  },
+  "newAssets/background.png": {
+    "mtime": 1783673739.9980023,
+    "ast_hash": "4bac58c304fcd9c8c0afd7249a55cc48",
+    "semantic_hash": ""
+  },
+  "newAssets/button.png": {
+    "mtime": 1783673436.9396403,
+    "ast_hash": "27896f789505a7b744e296c7438dbf46",
+    "semantic_hash": ""
+  },
+  "newAssets/button_pressed.png": {
+    "mtime": 1783673451.273309,
+    "ast_hash": "5021b6d24c5c1dfb6cbc1f81557ec8ca",
+    "semantic_hash": ""
+  },
+  "newAssets/icons_background.png": {
+    "mtime": 1783673391.7909772,
+    "ast_hash": "cfd41be6192fe951f7dd04b01eca1feb",
+    "semantic_hash": ""
+  },
+  "newAssets/slider_2_empty.png": {
+    "mtime": 1783673840.062607,
+    "ast_hash": "1d7c069e85c96f61e4df3b6c0b71ae5f",
+    "semantic_hash": ""
+  },
+  "newAssets/slider_2_full.png": {
+    "mtime": 1783673879.8034062,
+    "ast_hash": "6b4aa1eac05497aaff88dbab93613589",
+    "semantic_hash": ""
+  },
+  "newAssets/slider_empty.png": {
+    "mtime": 1783673476.4978073,
+    "ast_hash": "646914abb0aa1ccffaeb91e1cbf901d5",
+    "semantic_hash": ""
+  },
+  "newAssets/slider_full.png": {
+    "mtime": 1783673557.6480842,
+    "ast_hash": "41563dd9fee457bda2388afbfd058af7",
+    "semantic_hash": ""
+  }
+}

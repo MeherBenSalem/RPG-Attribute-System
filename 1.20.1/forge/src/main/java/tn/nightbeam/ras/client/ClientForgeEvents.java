@@ -14,7 +14,9 @@ public class ClientForgeEvents {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
-            if (Minecraft.getInstance().screen != null) {
+            Minecraft client = Minecraft.getInstance();
+            RasGuiSelfTest.onClientTick(client);
+            if (client.screen != null) {
                 return;
             }
             while (RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND.consumeClick()) {

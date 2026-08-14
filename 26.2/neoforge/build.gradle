@@ -19,6 +19,15 @@ neoForge {
             client()
             gameDirectory = this.mkdir(this.file('runs/client'))
         }
+        clientSelfTest {
+            client()
+            gameDirectory = this.mkdir(this.file('runs/client-selftest'))
+            jvmArgument '-Dras.guiSelfTest=true'
+            jvmArgument '-Dras.loader=neoforge'
+            jvmArgument '-Dras.mcVersion=26.2'
+            jvmArgument '-Dras.expectArgb=true'
+            programArgument '--demo'
+        }
         data {
             clientData()
             gameDirectory = this.mkdir(this.file('runs/data'))
