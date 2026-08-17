@@ -8,7 +8,7 @@ Definitions of terms used throughout the RPG Attribute System documentation.
 : A modification that adds or changes features in Minecraft.
 
 **Mod Loader**
-: Software that loads mods into Minecraft. RAS supports Fabric, Forge (1.20.1 only), and NeoForge (1.21.1 and 26.2).
+: Software that loads mods into Minecraft. RAS supports Fabric, Forge (1.20.1 only), and NeoForge (1.21.1, 26.1.2, and 26.2).
 
 **Dependency**
 : Another mod that RAS requires to function. **jauml** is RAS's required dependency.

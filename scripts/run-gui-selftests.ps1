@@ -9,6 +9,8 @@ $tests = @(
     @{ Name = '1.20.1 Forge';   Dir = '1.20.1'; Task = ':forge:runClientSelfTest';    Jdk = 'C:\Program Files\Eclipse Adoptium\jdk-21.0.11.10-hotspot'; Result = 'forge\runs\client-selftest\ras-gui-selftest-result.txt' },
     @{ Name = '1.21.1 Fabric';  Dir = '1.21.1'; Task = ':fabric:runClientSelfTest';   Jdk = 'C:\Program Files\Eclipse Adoptium\jdk-21.0.11.10-hotspot'; Result = 'fabric\runs\client-selftest\ras-gui-selftest-result.txt' },
     @{ Name = '1.21.1 NeoForge'; Dir = '1.21.1'; Task = ':neoforge:runClientSelfTest'; Jdk = 'C:\Program Files\Eclipse Adoptium\jdk-21.0.11.10-hotspot'; Result = 'neoforge\runs\client-selftest\ras-gui-selftest-result.txt' },
+    @{ Name = '26.1.2 Fabric';  Dir = '26.1.2'; Task = ':fabric:runClientSelfTest';   Jdk = 'C:\Program Files\Java\jdk-25.0.3'; Result = 'fabric\runs\client-selftest\ras-gui-selftest-result.txt' },
+    @{ Name = '26.1.2 NeoForge'; Dir = '26.1.2'; Task = ':neoforge:runClientSelfTest'; Jdk = 'C:\Program Files\Java\jdk-25.0.3'; Result = 'neoforge\runs\client-selftest\ras-gui-selftest-result.txt' },
     @{ Name = '26.2 Fabric';    Dir = '26.2';   Task = ':fabric:runClientSelfTest';   Jdk = 'C:\Program Files\Java\jdk-25.0.3'; Result = 'fabric\runs\client-selftest\ras-gui-selftest-result.txt' },
     @{ Name = '26.2 NeoForge';  Dir = '26.2';   Task = ':neoforge:runClientSelfTest'; Jdk = 'C:\Program Files\Java\jdk-25.0.3'; Result = 'neoforge\runs\client-selftest\ras-gui-selftest-result.txt' }
 )

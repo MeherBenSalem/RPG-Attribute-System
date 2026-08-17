@@ -2,7 +2,7 @@
 
 ## Cursor Cloud specific instructions
 
-This repo is the **RPG Attribute System** Minecraft mod. It contains **three fully
+This repo is the **RPG Attribute System** Minecraft mod. It contains **four fully
 independent version roots** (no shared sources), each a MultiLoader-Template Gradle
 project. Always run Gradle from inside the version folder you are targeting.
 
@@ -10,6 +10,7 @@ project. Always run Gradle from inside the version folder you are targeting.
 |---|---|---|---|---|
 | `1.20.1/` | 1.20.1 | Fabric + Forge | 17 | 8.11 |
 | `1.21.1/` | 1.21.1 | Fabric + NeoForge | 21 | 8.11 |
+| `26.1.2/` | 26.1.2 | Fabric + NeoForge | 25 | 9.2 |
 | `26.2/`   | 26.2   | Fabric + NeoForge | 25 | 9.5 |
 
 ### JDKs and the Gradle Java override (important, non-obvious)
@@ -32,9 +33,9 @@ project. Always run Gradle from inside the version folder you are targeting.
   the other versions). `build` also runs `check`/`test` (there are currently no unit
   tests, so `test` is `NO-SOURCE`) and produces the loader JARs under
   `<version>/<loader>/build/libs/`.
-- Root `build.gradle` has aggregate helpers (`build1201`, `build1211`, `build262`,
-  `dist`, `cleanAll`, per-loader `runXxx`) that just shell out to each version's
-  wrapper. Running them from the repo root is fine on Linux.
+- Root `build.gradle` has aggregate helpers (`build1201`, `build1211`, `build2612`,
+  `build262`, `dist`, `cleanAll`, per-loader `runXxx`) that just shell out to each
+  version's wrapper. Running them from the repo root is fine on Linux.
 - The `runClientSelfTest` / `guiSelfTest*` tasks referenced in the root
   `build.gradle` are **not defined** in the subprojects and will fail — use the real
   Loom / ModDevGradle tasks (`:fabric:runClient`, `:fabric:runServer`,

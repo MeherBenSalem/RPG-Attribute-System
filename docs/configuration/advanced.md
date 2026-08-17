@@ -256,7 +256,7 @@ Commands are registered using the Brigadier command dispatcher. The registration
 |----------|-------------------|-------|
 | Fabric | `RpgAttributeSystemModFabric` | `ModInitializer.onInitialize()` |
 | Forge (1.20.1) | `RpgAttributeSystemModForge` | `RegisterCommandsEvent` |
-| NeoForge (1.21.1, 26.2) | `RpgAttributeSystemModNeoForge` | `RegisterCommandsEvent` |
+| NeoForge (1.21.1, 26.1.2, 26.2) | `RpgAttributeSystemModNeoForge` | `RegisterCommandsEvent` |
 
 The command tree and argument types are identical across all platforms.
 

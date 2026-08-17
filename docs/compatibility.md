@@ -4,9 +4,10 @@
 
 | Minecraft | Fabric | Forge | NeoForge | Java | Mod Version |
 |-----------|--------|-------|----------|------|-------------|
-| **1.20.1** | ✅ | ✅ | — | 17 | 4.1.0 |
-| **1.21.1** | ✅ | — | ✅ | 21 | 4.1.0 |
-| **26.2** | ✅ | — | ✅ | 25 | 4.1.0 |
+| **1.20.1** | ✅ | ✅ | — | 17 | 4.2.0 |
+| **1.21.1** | ✅ | — | ✅ | 21 | 4.2.0 |
+| **26.1.2** | ✅ | — | ✅ | 25 | 4.2.0 |
+| **26.2** | ✅ | — | ✅ | 25 | 4.2.0 |
 
 ## Required Dependencies
 
@@ -18,7 +19,7 @@
 
 ## Forge → NeoForge Migration
 
-Forge is supported on 1.20.1 only. 1.21.1 and 26.2 use NeoForge. Config files are fully forward-compatible between Forge and NeoForge — the JSON structure is identical. Player NBT data is automatically migrated on first join.
+Forge is supported on 1.20.1 only. 1.21.1, 26.1.2, and 26.2 use NeoForge. Config files are fully forward-compatible between Forge and NeoForge — the JSON structure is identical. Player NBT data is automatically migrated on first join.
 
 See [Migration](migration.md) for detailed version upgrade steps.
 

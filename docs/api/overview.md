@@ -2,7 +2,7 @@
 
 Package: `tn.nightbeam.ras.api`
 
-`RasApi` is the sole public entry point for other mods to interact with RPG Attribute System. The API is identical across all supported platforms (Fabric, Forge, NeoForge) and Minecraft versions (1.20.1, 1.21.1, 26.2).
+`RasApi` is the sole public entry point for other mods to interact with RPG Attribute System. The API is identical across all supported platforms (Fabric, Forge, NeoForge) and Minecraft versions (1.20.1, 1.21.1, 26.1.2, 26.2).
 
 ## What's Available
 

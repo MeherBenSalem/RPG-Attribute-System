@@ -4,9 +4,9 @@
 
 | Component | Requirement |
 |-----------|-------------|
-| **Minecraft** | 1.20.1, 1.21.1, or 26.2 |
-| **Mod Loader** | Fabric, Forge (1.20.1 only), or NeoForge (1.21.1, 26.2) |
-| **Java** | 17 (1.20.1), 21 (1.21.1), or 25 (26.2) |
+| **Minecraft** | 1.20.1, 1.21.1, 26.1.2, or 26.2 |
+| **Mod Loader** | Fabric, Forge (1.20.1 only), or NeoForge (1.21.1, 26.1.2, 26.2) |
+| **Java** | 17 (1.20.1), 21 (1.21.1), or 25 (26.1.2, 26.2) |
 | **jauml** | Required — bundled with the mod. Install the jauml JAR for your platform. |
 
 No other mods or libraries are required.
@@ -94,7 +94,7 @@ Config files are forward-compatible across all RAS versions. The mod only writes
 - Command registration happens via `RegisterCommandsEvent`
 - Boss-specific drop rate randomization is active in 1.20.1 (unused in 1.21.1+)
 
-### NeoForge (1.21.1, 26.2)
+### NeoForge (1.21.1, 26.1.2, 26.2)
 
 - JARs go in `mods/`
 - Command registration happens via `RegisterCommandsEvent`

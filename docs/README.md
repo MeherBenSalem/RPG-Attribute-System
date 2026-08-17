@@ -12,6 +12,7 @@ A comprehensive Minecraft RPG attribute and progression system that adds player 
 |-----------|--------|-------|----------|------|
 | **1.20.1** | ✅ | ✅ | — | 17 |
 | **1.21.1** | ✅ | — | ✅ | 21 |
+| **26.1.2** | ✅ | — | ✅ | 25 |
 | **26.2** | ✅ | — | ✅ | 25 |
 
 **Required dependency:** [jauml](https://www.nightbeam.cloud/) (bundled with the mod)
