@@ -7,6 +7,9 @@ public final class PixelRpgBookLayout {
     public static final int TAB_WIDTH = 32;
     public static final int DESIGN_WIDTH = BOOK_WIDTH + TAB_WIDTH;
     public static final int DESIGN_HEIGHT = BOOK_HEIGHT;
+    private static final float VIEWPORT_WIDTH_RATIO = 0.76F;
+    private static final float VIEWPORT_HEIGHT_RATIO = 0.84F;
+    private static final int MIN_MARGIN = 6;
 
     private int panelWidth = DESIGN_WIDTH;
     private int panelHeight = DESIGN_HEIGHT;
@@ -15,8 +18,12 @@ public final class PixelRpgBookLayout {
     private float scale = 1.0F;
 
     public void update(int screenWidth, int screenHeight) {
-        float widthScale = Math.max(1, screenWidth - 8) / (float) DESIGN_WIDTH;
-        float heightScale = Math.max(1, screenHeight - 8) / (float) DESIGN_HEIGHT;
+        float availableWidth = Math.max(1, Math.min(screenWidth - MIN_MARGIN * 2,
+                screenWidth * VIEWPORT_WIDTH_RATIO));
+        float availableHeight = Math.max(1, Math.min(screenHeight - MIN_MARGIN * 2,
+                screenHeight * VIEWPORT_HEIGHT_RATIO));
+        float widthScale = availableWidth / DESIGN_WIDTH;
+        float heightScale = availableHeight / DESIGN_HEIGHT;
         scale = Math.min(1.0F, Math.min(widthScale, heightScale));
         panelWidth = Math.max(1, Math.round(DESIGN_WIDTH * scale));
         panelHeight = Math.max(1, Math.round(DESIGN_HEIGHT * scale));
@@ -28,6 +35,9 @@ public final class PixelRpgBookLayout {
     public int y(int designY) { return top + Math.round(designY * scale); }
     public int size(int designSize) { return Math.max(1, Math.round(designSize * scale)); }
 
+    public double designMouseX(double mouseX) { return (mouseX - left) / scale; }
+    public double designMouseY(double mouseY) { return (mouseY - top) / scale; }
+
     public boolean contains(int mouseX, int mouseY, int designX, int designY, int designWidth,
             int designHeight) {
         return mouseX >= x(designX) && mouseX < x(designX + designWidth)
@@ -37,4 +47,6 @@ public final class PixelRpgBookLayout {
     public int panelWidth() { return panelWidth; }
     public int panelHeight() { return panelHeight; }
     public float scale() { return scale; }
+    public int left() { return left; }
+    public int top() { return top; }
 }

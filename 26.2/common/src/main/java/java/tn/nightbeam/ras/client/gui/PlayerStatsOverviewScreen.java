@@ -34,8 +34,6 @@ public class PlayerStatsOverviewScreen extends Screen {
     private static final Identifier TITLE_FRAME = texture("title_frame.png");
     private static final Identifier XP_EMPTY = texture("xp_bar_empty.png");
     private static final Identifier XP_FULL = texture("xp_bar_full.png");
-    private static final Identifier ARROW_LEFT = texture("arrow_left.png");
-    private static final Identifier ARROW_RIGHT = texture("arrow_right.png");
     private static final Identifier[] DEFAULT_ICONS = {
             null,
             texture("symbol_1.png"), texture("symbol_5.png"), texture("symbol_2.png"),
@@ -99,15 +97,15 @@ public class PlayerStatsOverviewScreen extends Screen {
     protected void init() {
         layout.update(width, height);
         currentPage = Math.min(currentPage, totalPages() - 1);
-        addRenderableWidget(new BackButton(px(34), py(276), scaled(80), scaled(20)));
-        addRenderableWidget(new CloseButton(px(BOOK_WIDTH - 20), py(8), scaled(16), scaled(16)));
+        addRenderableWidget(new BackButton(px(38), py(282), scaled(44), scaled(14)));
+        addRenderableWidget(new CloseButton(px(BOOK_WIDTH - 16), py(8), scaled(12), scaled(12)));
         if (totalPages() > 1) {
-            addRenderableWidget(new LegacyImageButton(px(RIGHT_PAGE_X + 72), py(280), scaled(20), scaled(20),
-                    0, 0, 0, ARROW_LEFT, 24, 24, button -> {
+            addRenderableWidget(new BookArrowButton(px(RIGHT_PAGE_X + 78), py(282), scaled(14), scaled(14), false,
+                    button -> {
                         if (currentPage > 0) { currentPage--; rebuildWidgets(); }
                     }));
-            addRenderableWidget(new LegacyImageButton(px(RIGHT_PAGE_X + 120), py(280), scaled(20), scaled(20),
-                    0, 0, 0, ARROW_RIGHT, 24, 24, button -> {
+            addRenderableWidget(new BookArrowButton(px(RIGHT_PAGE_X + 120), py(282), scaled(14), scaled(14), true,
+                    button -> {
                         if (currentPage < totalPages() - 1) { currentPage++; rebuildWidgets(); }
                     }));
         }
@@ -115,15 +113,20 @@ public class PlayerStatsOverviewScreen extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        extractBackground(graphics, mouseX, mouseY, partialTick);
+        graphics.fill(0, 0, width, height, 0xA0000000);
         drawFullTexture(graphics, BOOK, 0, 0, BOOK_WIDTH, BOOK_HEIGHT);
         drawFullTexture(graphics, TITLE_FRAME, 34, 16, 180, 24);
         drawFullTexture(graphics, TITLE_FRAME, RIGHT_PAGE_X + 8, 16, 180, 24);
         drawCentered(graphics, "Player Stats", 124, 22, INK);
-        drawCentered(graphics, "Statistics", RIGHT_PAGE_X + 98, 22, StatsDisplayConfig.getHeaderColor());
+        drawCentered(graphics, "Statistics", RIGHT_PAGE_X + 106, 22, MAROON);
         renderSummary(graphics);
         renderAttributes(graphics, mouseX, mouseY);
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+    }
+
+    @Override
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        // The book is the complete foreground. Screen's default blur would blur it again.
     }
 
     private void renderSummary(GuiGraphicsExtractor graphics) {
@@ -135,17 +138,16 @@ public class PlayerStatsOverviewScreen extends Screen {
         drawLabelValue(graphics, "Spent", format(spentPoints(vars)), 42, 118, 178);
 
         int barX = px(34), barY = py(142), barWidth = scaled(180), barHeight = scaled(11);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, XP_EMPTY, barX, barY, 0, 0, barWidth, barHeight, 306, 22);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, XP_EMPTY, barX, barY, 0, 0,
+                barWidth, barHeight, 306, 22, 306, 22);
         double next = Math.max(1.0D, vars.nextevelXp);
         double ratio = Math.max(0.0D, Math.min(1.0D, vars.currentXpTLevel / next));
         int fillWidth = (int) Math.round(barWidth * ratio);
         if (fillWidth > 0) {
-            graphics.blit(RenderPipelines.GUI_TEXTURED, XP_FULL, barX, barY, 0, 0, fillWidth, barHeight,
-                    Math.max(1, (int) Math.round(306 * ratio)), 22);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, XP_FULL, barX, barY, 0, 0,
+                    fillWidth, barHeight, Math.max(1, (int) Math.round(306 * ratio)), 22, 306, 22);
         }
-        graphics.text(font, format(vars.currentXpTLevel) + "/" + format(next) + " XP",
-                barX + barWidth / 2 - font.width(format(vars.currentXpTLevel) + "/" + format(next) + " XP") / 2,
-                py(143), INK, true);
+        drawCentered(graphics, format(vars.currentXpTLevel) + "/" + format(next) + " XP", 124, 143, INK);
 
         drawCentered(graphics, "Totals", 124, 186, INK);
         int line = 204;
@@ -184,12 +186,12 @@ public class PlayerStatsOverviewScreen extends Screen {
             int id = parseId(key);
             AttributeData data = AttributeManager.getAttributeData(id);
             int rowY = ROW_Y + index * ROW_HEIGHT;
-            drawFullTexture(graphics, icon(id), RIGHT_PAGE_X + 8, rowY, 32, 32);
+            drawTexture(graphics, icon(id), RIGHT_PAGE_X + 12, rowY + 4, 24, 24, 32, 32);
             drawString(graphics, trim(name(data, id), 16), RIGHT_PAGE_X + 44, rowY + 3, INK);
             drawRight(graphics, format(value(vars, key, data)), RIGHT_PAGE_X + 196, rowY + 3, MAROON);
             double bonus = value(vars, key, data) - (data == null ? 0.0D : data.initValue);
             double points = vars.attributePoints.getOrDefault(key, 0.0D);
-            int bonusColor = bonus == 0.0D ? MUTED : StatsDisplayConfig.getBonusPositiveColor();
+            int bonusColor = bonus == 0.0D ? MUTED : MAROON;
             drawString(graphics, "+" + format(bonus) + " bonus · " + format(points) + " pts",
                     RIGHT_PAGE_X + 44, rowY + 17, bonusColor);
             if (data != null && data.tipToDisplay != null && !data.tipToDisplay.isBlank()
@@ -197,7 +199,7 @@ public class PlayerStatsOverviewScreen extends Screen {
                 graphics.setComponentTooltipForNextFrame(font, List.of(Component.literal(data.tipToDisplay)), mouseX, mouseY);
             }
         }
-        if (totalPages() > 1) drawCentered(graphics, (currentPage + 1) + "/" + totalPages(), RIGHT_PAGE_X + 98, 284, INK);
+        if (totalPages() > 1) drawCentered(graphics, (currentPage + 1) + "/" + totalPages(), RIGHT_PAGE_X + 106, 284, INK);
     }
 
     private String trim(String text, int maxChars) {
@@ -205,19 +207,34 @@ public class PlayerStatsOverviewScreen extends Screen {
     }
 
     private void drawFullTexture(GuiGraphicsExtractor graphics, Identifier texture, int x, int y, int width, int height) {
-        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, px(x), py(y), 0, 0, scaled(width), scaled(height), width, height);
+        drawTexture(graphics, texture, x, y, width, height, width, height);
+    }
+
+    private void drawTexture(GuiGraphicsExtractor graphics, Identifier texture, int x, int y,
+            int designWidth, int designHeight, int textureWidth, int textureHeight) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, px(x), py(y), 0, 0,
+                scaled(designWidth), scaled(designHeight), textureWidth, textureHeight,
+                textureWidth, textureHeight);
     }
 
     private void drawCentered(GuiGraphicsExtractor graphics, String text, int x, int y, int color) {
-        graphics.text(font, text, px(x) - font.width(text) / 2, py(y), color, true);
+        drawText(graphics, text, x - font.width(text) / 2, y, color, true);
     }
 
     private void drawString(GuiGraphicsExtractor graphics, String text, int x, int y, int color) {
-        graphics.text(font, text, px(x), py(y), color, false);
+        drawText(graphics, text, x, y, color, false);
     }
 
     private void drawRight(GuiGraphicsExtractor graphics, String text, int x, int y, int color) {
         drawString(graphics, text, x - font.width(text), y, color);
+    }
+
+    private void drawText(GuiGraphicsExtractor graphics, String text, int x, int y, int color, boolean shadow) {
+        graphics.pose().pushMatrix();
+        graphics.pose().translate(px(0), py(0));
+        graphics.pose().scale(layout.scale(), layout.scale());
+        graphics.text(font, text, x, y, color, shadow);
+        graphics.pose().popMatrix();
     }
 
     private boolean inside(int mouseX, int mouseY, int x, int y, int width, int height) {
@@ -259,8 +276,26 @@ public class PlayerStatsOverviewScreen extends Screen {
         @Override
         protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             graphics.fill(getX(), getY(), getX() + width, getY() + height, 0xFF633A4D);
-            graphics.text(font, "×", getX() + width / 2 - font.width("×") / 2,
+            graphics.text(font, "x", getX() + width / 2 - font.width("x") / 2,
                     getY() + (height - 8) / 2, 0xFFF3E1B5, false);
+        }
+    }
+
+    private final class BookArrowButton extends Button {
+        private final boolean right;
+
+        private BookArrowButton(int x, int y, int width, int height, boolean right, OnPress onPress) {
+            super(x, y, width, height, Component.empty(), onPress, DEFAULT_NARRATION);
+            this.right = right;
+        }
+
+        @Override
+        protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+            graphics.fill(getX(), getY(), getX() + width, getY() + height,
+                    isHoveredOrFocused() ? 0xFF7A465D : 0xFF633A4D);
+            String symbol = right ? ">" : "<";
+            graphics.text(font, symbol, getX() + (width - font.width(symbol)) / 2,
+                    getY() + Math.max(1, (height - 8) / 2), 0xFFF3E1B5, false);
         }
     }
 }

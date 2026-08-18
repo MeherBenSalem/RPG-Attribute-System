@@ -195,7 +195,7 @@ public class ConfigInitializer {
         }
 
         if (!Services.CONFIG.arrayKeyExists(dir, file, "max_player_level")) {
-            Services.CONFIG.setNumberValue(dir, file, "max_player_level", 100);
+            Services.CONFIG.setNumberValue(dir, file, "max_player_level", 500);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "level_per_orb")) {
             Services.CONFIG.setNumberValue(dir, file, "level_per_orb", 1);
@@ -232,7 +232,7 @@ public class ConfigInitializer {
             Services.CONFIG.setNumberValue(dir, file, "exp_curve_start_level", 1);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_max_level")) {
-            Services.CONFIG.setNumberValue(dir, file, "exp_curve_max_level", 100);
+            Services.CONFIG.setNumberValue(dir, file, "exp_curve_max_level", 500);
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "exp_curve_first_level_xp")) {
             Services.CONFIG.setNumberValue(dir, file, "exp_curve_first_level_xp",

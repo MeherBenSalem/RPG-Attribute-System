@@ -30,7 +30,6 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
         implements tn.nightbeam.ras.init.ScreenAccessor {
     private static final int BOOK_WIDTH = PixelRpgBookLayout.BOOK_WIDTH;
     private static final int BOOK_HEIGHT = PixelRpgBookLayout.BOOK_HEIGHT;
-    private static final int TAB_WIDTH = PixelRpgBookLayout.TAB_WIDTH;
     private static final int DESIGN_WIDTH = PixelRpgBookLayout.DESIGN_WIDTH;
     private static final int DESIGN_HEIGHT = PixelRpgBookLayout.DESIGN_HEIGHT;
     private static final int SECTIONS_PER_PAGE = 7;
@@ -48,11 +47,6 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
     private static final Identifier TITLE_FRAME = texture("title_frame.png");
     private static final Identifier XP_EMPTY = texture("xp_bar_empty.png");
     private static final Identifier XP_FULL = texture("xp_bar_full.png");
-    private static final Identifier ARROW_LEFT = texture("arrow_left.png");
-    private static final Identifier ARROW_RIGHT = texture("arrow_right.png");
-    private static final Identifier TAB_ATTRIBUTES = texture("tab_attributes.png");
-    private static final Identifier TAB_COMBAT = texture("tab_combat_active.png");
-    private static final Identifier TAB_STATISTICS = texture("tab_statistics.png");
     private static final Identifier[] DEFAULT_ICONS = {
             null,
             texture("symbol_1.png"),
@@ -74,8 +68,8 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
     private int currentPage;
     private final PixelRpgBookLayout layout = new PixelRpgBookLayout();
     private List<Integer> visibleSections;
-    private LegacyImageButton pagePreviousButton;
-    private LegacyImageButton pageNextButton;
+    private Button pagePreviousButton;
+    private Button pageNextButton;
 
     public PlayerAttributesViewerGUIScreen(PlayerAttributesViewerGUIMenu container, Inventory inventory,
             Component text) {
@@ -228,32 +222,24 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
         super.init();
         ScreenMousePosition.restore();
 
-        addRenderableWidget(new SideTabButton(px(BOOK_WIDTH), py(28), scaled(TAB_WIDTH), scaled(64),
-                TAB_ATTRIBUTES, Component.literal("Attributes"), button -> {
-                    ScreenMousePosition.capture();
-                    Services.PLATFORM.sendButtonAction(0, x, y, z);
-                }));
-        addRenderableWidget(new SideTabButton(px(BOOK_WIDTH), py(108), scaled(TAB_WIDTH), scaled(64),
-                TAB_COMBAT, Component.literal("Combat Stats"), button -> {
-                }));
-        addRenderableWidget(new StatisticsTabButton(px(BOOK_WIDTH), py(188), scaled(TAB_WIDTH), scaled(64),
-                TAB_STATISTICS, Component.literal("Statistics"), button -> {
+        addRenderableWidget(new StatisticsTabButton(px(BOOK_WIDTH), py(134), scaled(22), scaled(30),
+                Component.literal("Statistics"), button -> {
                     if (minecraft != null) {
                         minecraft.gui.setScreen(new PlayerStatsOverviewScreen(this));
                     }
                 }));
-        addRenderableWidget(new CloseButton(px(BOOK_WIDTH - 20), py(8), scaled(16), scaled(16)));
+        addRenderableWidget(new CloseButton(px(BOOK_WIDTH - 16), py(8), scaled(12), scaled(12)));
 
         if (getTotalPages() > 1) {
-            pagePreviousButton = new LegacyImageButton(px(RIGHT_PAGE_X + 72), py(280), scaled(20), scaled(20),
-                    0, 0, 0, ARROW_LEFT, 24, 24, button -> {
+            pagePreviousButton = new BookArrowButton(px(RIGHT_PAGE_X + 78), py(282), scaled(14), scaled(14), false,
+                    button -> {
                         if (currentPage > 0) {
                             currentPage--;
                             rebuildWidgets();
                         }
                     });
-            pageNextButton = new LegacyImageButton(px(RIGHT_PAGE_X + 120), py(280), scaled(20), scaled(20),
-                    0, 0, 0, ARROW_RIGHT, 24, 24, button -> {
+            pageNextButton = new BookArrowButton(px(RIGHT_PAGE_X + 120), py(282), scaled(14), scaled(14), true,
+                    button -> {
                         if (currentPage < getTotalPages() - 1) {
                             currentPage++;
                             rebuildWidgets();
@@ -270,8 +256,8 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
         drawFullTexture(graphics, TITLE_FRAME, 34, 16, 180, 24);
         drawFullTexture(graphics, TITLE_FRAME, RIGHT_PAGE_X + 8, 16, 180, 24);
 
-        InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, px(44), py(56), px(124), py(136),
-                scaled(34), 0.0625F, px(124) - mouseX, py(112) - mouseY, entity);
+        InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, px(84), py(56), px(164), py(136),
+                scaled(34), 0.0625F, mouseX - px(124), mouseY - py(112), entity);
 
         renderXpSection(graphics);
         renderAvailablePoints(graphics);
@@ -296,15 +282,17 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
         int barY = py(142);
         int barWidth = scaled(180);
         int barHeight = scaled(11);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, XP_EMPTY, barX, barY, 0, 0, barWidth, barHeight, 306, 22);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, XP_EMPTY, barX, barY, 0, 0,
+                barWidth, barHeight, 306, 22, 306, 22);
         double ratio = Math.max(0.0D, Math.min(1.0D, ReturnPercentageProcedure.execute(entity) / 100.0D));
         int fillWidth = (int) Math.round(barWidth * ratio);
         if (fillWidth > 0) {
             int sourceFillWidth = Math.max(1, (int) Math.round(306 * ratio));
-            graphics.blit(RenderPipelines.GUI_TEXTURED, XP_FULL, barX, barY, 0, 0, fillWidth, barHeight, sourceFillWidth, 22);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, XP_FULL, barX, barY, 0, 0,
+                    fillWidth, barHeight, sourceFillWidth, 22, 306, 22);
         }
         String xp = cleanText(CurrentXpToLevelProcedure.execute(entity)) + " XP";
-        graphics.text(font, xp, barX + barWidth / 2 - font.width(xp) / 2, py(143), XP_TEXT, true);
+        drawCentered(graphics, xp, 124, 143, XP_TEXT, true);
     }
 
     private void renderAvailablePoints(GuiGraphicsExtractor graphics) {
@@ -315,15 +303,15 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
 
     private void renderSectionRow(GuiGraphicsExtractor graphics, int sectionId, int row) {
         int rowY = ROW_Y + row * ROW_HEIGHT;
-        drawFullTexture(graphics, iconFor(sectionId), RIGHT_PAGE_X + 8, rowY, 32, 32);
+        drawTexture(graphics, iconFor(sectionId), RIGHT_PAGE_X + 12, rowY + 4, 24, 24, 32, 32);
 
         String value = sectionValue(sectionId);
-        int nameX = px(RIGHT_PAGE_X + 44);
-        int valueRight = px(RIGHT_PAGE_X + 196);
-        int maxNameWidth = Math.max(0, valueRight - font.width(value) - scaled(6) - nameX);
+        int nameX = RIGHT_PAGE_X + 44;
+        int valueRight = RIGHT_PAGE_X + 196;
+        int maxNameWidth = Math.max(0, valueRight - font.width(value) - 6 - nameX);
         String name = font.plainSubstrByWidth(sectionName(sectionId), maxNameWidth);
-        graphics.text(font, name, nameX, py(rowY + 10), INK, false);
-        graphics.text(font, value, valueRight - font.width(value), py(rowY + 10), VALUE_MAROON, false);
+        drawString(graphics, name, nameX, rowY + 10, INK, false);
+        drawString(graphics, value, valueRight - font.width(value), rowY + 10, VALUE_MAROON, false);
     }
 
     @Override
@@ -335,7 +323,7 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
                 int id = visible.get(index);
                 String name = sectionName(id);
                 String value = sectionValue(id);
-                int maxWidth = px(RIGHT_PAGE_X + 196) - font.width(value) - scaled(6) - px(RIGHT_PAGE_X + 44);
+                int maxWidth = RIGHT_PAGE_X + 196 - font.width(value) - 6 - (RIGHT_PAGE_X + 44);
                 if (font.width(name) > maxWidth) {
                     graphics.setComponentTooltipForNextFrame(font,
                             List.of(Component.literal(name + ": " + value)), mouseX, mouseY);
@@ -350,14 +338,26 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
     }
 
     private void drawFullTexture(GuiGraphicsExtractor graphics, Identifier texture, int x, int y, int width, int height) {
-        int scaledWidth = scaled(width);
-        int scaledHeight = scaled(height);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, px(x), py(y), 0, 0, scaledWidth, scaledHeight,
-                width, height);
+        drawTexture(graphics, texture, x, y, width, height, width, height);
+    }
+
+    private void drawTexture(GuiGraphicsExtractor graphics, Identifier texture, int x, int y,
+            int designWidth, int designHeight, int textureWidth, int textureHeight) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, px(x), py(y), 0, 0,
+                scaled(designWidth), scaled(designHeight), textureWidth, textureHeight,
+                textureWidth, textureHeight);
     }
 
     private void drawCentered(GuiGraphicsExtractor graphics, String text, int x, int y, int color, boolean shadow) {
-        graphics.text(font, text, px(x) - font.width(text) / 2, py(y), color, shadow);
+        drawString(graphics, text, x - font.width(text) / 2, y, color, shadow);
+    }
+
+    private void drawString(GuiGraphicsExtractor graphics, String text, int x, int y, int color, boolean shadow) {
+        graphics.pose().pushMatrix();
+        graphics.pose().translate(px(0), py(0));
+        graphics.pose().scale(layout.scale(), layout.scale());
+        graphics.text(font, text, x, y, color, shadow);
+        graphics.pose().popMatrix();
     }
 
     @Override
@@ -376,35 +376,50 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
         return super.keyPressed(keyEvent);
     }
 
-    private static final class SideTabButton extends Button {
-        private final Identifier texture;
-
-        private SideTabButton(int x, int y, int width, int height, Identifier texture,
+    private final class StatisticsTabButton extends Button {
+        private StatisticsTabButton(int x, int y, int width, int height,
                 Component tooltip, OnPress onPress) {
             super(x, y, width, height, tooltip, onPress, DEFAULT_NARRATION);
-            this.texture = texture;
         }
 
         @Override
         protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-            graphics.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), 0, 0, width, height, 32, 64);
+            drawTabBackground(graphics, this);
+            int left = getX() + scaled(4);
+            int bottom = getY() + height - scaled(5);
+            graphics.fill(left, bottom - scaled(5), left + scaled(3), bottom, INK);
+            graphics.fill(left + scaled(5), bottom - scaled(10), left + scaled(8), bottom, INK);
+            graphics.fill(left + scaled(10), bottom - scaled(15), left + scaled(13), bottom, INK);
         }
     }
 
-    private final class StatisticsTabButton extends Button {
-        private StatisticsTabButton(int x, int y, int width, int height, Identifier texture,
-                Component tooltip, OnPress onPress) {
-            super(x, y, width, height, tooltip, onPress, DEFAULT_NARRATION);
+    private void drawTabBackground(GuiGraphicsExtractor graphics, Button button) {
+        int background = button.isHoveredOrFocused() ? 0xFFF1E9C9 : 0xFFE8DFB5;
+        int border = 0xFFB9AA7C;
+        int left = button.getX(), top = button.getY();
+        int right = left + button.getWidth(), bottom = top + button.getHeight();
+        graphics.fill(left, top, right, bottom, background);
+        graphics.fill(left, top, right, top + 1, border);
+        graphics.fill(left, bottom - 1, right, bottom, border);
+        graphics.fill(left, top, left + 1, bottom, border);
+        graphics.fill(right - 1, top, right, bottom, border);
+    }
+
+    private final class BookArrowButton extends Button {
+        private final boolean right;
+
+        private BookArrowButton(int x, int y, int width, int height, boolean right, OnPress onPress) {
+            super(x, y, width, height, Component.empty(), onPress, DEFAULT_NARRATION);
+            this.right = right;
         }
 
         @Override
         protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-            int background = isHoveredOrFocused() ? 0xFFF1E9C9 : 0xFFE8DFB5;
-            graphics.fill(getX(), getY(), getX() + width, getY() + height, background);
-            graphics.fill(getX() + scaled(5), getY() + scaled(47), getX() + scaled(27), getY() + scaled(51), 0xFF342730);
-            graphics.fill(getX() + scaled(7), getY() + scaled(35), getX() + scaled(11), getY() + scaled(48), 0xFF342730);
-            graphics.fill(getX() + scaled(13), getY() + scaled(28), getX() + scaled(17), getY() + scaled(48), 0xFF342730);
-            graphics.fill(getX() + scaled(19), getY() + scaled(20), getX() + scaled(23), getY() + scaled(48), 0xFF342730);
+            graphics.fill(getX(), getY(), getX() + width, getY() + height,
+                    isHoveredOrFocused() ? 0xFF7A465D : 0xFF633A4D);
+            String symbol = right ? ">" : "<";
+            graphics.text(font, symbol, getX() + (width - font.width(symbol)) / 2,
+                    getY() + Math.max(1, (height - 8) / 2), HEADER_GOLD, false);
         }
     }
 
@@ -417,7 +432,7 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
         protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             int background = isHoveredOrFocused() ? 0xFF7A465D : 0xFF633A4D;
             graphics.fill(getX(), getY(), getX() + width, getY() + height, background);
-            String close = "×";
+            String close = "x";
             graphics.text(Minecraft.getInstance().font, close,
                     getX() + (width - Minecraft.getInstance().font.width(close)) / 2,
                     getY() + (height - 8) / 2, 0xFFF3E1B5, false);
