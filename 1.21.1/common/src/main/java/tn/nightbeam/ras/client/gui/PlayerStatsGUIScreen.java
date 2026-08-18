@@ -2,6 +2,7 @@ package tn.nightbeam.ras.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -33,12 +34,12 @@ import java.util.stream.Collectors;
 
 public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUIMenu>
         implements tn.nightbeam.ras.init.ScreenAccessor {
-    private static final int BOOK_WIDTH = 532;
-    private static final int BOOK_HEIGHT = 304;
-    private static final int TAB_WIDTH = 32;
-    private static final int DESIGN_WIDTH = BOOK_WIDTH + TAB_WIDTH;
-    private static final int DESIGN_HEIGHT = BOOK_HEIGHT;
-    private static final int ATTRS_PER_PAGE = 8;
+    private static final int BOOK_WIDTH = PixelRpgBookLayout.BOOK_WIDTH;
+    private static final int BOOK_HEIGHT = PixelRpgBookLayout.BOOK_HEIGHT;
+    private static final int TAB_WIDTH = PixelRpgBookLayout.TAB_WIDTH;
+    private static final int DESIGN_WIDTH = PixelRpgBookLayout.DESIGN_WIDTH;
+    private static final int DESIGN_HEIGHT = PixelRpgBookLayout.DESIGN_HEIGHT;
+    private static final int ATTRS_PER_PAGE = 7;
     private static final int ROW_Y = 52;
     private static final int ROW_HEIGHT = 32;
     private static final int RIGHT_PAGE_X = 288;
@@ -82,6 +83,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     private final Player entity;
     private boolean menuStateUpdateActive;
     private int currentPage;
+    private final PixelRpgBookLayout layout = new PixelRpgBookLayout();
 
     private LegacyImageButton modifierLeftButton;
     private LegacyImageButton modifierRightButton;
@@ -127,11 +129,9 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     }
 
     private void updatePanelSize() {
-        double fit = Math.min(1.0D,
-                Math.min(Math.max(1, width - 8) / (double) DESIGN_WIDTH,
-                        Math.max(1, height - 8) / (double) DESIGN_HEIGHT));
-        imageWidth = Math.max(1, (int) Math.round(DESIGN_WIDTH * fit));
-        imageHeight = Math.max(1, (int) Math.round(DESIGN_HEIGHT * fit));
+        layout.update(width, height);
+        imageWidth = layout.panelWidth();
+        imageHeight = layout.panelHeight();
     }
 
     private float layoutScale() {
@@ -139,15 +139,15 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     }
 
     private int px(int designX) {
-        return leftPos + Math.round(designX * layoutScale());
+        return layout.x(designX);
     }
 
     private int py(int designY) {
-        return topPos + Math.round(designY * layoutScale());
+        return layout.y(designY);
     }
 
     private int scaled(int designSize) {
-        return Math.max(1, Math.round(designSize * layoutScale()));
+        return layout.size(designSize);
     }
 
     private List<String> getVisibleAttributes() {
@@ -245,8 +245,10 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
             }
             addRenderableWidget(new AttributePlusButton(id,
                     px(RIGHT_PAGE_X + 168), py(ROW_Y + index * ROW_HEIGHT + 4),
-                    scaled(24), scaled(24)));
+                    scaled(20), scaled(20)));
         }
+
+        addRenderableWidget(new CloseButton(px(BOOK_WIDTH - 20), py(8), scaled(16), scaled(16)));
 
         addRenderableWidget(new SideTabButton(px(BOOK_WIDTH), py(28), scaled(TAB_WIDTH), scaled(64),
                 TAB_ATTRIBUTES, Component.literal("Attributes"), button -> {
@@ -258,32 +260,32 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
                         Services.PLATFORM.sendButtonAction(9, x, y, z);
                     }
                 }));
-        addRenderableWidget(new SideTabButton(px(BOOK_WIDTH), py(188), scaled(TAB_WIDTH), scaled(64),
+        addRenderableWidget(new StatisticsTabButton(px(BOOK_WIDTH), py(188), scaled(TAB_WIDTH), scaled(64),
                 TAB_STATISTICS, Component.literal("Statistics"), button -> {
                     if (minecraft != null) {
-                        minecraft.setScreen(new PlayerStatsOverviewScreen());
+                        minecraft.setScreen(new PlayerStatsOverviewScreen(this));
                     }
                 }));
 
-        modifierLeftButton = new LegacyImageButton(px(52), py(24), scaled(24), scaled(24),
-                0, 0, 0, ARROW_LEFT, scaled(24), scaled(24),
+        modifierLeftButton = new LegacyImageButton(px(62), py(244), scaled(20), scaled(20),
+                0, 0, 0, ARROW_LEFT, 24, 24,
                 button -> Services.PLATFORM.sendButtonAction(10, x, y, z));
-        modifierRightButton = new LegacyImageButton(px(196), py(24), scaled(24), scaled(24),
-                0, 0, 0, ARROW_RIGHT, scaled(24), scaled(24),
+        modifierRightButton = new LegacyImageButton(px(166), py(244), scaled(20), scaled(20),
+                0, 0, 0, ARROW_RIGHT, 24, 24,
                 button -> Services.PLATFORM.sendButtonAction(11, x, y, z));
         addRenderableWidget(modifierLeftButton);
         addRenderableWidget(modifierRightButton);
 
         if (getTotalPages() > 1) {
-            pagePreviousButton = new LegacyImageButton(px(RIGHT_PAGE_X + 56), py(276), scaled(24), scaled(24),
-                    0, 0, 0, ARROW_LEFT, scaled(24), scaled(24), button -> {
+            pagePreviousButton = new LegacyImageButton(px(RIGHT_PAGE_X + 72), py(280), scaled(20), scaled(20),
+                    0, 0, 0, ARROW_LEFT, 24, 24, button -> {
                         if (currentPage > 0) {
                             currentPage--;
                             rebuildWidgets();
                         }
                     });
-            pageNextButton = new LegacyImageButton(px(RIGHT_PAGE_X + 128), py(276), scaled(24), scaled(24),
-                    0, 0, 0, ARROW_RIGHT, scaled(24), scaled(24), button -> {
+            pageNextButton = new LegacyImageButton(px(RIGHT_PAGE_X + 120), py(280), scaled(20), scaled(20),
+                    0, 0, 0, ARROW_RIGHT, 24, 24, button -> {
                         if (currentPage < getTotalPages() - 1) {
                             currentPage++;
                             rebuildWidgets();
@@ -307,10 +309,10 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         RenderSystem.defaultBlendFunc();
         drawFullTexture(graphics, BOOK, 0, 0, BOOK_WIDTH, BOOK_HEIGHT);
         drawFullTexture(graphics, TITLE_FRAME, 34, 16, 180, 24);
-        drawFullTexture(graphics, TITLE_FRAME, RIGHT_PAGE_X + 8, 16, 196, 24);
+        drawFullTexture(graphics, TITLE_FRAME, RIGHT_PAGE_X + 8, 16, 180, 24);
 
         InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, px(44), py(56), px(124), py(136),
-                scaled(30), 0.0625F, px(84) - mouseX, py(96) - mouseY, entity);
+                scaled(34), 0.0625F, px(124) - mouseX, py(112) - mouseY, entity);
 
         renderXpSection(graphics);
         renderAvailablePoints(graphics);
@@ -326,7 +328,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         }
 
         if (getTotalPages() > 1) {
-            drawCentered(graphics, (currentPage + 1) + "/" + getTotalPages(), RIGHT_PAGE_X + 106, 280, INK, false);
+            drawCentered(graphics, (currentPage + 1) + "/" + getTotalPages(), RIGHT_PAGE_X + 106, 284, INK, false);
         }
         RenderSystem.disableBlend();
     }
@@ -339,11 +341,12 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         int barY = py(142);
         int barWidth = scaled(180);
         int barHeight = scaled(11);
-        graphics.blit(XP_EMPTY, barX, barY, 0, 0, barWidth, barHeight, barWidth, barHeight);
+        graphics.blit(XP_EMPTY, barX, barY, 0, 0, barWidth, barHeight, 306, 22);
         double ratio = Math.max(0.0D, Math.min(1.0D, ReturnPercentageProcedure.execute(entity) / 100.0D));
         int fillWidth = (int) Math.round(barWidth * ratio);
         if (fillWidth > 0) {
-            graphics.blit(XP_FULL, barX, barY, 0, 0, fillWidth, barHeight, barWidth, barHeight);
+            int sourceFillWidth = Math.max(1, (int) Math.round(306 * ratio));
+            graphics.blit(XP_FULL, barX, barY, 0, 0, fillWidth, barHeight, sourceFillWidth, 22);
         }
         String xp = cleanText(CurrentXpToLevelProcedure.execute(entity)) + " XP";
         graphics.drawCenteredString(font, xp, barX + barWidth / 2, py(143), XP_TEXT);
@@ -358,7 +361,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     private void renderModifier(GuiGraphics graphics) {
         String modifier = cleanText(ReturnCurrentModifierProcedure.execute(entity));
         modifier = modifier.replaceFirst("^0+(?=\\d)", "");
-        drawCentered(graphics, "Allocate x" + modifier, 124, 248, HEADER_GOLD, true);
+        drawCentered(graphics, "Allocate x" + modifier, 124, 250, INK, false);
     }
 
     private void renderAttributeRow(GuiGraphics graphics, int attributeId, int row) {
@@ -390,18 +393,19 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         int barY = py(designY);
         int barWidth = scaled(116);
         int barHeight = scaled(7);
-        graphics.blit(STAT_EMPTY, barX, barY, 0, 0, barWidth, barHeight, barWidth, barHeight);
+        graphics.blit(STAT_EMPTY, barX, barY, 0, 0, barWidth, barHeight, 188, 14);
         int segments = (int) Math.round(attributeProgress(attributeId) * 9.0D);
         int fillWidth = (int) Math.round(barWidth * segments / 9.0D);
         if (fillWidth > 0) {
-            graphics.blit(STAT_FULL, barX, barY, 0, 0, fillWidth, barHeight, barWidth, barHeight);
+            int sourceFillWidth = Math.max(1, (int) Math.round(188 * segments / 9.0D));
+            graphics.blit(STAT_FULL, barX, barY, 0, 0, fillWidth, barHeight, sourceFillWidth, 14);
         }
     }
 
     private void drawFullTexture(GuiGraphics graphics, ResourceLocation texture, int x, int y, int width, int height) {
         int scaledWidth = scaled(width);
         int scaledHeight = scaled(height);
-        graphics.blit(texture, px(x), py(y), 0, 0, scaledWidth, scaledHeight, scaledWidth, scaledHeight);
+        graphics.blit(texture, px(x), py(y), 0, 0, scaledWidth, scaledHeight, width, height);
     }
 
     private void drawCentered(GuiGraphics graphics, String text, int x, int y, int color, boolean shadow) {
@@ -426,7 +430,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
                 return;
             }
 
-            if (inside(mouseX, mouseY, px(RIGHT_PAGE_X + 168), py(rowY + 4), scaled(24), scaled(24))) {
+            if (inside(mouseX, mouseY, px(RIGHT_PAGE_X + 168), py(rowY + 14), scaled(20), scaled(20))) {
                 String message;
                 AttributeData data = AttributeManager.getAttributeData(id);
                 if (isLocked(id)) {
@@ -494,13 +498,14 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
 
         @Override
         protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            active = canAllocate(attributeId);
+            boolean usable = canAllocate(attributeId);
+            active = true;
             RenderSystem.enableBlend();
-            if (!active) {
-                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.45F);
+            if (!usable) {
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.65F);
             }
-            ResourceLocation texture = pressed && active ? PLUS_PRESSED : PLUS;
-            graphics.blit(texture, getX(), getY(), 0, 0, width, height, width, height);
+            ResourceLocation texture = pressed && usable ? PLUS_PRESSED : PLUS;
+            graphics.blit(texture, getX(), getY(), 0, 0, width, height, 32, 32);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
@@ -516,7 +521,46 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
 
         @Override
         protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            graphics.blit(texture, getX(), getY(), 0, 0, width, height, width, height);
+            graphics.blit(texture, getX(), getY(), 0, 0, width, height, 32, 64);
+        }
+    }
+
+    private void closeContainerSafely() {
+        if (minecraft != null && minecraft.player != null) {
+            minecraft.player.closeContainer();
+        }
+    }
+
+    private final class CloseButton extends Button {
+        private CloseButton(int x, int y, int width, int height) {
+            super(x, y, width, height, Component.empty(), button -> closeContainerSafely(), DEFAULT_NARRATION);
+        }
+
+        @Override
+        protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            int background = isHovered ? 0xFF7A465D : 0xFF633A4D;
+            graphics.fill(getX(), getY(), getX() + width, getY() + height, background);
+            String close = "×";
+            graphics.drawString(Minecraft.getInstance().font, close,
+                    getX() + (width - Minecraft.getInstance().font.width(close)) / 2,
+                    getY() + (height - 8) / 2, 0xFFF3E1B5, false);
+        }
+    }
+
+    private final class StatisticsTabButton extends Button {
+        private StatisticsTabButton(int x, int y, int width, int height, ResourceLocation texture,
+                Component tooltip, OnPress onPress) {
+            super(x, y, width, height, tooltip, onPress, DEFAULT_NARRATION);
+        }
+
+        @Override
+        protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            int background = isHovered ? 0xFFF1E9C9 : 0xFFE8DFB5;
+            graphics.fill(getX(), getY(), getX() + width, getY() + height, background);
+            graphics.fill(getX() + scaled(5), getY() + scaled(47), getX() + scaled(27), getY() + scaled(51), 0xFF342730);
+            graphics.fill(getX() + scaled(7), getY() + scaled(35), getX() + scaled(11), getY() + scaled(48), 0xFF342730);
+            graphics.fill(getX() + scaled(13), getY() + scaled(28), getX() + scaled(17), getY() + scaled(48), 0xFF342730);
+            graphics.fill(getX() + scaled(19), getY() + scaled(20), getX() + scaled(23), getY() + scaled(48), 0xFF342730);
         }
     }
 }
