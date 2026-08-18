@@ -9,7 +9,8 @@
     ],
     "contact": {
         "homepage": "https://www.nightbeam.cloud/",
-        "sources": "https://github.com/Start-Step-Studios/RPG-Attribute-System"
+        "sources": "https://github.com/MeherBenSalem/RPG-Attribute-System",
+        "issues": "https://github.com/MeherBenSalem/RPG-Attribute-System/issues"
     },
     "license": "${license}",
     "icon": "${mod_id}.png",

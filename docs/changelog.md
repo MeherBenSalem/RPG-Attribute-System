@@ -2,7 +2,7 @@
 
 ## 4.2.0
 
-**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) Â· Minecraft 1.21.1 (Fabric, NeoForge) Â· Minecraft 26.2 (Fabric, NeoForge)
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
 
 ### Configuration
 

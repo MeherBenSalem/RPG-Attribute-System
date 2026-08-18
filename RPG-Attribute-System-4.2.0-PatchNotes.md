@@ -11,6 +11,7 @@
 
 - Minecraft 1.20.1: Fabric and Forge
 - Minecraft 1.21.1: Fabric and NeoForge
+- Minecraft 26.1.2: Fabric and NeoForge
 - Minecraft 26.2: Fabric and NeoForge
 
 ## Upgrade

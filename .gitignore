@@ -5,6 +5,8 @@ build/
 out/
 dist/
 libs/
+all-jars/
+releases/
 
 # Gradle outputs
 # Ignore gradle.properties ONLY if it contains secrets. 
@@ -61,4 +63,14 @@ mcreator.gradle
 *.bak
 *.tmp
 *.log
+.env
+.env.*
+.release-upload-state.json
 .commandcode/taste/taste.md
+
+# graphify local cache and machine-specific state
+graphify-out/.graphify_root
+graphify-out/cache/
+graphify-out/cost.json
+graphify-out/manifest.json
+graphify-out/.needs_update

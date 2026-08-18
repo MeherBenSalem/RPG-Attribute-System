@@ -1,8 +1,8 @@
 # RPG Attribute System (RAS)
 
-> **Version:** 4.1.0 | **Mod ID:** `rpg_attribute_system`  
-> **Author:** Meher / [Nightbeam](https://www.nightbeam.cloud/)  
-> **License:** All Rights Reserved
+> **Version:** 4.2.0 | **Mod ID:** `rpg_attribute_system`  
+> **Author:** Meher / [NightBeam](https://www.nightbeam.cloud/)  
+> **License:** Apache-2.0
 
 A comprehensive Minecraft RPG attribute and progression system that adds player leveling, attribute point allocation, configurable stat scaling, respec, build templates, and a public API for other mods.
 

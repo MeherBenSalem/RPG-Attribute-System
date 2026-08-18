@@ -4,10 +4,10 @@ Need help with RPG Attribute System? This page explains what information to incl
 
 ## Project Links
 
-- **Mod author:** Meher / Nightbeam
-- **Homepage:** [Nightbeam](https://www.nightbeam.cloud/)
-- **Source repository:** [GitHub](https://github.com/Start-Step-Studios/RPG-Attribute-System)
-- **Support link:** [Project Support Link]
+- **Mod author:** Meher / NightBeam
+- **Homepage:** [NightBeam](https://www.nightbeam.cloud/)
+- **Source repository:** [GitHub](https://github.com/MeherBenSalem/RPG-Attribute-System)
+- **Support link:** [GitHub Issues](https://github.com/MeherBenSalem/RPG-Attribute-System/issues)
 
 ## Before Requesting Support
 

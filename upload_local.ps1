@@ -1,4 +1,4 @@
-# Local upload to Modrinth + CurseForge (no GitHub Actions).
+# Local 26.1.2 upload to Modrinth + CurseForge (no GitHub Actions).
 # Tokens from env or C:\Users\mahou\NightBeam-Knowledge-Base\secrets\local.env
 #
 # Usage:
@@ -7,6 +7,7 @@
 
 param(
     [string]$Version = "4.2.0",
+    [string]$Workspace = "26.1.2",
     [switch]$CurseForgeOnly,
     [switch]$ModrinthOnly,
     [switch]$DryRun
@@ -16,15 +17,35 @@ $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
 Set-Location $root
 
+$workspaceDir = Join-Path $root $Workspace
+if (-not (Test-Path $workspaceDir)) {
+    throw "Workspace not found: $Workspace"
+}
+
 $notes = Join-Path $root "RPG-Attribute-System-$Version-PatchNotes.md"
 if (-not (Test-Path $notes)) { $notes = Join-Path $root "PATCH_NOTES.md" }
 
-$nodeArgs = @("scripts/upload_platforms.mjs", "--version", $Version, "--changelog-file", $notes)
+Write-Host "=== Build RPG Attribute System v$Version ($Workspace) ===" -ForegroundColor Green
+Push-Location $workspaceDir
+try {
+    & ".\gradlew.bat" "build" "--no-daemon"
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+}
+finally {
+    Pop-Location
+}
+
+$nodeArgs = @(
+    "scripts/upload_platforms.mjs",
+    "--workspace", $Workspace,
+    "--version", $Version,
+    "--changelog-file", $notes
+)
 if ($CurseForgeOnly) { $nodeArgs += "--curseforge-only" }
 if ($ModrinthOnly) { $nodeArgs += "--modrinth-only" }
 if ($DryRun) { $nodeArgs += "--dry-run" }
 
-Write-Host "=== Local upload RPG Attribute System v$Version ===" -ForegroundColor Green
+Write-Host "=== Local upload RPG Attribute System v$Version ($Workspace) ===" -ForegroundColor Green
 node @nodeArgs
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
