@@ -1,6 +1,6 @@
 # RPG Attribute System (RAS)
 
-> **Version:** 4.2.0 | **Mod ID:** `rpg_attribute_system`  
+> **Version:** 4.2.1 | **Mod ID:** `rpg_attribute_system`  
 > **Author:** Meher / [NightBeam](https://www.nightbeam.cloud/)  
 > **License:** Apache-2.0
 

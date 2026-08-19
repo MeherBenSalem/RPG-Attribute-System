@@ -85,7 +85,10 @@ function resolveWorkspaceDir(workspace) {
 }
 
 function collectWorkspaceJars(workspaceDir, version) {
-  const loaderDirs = ["fabric", "neoforge"];
+  // Loader jars are produced under per-loader build dirs (fabric/forge/neoforge).
+  // This is intentionally broad so older workspaces (e.g. 1.20.1) that include Forge
+  // still publish all variants.
+  const loaderDirs = ["fabric", "forge", "neoforge"];
   const jars = [];
   for (const loaderDir of loaderDirs) {
     const libsDir = path.join(workspaceDir, loaderDir, "build", "libs");

@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.2.1
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+
+### Bug Fixes
+
+- **NeoForge 26.1.2 startup crash** — update block-break event handler to use `BreakBlockEvent` on 26.1.2 (fixes missing `BlockEvent.BreakEvent`).
+
+---
+
 ## 4.2.0
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)

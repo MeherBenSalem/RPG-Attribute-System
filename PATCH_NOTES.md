@@ -1,5 +1,17 @@
 # RPG Attribute System — Patch Notes
 
+## 4.2.1
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+
+### Bug fixes
+
+- **NeoForge 26.1.2 startup crash (BlockEvent.BreakEvent missing)** — NeoForge block-break handler now uses `BreakBlockEvent` on 26.1.2 so the mod loads correctly.
+
+### Upgrade
+
+Replace the loader jar for your Minecraft version with **4.2.1**. Existing configuration files remain intact.
+
 ## 4.2.0
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)

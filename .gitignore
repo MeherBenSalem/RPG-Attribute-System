@@ -12,7 +12,7 @@ releases/
 # Ignore gradle.properties ONLY if it contains secrets. 
 # Usually it contains version info and SHOULD be committed.
 # gradle.properties
-
+assets-source/
 # IDE - IntelliJ IDEA
 .idea/
 *.iml
