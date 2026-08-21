@@ -40,6 +40,14 @@ public final class StatsDisplayConfig {
         return bonusNeutralColor;
     }
 
+    public static void applyFromSync(int headerColor, int bonusPositiveColor, int bonusNeutralColor,
+            List<TotalEntry> syncedTotals) {
+        StatsDisplayConfig.headerColor = headerColor;
+        StatsDisplayConfig.bonusPositiveColor = bonusPositiveColor;
+        StatsDisplayConfig.bonusNeutralColor = bonusNeutralColor;
+        totals = syncedTotals == null || syncedTotals.isEmpty() ? defaultTotals() : List.copyOf(syncedTotals);
+    }
+
     private static List<TotalEntry> loadTotals() {
         List<String> entries = Services.CONFIG.getArrayAsList("ras", "stats_display", "totals");
         if (entries.isEmpty()) {
@@ -48,7 +56,7 @@ public final class StatsDisplayConfig {
         List<TotalEntry> loaded = new ArrayList<>();
         for (String entry : entries) {
             String label = substring(entry, "[label]", "[labelEnd]");
-            String ids = substring(entry, "[ids]", "[idsEnd]");
+            String ids = extractIds(entry);
             String mode = substring(entry, "[mode]", "[modeEnd]");
             if (label.isEmpty() || ids.isEmpty()) {
                 continue;
@@ -72,6 +80,26 @@ public final class StatsDisplayConfig {
         defaults.add(new TotalEntry("Total Mana Bonus", List.of(3), "bonus"));
         defaults.add(new TotalEntry("Total Defense Bonus", List.of(4), "bonus"));
         return defaults;
+    }
+
+    private static String extractIds(String entry) {
+        String ids = substring(entry, "[ids]", "[idsEnd]");
+        if (!ids.isEmpty()) {
+            return ids;
+        }
+        int start = entry.indexOf("[ids]");
+        if (start < 0) {
+            return "";
+        }
+        start += "[ids]".length();
+        int end = entry.indexOf("[labelEnd]", start);
+        if (end < 0) {
+            end = entry.indexOf("[mode]", start);
+        }
+        if (end < 0) {
+            return "";
+        }
+        return entry.substring(start, end).trim();
     }
 
     private static String substring(String text, String start, String end) {

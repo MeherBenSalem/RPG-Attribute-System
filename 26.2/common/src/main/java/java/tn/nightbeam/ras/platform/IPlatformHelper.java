@@ -80,6 +80,11 @@ public interface IPlatformHelper {
     void syncItemsLockConfig(net.minecraft.server.level.ServerPlayer player);
 
     /**
+     * Syncs stats display configuration to the client.
+     */
+    void syncStatsDisplayConfig(net.minecraft.server.level.ServerPlayer player);
+
+    /**
      * Sends a button action packet to the server.
      *
      * @param buttonID The ID of the button.

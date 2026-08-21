@@ -47,7 +47,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     private static final int VALUE_MAROON = 0xFF6B3A52;
     private static final int POINTS_GREEN = 0xFF267326;
     private static final int LOCKED_TEXT = 0xFF8A7A66;
-    private static final int XP_TEXT = 0xFF342730;
+    private static final int XP_TEXT = 0xFFF3E1B5;
     private static final int HEADER_GOLD = 0xFFF3E1B5;
 
     private static final Identifier BOOK = texture("book.png");
@@ -409,7 +409,8 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         graphics.pose().pushMatrix();
         graphics.pose().translate(px(0), py(0));
         graphics.pose().scale(layout.scale(), layout.scale());
-        graphics.text(font, text, x, y, color, shadow);
+        graphics.text(font, text, x + 1, y + 1, 0x80F3E1B5, false);
+        graphics.text(font, text, x, y, color, true);
         graphics.pose().popMatrix();
     }
 

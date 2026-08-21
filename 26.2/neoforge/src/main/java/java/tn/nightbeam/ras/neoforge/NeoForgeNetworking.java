@@ -11,7 +11,9 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import tn.nightbeam.ras.RpgAttributeSystemMod;
 import tn.nightbeam.ras.config.AttributeData;
+import tn.nightbeam.ras.config.StatsDisplayConfig;
 import tn.nightbeam.ras.network.ItemsLockSyncPacket;
+import tn.nightbeam.ras.network.StatsDisplaySyncPacket;
 import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.platform.Services;
 import net.minecraft.nbt.CompoundTag;
@@ -29,6 +31,8 @@ public class NeoForgeNetworking {
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "sync_config");
         public static final Identifier SYNC_ITEMS_LOCK_ID = Identifier
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "sync_items_lock");
+        public static final Identifier SYNC_STATS_DISPLAY_ID = Identifier
+            .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "sync_stats_display");
         public static final Identifier BUTTON_ACTION_ID = Identifier
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "button_action");
         public static final Identifier MENU_UPDATE_ID = Identifier
@@ -44,6 +48,8 @@ public class NeoForgeNetworking {
         registrar.playToClient(SyncVarsPayload.TYPE, SyncVarsPayload.CODEC, NeoForgeNetworking::handleSyncVars);
         registrar.playToClient(SyncConfigPayload.TYPE, SyncConfigPayload.CODEC, NeoForgeNetworking::handleSyncConfig);
         registrar.playToClient(SyncItemsLockPayload.TYPE, SyncItemsLockPayload.CODEC, NeoForgeNetworking::handleSyncItemsLock);
+        registrar.playToClient(SyncStatsDisplayPayload.TYPE, SyncStatsDisplayPayload.CODEC,
+                NeoForgeNetworking::handleSyncStatsDisplay);
 
         registrar.playBidirectional(MenuUpdatePayload.TYPE, MenuUpdatePayload.CODEC,
             NeoForgeNetworking::handleMenuUpdateClient,
@@ -114,6 +120,31 @@ public class NeoForgeNetworking {
         private static SyncItemsLockPayload decode(FriendlyByteBuf buf) {
             ItemsLockSyncPacket packet = ItemsLockSyncPacket.decodeItemsLockData(buf);
             return new SyncItemsLockPayload(packet.enabled(), packet.showTooltip(), packet.itemsList());
+        }
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+    public record SyncStatsDisplayPayload(int headerColor, int bonusPositiveColor, int bonusNeutralColor,
+            List<StatsDisplayConfig.TotalEntry> totals) implements CustomPacketPayload {
+        public static final CustomPacketPayload.Type<SyncStatsDisplayPayload> TYPE = new CustomPacketPayload.Type<>(
+                SYNC_STATS_DISPLAY_ID);
+        public static final StreamCodec<FriendlyByteBuf, SyncStatsDisplayPayload> CODEC = StreamCodec.of(
+                SyncStatsDisplayPayload::encode,
+                SyncStatsDisplayPayload::decode);
+
+        private static void encode(FriendlyByteBuf buf, SyncStatsDisplayPayload payload) {
+            StatsDisplaySyncPacket.encodeStatsDisplayData(buf, payload.headerColor(), payload.bonusPositiveColor(),
+                    payload.bonusNeutralColor(), payload.totals());
+        }
+
+        private static SyncStatsDisplayPayload decode(FriendlyByteBuf buf) {
+            StatsDisplaySyncPacket packet = StatsDisplaySyncPacket.decodeStatsDisplayData(buf);
+            return new SyncStatsDisplayPayload(packet.headerColor(), packet.bonusPositiveColor(),
+                    packet.bonusNeutralColor(), packet.totals());
         }
 
         @Override
@@ -211,6 +242,15 @@ public class NeoForgeNetworking {
         context.enqueueWork(() -> {
             ItemsLockSyncPacket.handle(
                     new ItemsLockSyncPacket(payload.enabled(), payload.showTooltip(), payload.itemsList()),
+                    () -> null);
+        });
+    }
+
+    private static void handleSyncStatsDisplay(SyncStatsDisplayPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            StatsDisplaySyncPacket.handle(
+                    new StatsDisplaySyncPacket(payload.headerColor(), payload.bonusPositiveColor(),
+                            payload.bonusNeutralColor(), payload.totals()),
                     () -> null);
         });
     }

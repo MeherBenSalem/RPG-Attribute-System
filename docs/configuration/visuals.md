@@ -97,7 +97,7 @@ Configuration key:
 header_color
 ```
 
-The colour used for section headers in the combat stats display.
+The colour used for section headers in the Statistics overview (Player Stats → Statistics tab).
 
 **Default Value:**
 
@@ -171,7 +171,9 @@ Configuration key:
 totals
 ```
 
-Defines the grouped attribute display sections in the combat stats view. Each entry groups attribute IDs together under a label with a display mode.
+Defines the grouped attribute display sections shown on the **Statistics** tab of the player stats overview. Each entry groups attribute IDs together under a label with a display mode.
+
+> **Note:** Totals and header/bonus colours from `stats_display.json` apply on the Statistics overview screen. On dedicated servers and LAN hosts, the server file is synced to joining clients; after editing the server config, players must re-join to receive the updated display settings.
 
 **Default Value:**
 
@@ -195,7 +197,7 @@ Each entry format:
 **Example with multiple IDs:**
 
 ```json
-"[label]Combat Stats[labelEnd][ids]1,2,3,4,6[labelEnd][mode]total[modeEnd]"
+"[label]Combat Stats[labelEnd][ids]1,2,3,4,6[idsEnd][mode]total[modeEnd]"
 ```
 
 Groups health, damage, attack speed, armor, and knockback resistance together.

@@ -40,7 +40,7 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
     private static final int INK = 0x342730;
     private static final int VALUE_MAROON = 0x6B3A52;
     private static final int POINTS_GREEN = 0x267326;
-    private static final int XP_TEXT = 0x342730;
+    private static final int XP_TEXT = 0xF3E1B5;
     private static final int HEADER_GOLD = 0xF3E1B5;
 
     private static final ResourceLocation BOOK = texture("book.png");
@@ -358,7 +358,8 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
         graphics.pose().pushPose();
         graphics.pose().translate(layout.left(), layout.top(), 0.0F);
         graphics.pose().scale(layout.scale(), layout.scale(), 1.0F);
-        graphics.drawString(font, text, x, y, color, shadow);
+        graphics.drawString(font, text, x + 1, y + 1, 0x80F3E1B5, false);
+        graphics.drawString(font, text, x, y, color, true);
         graphics.pose().popPose();
     }
 

@@ -103,6 +103,14 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     @Override
+    public void syncStatsDisplayConfig(ServerPlayer player) {
+        StatsDisplaySyncPacket packet = StatsDisplaySyncPacket.fromServerConfig();
+        ServerPlayNetworking.send(player,
+                new FabricSyncStatsDisplayPayload(packet.headerColor(), packet.bonusPositiveColor(),
+                        packet.bonusNeutralColor(), packet.totals()));
+    }
+
+    @Override
     public void sendButtonAction(int buttonID, int x, int y, int z) {
         net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(
                 new FabricButtonActionPayload(buttonID, x, y, z));

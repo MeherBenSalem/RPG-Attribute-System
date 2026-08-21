@@ -12,6 +12,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import tn.nightbeam.ras.neoforge.NeoForgeDataAttachments;
 import tn.nightbeam.ras.neoforge.NeoForgeNetworking;
 import tn.nightbeam.ras.network.ItemsLockSyncPacket;
+import tn.nightbeam.ras.network.StatsDisplaySyncPacket;
 import tn.nightbeam.ras.network.PlayerVariables;
 
 import java.util.ArrayList;
@@ -90,6 +91,14 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
         ItemsLockSyncPacket packet = ItemsLockSyncPacket.fromServerConfig();
         PacketDistributor.sendToPlayer(player,
                 new NeoForgeNetworking.SyncItemsLockPayload(packet.enabled(), packet.showTooltip(), packet.itemsList()));
+    }
+
+    @Override
+    public void syncStatsDisplayConfig(ServerPlayer player) {
+        StatsDisplaySyncPacket packet = StatsDisplaySyncPacket.fromServerConfig();
+        PacketDistributor.sendToPlayer(player,
+                new NeoForgeNetworking.SyncStatsDisplayPayload(packet.headerColor(), packet.bonusPositiveColor(),
+                        packet.bonusNeutralColor(), packet.totals()));
     }
 
     @Override

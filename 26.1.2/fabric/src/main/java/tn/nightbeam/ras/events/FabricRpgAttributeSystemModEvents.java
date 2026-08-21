@@ -165,6 +165,7 @@ public class FabricRpgAttributeSystemModEvents {
             Services.PLATFORM.syncAttributeConfig(handler.getPlayer());
             Services.PLATFORM.syncItemsLockConfig(handler.getPlayer());
             Services.PLATFORM.syncItemsLockConfig(handler.getPlayer());
+            Services.PLATFORM.syncStatsDisplayConfig(handler.getPlayer());
             OnPlayerSpawnProcedure.execute(handler.getPlayer());
             Services.PLATFORM.syncPlayerVariables(Services.PLATFORM.getPlayerVariables(handler.getPlayer()),
                     handler.getPlayer());

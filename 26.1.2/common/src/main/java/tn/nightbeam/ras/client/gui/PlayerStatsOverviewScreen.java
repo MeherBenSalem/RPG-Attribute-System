@@ -118,7 +118,7 @@ public class PlayerStatsOverviewScreen extends Screen {
         drawFullTexture(graphics, TITLE_FRAME, 34, 16, 180, 24);
         drawFullTexture(graphics, TITLE_FRAME, RIGHT_PAGE_X + 8, 16, 180, 24);
         drawCentered(graphics, "Player Stats", 124, 22, INK);
-        drawCentered(graphics, "Statistics", RIGHT_PAGE_X + 106, 22, MAROON);
+        drawCentered(graphics, "Statistics", RIGHT_PAGE_X + 106, 22, StatsDisplayConfig.getHeaderColor());
         renderSummary(graphics);
         renderAttributes(graphics, mouseX, mouseY);
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
@@ -149,7 +149,7 @@ public class PlayerStatsOverviewScreen extends Screen {
         }
         drawCentered(graphics, format(vars.currentXpTLevel) + "/" + format(next) + " XP", 124, 143, INK);
 
-        drawCentered(graphics, "Totals", 124, 186, INK);
+        drawCentered(graphics, "Totals", 124, 186, StatsDisplayConfig.getHeaderColor());
         int line = 204;
         for (StatsDisplayConfig.TotalEntry total : StatsDisplayConfig.getTotals()) {
             if (line > 258) break;
@@ -191,7 +191,8 @@ public class PlayerStatsOverviewScreen extends Screen {
             drawRight(graphics, format(value(vars, key, data)), RIGHT_PAGE_X + 196, rowY + 3, MAROON);
             double bonus = value(vars, key, data) - (data == null ? 0.0D : data.initValue);
             double points = vars.attributePoints.getOrDefault(key, 0.0D);
-            int bonusColor = bonus == 0.0D ? MUTED : MAROON;
+            int bonusColor = bonus == 0.0D ? StatsDisplayConfig.getBonusNeutralColor()
+                    : StatsDisplayConfig.getBonusPositiveColor();
             drawString(graphics, "+" + format(bonus) + " bonus · " + format(points) + " pts",
                     RIGHT_PAGE_X + 44, rowY + 17, bonusColor);
             if (data != null && data.tipToDisplay != null && !data.tipToDisplay.isBlank()
@@ -233,7 +234,8 @@ public class PlayerStatsOverviewScreen extends Screen {
         graphics.pose().pushMatrix();
         graphics.pose().translate(px(0), py(0));
         graphics.pose().scale(layout.scale(), layout.scale());
-        graphics.text(font, text, x, y, color, shadow);
+        graphics.text(font, text, x + 1, y + 1, 0x80F3E1B5, false);
+        graphics.text(font, text, x, y, color, true);
         graphics.pose().popMatrix();
     }
 
