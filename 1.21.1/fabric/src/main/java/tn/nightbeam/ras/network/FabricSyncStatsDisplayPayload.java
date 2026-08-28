@@ -3,14 +3,14 @@ package tn.nightbeam.ras.network;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import tn.nightbeam.ras.config.StatsDisplayConfig;
 
 import java.util.List;
 
 public record FabricSyncStatsDisplayPayload(int headerColor, int bonusPositiveColor, int bonusNeutralColor,
-        List<StatsDisplayConfig.TotalEntry> totals) implements CustomPacketPayload {
-    public static final ResourceLocation ID_LOCATION = ResourceLocation.fromNamespaceAndPath("rpg_attribute_system",
+        int guiShadowColor, List<StatsDisplayConfig.TotalEntry> totals) implements CustomPacketPayload {
+    public static final Identifier ID_LOCATION = Identifier.fromNamespaceAndPath("rpg_attribute_system",
             "sync_stats_display");
     public static final CustomPacketPayload.Type<FabricSyncStatsDisplayPayload> TYPE = new CustomPacketPayload.Type<>(
             ID_LOCATION);
@@ -21,13 +21,13 @@ public record FabricSyncStatsDisplayPayload(int headerColor, int bonusPositiveCo
 
     public static void encode(FriendlyByteBuf buf, FabricSyncStatsDisplayPayload payload) {
         StatsDisplaySyncPacket.encodeStatsDisplayData(buf, payload.headerColor(), payload.bonusPositiveColor(),
-                payload.bonusNeutralColor(), payload.totals());
+                payload.bonusNeutralColor(), payload.guiShadowColor(), payload.totals());
     }
 
     public static FabricSyncStatsDisplayPayload decode(FriendlyByteBuf buf) {
         StatsDisplaySyncPacket packet = StatsDisplaySyncPacket.decodeStatsDisplayData(buf);
         return new FabricSyncStatsDisplayPayload(packet.headerColor(), packet.bonusPositiveColor(),
-                packet.bonusNeutralColor(), packet.totals());
+                packet.bonusNeutralColor(), packet.guiShadowColor(), packet.totals());
     }
 
     @Override

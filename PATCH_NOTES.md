@@ -1,5 +1,22 @@
 # RPG Attribute System — Patch Notes
 
+## 4.2.3
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+
+### New features
+
+- **`/ras level [player]`** — show RPG level (self by default; other players require OP or `rpg_attribute_system.level.other`).
+- **`/ras rewards [level]`** — list deterministic level-up rewards from `levelup_rewards.json`.
+
+### Configuration
+
+- **`gui_shadow_color`** in `stats_display.json` — configurable cream underlay for book-style GUI text (default `#80F3E1B5`); synced on join.
+
+### Upgrade
+
+Replace the loader jar for your Minecraft version with **4.2.3**. Update clients and servers together (stats-display sync packet extended).
+
 ## 4.2.1
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)

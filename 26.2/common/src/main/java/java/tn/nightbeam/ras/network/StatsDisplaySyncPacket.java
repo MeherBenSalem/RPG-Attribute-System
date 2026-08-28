@@ -11,13 +11,15 @@ public class StatsDisplaySyncPacket {
     private final int headerColor;
     private final int bonusPositiveColor;
     private final int bonusNeutralColor;
+    private final int guiShadowColor;
     private final List<StatsDisplayConfig.TotalEntry> totals;
 
-    public StatsDisplaySyncPacket(int headerColor, int bonusPositiveColor, int bonusNeutralColor,
+    public StatsDisplaySyncPacket(int headerColor, int bonusPositiveColor, int bonusNeutralColor, int guiShadowColor,
             List<StatsDisplayConfig.TotalEntry> totals) {
         this.headerColor = headerColor;
         this.bonusPositiveColor = bonusPositiveColor;
         this.bonusNeutralColor = bonusNeutralColor;
+        this.guiShadowColor = guiShadowColor;
         this.totals = totals == null ? List.of() : totals;
     }
 
@@ -25,6 +27,7 @@ public class StatsDisplaySyncPacket {
         this.headerColor = buffer.readInt();
         this.bonusPositiveColor = buffer.readInt();
         this.bonusNeutralColor = buffer.readInt();
+        this.guiShadowColor = buffer.readInt();
         int count = buffer.readInt();
         this.totals = new ArrayList<>();
         for (int i = 0; i < count; i++) {
@@ -45,6 +48,7 @@ public class StatsDisplaySyncPacket {
                 StatsDisplayConfig.getHeaderColor(),
                 StatsDisplayConfig.getBonusPositiveColor(),
                 StatsDisplayConfig.getBonusNeutralColor(),
+                StatsDisplayConfig.getGuiShadowColor(),
                 StatsDisplayConfig.getTotals());
     }
 
@@ -52,6 +56,7 @@ public class StatsDisplaySyncPacket {
         buffer.writeInt(message.headerColor);
         buffer.writeInt(message.bonusPositiveColor);
         buffer.writeInt(message.bonusNeutralColor);
+        buffer.writeInt(message.guiShadowColor);
         buffer.writeInt(message.totals.size());
         for (StatsDisplayConfig.TotalEntry entry : message.totals) {
             buffer.writeUtf(entry.label());
@@ -64,8 +69,9 @@ public class StatsDisplaySyncPacket {
     }
 
     public static void encodeStatsDisplayData(FriendlyByteBuf buffer, int headerColor, int bonusPositiveColor,
-            int bonusNeutralColor, List<StatsDisplayConfig.TotalEntry> totals) {
-        encode(new StatsDisplaySyncPacket(headerColor, bonusPositiveColor, bonusNeutralColor, totals), buffer);
+            int bonusNeutralColor, int guiShadowColor, List<StatsDisplayConfig.TotalEntry> totals) {
+        encode(new StatsDisplaySyncPacket(headerColor, bonusPositiveColor, bonusNeutralColor, guiShadowColor, totals),
+                buffer);
     }
 
     public static StatsDisplaySyncPacket decodeStatsDisplayData(FriendlyByteBuf buffer) {
@@ -84,12 +90,16 @@ public class StatsDisplaySyncPacket {
         return bonusNeutralColor;
     }
 
+    public int guiShadowColor() {
+        return guiShadowColor;
+    }
+
     public List<StatsDisplayConfig.TotalEntry> totals() {
         return totals;
     }
 
     public static void handle(StatsDisplaySyncPacket message, Supplier<Object> contextSupplier) {
         StatsDisplayConfig.applyFromSync(message.headerColor, message.bonusPositiveColor,
-                message.bonusNeutralColor, message.totals);
+                message.bonusNeutralColor, message.guiShadowColor, message.totals);
     }
 }

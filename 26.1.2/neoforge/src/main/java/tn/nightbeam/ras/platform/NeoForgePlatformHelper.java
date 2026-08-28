@@ -99,7 +99,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
         StatsDisplaySyncPacket packet = StatsDisplaySyncPacket.fromServerConfig();
         PacketDistributor.sendToPlayer(player,
                 new NeoForgeNetworking.SyncStatsDisplayPayload(packet.headerColor(), packet.bonusPositiveColor(),
-                        packet.bonusNeutralColor(), packet.totals()));
+                        packet.bonusNeutralColor(), packet.guiShadowColor(), packet.totals()));
     }
 
     @Override

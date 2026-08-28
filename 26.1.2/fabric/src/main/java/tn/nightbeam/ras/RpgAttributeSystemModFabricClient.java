@@ -63,7 +63,7 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
                     context.client().execute(() -> {
                         StatsDisplaySyncPacket.handle(
                                 new StatsDisplaySyncPacket(payload.headerColor(), payload.bonusPositiveColor(),
-                                        payload.bonusNeutralColor(), payload.totals()),
+                                        payload.bonusNeutralColor(), payload.guiShadowColor(), payload.totals()),
                                 () -> null);
                     });
                 });

@@ -72,7 +72,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
                     new NeoForgeNetworking.MenuUpdatePayload(elementType, name, elementState));
         } else if (player.level().isClientSide()) {
             if (needClientUpdate && net.minecraft.client.Minecraft
-                    .getInstance().gui.screen() instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
+                    .getInstance().screen instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
                 accessor.updateMenuState(elementType, name, elementState);
             }
             ClientPacketDistributor.sendToServer(
@@ -99,7 +99,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
         StatsDisplaySyncPacket packet = StatsDisplaySyncPacket.fromServerConfig();
         PacketDistributor.sendToPlayer(player,
                 new NeoForgeNetworking.SyncStatsDisplayPayload(packet.headerColor(), packet.bonusPositiveColor(),
-                        packet.bonusNeutralColor(), packet.totals()));
+                        packet.bonusNeutralColor(), packet.guiShadowColor(), packet.totals()));
     }
 
     @Override

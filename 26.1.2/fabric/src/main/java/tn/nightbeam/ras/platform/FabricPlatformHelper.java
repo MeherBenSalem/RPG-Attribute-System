@@ -107,7 +107,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
         StatsDisplaySyncPacket packet = StatsDisplaySyncPacket.fromServerConfig();
         ServerPlayNetworking.send(player,
                 new FabricSyncStatsDisplayPayload(packet.headerColor(), packet.bonusPositiveColor(),
-                        packet.bonusNeutralColor(), packet.totals()));
+                        packet.bonusNeutralColor(), packet.guiShadowColor(), packet.totals()));
     }
 
     @Override

@@ -129,7 +129,7 @@ public class NeoForgeNetworking {
     }
 
     public record SyncStatsDisplayPayload(int headerColor, int bonusPositiveColor, int bonusNeutralColor,
-            List<StatsDisplayConfig.TotalEntry> totals) implements CustomPacketPayload {
+            int guiShadowColor, List<StatsDisplayConfig.TotalEntry> totals) implements CustomPacketPayload {
         public static final CustomPacketPayload.Type<SyncStatsDisplayPayload> TYPE = new CustomPacketPayload.Type<>(
                 SYNC_STATS_DISPLAY_ID);
         public static final StreamCodec<FriendlyByteBuf, SyncStatsDisplayPayload> CODEC = StreamCodec.of(
@@ -138,13 +138,13 @@ public class NeoForgeNetworking {
 
         private static void encode(FriendlyByteBuf buf, SyncStatsDisplayPayload payload) {
             StatsDisplaySyncPacket.encodeStatsDisplayData(buf, payload.headerColor(), payload.bonusPositiveColor(),
-                    payload.bonusNeutralColor(), payload.totals());
+                    payload.bonusNeutralColor(), payload.guiShadowColor(), payload.totals());
         }
 
         private static SyncStatsDisplayPayload decode(FriendlyByteBuf buf) {
             StatsDisplaySyncPacket packet = StatsDisplaySyncPacket.decodeStatsDisplayData(buf);
             return new SyncStatsDisplayPayload(packet.headerColor(), packet.bonusPositiveColor(),
-                    packet.bonusNeutralColor(), packet.totals());
+                    packet.bonusNeutralColor(), packet.guiShadowColor(), packet.totals());
         }
 
         @Override
@@ -250,7 +250,7 @@ public class NeoForgeNetworking {
         context.enqueueWork(() -> {
             StatsDisplaySyncPacket.handle(
                     new StatsDisplaySyncPacket(payload.headerColor(), payload.bonusPositiveColor(),
-                            payload.bonusNeutralColor(), payload.totals()),
+                            payload.bonusNeutralColor(), payload.guiShadowColor(), payload.totals()),
                     () -> null);
         });
     }

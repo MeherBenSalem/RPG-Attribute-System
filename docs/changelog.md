@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.2.3
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+
+### New Features
+
+- **`/ras level [player]`** — display RPG level; other players require OP or `rpg_attribute_system.level.other`.
+- **`/ras rewards [level]`** — list deterministic level-up rewards from `levelup_rewards.json`.
+
+### Configuration
+
+- **`gui_shadow_color`** in `stats_display.json` — configurable GUI text underlay colour (default `#80F3E1B5`); server sync on join.
+
+---
+
 ## 4.2.1
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)

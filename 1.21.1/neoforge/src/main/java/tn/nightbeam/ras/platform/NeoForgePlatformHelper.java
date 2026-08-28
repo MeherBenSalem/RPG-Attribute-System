@@ -9,10 +9,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import tn.nightbeam.ras.neoforge.NeoForgeDataAttachments;
-import tn.nightbeam.ras.neoforge.NeoForgeNetworking;
 import tn.nightbeam.ras.network.ItemsLockSyncPacket;
 import tn.nightbeam.ras.network.StatsDisplaySyncPacket;
+import tn.nightbeam.ras.neoforge.NeoForgeNetworking;
 import tn.nightbeam.ras.network.PlayerVariables;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public boolean isDevelopmentEnvironment() {
-        return !FMLLoader.isProduction();
+        return true;
     }
 
     @Override
@@ -69,12 +70,12 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer,
                     new NeoForgeNetworking.MenuUpdatePayload(elementType, name, elementState));
-        } else if (player.level().isClientSide) {
+        } else if (player.level().isClientSide()) {
             if (needClientUpdate && net.minecraft.client.Minecraft
                     .getInstance().screen instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
                 accessor.updateMenuState(elementType, name, elementState);
             }
-            PacketDistributor.sendToServer(
+            ClientPacketDistributor.sendToServer(
                     new NeoForgeNetworking.MenuUpdatePayload(elementType, name, elementState));
         }
     }
@@ -98,12 +99,12 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
         StatsDisplaySyncPacket packet = StatsDisplaySyncPacket.fromServerConfig();
         PacketDistributor.sendToPlayer(player,
                 new NeoForgeNetworking.SyncStatsDisplayPayload(packet.headerColor(), packet.bonusPositiveColor(),
-                        packet.bonusNeutralColor(), packet.totals()));
+                        packet.bonusNeutralColor(), packet.guiShadowColor(), packet.totals()));
     }
 
     @Override
     public void sendButtonAction(int buttonID, int x, int y, int z) {
-        PacketDistributor.sendToServer(
+        ClientPacketDistributor.sendToServer(
                 new NeoForgeNetworking.ButtonActionPayload(buttonID, x, y, z));
     }
 }

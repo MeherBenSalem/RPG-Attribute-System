@@ -1,5 +1,6 @@
 package tn.nightbeam.ras.command;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
@@ -114,6 +115,27 @@ public class RpgAttributeSystemModCommands {
                                                     TemplateApplyCmdProcedure.executeOther(arguments,
                                                             StringArgumentType.getString(arguments, "name"));
                                                     return 0;
-                                                }))))));
+                                                })))))
+                .then(Commands.literal("level")
+                        .executes(arguments -> {
+                            LevelCmdProcedure.executeSelf(arguments);
+                            return 1;
+                        })
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(arguments -> {
+                                    LevelCmdProcedure.executeOther(arguments);
+                                    return 1;
+                                })))
+                .then(Commands.literal("rewards")
+                        .executes(arguments -> {
+                            RewardsListCmdProcedure.execute(arguments);
+                            return 1;
+                        })
+                        .then(Commands.argument("level", IntegerArgumentType.integer(1))
+                                .executes(arguments -> {
+                                    RewardsListCmdProcedure.execute(arguments,
+                                            IntegerArgumentType.getInteger(arguments, "level"));
+                                    return 1;
+                                }))));
     }
 }

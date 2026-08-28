@@ -234,7 +234,7 @@ public class PlayerStatsOverviewScreen extends Screen {
         graphics.pose().pushMatrix();
         graphics.pose().translate(px(0), py(0));
         graphics.pose().scale(layout.scale(), layout.scale());
-        graphics.text(font, text, x + 1, y + 1, 0x80F3E1B5, false);
+        graphics.text(font, text, x + 1, y + 1, StatsDisplayConfig.getGuiShadowColor(), false);
         graphics.text(font, text, x, y, color, true);
         graphics.pose().popMatrix();
     }
@@ -244,7 +244,7 @@ public class PlayerStatsOverviewScreen extends Screen {
     }
 
     private void returnToParent() {
-        if (minecraft != null) minecraft.gui.setScreen(parent);
+        if (minecraft != null) minecraft.setScreen(parent);
     }
 
     @Override public void onClose() { returnToParent(); }

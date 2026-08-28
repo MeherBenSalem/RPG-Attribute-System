@@ -365,6 +365,9 @@ public class ConfigInitializer {
         if (!Services.CONFIG.arrayKeyExists(dir, file, "bonus_neutral_color")) {
             Services.CONFIG.setStringValue(dir, file, "bonus_neutral_color", "#AAAAAA");
         }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "gui_shadow_color")) {
+            Services.CONFIG.setStringValue(dir, file, "gui_shadow_color", "#80F3E1B5");
+        }
         if (Services.CONFIG.getArrayAsList(dir, file, "totals").isEmpty()) {
             Services.CONFIG.addStringToArray(dir, file, "totals",
                     "[label]Total Health Bonus[labelEnd][ids]1[idsEnd][mode]bonus[modeEnd]");

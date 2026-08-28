@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import tn.nightbeam.ras.config.AttributeData;
+import tn.nightbeam.ras.config.StatsDisplayConfig;
 import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.platform.Services;
 import tn.nightbeam.ras.procedures.CurrentXpToLevelProcedure;
@@ -409,7 +410,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         graphics.pose().pushMatrix();
         graphics.pose().translate(px(0), py(0));
         graphics.pose().scale(layout.scale(), layout.scale());
-        graphics.text(font, text, x + 1, y + 1, 0x80F3E1B5, false);
+        graphics.text(font, text, x + 1, y + 1, StatsDisplayConfig.getGuiShadowColor(), false);
         graphics.text(font, text, x, y, color, true);
         graphics.pose().popMatrix();
     }

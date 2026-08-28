@@ -11,6 +11,7 @@ public final class StatsDisplayConfig {
     private static int headerColor = 0xFFD700;
     private static int bonusPositiveColor = 0x55FF55;
     private static int bonusNeutralColor = 0xAAAAAA;
+    private static int guiShadowColor = 0x80F3E1B5;
 
     private StatsDisplayConfig() {
     }
@@ -22,6 +23,8 @@ public final class StatsDisplayConfig {
                 Services.CONFIG.getStringValue("ras", "stats_display", "bonus_positive_color"), 0x55FF55);
         bonusNeutralColor = parseColor(
                 Services.CONFIG.getStringValue("ras", "stats_display", "bonus_neutral_color"), 0xAAAAAA);
+        guiShadowColor = parseColor(
+                Services.CONFIG.getStringValue("ras", "stats_display", "gui_shadow_color"), 0x80F3E1B5);
     }
 
     public static List<TotalEntry> getTotals() {
@@ -40,11 +43,16 @@ public final class StatsDisplayConfig {
         return bonusNeutralColor;
     }
 
-    public static void applyFromSync(int headerColor, int bonusPositiveColor, int bonusNeutralColor,
+    public static int getGuiShadowColor() {
+        return guiShadowColor;
+    }
+
+    public static void applyFromSync(int headerColor, int bonusPositiveColor, int bonusNeutralColor, int guiShadowColor,
             List<TotalEntry> syncedTotals) {
         StatsDisplayConfig.headerColor = headerColor;
         StatsDisplayConfig.bonusPositiveColor = bonusPositiveColor;
         StatsDisplayConfig.bonusNeutralColor = bonusNeutralColor;
+        StatsDisplayConfig.guiShadowColor = guiShadowColor;
         totals = syncedTotals == null || syncedTotals.isEmpty() ? defaultTotals() : List.copyOf(syncedTotals);
     }
 
@@ -115,6 +123,9 @@ public final class StatsDisplayConfig {
         }
         try {
             String hex = value.startsWith("#") ? value.substring(1) : value;
+            if (hex.length() == 8) {
+                return (int) Long.parseLong(hex, 16);
+            }
             if (hex.length() == 6) {
                 return 0xFF000000 | Integer.parseInt(hex, 16);
             }

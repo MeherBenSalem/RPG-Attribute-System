@@ -1,5 +1,6 @@
 package tn.nightbeam.ras.util;
 
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 import tn.nightbeam.ras.platform.Services;
 
@@ -8,6 +9,7 @@ public final class RasPermissions {
     public static final String RESPEC_OTHER = "rpg_attribute_system.respec.other";
     public static final String TEMPLATE_APPLY = "rpg_attribute_system.template.apply";
     public static final String TEMPLATE_APPLY_OTHER = "rpg_attribute_system.template.apply.other";
+    public static final String LEVEL_OTHER = "rpg_attribute_system.level.other";
 
     private RasPermissions() {
     }
@@ -36,5 +38,22 @@ public final class RasPermissions {
 
     public static boolean canApplyTemplateOther(ServerPlayer actor) {
         return has(actor, TEMPLATE_APPLY_OTHER);
+    }
+
+    public static boolean canViewLevelOther(CommandSourceStack source) {
+        if (!source.isPlayer()) {
+            return true;
+        }
+        ServerPlayer player = source.getPlayer();
+        if (player == null) {
+            return false;
+        }
+        if (has(player, LEVEL_OTHER)) {
+            return true;
+        }
+        if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+            return serverLevel.getServer().getPlayerList().isOp(player.nameAndId());
+        }
+        return false;
     }
 }

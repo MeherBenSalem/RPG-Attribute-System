@@ -82,7 +82,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
                     new FabricMenuStateUpdatePayload(elementType, name, elementState));
 
             if (needClientUpdate && net.minecraft.client.Minecraft
-                    .getInstance().gui.screen() instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
+                    .getInstance().screen instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
                 accessor.updateMenuState(elementType, name, elementState);
             }
         }
@@ -107,7 +107,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
         StatsDisplaySyncPacket packet = StatsDisplaySyncPacket.fromServerConfig();
         ServerPlayNetworking.send(player,
                 new FabricSyncStatsDisplayPayload(packet.headerColor(), packet.bonusPositiveColor(),
-                        packet.bonusNeutralColor(), packet.totals()));
+                        packet.bonusNeutralColor(), packet.guiShadowColor(), packet.totals()));
     }
 
     @Override
