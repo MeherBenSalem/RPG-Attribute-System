@@ -258,7 +258,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         addRenderableWidget(new StatisticsTabButton(px(BOOK_WIDTH), py(134), scaled(22), scaled(30),
                 Component.literal("Statistics"), button -> {
                     if (minecraft != null) {
-                        minecraft.setScreen(new PlayerStatsOverviewScreen(this));
+                        minecraft.gui.setScreen(new PlayerStatsOverviewScreen(this));
                     }
                 }));
 

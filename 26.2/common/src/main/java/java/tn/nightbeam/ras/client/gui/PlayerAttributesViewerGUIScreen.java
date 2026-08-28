@@ -226,7 +226,7 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
         addRenderableWidget(new StatisticsTabButton(px(BOOK_WIDTH), py(134), scaled(22), scaled(30),
                 Component.literal("Statistics"), button -> {
                     if (minecraft != null) {
-                        minecraft.setScreen(new PlayerStatsOverviewScreen(this));
+                        minecraft.gui.setScreen(new PlayerStatsOverviewScreen(this));
                     }
                 }));
         addRenderableWidget(new CloseButton(px(BOOK_WIDTH - 16), py(8), scaled(12), scaled(12)));

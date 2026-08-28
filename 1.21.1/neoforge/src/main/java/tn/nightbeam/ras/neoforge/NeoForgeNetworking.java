@@ -3,7 +3,7 @@ package tn.nightbeam.ras.neoforge;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -25,19 +25,19 @@ public class NeoForgeNetworking {
     public static final String PROTOCOL_VERSION = "1";
 
     // Payload types
-        public static final Identifier SYNC_VARS_ID = Identifier
+    public static final ResourceLocation SYNC_VARS_ID = ResourceLocation
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "sync_vars");
-        public static final Identifier SYNC_CONFIG_ID = Identifier
+    public static final ResourceLocation SYNC_CONFIG_ID = ResourceLocation
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "sync_config");
-        public static final Identifier SYNC_ITEMS_LOCK_ID = Identifier
+    public static final ResourceLocation SYNC_ITEMS_LOCK_ID = ResourceLocation
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "sync_items_lock");
-        public static final Identifier SYNC_STATS_DISPLAY_ID = Identifier
+    public static final ResourceLocation SYNC_STATS_DISPLAY_ID = ResourceLocation
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "sync_stats_display");
-        public static final Identifier BUTTON_ACTION_ID = Identifier
+    public static final ResourceLocation BUTTON_ACTION_ID = ResourceLocation
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "button_action");
-        public static final Identifier MENU_UPDATE_ID = Identifier
+    public static final ResourceLocation MENU_UPDATE_ID = ResourceLocation
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "menu_update");
-        public static final Identifier OPEN_STATS_ID = Identifier
+    public static final ResourceLocation OPEN_STATS_ID = ResourceLocation
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "open_stats");
 
     @SubscribeEvent
@@ -51,9 +51,9 @@ public class NeoForgeNetworking {
         registrar.playToClient(SyncStatsDisplayPayload.TYPE, SyncStatsDisplayPayload.CODEC,
                 NeoForgeNetworking::handleSyncStatsDisplay);
 
+        // Bidirectional (both directions)
         registrar.playBidirectional(MenuUpdatePayload.TYPE, MenuUpdatePayload.CODEC,
-            NeoForgeNetworking::handleMenuUpdateClient,
-            NeoForgeNetworking::handleMenuUpdateServer);
+                NeoForgeNetworking::handleMenuUpdate);
 
         // Client -> Server
         registrar.playToServer(ButtonActionPayload.TYPE, ButtonActionPayload.CODEC,
@@ -174,12 +174,12 @@ public class NeoForgeNetworking {
     public record MenuUpdatePayload(int elementType, String name, Object elementState) implements CustomPacketPayload {
         public static final CustomPacketPayload.Type<MenuUpdatePayload> TYPE = new CustomPacketPayload.Type<>(
                 MENU_UPDATE_ID);
-        public static final StreamCodec<FriendlyByteBuf, MenuUpdatePayload> CODEC = StreamCodec
+        public static final StreamCodec<net.minecraft.network.RegistryFriendlyByteBuf, MenuUpdatePayload> CODEC = StreamCodec
                 .of(
                         MenuUpdatePayload::encode,
                         MenuUpdatePayload::decode);
 
-        private static void encode(FriendlyByteBuf buf, MenuUpdatePayload payload) {
+        private static void encode(net.minecraft.network.RegistryFriendlyByteBuf buf, MenuUpdatePayload payload) {
             buf.writeInt(payload.elementType);
             buf.writeUtf(payload.name);
             if (payload.elementType == 0) {
@@ -189,7 +189,7 @@ public class NeoForgeNetworking {
             }
         }
 
-        private static MenuUpdatePayload decode(FriendlyByteBuf buf) {
+        private static MenuUpdatePayload decode(net.minecraft.network.RegistryFriendlyByteBuf buf) {
             int elementType = buf.readInt();
             String name = buf.readUtf();
             Object state = null;
@@ -264,21 +264,19 @@ public class NeoForgeNetworking {
         });
     }
 
-    private static void handleMenuUpdateServer(MenuUpdatePayload payload, IPayloadContext context) {
+    private static void handleMenuUpdate(MenuUpdatePayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
+            // Server-side handling
             if (context.player() instanceof ServerPlayer serverPlayer) {
                 if (serverPlayer.containerMenu instanceof tn.nightbeam.ras.init.MenuAccessor menu) {
                     menu.getMenuState().put(payload.elementType + ":" + payload.name, payload.elementState);
                 }
-            }
-        });
-    }
-
-    private static void handleMenuUpdateClient(MenuUpdatePayload payload, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            if (net.minecraft.client.Minecraft
-                    .getInstance().screen instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
-                accessor.updateMenuState(payload.elementType, payload.name, payload.elementState);
+            } else {
+                // Client-side handling
+                if (net.minecraft.client.Minecraft
+                        .getInstance().screen instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
+                    accessor.updateMenuState(payload.elementType, payload.name, payload.elementState);
+                }
             }
         });
     }

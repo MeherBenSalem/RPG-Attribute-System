@@ -9,11 +9,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import tn.nightbeam.ras.neoforge.NeoForgeDataAttachments;
+import tn.nightbeam.ras.neoforge.NeoForgeNetworking;
 import tn.nightbeam.ras.network.ItemsLockSyncPacket;
 import tn.nightbeam.ras.network.StatsDisplaySyncPacket;
-import tn.nightbeam.ras.neoforge.NeoForgeNetworking;
 import tn.nightbeam.ras.network.PlayerVariables;
 
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public boolean isDevelopmentEnvironment() {
-        return true;
+        return !FMLLoader.isProduction();
     }
 
     @Override
@@ -70,12 +69,12 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer,
                     new NeoForgeNetworking.MenuUpdatePayload(elementType, name, elementState));
-        } else if (player.level().isClientSide()) {
+        } else if (player.level().isClientSide) {
             if (needClientUpdate && net.minecraft.client.Minecraft
                     .getInstance().screen instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
                 accessor.updateMenuState(elementType, name, elementState);
             }
-            ClientPacketDistributor.sendToServer(
+            PacketDistributor.sendToServer(
                     new NeoForgeNetworking.MenuUpdatePayload(elementType, name, elementState));
         }
     }
@@ -104,7 +103,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public void sendButtonAction(int buttonID, int x, int y, int z) {
-        ClientPacketDistributor.sendToServer(
+        PacketDistributor.sendToServer(
                 new NeoForgeNetworking.ButtonActionPayload(buttonID, x, y, z));
     }
 }

@@ -3,14 +3,14 @@ package tn.nightbeam.ras.network;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import tn.nightbeam.ras.config.StatsDisplayConfig;
 
 import java.util.List;
 
 public record FabricSyncStatsDisplayPayload(int headerColor, int bonusPositiveColor, int bonusNeutralColor,
         int guiShadowColor, List<StatsDisplayConfig.TotalEntry> totals) implements CustomPacketPayload {
-    public static final Identifier ID_LOCATION = Identifier.fromNamespaceAndPath("rpg_attribute_system",
+    public static final ResourceLocation ID_LOCATION = ResourceLocation.fromNamespaceAndPath("rpg_attribute_system",
             "sync_stats_display");
     public static final CustomPacketPayload.Type<FabricSyncStatsDisplayPayload> TYPE = new CustomPacketPayload.Type<>(
             ID_LOCATION);

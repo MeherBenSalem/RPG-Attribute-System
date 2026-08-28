@@ -5,13 +5,11 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import tn.nightbeam.ras.network.*;
 import tn.nightbeam.ras.platform.Services;
 import tn.nightbeam.ras.init.RpgAttributeSystemModKeyMappings;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
-import net.minecraft.resources.Identifier;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import tn.nightbeam.ras.client.LevelOverlayRenderer;
 import tn.nightbeam.ras.client.RasGuiSelfTest;
 
@@ -68,7 +66,7 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
                     });
                 });
 
-        KeyMappingHelper.registerKeyMapping(RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND);
+        KeyBindingHelper.registerKeyBinding(RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND);
 
         net.minecraft.client.gui.screens.MenuScreens.register(
                 tn.nightbeam.ras.init.RpgAttributeSystemModMenus.PLAYER_STATS_GUI.get(),
@@ -87,10 +85,9 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
             }
         });
 
-        HudElementRegistry.attachElementAfter(
-            VanillaHudElements.HOTBAR,
-            Identifier.fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "xp_overlay"),
-            (graphics, deltaTracker) -> LevelOverlayRenderer.render(graphics, deltaTracker.getGameTimeDeltaTicks()));
+        HudRenderCallback.EVENT.register((graphics, tickCounter) -> {
+            LevelOverlayRenderer.render(graphics, tickCounter.getGameTimeDeltaTicks());
+        });
 
         tn.nightbeam.ras.events.FabricClientRpgAttributeSystemModEvents.register();
     }

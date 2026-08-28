@@ -82,7 +82,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
                     new FabricMenuStateUpdatePayload(elementType, name, elementState));
 
             if (needClientUpdate && net.minecraft.client.Minecraft
-                    .getInstance().screen instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
+                    .getInstance().gui.screen() instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
                 accessor.updateMenuState(elementType, name, elementState);
             }
         }

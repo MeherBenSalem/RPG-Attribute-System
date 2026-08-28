@@ -244,7 +244,7 @@ public class PlayerStatsOverviewScreen extends Screen {
     }
 
     private void returnToParent() {
-        if (minecraft != null) minecraft.setScreen(parent);
+        if (minecraft != null) minecraft.gui.setScreen(parent);
     }
 
     @Override public void onClose() { returnToParent(); }

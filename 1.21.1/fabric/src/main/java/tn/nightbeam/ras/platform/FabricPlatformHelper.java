@@ -10,7 +10,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import java.util.function.Consumer;
-import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 
 public class FabricPlatformHelper implements IPlatformHelper {
 
@@ -51,24 +50,26 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public void openMenu(ServerPlayer player, MenuProvider menuProvider, Consumer<FriendlyByteBuf> extraDataWriter) {
-        player.openMenu(new ExtendedMenuProvider<net.minecraft.core.BlockPos>() {
-            @Override
-            public net.minecraft.world.inventory.AbstractContainerMenu createMenu(int syncId,
-                    net.minecraft.world.entity.player.Inventory inv,
-                    net.minecraft.world.entity.player.Player playerEntity) {
-                return menuProvider.createMenu(syncId, inv, playerEntity);
-            }
+        player.openMenu(
+                new net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory<net.minecraft.core.BlockPos>() {
+                    @Override
+                    public net.minecraft.world.inventory.AbstractContainerMenu createMenu(int syncId,
+                            net.minecraft.world.entity.player.Inventory inv,
+                            net.minecraft.world.entity.player.Player player) {
+                        return menuProvider.createMenu(syncId, inv, player);
+                    }
 
-            @Override
-            public net.minecraft.network.chat.Component getDisplayName() {
-                return menuProvider.getDisplayName();
-            }
+                    @Override
+                    public net.minecraft.network.chat.Component getDisplayName() {
+                        return menuProvider.getDisplayName();
+                    }
 
-            @Override
-            public net.minecraft.core.BlockPos getScreenOpeningData(ServerPlayer serverPlayer) {
-                return serverPlayer.blockPosition();
-            }
-        });
+                    @Override
+                    public net.minecraft.core.BlockPos getScreenOpeningData(ServerPlayer player) {
+                        // Return player position as opening data
+                        return player.blockPosition();
+                    }
+                });
     }
 
     @Override
@@ -76,7 +77,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
             Object elementState, boolean needClientUpdate) {
         if (player instanceof ServerPlayer serverPlayer) {
             ServerPlayNetworking.send(serverPlayer, new FabricMenuStateUpdatePayload(elementType, name, elementState));
-        } else if (player.level().isClientSide()) {
+        } else if (player.level().isClientSide) {
             // Client Side sending to Server
             net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(
                     new FabricMenuStateUpdatePayload(elementType, name, elementState));

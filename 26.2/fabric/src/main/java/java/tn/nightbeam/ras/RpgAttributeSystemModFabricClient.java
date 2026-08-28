@@ -36,7 +36,7 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(FabricMenuStateUpdatePayload.TYPE,
                 (payload, context) -> {
                     context.client().execute(() -> {
-                        if (context.client().screen instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
+                        if (context.client().gui.screen() instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
                             accessor.updateMenuState(payload.elementType(), payload.name(), payload.elementState());
                         }
                     });
@@ -79,7 +79,7 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             RasGuiSelfTest.onClientTick(client);
-            if (client.screen != null) {
+            if (client.gui.screen() != null) {
                 return;
             }
             while (RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND.consumeClick()) {

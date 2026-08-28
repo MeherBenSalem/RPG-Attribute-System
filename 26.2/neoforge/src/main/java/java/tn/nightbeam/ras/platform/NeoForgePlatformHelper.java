@@ -72,7 +72,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
                     new NeoForgeNetworking.MenuUpdatePayload(elementType, name, elementState));
         } else if (player.level().isClientSide()) {
             if (needClientUpdate && net.minecraft.client.Minecraft
-                    .getInstance().screen instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
+                    .getInstance().gui.screen() instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
                 accessor.updateMenuState(elementType, name, elementState);
             }
             ClientPacketDistributor.sendToServer(

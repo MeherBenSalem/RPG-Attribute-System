@@ -277,7 +277,7 @@ public class NeoForgeNetworking {
     private static void handleMenuUpdateClient(MenuUpdatePayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (net.minecraft.client.Minecraft
-                    .getInstance().screen instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
+                    .getInstance().gui.screen() instanceof tn.nightbeam.ras.init.ScreenAccessor accessor) {
                 accessor.updateMenuState(payload.elementType, payload.name, payload.elementState);
             }
         });
