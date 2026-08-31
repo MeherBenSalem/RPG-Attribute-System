@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class StatsDisplaySyncPacket {
+    private static final int MAX_TOTAL_ENTRIES = 256;
+    private static final int DEFAULT_GUI_SHADOW_COLOR = 0x80F3E1B5;
+
     private final int headerColor;
     private final int bonusPositiveColor;
     private final int bonusNeutralColor;
@@ -27,8 +30,16 @@ public class StatsDisplaySyncPacket {
         this.headerColor = buffer.readInt();
         this.bonusPositiveColor = buffer.readInt();
         this.bonusNeutralColor = buffer.readInt();
-        this.guiShadowColor = buffer.readInt();
-        int count = buffer.readInt();
+        int fourth = buffer.readInt();
+        int count;
+        int shadow = DEFAULT_GUI_SHADOW_COLOR;
+        if (fourth > MAX_TOTAL_ENTRIES) {
+            // 4.2.3 wire: gui_shadow_color was sent before count
+            shadow = fourth;
+            count = buffer.readInt();
+        } else {
+            count = fourth;
+        }
         this.totals = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             String label = buffer.readUtf();
@@ -40,6 +51,10 @@ public class StatsDisplaySyncPacket {
             }
             totals.add(new StatsDisplayConfig.TotalEntry(label, ids, mode));
         }
+        if (buffer.isReadable() && buffer.readableBytes() >= 4) {
+            shadow = buffer.readInt();
+        }
+        this.guiShadowColor = shadow;
     }
 
     public static StatsDisplaySyncPacket fromServerConfig() {
@@ -56,7 +71,6 @@ public class StatsDisplaySyncPacket {
         buffer.writeInt(message.headerColor);
         buffer.writeInt(message.bonusPositiveColor);
         buffer.writeInt(message.bonusNeutralColor);
-        buffer.writeInt(message.guiShadowColor);
         buffer.writeInt(message.totals.size());
         for (StatsDisplayConfig.TotalEntry entry : message.totals) {
             buffer.writeUtf(entry.label());
@@ -66,6 +80,7 @@ public class StatsDisplaySyncPacket {
                 buffer.writeInt(id);
             }
         }
+        buffer.writeInt(message.guiShadowColor);
     }
 
     public static void encodeStatsDisplayData(FriendlyByteBuf buffer, int headerColor, int bonusPositiveColor,

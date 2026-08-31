@@ -12,11 +12,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import tn.nightbeam.ras.procedures.*;
+import tn.nightbeam.ras.util.RasPermissions;
 
 public class RpgAttributeSystemModCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
     dispatcher.register(Commands.literal("ras")
                 .then(Commands.literal("add").then(Commands.literal("level")
+                        .requires(RasPermissions::canAddLevel)
                         .then(Commands.argument("player", EntityArgument.player())
                                 .then(Commands.argument("amount", DoubleArgumentType.doubleArg(1))
                                         .executes(arguments -> {

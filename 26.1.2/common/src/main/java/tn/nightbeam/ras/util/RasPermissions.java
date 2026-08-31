@@ -1,6 +1,7 @@
 package tn.nightbeam.ras.util;
 
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
 import tn.nightbeam.ras.platform.Services;
 
@@ -38,6 +39,10 @@ public final class RasPermissions {
 
     public static boolean canApplyTemplateOther(ServerPlayer actor) {
         return has(actor, TEMPLATE_APPLY_OTHER);
+    }
+
+    public static boolean canAddLevel(CommandSourceStack source) {
+        return Commands.LEVEL_OWNERS.check(source.permissions());
     }
 
     public static boolean canViewLevelOther(CommandSourceStack source) {

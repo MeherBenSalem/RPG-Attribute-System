@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.2.4
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+
+### Bug Fixes
+
+- **`/ras add level` permission** — enforce OP level 4 on the admin level-grant command.
+- **Stats-display sync protocol** — backward-compatible `gui_shadow_color` encoding; fixes mixed-version join failures introduced in 4.2.3.
+
+---
+
 ## 4.2.3
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)

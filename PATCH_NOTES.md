@@ -1,5 +1,18 @@
 # RPG Attribute System — Patch Notes
 
+## 4.2.4
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+
+### Bug fixes
+
+- **`/ras add level` permission** — requires OP level 4 as documented (security fix).
+- **Stats-display sync protocol** — version-tolerant `gui_shadow_color` wire format; fixes join failures when clients and servers are not on the exact same jar (4.2.3 regression).
+
+### Upgrade
+
+Replace the loader jar for your Minecraft version with **4.2.4**. Mixed 4.2.2 clients on a 4.2.4 server are supported again.
+
 ## 4.2.3
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
@@ -15,7 +28,7 @@
 
 ### Upgrade
 
-Replace the loader jar for your Minecraft version with **4.2.3**. Update clients and servers together (stats-display sync packet extended).
+Replace the loader jar for your Minecraft version with **4.2.3**. Clients on 4.2.2 can join 4.2.3 servers, but **4.2.3 clients on older servers may fail to join** — prefer **4.2.4** for mixed-version networks.
 
 ## 4.2.1
 

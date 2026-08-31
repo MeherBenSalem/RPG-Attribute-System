@@ -40,6 +40,10 @@ public final class RasPermissions {
         return has(actor, TEMPLATE_APPLY_OTHER);
     }
 
+    public static boolean canAddLevel(CommandSourceStack source) {
+        return source.hasPermission(4);
+    }
+
     public static boolean canViewLevelOther(CommandSourceStack source) {
         if (source.hasPermission(2)) {
             return true;
