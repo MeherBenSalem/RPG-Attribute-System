@@ -29,7 +29,7 @@ Adds 5 levels to Steve.
 
 ## `/ras add attributes <id> <count>`
 
-**Description:** Adds attribute points to yourself. The attribute ID must be between 1 and 10. Points are credited to your spare points — you still need to allocate them in the GUI.
+**Description:** Adds attribute points to yourself. The attribute ID must be between 1 and 15 and must match a loaded `attribute_N.json` file. Points are credited to your spare points — you still need to allocate them in the GUI.
 
 **Permission:** OP level 4  
 **Console:** No (requires an executing entity)
@@ -38,7 +38,7 @@ Adds 5 levels to Steve.
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `id` | Double (1–10) | The attribute number |
+| `id` | Double (1–15) | The attribute number |
 | `count` | Double | Number of points to add |
 
 **Example:**
@@ -47,7 +47,7 @@ Adds 5 levels to Steve.
 ```
 Adds 5 points to Attack Power (attribute 2) for yourself.
 
-**Error cases:** ID outside 1–10 range, no executing entity.
+**Error cases:** ID outside 1–15 range, no executing entity, attribute locked.
 
 ---
 
@@ -62,7 +62,7 @@ Adds 5 points to Attack Power (attribute 2) for yourself.
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `id` | Double (1–10) | The attribute number |
+| `id` | Double (1–15) | The attribute number |
 | `count` | Double | Number of points to add |
 | `player` | Player selector | Target player |
 
@@ -206,7 +206,7 @@ Sets Steve's total VP to 10000.
 
 ## `/ras unlock <attribute>`
 
-**Description:** Unlocks a locked attribute for yourself, making it visible and allocatable in the stats GUI. The attribute ID must be between 1 and 10.
+**Description:** Sets `"lock": false` on the **server** `attribute_<id>.json` and syncs that change to every online player. The attribute ID must be between 1 and 15. This is a global config change, not a per-player unlock.
 
 **Permission:** OP level 4  
 **Console:** No
@@ -215,21 +215,21 @@ Sets Steve's total VP to 10000.
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `attribute` | Double (1–10) | The attribute number to unlock |
+| `attribute` | Double (1–15) | The attribute number to unlock |
 
 **Example:**
 ```
 /ras unlock 9
 ```
-Unlocks attribute 9 for yourself.
+Unlocks attribute 9 in the server config for all players.
 
-**Error cases:** ID outside 1–10 range, no executing entity.
+**Error cases:** ID outside 1–15 range.
 
 ---
 
 ## `/ras unlock <attribute> <target>`
 
-**Description:** Unlocks a locked attribute for a target player.
+**Description:** Same as `/ras unlock <attribute>` — the extra player argument is accepted for command-tree convenience, but the lock flag is still written to the shared server config.
 
 **Permission:** OP level 4  
 **Console:** Yes
@@ -238,8 +238,8 @@ Unlocks attribute 9 for yourself.
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `attribute` | Double (1–10) | The attribute number to unlock |
-| `target` | Player selector | Target player |
+| `attribute` | Double (1–15) | The attribute number to unlock |
+| `target` | Player selector | Ignored for the lock write; present for selector convenience |
 
 **Example:**
 ```
@@ -251,7 +251,7 @@ Unlocks attribute 9 for Steve.
 
 ## `/ras lock <attribute>`
 
-**Description:** Locks an attribute for yourself, hiding it in the stats GUI and preventing further point allocation. The attribute ID must be between 1 and 10.
+**Description:** Sets `"lock": true` on the **server** `attribute_<id>.json` and syncs that change to every online player. The attribute ID must be between 1 and 15.
 
 **Permission:** OP level 4  
 **Console:** No
@@ -260,21 +260,21 @@ Unlocks attribute 9 for Steve.
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `attribute` | Double (1–10) | The attribute number to lock |
+| `attribute` | Double (1–15) | The attribute number to lock |
 
 **Example:**
 ```
 /ras lock 8
 ```
-Locks attribute 8 for yourself.
+Locks attribute 8 in the server config for all players.
 
-**Error cases:** ID outside 1–10 range, no executing entity.
+**Error cases:** ID outside 1–15 range.
 
 ---
 
 ## `/ras lock <attribute> <target>`
 
-**Description:** Locks an attribute for a target player.
+**Description:** Same as `/ras lock <attribute>` — the extra player argument does not make the lock per-player.
 
 **Permission:** OP level 4  
 **Console:** Yes
@@ -283,8 +283,8 @@ Locks attribute 8 for yourself.
 
 | Argument | Type | Description |
 |----------|------|-------------|
-| `attribute` | Double (1–10) | The attribute number to lock |
-| `target` | Player selector | Target player |
+| `attribute` | Double (1–15) | The attribute number to lock |
+| `target` | Player selector | Ignored for the lock write; present for selector convenience |
 
 **Example:**
 ```
@@ -396,6 +396,49 @@ Output: `Available templates: warrior, mage, archer`
 **Example:**
 ```
 /ras template apply mage Steve
+```
+
+---
+
+## `/ras level`
+
+**Description:** Shows your RPG level.
+
+**Permission:** None  
+**Console:** No
+
+**Example:**
+```
+/ras level
+```
+
+---
+
+## `/ras level <player>`
+
+**Description:** Shows another player's RPG level.
+
+**Permission:** OP level 2, or the `rpg_attribute_system.level.other` node  
+**Console:** Yes
+
+**Example:**
+```
+/ras level Steve
+```
+
+---
+
+## `/ras rewards [level]`
+
+**Description:** Lists deterministic level-up rewards from `config/ras/levelup_rewards.json`. With no argument, lists every configured reward. With a level, lists only that level.
+
+**Permission:** None  
+**Console:** Yes
+
+**Example:**
+```
+/ras rewards
+/ras rewards 10
 ```
 
 ---

@@ -201,12 +201,15 @@ The actual active key is `init_val_starting_level`.
 
 ## Attribute ID Ranges
 
-RAS supports attribute IDs 1 through 15. The command system accepts IDs 1–10 in `/ras add attributes`, `/ras unlock`, and `/ras lock`. The config system supports files named `attribute_1.json` through `attribute_15.json`.
+RAS supports attribute IDs 1 through 15. `/ras add attributes`, `/ras unlock`, and `/ras lock` accept IDs **1–15**. The config system loads files named `attribute_1.json` through `attribute_15.json`.
 
-IDs 9–15 are created as locked placeholders by default (`lock: true`). To use them, either:
+Only IDs **1–8** are generated on first launch. IDs 9–15 are **not** created as placeholders. To add one:
 
-1. Set `"lock": false` in the attribute config file and restart
-2. Use `/ras unlock 9` in-game
+1. Create `config/ras/attributes/attribute_N.json` with the required keys
+2. Set `"lock": false` if players should allocate it (missing `lock` already means unlocked)
+3. Or use `/ras unlock N` (OP 4) to write `lock: false` on the server file
+
+Minecraft registry lock-flag attributes exist only for IDs 1–10 (`RpgAttributeSystemModAttributes`). GUI lock and `cmd_to_exc` still work for IDs 11–15.
 
 ---
 

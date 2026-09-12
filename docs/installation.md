@@ -7,9 +7,27 @@
 | **Minecraft** | 1.20.1, 1.21.1, 26.1.2, or 26.2 |
 | **Mod Loader** | Fabric, Forge (1.20.1 only), or NeoForge (1.21.1, 26.1.2, 26.2) |
 | **Java** | 17 (1.20.1), 21 (1.21.1), or 25 (26.1.2, 26.2) |
-| **jauml** | Required — bundled with the mod. Install the jauml JAR for your platform. |
+| **jauml** | Required on **every** loader. Download the jauml JAR that matches your Minecraft version **and** loader, and put it in `mods/` next to RAS. |
 
-No other mods or libraries are required.
+RAS is a Fabric / Forge / NeoForge **mod**. There is no Paper, Folia, Spigot, or Bukkit plugin.
+
+## Which JAR to download
+
+CurseForge and Modrinth publish **one file per loader**. The filename is the source of truth:
+
+| You run | Download a file named like | Do not use |
+|---------|----------------------------|------------|
+| Fabric (any supported MC) | `rpg_attribute_system-fabric-<mc>-<ver>.jar` | Forge or NeoForge jars |
+| Forge **1.20.1 only** | `rpg_attribute_system-forge-1.20.1-<ver>.jar` | NeoForge jars, or any 1.21.1+ Forge filter result |
+| NeoForge 1.21.1 / 26.1.2 / 26.2 | `rpg_attribute_system-neoforge-<mc>-<ver>.jar` | Forge jars |
+
+On CurseForge, use the **loader tabs** (Fabric / Forge / NeoForge), not the Minecraft version filter alone:
+
+- **NeoForge** files are tagged with the NeoForge loader (game version type **6**).
+- **Forge** files are tagged with Forge (type **1**). Only **1.20.1** has a Forge jar.
+- If a NeoForge file's relations panel still says "Requires Forge", ignore that leftover label. Install **NeoForge** + the `-neoforge-` jar + matching **jauml**. You do not install Minecraft Forge for 1.21.1+.
+
+jauml is a **separate** required dependency on CurseForge/Modrinth. It is not inside the RAS jar. Use the jauml file for the same loader and Minecraft version.
 
 ## Singleplayer Installation
 
@@ -46,11 +64,13 @@ config/ras/
 ├── levelup_rewards.json       # Level-up rewards
 ├── attributes/
 │   ├── settings.json          # Starting points
-│   └── attribute_1.json ...   # Attribute definitions (8 files)
+│   └── attribute_1.json … attribute_8.json
 └── display/
     ├── settings.json          # Display toggle
     ├── overlay.json           # HUD overlay position
-    └── attribute_1.json ...   # Display overrides (15 files)
+    └── attribute_1.json …     # Display overrides (15 files)
+
+IDs 9–15 are **not** generated automatically. Create `config/ras/attributes/attribute_N.json` yourself if you need more than the default eight.
 ```
 
 You'll see log messages confirming successful loading:

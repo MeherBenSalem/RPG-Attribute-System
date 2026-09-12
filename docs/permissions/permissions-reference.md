@@ -1,6 +1,22 @@
 # Permissions Reference
 
-RAS defines four explicit permission nodes and uses OP level 4 for admin commands. Permissions are checked through the `IPermissionService` interface, which falls back to `DefaultPermissionService` when no platform-specific provider is available.
+RAS defines four explicit permission nodes and uses Minecraft OP **level 4** for admin commands. Permissions are checked through the `IPermissionService` interface, which falls back to `DefaultPermissionService` when no platform-specific provider is available.
+
+## Restrict commands to operators
+
+This is the supported way to keep `/ras` admin tools off regular players. There is **no** `commands-require-op` config key and no Bukkit/LuckPerms wildcard.
+
+1. **Admin commands** (`add`, `xp`, `set xp`, `reset`, `unlock`, `lock`) require **OP level 4**.
+   - Console: `/op <player>` (vanilla default is level 4).
+   - Or grant the player permission level 4 in `ops.json`.
+   - Non-ops do not see these subcommands in tab-complete.
+2. **Player self-actions** (`/ras respec`, `/ras template apply`) are **allowed for everyone** by default.
+   - To let anyone use them without a permission plugin: keep the defaults, or set `permission-required` to `false` in `config/ras/respec.json` / `templates.json`.
+   - To deny them on Fabric with LuckPerms: set the matching nodes to `false` for the default group (see below).
+   - On Forge/NeoForge, RAS does **not** talk to LuckPerms. Those two self-commands stay allowed unless you install a loader permission provider that implements `IPermissionService`.
+3. **Read-only commands** (`/ras level` self, `/ras template list`, `/ras rewards`) have no OP gate. `/ras level <other>` needs OP level 2 or `rpg_attribute_system.level.other`.
+
+RAS is a Fabric / Forge / NeoForge **mod**, not a Paper, Folia, or Bukkit plugin. There are no plugin permission nodes such as `ras.command` in `permissions.yml`.
 
 ## Permission Nodes
 
@@ -33,6 +49,8 @@ The following admin commands require OP level 4 and have no dedicated permission
 - `/ras reset`
 - `/ras unlock`
 - `/ras lock`
+
+`/ras unlock` and `/ras lock` change the **server** attribute JSON `lock` key and sync it to every online player. They are not per-player unlocks.
 
 ## Default Fallback Behavior
 

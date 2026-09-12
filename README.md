@@ -16,6 +16,13 @@ public integration API for other mods.
 Each version root is an independent Gradle project. Run build commands from the
 specific version folder you want to work on.
 
+Download the jar whose name matches your **loader** (`-fabric-`, `-forge-` on
+1.20.1 only, or `-neoforge-`). There is no Forge build for 1.21.1+. This is a
+mod, not a Paper/Folia plugin. jauml is required on every loader.
+
+Player-facing docs live in `docs/`. Paste-ready CurseForge/Modrinth answers are
+in `docs/listing-notes.md`.
+
 ## Features
 
 - Configurable RPG leveling and attribute allocation

@@ -1,5 +1,21 @@
 # RPG Attribute System — Patch Notes
 
+## Unreleased
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+
+### Bug fixes
+
+- **Admin command OP gate** — `/ras add attributes`, `xp`, `set xp`, `reset`, `unlock`, and `lock` now require OP level 4 (same as `/ras add level`).
+- **Attribute IDs 11–15** — lock/unlock/add-attributes accept 1–15; add-points no longer remaps 11+ onto attribute 10.
+- **Icons 11+** — missing `icon_path` reuses `att_1`–`att_10` instead of a broken `att_11.png`.
+
+### Docs
+
+Operator restrictions, NeoForge vs Forge jar selection, HUD/GUI text shadow, and attribute 11+ lock/icon behaviour. See `docs/listing-notes.md` for CurseForge/Modrinth reply text.
+
+---
+
 ## 4.2.4
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)

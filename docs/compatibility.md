@@ -9,13 +9,15 @@
 | **26.1.2** | ✅ | — | ✅ | 25 | 4.2.1 |
 | **26.2** | ✅ | — | ✅ | 25 | 4.2.1 |
 
+There is **no Forge jar** for 1.21.1, 26.1.2, or 26.2. If CurseForge lists “Forge” on a file named `-neoforge-`, that label is wrong — install NeoForge. RAS is not a Paper/Folia plugin.
+
 ## Required Dependencies
 
 | Dependency | Status | Notes |
 |------------|--------|-------|
 | **jauml** | Required | Bundled with the mod. Install the jauml JAR for your platform in `mods/`. |
 | **Fabric API** | Required (Fabric) | Standard Fabric dependency |
-| **Minecraft/NeoForge** | Required (NeoForge) | No additional libs needed beyond jauml |
+| **Minecraft/NeoForge** | Required (NeoForge) | No additional libs needed beyond jauml. Do not install Minecraft Forge for these versions. |
 
 ## Forge → NeoForge Migration
 

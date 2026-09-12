@@ -8,7 +8,7 @@
 
 **Files:** `config/ras/attributes/attribute_1.json` … `attribute_15.json`
 
-Each attribute file configures one RPG attribute. The mod ships with 8 default attributes (IDs 1–8). IDs 9–15 are created as locked placeholders. You can add up to 15 attributes total by creating additional `attribute_X.json` files.
+Each attribute file configures one RPG attribute. The mod ships with 8 default attributes (IDs 1–8). IDs 9–15 are **not** generated. You can add up to 15 attributes total by creating additional `attribute_X.json` files.
 
 ### `display_name`
 
@@ -227,11 +227,11 @@ Used only when `cmd_to_exc` omits `[param(...)]`.
 | Property | Value |
 |----------|-------|
 | **Type** | Boolean |
-| **Default** | `false` for IDs 1–7; `true` for IDs 8–15 |
+| **Default** | `false` for generated IDs 1–8. Missing key = unlocked. |
 
-When `true`, the attribute is hidden/locked in the stats GUI and players cannot allocate points to it. Administrators can unlock attributes per-player using `/ras unlock <attribute_id>`.
+When `true`, the attribute is faded in the stats GUI and players cannot allocate points to it. `/ras unlock <id>` / `/ras lock <id>` (OP 4) write this key on the **server** file and sync it to every player. They are not per-player locks.
 
-Locked attributes still exist in the config and player data — they are simply hidden and non-interactive.
+Locked attributes still exist in the config and player data — they are simply non-interactive. A faded icon is the lock state, not a missing texture.
 
 ```json
 "lock": true
@@ -247,7 +247,7 @@ Locked attributes still exist in the config and player data — they are simply 
 | Property | Value |
 |----------|-------|
 | **Type** | String |
-| **Default** | `"screens/att_X.png"` (cycles 1–10) |
+| **Default** | `"screens/att_X.png"` for generated IDs 1–8. Empty `icon_path` reuses `att_1`–`att_10`. |
 
 The texture path for the attribute's icon in the stats GUI.
 

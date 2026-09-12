@@ -1,6 +1,7 @@
 package tn.nightbeam.ras.util;
 
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import tn.nightbeam.ras.platform.Services;
 
@@ -10,6 +11,7 @@ public final class RasPermissions {
     public static final String TEMPLATE_APPLY = "rpg_attribute_system.template.apply";
     public static final String TEMPLATE_APPLY_OTHER = "rpg_attribute_system.template.apply.other";
     public static final String LEVEL_OTHER = "rpg_attribute_system.level.other";
+    public static final int MAX_ATTRIBUTE_ID = 15;
 
     private RasPermissions() {
     }
@@ -42,6 +44,14 @@ public final class RasPermissions {
 
     public static boolean canAddLevel(CommandSourceStack source) {
         return source.hasPermission(4);
+    }
+
+    public static boolean requireAdmin(CommandSourceStack source) {
+        if (canAddLevel(source)) {
+            return true;
+        }
+        source.sendFailure(Component.literal("Requires permission level 4"));
+        return false;
     }
 
     public static boolean canViewLevelOther(CommandSourceStack source) {
