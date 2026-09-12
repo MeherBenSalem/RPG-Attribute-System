@@ -1,0 +1,10 @@
+# Optional local Gradle overrides (do not commit).
+#
+# Copy lines you need into either:
+#   - ~/.gradle/gradle.properties  (applies to all Gradle projects on this machine)
+#   - <version>/gradle.local.properties  (gitignored; same folder as that workspace's gradlew)
+#
+# CI and other developers rely on JAVA_HOME / setup-java and per-project Java toolchains.
+# Only set org.gradle.java.home if the Gradle launcher must use a specific JDK locally.
+#
+# org.gradle.java.home=C:/Program Files/Java/jdk-21

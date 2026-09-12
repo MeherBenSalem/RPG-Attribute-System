@@ -13,15 +13,12 @@ project. Always run Gradle from inside the version folder you are targeting.
 | `26.1.2/` | 26.1.2 | Fabric + NeoForge | 25 | 9.2 |
 | `26.2/`   | 26.2   | Fabric + NeoForge | 25 | 9.5 |
 
-### JDKs and the Gradle Java override (important, non-obvious)
-- Each version's committed `gradle.properties` hardcodes a Windows path
-  `org.gradle.java.home=C:/Program Files/Java/...`. On Linux this would make Gradle
-  fail to launch. This is neutralized by `~/.gradle/gradle.properties` (a
-  `GRADLE_USER_HOME` file that has higher precedence and is persisted in the VM
-  snapshot). Do **not** edit the committed per-version `gradle.properties`; if you
-  need to change the JVM, edit `~/.gradle/gradle.properties`.
-- `~/.gradle/gradle.properties` pins the launcher JVM to Java 21 and registers the
-  toolchain install paths so each version compiles with its required JDK:
+### JDKs and local Gradle Java overrides
+- Committed `gradle.properties` files do **not** set `org.gradle.java.home` (machine-specific
+  paths break CI). Use `JAVA_HOME`, `actions/setup-java`, or a local override file instead
+  (see `gradle.local.properties.example`).
+- On this Cloud Agent VM, `~/.gradle/gradle.properties` pins the launcher JVM to Java 21 and
+  registers toolchain install paths so each version compiles with its required JDK:
   - Java 17 → `/opt/jdks/jdk-17.0.20+8`
   - Java 21 → `/usr/lib/jvm/java-21-openjdk-amd64`
   - Java 25 → `/opt/jdks/jdk-25.0.4+7`
