@@ -43,12 +43,23 @@ cd 26.1.2
 You can also use the root helper tasks in `build.gradle` to build multiple
 version roots, but the individual workspaces remain isolated.
 
-## Local publishing
+## Publishing
 
-`26.1.2` publishes locally only. Build the Fabric and NeoForge jars from
-`26.1.2/`, then use the local upload flow documented in `upload_local.ps1` and
-`scripts/upload_platforms.mjs`. Each jar is uploaded as its own Modrinth version
-and its own CurseForge file, with no secondary attached artifacts.
+After merge, NightReviews tags the release (e.g. `v4.2.5`). Pushing that tag runs
+`.github/workflows/publish.yml`, which builds all four version roots and uploads **each
+loader jar** as its own Modrinth version and CurseForge file (8 jars total).
+
+Required repo secrets: `MODRINTH_TOKEN`, `CURSEFORGE_TOKEN`, `CURSEFORGE_API_KEY`.
+Required repo variables: `MODRINTH_ID`, `CURSEFORGE_ID`.
+
+Changelog text is read from `RPG-Attribute-System-{version}-PatchNotes.md`, falling
+back to `PATCH_NOTES.md`.
+
+### Local publishing
+
+For a single workspace without Actions, build the jars then run
+`scripts/upload_platforms.mjs` (see `upload_local.ps1`). Each jar is uploaded as its
+own Modrinth version and its own CurseForge file, with no secondary attached artifacts.
 
 ## Documentation
 

@@ -1,0 +1,304 @@
+# Dual-publish RPG Attribute System to Modrinth + CurseForge on version tags.
+#
+# Each loader jar is its own Modrinth version:
+# version_number: 4.2.5+fabric-1.21.1
+# Never attach multiple loader jars to one Modrinth version.
+#
+# Org/repo secrets:
+#   MODRINTH_TOKEN
+#   CURSEFORGE_TOKEN
+#   CURSEFORGE_API_KEY
+#
+# Repo variables:
+#   MODRINTH_ID=d85UTOuq
+#   CURSEFORGE_ID=1079687
+#
+# Usage after merge (NightReviews tags):
+#   git tag v4.2.5 && git push origin v4.2.5
+
+name: Publish
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version (without v) when not tagging
+        required: false
+      dry_run:
+        description: Skip uploads if true
+        required: false
+        default: "false"
+      platforms:
+        description: "modrinth, curseforge, or both"
+        required: false
+        default: "both"
+      minecraft_version:
+        description: "Optional MC version filter (e.g. 26.2) — only upload matching jars"
+        required: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: ver
+        shell: bash
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          elif [[ -n "${{ inputs.version }}" ]]; then
+            echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "Provide a v*.*.* tag or workflow_dispatch version" >&2
+            exit 1
+          fi
+
+      - name: Find prebuilt release jars
+        id: prebuilt
+        shell: bash
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          mapfile -t JARS < <(find releases -maxdepth 1 -type f -name "*-${VERSION}.jar" \
+            ! -name "*-sources.jar" ! -name "*-javadoc.jar" 2>/dev/null | sort)
+          if [ ${#JARS[@]} -gt 0 ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+            echo "list<<$EOF" >> "$GITHUB_OUTPUT"
+            printf '%s\n' "${JARS[@]}" >> "$GITHUB_OUTPUT"
+            echo "$EOF" >> "$GITHUB_OUTPUT"
+            printf 'Using prebuilt jars:\n'
+            printf '%s\n' "${JARS[@]}"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            echo "No releases/*-${VERSION}.jar — will build all workspaces"
+          fi
+
+      - uses: actions/setup-java@v4
+        if: steps.prebuilt.outputs.found != 'true'
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.prebuilt.outputs.found != 'true'
+
+      - name: Build MultiLoader workspaces
+        if: steps.prebuilt.outputs.found != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          for ws in 1.20.1 1.21.1 26.1.2 26.2; do
+            echo "Building workspace $ws"
+            (
+              cd "$ws"
+              chmod +x gradlew 2>/dev/null || true
+              ./gradlew build --no-daemon
+            )
+          done
+
+      - name: Find jars
+        id: jars
+        shell: bash
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          mapfile -t JARS < <(find releases -maxdepth 1 -type f -name "*-${VERSION}.jar" 2>/dev/null | sort)
+          if [ ${#JARS[@]} -eq 0 ]; then
+            mapfile -t JARS < <(find . -type f -path "*/build/libs/rpg_attribute_system-*-${VERSION}.jar" \
+              ! -name "*-sources.jar" ! -name "*-javadoc.jar" \
+              ! -name "*-dev.jar" ! -name "*-dev-shadow.jar" \
+              ! -name "*-common-*" | sort)
+          fi
+          if [ ${#JARS[@]} -eq 0 ]; then
+            echo "No jars found for version ${VERSION}" >&2
+            exit 1
+          fi
+          MC_FILTER="${{ inputs.minecraft_version }}"
+          if [ -n "$MC_FILTER" ]; then
+            FILTERED=()
+            for jar in "${JARS[@]}"; do
+              base=$(basename "$jar")
+              if echo "$base" | grep -qE "(^|-)${MC_FILTER}(-|$)"; then
+                FILTERED+=("$jar")
+              fi
+            done
+            if [ ${#FILTERED[@]} -eq 0 ]; then
+              echo "No jars matched minecraft_version filter ${MC_FILTER}" >&2
+              exit 1
+            fi
+            JARS=("${FILTERED[@]}")
+          fi
+          printf '%s\n' "${JARS[@]}"
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "list<<$EOF" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "${JARS[@]}" >> "$GITHUB_OUTPUT"
+          echo "$EOF" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Upload Modrinth + CurseForge
+        if: ${{ inputs.dry_run != 'true' }}
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+          MODRINTH_ID: ${{ vars.MODRINTH_ID }}
+          CURSEFORGE_ID: ${{ vars.CURSEFORGE_ID }}
+          VERSION: ${{ steps.ver.outputs.version }}
+          JAR_LIST: ${{ steps.jars.outputs.list }}
+          PLATFORMS: ${{ inputs.platforms || 'both' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${MODRINTH_ID:-}" && test -n "${CURSEFORGE_ID:-}"
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+          const { detectRequired, LOADER_IDS } = require('./.github/scripts/detect-jar-meta.js');
+          const version = process.env.VERSION;
+          const platforms = (process.env.PLATFORMS || 'both').toLowerCase();
+          const doModrinth = platforms === 'both' || platforms === 'modrinth';
+          const doCurse = platforms === 'both' || platforms === 'curseforge';
+          const jars = process.env.JAR_LIST.split(/\n/).map(s => s.trim()).filter(Boolean);
+          if (!jars.length) throw new Error('No jars to upload');
+
+          let changelog = `Release ${version}`;
+          const versionNotes = `RPG-Attribute-System-${version}-PatchNotes.md`;
+          if (fs.existsSync(versionNotes)) {
+            changelog = fs.readFileSync(versionNotes, 'utf8');
+          } else if (fs.existsSync('PATCH_NOTES.md')) {
+            changelog = fs.readFileSync('PATCH_NOTES.md', 'utf8');
+          }
+
+          function flattenVersions(payload) {
+            const flat = [];
+            const data = payload?.data ?? payload;
+            if (!Array.isArray(data)) return flat;
+            for (const entry of data) {
+              if (Array.isArray(entry?.versions)) {
+                for (const v of entry.versions) flat.push(v);
+              } else if (entry && (entry.id != null) && entry.name) {
+                flat.push(entry);
+              }
+            }
+            return flat;
+          }
+
+          function findVersionId(flat, name) {
+            const exact = flat.find((v) => v.name === name || v.slug === name);
+            if (exact) return exact.id;
+            const loose = flat.find((v) => String(v.name).toLowerCase() === String(name).toLowerCase());
+            return loose?.id;
+          }
+
+          (async () => {
+            if (doModrinth) {
+              for (const jar of jars) {
+                const { loader, gv } = detectRequired(jar);
+                const gameVersions = [gv];
+                const body = {
+                  name: `${version} · ${loader} · ${gameVersions[0]}`,
+                  version_number: `${version}+${loader}-${gameVersions[0]}`,
+                  changelog,
+                  dependencies: [],
+                  game_versions: gameVersions,
+                  version_type: 'release',
+                  loaders: [loader],
+                  featured: false,
+                  status: 'listed',
+                  project_id: process.env.MODRINTH_ID,
+                  file_parts: ['file_0'],
+                  primary_file: 'file_0',
+                };
+                const form = new FormData();
+                form.append('data', JSON.stringify(body));
+                form.append('file_0', new Blob([fs.readFileSync(jar)]), path.basename(jar));
+                const mrRes = await fetch('https://api.modrinth.com/v2/version', {
+                  method: 'POST',
+                  headers: { Authorization: process.env.MODRINTH_TOKEN },
+                  body: form,
+                });
+                const mrText = await mrRes.text();
+                if (!mrRes.ok) throw new Error('Modrinth ' + mrRes.status + ' ' + mrText.slice(0, 500));
+                console.log('Modrinth OK', path.basename(jar), 'game=' + gv, mrText.slice(0, 180));
+              }
+            } else {
+              console.log('Skipping Modrinth (platforms=' + platforms + ')');
+            }
+
+            if (!doCurse) {
+              console.log('Skipping CurseForge (platforms=' + platforms + ')');
+              return;
+            }
+
+            let flat = [];
+            const uploadGv = await fetch('https://minecraft.curseforge.com/api/game/versions', {
+              headers: { 'X-Api-Token': process.env.CURSEFORGE_TOKEN },
+            });
+            if (uploadGv.ok) {
+              flat = flattenVersions(await uploadGv.json());
+              console.log('CurseForge versions via upload API:', flat.length);
+            } else {
+              console.warn('Upload game/versions failed', uploadGv.status, (await uploadGv.text()).slice(0, 200));
+            }
+            if (!flat.length) {
+              const gvRes = await fetch('https://api.curseforge.com/v1/games/432/versions', {
+                headers: { 'x-api-key': process.env.CURSEFORGE_API_KEY },
+              });
+              const gvText = await gvRes.text();
+              if (!gvRes.ok) throw new Error('CurseForge versions ' + gvRes.status + ' ' + gvText.slice(0, 300));
+              flat = flattenVersions(JSON.parse(gvText));
+              console.log('CurseForge versions via core API:', flat.length);
+            }
+            if (!flat.length) throw new Error('No CurseForge game versions resolved');
+
+            let uploaded = 0;
+            for (const jar of jars) {
+              const { loader, gv: want } = detectRequired(jar);
+              const mcId = findVersionId(flat, want);
+              const loaderId = LOADER_IDS[loader];
+              const clientId = findVersionId(flat, 'Client');
+              const serverId = findVersionId(flat, 'Server');
+              if (mcId == null) {
+                throw new Error('No CurseForge game version id for ' + want + ' (' + path.basename(jar) + ')');
+              }
+              if (loaderId == null) {
+                throw new Error('No CurseForge loader id for ' + loader);
+              }
+              const gameVersions = [mcId, loaderId];
+              if (clientId != null) gameVersions.push(clientId);
+              if (serverId != null) gameVersions.push(serverId);
+              const gameVersionNames = [];
+              if (clientId == null) gameVersionNames.push('Client');
+              if (serverId == null) gameVersionNames.push('Server');
+              const meta = {
+                changelog,
+                changelogType: 'markdown',
+                displayName: `${version} · ${loader} · ${want}`,
+                gameVersions,
+                releaseType: 'release',
+              };
+              if (gameVersionNames.length) meta.gameVersionNames = gameVersionNames;
+              const cfForm = new FormData();
+              cfForm.append('metadata', JSON.stringify(meta));
+              cfForm.append('file', new Blob([fs.readFileSync(jar)]), path.basename(jar));
+              const cfRes = await fetch(
+                `https://minecraft.curseforge.com/api/projects/${process.env.CURSEFORGE_ID}/upload-file`,
+                { method: 'POST', headers: { 'X-Api-Token': process.env.CURSEFORGE_TOKEN }, body: cfForm },
+              );
+              const cfText = await cfRes.text();
+              if (!cfRes.ok) throw new Error('CurseForge ' + cfRes.status + ' ' + cfText.slice(0, 500));
+              console.log('CurseForge OK', path.basename(jar), 'game=' + want, cfText.slice(0, 180));
+              uploaded += 1;
+            }
+            console.log('CurseForge uploaded', uploaded, 'file(s) to project', process.env.CURSEFORGE_ID);
+          })().catch((e) => { console.error(e); process.exit(1); });
+          NODE
