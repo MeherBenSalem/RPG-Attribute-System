@@ -49,7 +49,9 @@ Use `[param(X)]` for per-point scaling (X = multiplier) or omit it to use `base_
 
 ### Registry Limit
 
-Minecraft lock-flag attributes (`attribute_1`–`attribute_10`) are registry slots defined in `RpgAttributeSystemModAttributes`. Config files may define more IDs (11–15), but lock flags only apply to IDs 1–10. Beyond 10, you can still use `cmd_to_exc` for arbitrary attribute modification.
+Minecraft lock-flag entity attributes (`attribute_1`–`attribute_10`) are registry slots defined in `RpgAttributeSystemModAttributes`. Config files may define IDs 11–15. The JSON `lock` key and stats-GUI fade still apply to those IDs. The vanilla entity attribute slots themselves stop at 10; IDs 11–15 should use `cmd_to_exc` for the gameplay effect.
+
+The jar only ships `screens/att_1.png` … `att_10.png`. For ID 11+, set `icon_path` to one of those files or a texture you added. An omitted `icon_path` reuses `att_1`–`att_10`.
 
 ### Troubleshooting Custom Attributes
 

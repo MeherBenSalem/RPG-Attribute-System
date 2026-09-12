@@ -9,6 +9,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.context.CommandContext;
 public class ResetGivenPlayerProcedure {
 	public static void execute(CommandContext<CommandSourceStack> arguments) {
+		if (!tn.nightbeam.ras.util.RasPermissions.requireAdmin(arguments.getSource()))
+			return;
 		{
 			Entity _ent = (new Object() {
 				public Entity getEntity() {
@@ -20,7 +22,7 @@ public class ResetGivenPlayerProcedure {
 				}
 			}.getEntity());
 			if (_ent != null) {
-				ProcedureCommandHelper.executeAsEntity(_ent, "ras reset");
+				ResetPlayerCmdProcedure.execute(_ent);
 			}
 		}
 	}

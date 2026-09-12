@@ -26,7 +26,8 @@ public class RpgAttributeSystemModCommands {
                                             return 0;
                                         }))))
                         .then(Commands.literal("attributes")
-                                .then(Commands.argument("attribute_Id", DoubleArgumentType.doubleArg(1, 10))
+                                .requires(RasPermissions::canAddLevel)
+                                .then(Commands.argument("attribute_Id", DoubleArgumentType.doubleArg(1, RasPermissions.MAX_ATTRIBUTE_ID))
                                         .then(Commands.argument("count", DoubleArgumentType.doubleArg())
                                                 .executes(arguments -> {
                                                     Level world = arguments.getSource().getLevel();
@@ -39,7 +40,7 @@ public class RpgAttributeSystemModCommands {
                                                             GiveAttributesToPlayerProcedure.execute(arguments);
                                                             return 0;
                                                         }))))))
-                .then(Commands.literal("xp").then(Commands.argument("amount", DoubleArgumentType.doubleArg())
+                .then(Commands.literal("xp").requires(RasPermissions::canAddLevel).then(Commands.argument("amount", DoubleArgumentType.doubleArg())
                         .executes(arguments -> {
                             Level world = arguments.getSource().getLevel();
                             double x = arguments.getSource().getPosition().x();
@@ -53,6 +54,7 @@ public class RpgAttributeSystemModCommands {
                             return 0;
                         }))))
                 .then(Commands.literal("set").then(Commands.literal("xp")
+                        .requires(RasPermissions::canAddLevel)
                         .then(Commands.argument("amount", DoubleArgumentType.doubleArg()).executes(arguments -> {
                             Level world = arguments.getSource().getLevel();
                             double x = arguments.getSource().getPosition().x();
@@ -65,7 +67,7 @@ public class RpgAttributeSystemModCommands {
                             SetXpToPlayerProcedure.execute(arguments);
                             return 0;
                         })))))
-                .then(Commands.literal("reset").executes(arguments -> {
+                .then(Commands.literal("reset").requires(RasPermissions::canAddLevel).executes(arguments -> {
                     Entity entity = arguments.getSource().getEntity();
                     ResetPlayerCmdProcedure.execute(entity);
                     return 0;
@@ -74,7 +76,8 @@ public class RpgAttributeSystemModCommands {
                     return 0;
                 })))
                 .then(Commands.literal("unlock")
-                        .then(Commands.argument("attribute", DoubleArgumentType.doubleArg(1, 10))
+                        .requires(RasPermissions::canAddLevel)
+                        .then(Commands.argument("attribute", DoubleArgumentType.doubleArg(1, RasPermissions.MAX_ATTRIBUTE_ID))
                                 .executes(arguments -> {
                                     Entity entity = arguments.getSource().getEntity();
                                     UnlockAttributeProcedure.execute(arguments, entity);
@@ -84,7 +87,8 @@ public class RpgAttributeSystemModCommands {
                                     return 0;
                                 }))))
                 .then(Commands.literal("lock")
-                        .then(Commands.argument("attribute", DoubleArgumentType.doubleArg(1, 10))
+                        .requires(RasPermissions::canAddLevel)
+                        .then(Commands.argument("attribute", DoubleArgumentType.doubleArg(1, RasPermissions.MAX_ATTRIBUTE_ID))
                                 .executes(arguments -> {
                                     Entity entity = arguments.getSource().getEntity();
                                     LockAttributeProcedure.execute(arguments, entity);

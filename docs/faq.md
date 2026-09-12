@@ -38,9 +38,27 @@ Yes. All config files in `config/ras/` are JSON and fully portable between serve
 
 Create `config/ras/attributes/attribute_N.json` where N is 9–15. Fill in the required keys (`display_name`, `cmd_to_exc`, `init_val_attribute`, `max_level`). The attribute will be loaded on next restart. See [Customization Guide](guides/customization.md#custom-attributes).
 
-### How do I unlock attributes 9 and 10?
+### How do I unlock attributes 9–15?
 
-By default, attributes 8–15 are locked (`lock: true` in their config files). Use `/ras unlock 9` to unlock attribute 9, or change `lock` to `false` in the config file. See [Additional Config Files](configuration/additional-config-files.md#per-attribute-configs).
+The mod only **generates** attributes 1–8. IDs 9–15 exist only if you create `config/ras/attributes/attribute_N.json`.
+
+- If you omit `lock`, it is treated as **unlocked** (`false`).
+- If you set `"lock": true`, the stats GUI fades that row and blocks allocation.
+- `/ras unlock <id>` (OP 4) writes `"lock": false` on the **server** file and syncs it to everyone. It is not a per-player unlock.
+- `/ras unlock` / `/ras lock` / `/ras add attributes` accept IDs **1–15**.
+
+See [Additional Config Files](configuration/additional-config-files.md#per-attribute-configs).
+
+### Why does attribute 11+ look locked or show a broken icon?
+
+That is expected unless you set a real `icon_path`.
+
+- The jar only ships `att_1.png` … `att_10.png`.
+- A missing `icon_path` now falls back to those ten textures (ID 11 uses `att_1.png`, 12 uses `att_2.png`, …).
+- If you set `"icon_path": "screens/att_11.png"` (or any missing file), the GUI shows the missing-texture / faded “locked” look.
+- A faded icon with grey text means `"lock": true`, not a missing texture.
+
+Fix: set `"lock": false` if you want it allocatable, and point `icon_path` at `screens/att_1.png`–`att_10.png` or your own namespaced texture.
 
 ### Why is my attribute icon missing?
 
@@ -90,9 +108,24 @@ The Scroll of Rebirth triggers a respec — it refunds all spent attribute point
 
 Yes. The public API (`RasApi`) exposes player level and `CombatSnapshot` (final vanilla attribute values after RAS, gear, and effects). See the [API Reference](api/overview.md).
 
-### Is there a Bukkit/Spigot/Paper version?
+### Is there a Bukkit/Spigot/Paper/Folia version?
 
-No. RAS is a Fabric/Forge/NeoForge mod only — there is no Bukkit variant.
+No. RAS is a Fabric / Forge / NeoForge **mod** only. It will not load on Paper, Folia, Spigot, or Bukkit.
+
+### How do I restrict `/ras` commands to ops?
+
+Admin commands already require **OP level 4**. Use `/op <player>` in the console. There is no extra config switch. Player commands (`respec`, `template apply`) stay open to everyone unless you use Fabric + LuckPerms. Full details: [Permissions Reference](permissions/permissions-reference.md#restrict-commands-to-operators).
+
+### I use NeoForge but CurseForge says the file requires Forge. Which jar is correct?
+
+Use the file whose name contains `-neoforge-` and your Minecraft version, and install **NeoForge** (not Minecraft Forge). Forge exists for RAS only on **1.20.1**. On CurseForge, open the **NeoForge** loader tab. jauml is required on NeoForge too — download the matching jauml NeoForge jar. See [Installation](installation.md#which-jar-to-download).
+
+### Can I turn off the text shadow on the HUD / stats menu?
+
+There is no `text_shadow` boolean.
+
+- **Stats / book GUI:** `gui_shadow_color` in `config/ras/stats_display.json` is the cream underlay (default `#80F3E1B5`). Set it to `#00000000` to hide that underlay. Vanilla drop-shadow on the foreground text stays on.
+- **HUD XP label:** vanilla drop-shadow is hardcoded on. Spare-points and keybind hint text have no drop-shadow. You can hide HUD pieces with `display_*_overlay` / `hudEnabled` in [Client Configuration](configuration/client.md).
 
 ## Troubleshooting
 

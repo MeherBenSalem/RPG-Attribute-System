@@ -15,6 +15,7 @@ Settings that control the appearance of the stats GUI, combat stats display, and
 | `header_color` | `stats_display.json` | `"#FFD700"` (gold) | Hex colour string | Combat stats section header colour |
 | `bonus_positive_color` | `stats_display.json` | `"#55FF55"` (green) | Hex colour string | Colour for positive value changes |
 | `bonus_neutral_color` | `stats_display.json` | `"#AAAAAA"` (grey) | Hex colour string | Colour for neutral values |
+| `gui_shadow_color` | `stats_display.json` | `"#80F3E1B5"` | 6- or 8-digit hex | Book-GUI text underlay; `#00000000` hides it |
 | `totals` | `stats_display.json` | 4 entries | Array of formatted strings | Grouped attribute display sections |
 | `enable` | `display/settings.json` | `true` | Boolean | Show combat stats section in GUI |
 | `enable` (per-attribute) | `display/attribute_N.json` | `true` (1–8), `false` (9–15) | Boolean | Show this stat row in combat section |
@@ -108,6 +109,36 @@ The colour used for section headers in the Statistics overview (Player Stats →
 Gold header text.
 
 **Accepted Values:** A hex colour string with or without the `#` prefix. Must be 6 hex digits. Invalid values fall back to the default gold (`#FFD700`).
+
+---
+
+### GUI text underlay (`gui_shadow_color`)
+
+Configuration key:
+
+```text
+gui_shadow_color
+```
+
+Cream underlay drawn **behind** book-style stats GUI text for contrast. This is not a HUD toggle and not a boolean shadow switch.
+
+**Default Value:**
+
+```json
+"gui_shadow_color": "#80F3E1B5"
+```
+
+**Accepted Values:** 6-digit `#RRGGBB` or 8-digit `#AARRGGBB` hex. Invalid values fall back to `#80F3E1B5`.
+
+**Hide the underlay:**
+
+```json
+"gui_shadow_color": "#00000000"
+```
+
+Vanilla drop-shadow on the foreground GUI string stays enabled. The HUD XP bar label also uses vanilla drop-shadow and has no separate key; hide HUD text with `display_vp_overlay` / `hudEnabled` instead.
+
+On dedicated servers the value is synced to clients on join.
 
 **Performance Impact:** 🟢 None
 **Existing World Impact:** Applies immediately on next GUI open
@@ -356,6 +387,9 @@ icon_path
 | 6 | `screens/att_6.png` |
 | 7 | `screens/att_7.png` |
 | 8 | `screens/att_8.png` |
+| 9–15 | Not generated. If `icon_path` is omitted, the GUI reuses `att_1.png`–`att_10.png` (ID 11 → `att_1`, 12 → `att_2`, …). |
+
+The jar does **not** ship `att_11.png` and above. Setting `icon_path` to a missing file shows the missing-texture placeholder (often mistaken for a lock). Locked rows (`"lock": true`) fade the icon on purpose.
 
 Icon paths resolve as:
 - No namespace → `rpg_attribute_system:textures/<icon_path>`

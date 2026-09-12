@@ -7,7 +7,8 @@ All RAS commands use the `/ras` prefix and are registered using the Brigadier co
 | Command Type | Permission |
 |-------------|------------|
 | Player self-actions (`respec`, `template apply`) | Specific permission node (`rpg_attribute_system.respec.self`, `rpg_attribute_system.template.apply`) |
-| Admin actions (all other subcommands) | OP level 4 required |
+| Admin actions (`add`, `xp`, `set xp`, `reset`, `unlock`, `lock`) | OP level 4 required |
+| Read-only (`level` self, `template list`, `rewards`) | None |
 
 When `permission-required` is `false` in the respec or templates config, self-action permission checks are skipped.
 
@@ -33,6 +34,9 @@ When `permission-required` is `false` in the respec or templates config, self-ac
 | `/ras template list` | None | Yes | List available templates |
 | `/ras template apply <name>` | `template.apply` / config | No | Apply a template to self |
 | `/ras template apply <name> <player>` | `template.apply.other` / OP | Yes | Admin apply a template |
+| `/ras level` | None | No | Show your RPG level |
+| `/ras level <player>` | OP 2 or `level.other` | Yes | Show another player's RPG level |
+| `/ras rewards [level]` | None | Yes | List configured level-up rewards |
 
 ## See Also
 

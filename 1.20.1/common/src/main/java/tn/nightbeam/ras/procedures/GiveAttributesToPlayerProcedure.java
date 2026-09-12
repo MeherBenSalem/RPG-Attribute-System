@@ -12,6 +12,8 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 
 public class GiveAttributesToPlayerProcedure {
     public static void execute(CommandContext<CommandSourceStack> arguments) {
+        if (!tn.nightbeam.ras.util.RasPermissions.requireAdmin(arguments.getSource()))
+            return;
         try {
             Entity target = EntityArgument.getEntity(arguments, "player");
             if (target == null)

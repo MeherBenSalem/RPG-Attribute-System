@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased
+
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+
+### Bug Fixes
+
+- **Admin `/ras` commands** — `/ras add attributes`, `/ras xp`, `/ras set xp`, `/ras reset`, `/ras unlock`, and `/ras lock` now require OP level 4, matching the existing docs and the 4.2.4 `/ras add level` gate. Non-ops no longer tab-complete those subcommands.
+- **Admin-on-other-player** — `/ras add attributes … <player>` and `/ras reset <player>` no longer re-run the command as the target (which would fail once the OP gate exists).
+- **Attribute IDs 11–15** — `/ras add attributes`, `/ras unlock`, and `/ras lock` accept 1–15. Adding points to ID 11+ no longer remaps onto attribute 10.
+- **Missing icons for IDs 11+** — empty `icon_path` reuses bundled `att_1.png`–`att_10.png` instead of requesting a non-existent `att_11.png`.
+
+### Documentation
+
+- How to restrict commands to ops (OP 4; no extra config; Fabric LuckPerms only for respec/template).
+- Which CurseForge/Modrinth jar to download (NeoForge vs Forge; jauml required on every loader; not Paper/Folia).
+- Attribute 11+ lock/icon behaviour and `gui_shadow_color` (no text-shadow boolean).
+- Paste-ready store replies: [listing-notes.md](listing-notes.md).
+
+---
+
 ## 4.2.4
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)

@@ -9,6 +9,8 @@ import net.minecraft.world.entity.Entity;
 
 public class LockAttributeProcedure {
 	public static void execute(CommandContext<CommandSourceStack> arguments, Entity entity) {
+		if (!tn.nightbeam.ras.util.RasPermissions.requireAdmin(arguments.getSource()))
+			return;
 		int attributeId = (int) DoubleArgumentType.getDouble(arguments, "attribute");
 		if (attributeId < 1)
 			return;

@@ -22,6 +22,16 @@
 
 ---
 
+### Attribute 11+ icon looks locked or purple/black
+
+**Symptom:** After adding `attribute_11.json` (or higher), the stats GUI shows a faded or missing-texture icon.
+
+**Cause:** The jar ships only `att_1.png`–`att_10.png`. A missing `icon_path` used to request `att_11.png`. `"lock": true` also fades the icon.
+
+**Fix:** Set `"lock": false` if the row should be allocatable. Set `icon_path` to `screens/att_1.png` through `att_10.png`, or a texture you actually added. Latest RAS reuses `att_1`–`att_10` when `icon_path` is empty.
+
+---
+
 ### Custom attribute icon is missing
 
 **Symptom:** An attribute shows a missing texture or blank icon in the GUI.
@@ -120,7 +130,13 @@ See the [server authority table](../configuration/overview.md#server-authority) 
 
 **Symptom:** The mod fails to load with `java.lang.NoClassDefFoundError` referencing `jauml`.
 
-**Fix:** jauml is a required dependency. Download the jauml JAR matching your platform and Minecraft version from the download page, and place it in `mods/`.
+**Fix:** jauml is a required dependency on **Fabric, Forge, and NeoForge**. Download the jauml JAR matching your loader and Minecraft version, and place it in `mods/`.
+
+### CurseForge “Requires Forge” on a NeoForge file
+
+**Symptom:** You run NeoForge 1.21.1+ but the file relations say Forge is required, or the Forge filter shows a NeoForge jar.
+
+**Fix:** Install **NeoForge**, not Minecraft Forge. Download `rpg_attribute_system-neoforge-<mc>-*.jar` from the **NeoForge** loader tab. 1.21.1 / 26.1.2 / 26.2 have no Forge jar. Also install the matching **jauml** NeoForge jar.
 
 ### Invalid JSON
 
@@ -148,9 +164,9 @@ See the [server authority table](../configuration/overview.md#server-authority) 
 
 ### Admin commands not working
 
-**Symptom:** `/ras add level`, `/ras xp`, etc. don't work.
+**Symptom:** `/ras add level`, `/ras xp`, `/ras reset`, `/ras unlock`, etc. don't work or don't tab-complete.
 
-**Fix:** These require OP level 4. Use `/op <player>` in the console. There are no separate permission nodes for admin commands.
+**Fix:** These require OP **level 4**. Use `/op <player>` in the console (or set `level` to `4` in `ops.json`). There are no separate permission nodes for admin commands. `/ras respec` and `/ras template apply` are player commands and stay available without OP. See [Restrict commands to operators](permissions/permissions-reference.md#restrict-commands-to-operators).
 
 ---
 

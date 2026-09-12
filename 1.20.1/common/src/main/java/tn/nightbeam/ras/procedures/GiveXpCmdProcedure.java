@@ -18,6 +18,8 @@ public class GiveXpCmdProcedure {
             CommandContext<CommandSourceStack> arguments, Entity entity) {
         if (entity == null)
             return;
+        if (!tn.nightbeam.ras.util.RasPermissions.requireAdmin(arguments.getSource()))
+            return;
         double AddedXp = DoubleArgumentType.getDouble(arguments, "amount");
         LevelingService.addXp(entity, AddedXp);
         if (Services.PLATFORM.getPlayerVariables(entity).Level >= Services.CONFIG.getNumberValue("ras", "settings",

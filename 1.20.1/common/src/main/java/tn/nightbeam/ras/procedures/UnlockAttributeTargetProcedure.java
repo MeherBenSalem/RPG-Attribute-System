@@ -8,6 +8,8 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class UnlockAttributeTargetProcedure {
 	public static void execute(CommandContext<CommandSourceStack> arguments) {
+		if (!tn.nightbeam.ras.util.RasPermissions.requireAdmin(arguments.getSource()))
+			return;
 		int attributeId = (int) DoubleArgumentType.getDouble(arguments, "attribute");
 		if (attributeId < 1)
 			return;

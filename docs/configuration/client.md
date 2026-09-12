@@ -28,6 +28,8 @@ Client settings control how RAS information appears on screen. They have no effe
 | `y_offset` | `display/overlay.json` | `0` | Integer | General Y offset for the level overlay |
 | `anchor` | `display/overlay.json` | `"TL"` | `TL`, `TR`, `BL`, `BR` | Screen corner anchor for the overlay |
 
+There is no HUD `text_shadow` key. The XP bar label uses vanilla drop-shadow; spare-points and keybind hint text do not. Book-menu underlay colour is `gui_shadow_color` in `stats_display.json` (see [Visuals](visuals.md#gui-text-underlay-gui_shadow_color)).
+
 ---
 
 ## HUD Overlay Settings

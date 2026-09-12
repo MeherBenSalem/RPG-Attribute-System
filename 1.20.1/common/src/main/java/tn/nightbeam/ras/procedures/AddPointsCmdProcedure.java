@@ -12,6 +12,8 @@ public class AddPointsCmdProcedure {
 	public static void execute(LevelAccessor world, CommandContext<CommandSourceStack> arguments, Entity entity) {
 		if (entity == null)
 			return;
+		if (!tn.nightbeam.ras.util.RasPermissions.requireAdmin(arguments.getSource()))
+			return;
 
 		int attributeId = (int) DoubleArgumentType.getDouble(arguments, "attribute_Id");
 		int count = (int) DoubleArgumentType.getDouble(arguments, "count");

@@ -176,8 +176,9 @@ public class AttributeManager {
             }
         }
 
-        // Default fallback
+        // Bundled icons are att_1.png through att_10.png; IDs 11+ reuse that set.
+        int fallbackIconId = attributeId < 1 ? 1 : ((attributeId - 1) % 10) + 1;
         return new net.minecraft.resources.ResourceLocation("rpg_attribute_system",
-                "textures/screens/att_" + attributeId + ".png");
+                "textures/screens/att_" + fallbackIconId + ".png");
     }
 }

@@ -123,7 +123,7 @@ RAS writes all log messages with the `[RPGAS]` prefix. You can find these in:
 
 ### "The mod doesn't work at all"
 
-Check the [Troubleshooting](troubleshooting.md#mod-does-not-load) page first. This is almost always a missing dependency (jauml), wrong Minecraft version, or wrong loader.
+Check [Troubleshooting](troubleshooting.md#missing-jauml) first. This is almost always a missing **jauml** jar, the wrong Minecraft version, or the wrong loader (Forge jar on NeoForge, or the reverse). See [Which JAR to download](installation.md#which-jar-to-download).
 
 ### "My configuration changes don't apply"
 

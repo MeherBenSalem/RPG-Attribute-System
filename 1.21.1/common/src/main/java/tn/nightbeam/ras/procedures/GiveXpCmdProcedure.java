@@ -19,6 +19,8 @@ public class GiveXpCmdProcedure {
             CommandContext<CommandSourceStack> arguments, Entity entity) {
         if (entity == null)
             return;
+        if (!tn.nightbeam.ras.util.RasPermissions.requireAdmin(arguments.getSource()))
+            return;
         double AddedXp = DoubleArgumentType.getDouble(arguments, "amount");
         execute(world, x, y, z, AddedXp, entity);
     }
