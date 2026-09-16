@@ -24,7 +24,7 @@ public class LevelOverlayRenderer {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null)
             return;
-        if (mc.options.hideGui)
+        if (mc.gui.hud.isHidden())
             return;
         if (!Services.CONFIG.getBooleanValue("ras/display", "overlay", "hudEnabled"))
             return;
