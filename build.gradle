@@ -38,6 +38,13 @@ tasks.register('build262', Exec) {
     commandLine wrapperCmd('26.2'), 'build'
 }
 
+tasks.register('build263', Exec) {
+    group = 'build'
+    description = 'Build all 26.3 loaders (Fabric + NeoForge).'
+    workingDir = file('26.3')
+    commandLine wrapperCmd('26.3'), 'build'
+}
+
 tasks.register('clean1201', Exec) {
     group = 'build'
     description = 'Clean all 1.20.1 loaders.'
@@ -66,17 +73,25 @@ tasks.register('clean262', Exec) {
     commandLine wrapperCmd('26.2'), 'clean'
 }
 
+tasks.register('clean263', Exec) {
+    group = 'build'
+    description = 'Clean all 26.3 loaders.'
+    workingDir = file('26.3')
+    commandLine wrapperCmd('26.3'), 'clean'
+}
+
 tasks.register('dist') {
     group = 'build'
     description = 'Build ALL versions and copy every mod JAR into dist/.'
-    dependsOn 'build1201', 'build1211', 'build2612', 'build262'
+    dependsOn 'build1201', 'build1211', 'build2612', 'build262', 'build263'
     doLast {
         def outDir = file('all-jars')
         outDir.mkdirs()
         ['1.20.1/fabric', '1.20.1/forge',
          '1.21.1/fabric', '1.21.1/neoforge',
          '26.1.2/fabric', '26.1.2/neoforge',
-         '26.2/fabric', '26.2/neoforge'].each { modDir ->
+         '26.2/fabric', '26.2/neoforge',
+         '26.3/fabric', '26.3/neoforge'].each { modDir ->
             def libsDir = file("${modDir}/build/libs")
             if (libsDir.exists()) {
                 fileTree(libsDir).matching {
@@ -100,14 +115,14 @@ tasks.register('dist') {
 
 tasks.register('buildAll') {
     group = 'build'
-    description = 'Build ALL versions (1.20.1, 1.21.1, 26.1.2, 26.2) and collect JARs into dist/.'
+    description = 'Build ALL versions (1.20.1, 1.21.1, 26.1.2, 26.2, 26.3) and collect JARs into dist/.'
     dependsOn 'dist'
 }
 
 tasks.register('cleanAll') {
     group = 'build'
-    description = 'Clean ALL versions (1.20.1, 1.21.1, 26.1.2, 26.2) and clean all-jars/.'
-    dependsOn 'clean1201', 'clean1211', 'clean2612', 'clean262'
+    description = 'Clean ALL versions (1.20.1, 1.21.1, 26.1.2, 26.2, 26.3) and clean all-jars/.'
+    dependsOn 'clean1201', 'clean1211', 'clean2612', 'clean262', 'clean263'
     doLast {
         def outDir = file('all-jars')
         if (outDir.exists()) {
@@ -119,12 +134,12 @@ tasks.register('cleanAll') {
 
 tasks.register('testVersions') {
     group = 'verification'
-    description = 'Build all five version roots for quick verification.'
-    dependsOn 'build1201', 'build1211', 'build2612', 'build262'
+    description = 'Build all version roots for quick verification.'
+    dependsOn 'build1201', 'build1211', 'build2612', 'build262', 'build263'
 }
 
 // ──────────────────────────────────────────────
-// Version sync — keep 1.20.1 / 1.21.1 / 26.1.2 / 26.2 on the same mod version
+// Version sync — keep 1.20.1 / 1.21.1 / 26.1.2 / 26.2 / 26.3 on the same mod version
 // Usage: ./gradlew syncVersion -PrasVersion=4.2.0
 // ──────────────────────────────────────────────
 
@@ -143,7 +158,7 @@ tasks.register('syncVersion') {
             throw new GradleException('Pass -PrasVersion=x.y.z or add a VERSION file at repo root.')
         }
         file('VERSION').text = v + System.lineSeparator()
-        ['1.20.1', '1.21.1', '26.1.2', '26.2'].each { dir ->
+        ['1.20.1', '1.21.1', '26.1.2', '26.2', '26.3'].each { dir ->
             def file = file("${dir}/gradle.properties")
             if (!file.exists()) {
                 throw new GradleException("Missing ${file}")
@@ -187,13 +202,16 @@ guiSelfTestTask('guiSelfTest2612Fabric', '26.1.2', ':fabric:runClientSelfTest')
 guiSelfTestTask('guiSelfTest2612NeoForge', '26.1.2', ':neoforge:runClientSelfTest')
 guiSelfTestTask('guiSelfTest262Fabric', '26.2', ':fabric:runClientSelfTest')
 guiSelfTestTask('guiSelfTest262NeoForge', '26.2', ':neoforge:runClientSelfTest')
+guiSelfTestTask('guiSelfTest263Fabric', '26.3', ':fabric:runClientSelfTest')
+guiSelfTestTask('guiSelfTest263NeoForge', '26.3', ':neoforge:runClientSelfTest')
 
 tasks.register('guiSelfTestAll') {
     group = 'verification'
-    description = 'Run in-game stats menu self-test for all eight loaders (sequential).'
+    description = 'Run in-game stats menu self-test for all loaders (sequential).'
     dependsOn 'guiSelfTest1201Fabric', 'guiSelfTest1201Forge', 'guiSelfTest1211Fabric',
             'guiSelfTest1211NeoForge', 'guiSelfTest2612Fabric', 'guiSelfTest2612NeoForge',
-            'guiSelfTest262Fabric', 'guiSelfTest262NeoForge'
+            'guiSelfTest262Fabric', 'guiSelfTest262NeoForge',
+            'guiSelfTest263Fabric', 'guiSelfTest263NeoForge'
 }
 
 
@@ -235,5 +253,15 @@ tasks.register('run262Fabric', Exec) {
 tasks.register('run262NeoForge', Exec) {
     workingDir = file('26.2')
     commandLine wrapperCmd('26.2'), ':neoforge:runClient'
+}
+
+tasks.register('run263Fabric', Exec) {
+    workingDir = file('26.3')
+    commandLine wrapperCmd('26.3'), ':fabric:runClient'
+}
+
+tasks.register('run263NeoForge', Exec) {
+    workingDir = file('26.3')
+    commandLine wrapperCmd('26.3'), ':neoforge:runClient'
 }
 

@@ -7,9 +7,10 @@
 | **1.20.1** | ✅ | ✅ | — | 17 | 4.2.1 |
 | **1.21.1** | ✅ | — | ✅ | 21 | 4.2.1 |
 | **26.1.2** | ✅ | — | ✅ | 25 | 4.2.1 |
-| **26.2** | ✅ | — | ✅ | 25 | 4.2.1 |
+| **26.2** | ✅ | — | ✅ | 25 | 4.2.6 |
+| **26.3** | ✅ | — | ✅ | 25 | 4.2.6 |
 
-There is **no Forge jar** for 1.21.1, 26.1.2, or 26.2. If CurseForge lists “Forge” on a file named `-neoforge-`, that label is wrong — install NeoForge. RAS is not a Paper/Folia plugin.
+There is **no Forge jar** for 1.21.1, 26.1.2, 26.2, or 26.3. If CurseForge lists “Forge” on a file named `-neoforge-`, that label is wrong — install NeoForge. RAS is not a Paper/Folia plugin.
 
 ## Required Dependencies
 
@@ -21,7 +22,7 @@ There is **no Forge jar** for 1.21.1, 26.1.2, or 26.2. If CurseForge lists “Fo
 
 ## Forge → NeoForge Migration
 
-Forge is supported on 1.20.1 only. 1.21.1, 26.1.2, and 26.2 use NeoForge. Config files are fully forward-compatible between Forge and NeoForge — the JSON structure is identical. Player NBT data is automatically migrated on first join.
+Forge is supported on 1.20.1 only. 1.21.1, 26.1.2, 26.2, and 26.3 use NeoForge. Config files are fully forward-compatible between Forge and NeoForge — the JSON structure is identical. Player NBT data is automatically migrated on first join.
 
 See [Migration](migration.md) for detailed version upgrade steps.
 

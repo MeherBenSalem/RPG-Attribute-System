@@ -10,6 +10,7 @@ The project is maintained across these version roots:
 | `1.21.1/` | 1.21.1 | Fabric, NeoForge |
 | `26.1.2/` | 26.1.2 | Fabric, NeoForge |
 | `26.2/` | 26.2 | Fabric, NeoForge |
+| `26.3/` | 26.3 | Fabric, NeoForge |
 
 Security fixes may be applied selectively depending on the impact and the cost
 of porting them across isolated version roots.

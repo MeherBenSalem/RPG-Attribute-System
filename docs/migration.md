@@ -113,11 +113,11 @@ In 1.20.1, `VanillaDropRatesProcedure.java` used two VP paths: boss entities (ra
 
 ### Platform Loader Changes
 
-| Loader | 1.20.1 | 1.21.1 | 26.1.2 | 26.2 |
-|--------|--------|--------|--------|------|
-| Forge | ✅ | ❌ | ❌ | ❌ |
-| NeoForge | ❌ | ✅ | ✅ | ✅ |
-| Fabric | ✅ | ✅ | ✅ | ✅ |
+| Loader | 1.20.1 | 1.21.1 | 26.1.2 | 26.2 | 26.3 |
+|--------|--------|--------|--------|------|------|
+| Forge | ✅ | ❌ | ❌ | ❌ | ❌ |
+| NeoForge | ❌ | ✅ | ✅ | ✅ | ✅ |
+| Fabric | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 **Impact:** Forge users on 1.20.1 cannot directly upgrade to 1.21.1+ without switching to NeoForge. Config files are fully compatible.
 
@@ -132,6 +132,12 @@ In 1.20.1, `VanillaDropRatesProcedure.java` used two VP paths: boss entities (ra
 ## 1.21.11 → 26.1.2 / 26.2
 
 **No config changes.** The config structure, keys, defaults, and behavior are identical. 26.1.2 and 26.2 are isolated MultiLoader workspaces targeting Java 25. The 26.2 tree keeps an extra `java/` source nest; 26.1.2 uses the standard `src/main/java/tn/nightbeam/ras/` layout. Neither difference affects configuration.
+
+---
+
+## 26.2 → 26.3
+
+**No config changes.** The 26.3 workspace is an isolated MultiLoader port of the 26.2 4.2.6 line (Fabric + NeoForge, Java 25). Gameplay, attributes, and config files match 26.2. The 26.3 tree uses the standard `src/main/java/tn/nightbeam/ras/` layout.
 
 ---
 

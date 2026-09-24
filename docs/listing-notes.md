@@ -21,7 +21,7 @@ Docs: https://github.com/MeherBenSalem/RPG-Attribute-System/blob/main/docs/permi
 
 Use the jar whose **filename** matches your loader:
 
-- NeoForge 1.21.1 / 26.1.2 / 26.2 → `rpg_attribute_system-neoforge-<mc>-*.jar` + NeoForge + matching **jauml** NeoForge jar
+- NeoForge 1.21.1 / 26.1.2 / 26.2 / 26.3 → `rpg_attribute_system-neoforge-<mc>-*.jar` + NeoForge + matching **jauml** NeoForge jar
 - Forge **1.20.1 only** → `rpg_attribute_system-forge-1.20.1-*.jar`
 - Fabric → `rpg_attribute_system-fabric-<mc>-*.jar`
 
