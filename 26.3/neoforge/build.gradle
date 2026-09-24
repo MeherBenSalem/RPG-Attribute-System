@@ -18,6 +18,10 @@ neoForge {
         client {
             client()
             gameDirectory = this.mkdir(this.file('runs/client'))
+            def graphicsBackend = System.getenv('RAS_GRAPHICS_BACKEND')
+            if (graphicsBackend) {
+                programArguments.addAll('--graphicsBackend', graphicsBackend)
+            }
         }
         clientSelfTest {
             client()
@@ -26,7 +30,12 @@ neoForge {
             systemProperty 'ras.loader', 'neoforge'
             systemProperty 'ras.mcVersion', '26.3'
             systemProperty 'ras.expectArgb', 'true'
-            programArguments.add('--demo')
+            // 26.3 --demo stays on the title screen; join a pre-copied saves/world.
+            programArguments.addAll('--quickPlaySingleplayer', 'world')
+            def graphicsBackend = System.getenv('RAS_GRAPHICS_BACKEND')
+            if (graphicsBackend) {
+                programArguments.addAll('--graphicsBackend', graphicsBackend)
+            }
         }
         data {
             clientData()

@@ -19,6 +19,10 @@ loom {
             setConfigName('Fabric Client')
             ideConfigGenerated(true)
             runDir('runs/client')
+            def graphicsBackend = System.getenv('RAS_GRAPHICS_BACKEND')
+            if (graphicsBackend) {
+                programArgs('--graphicsBackend', graphicsBackend)
+            }
         }
         clientSelfTest {
             client()
@@ -26,7 +30,12 @@ loom {
             ideConfigGenerated(true)
             runDir('runs/client-selftest')
             vmArgs('-Dras.guiSelfTest=true', '-Dras.loader=fabric', '-Dras.mcVersion=26.3', '-Dras.expectArgb=true')
-            programArgs('--demo')
+            // 26.3 --demo stays on the title screen; join a pre-copied saves/world.
+            programArgs('--quickPlaySingleplayer', 'world')
+            def graphicsBackend = System.getenv('RAS_GRAPHICS_BACKEND')
+            if (graphicsBackend) {
+                programArgs('--graphicsBackend', graphicsBackend)
+            }
         }
         server {
             server()

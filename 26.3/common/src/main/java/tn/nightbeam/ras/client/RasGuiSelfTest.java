@@ -11,7 +11,7 @@ import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-/** Dev-only automated GUI smoke test. Enable with {@code -Dras.guiSelfTest=true} and launch with {@code --demo}. */
+/** Dev-only automated GUI smoke test. Enable with {@code -Dras.guiSelfTest=true} and launch with {@code --quickPlaySingleplayer}. */
 public final class RasGuiSelfTest {
     private static final int OPEN_MENU_TICK = 80;
     private static final int MAX_TICKS = 400;
