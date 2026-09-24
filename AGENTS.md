@@ -12,6 +12,7 @@ project. Always run Gradle from inside the version folder you are targeting.
 | `1.21.1/` | 1.21.1 | Fabric + NeoForge | 21 | 8.11 |
 | `26.1.2/` | 26.1.2 | Fabric + NeoForge | 25 | 9.2 |
 | `26.2/`   | 26.2   | Fabric + NeoForge | 25 | 9.5 |
+| `26.3/`   | 26.3   | Fabric + NeoForge | 25 | 9.7 |
 
 ### JDKs and local Gradle Java overrides
 - Committed `gradle.properties` files do **not** set `org.gradle.java.home` (machine-specific
@@ -31,7 +32,7 @@ project. Always run Gradle from inside the version folder you are targeting.
   tests, so `test` is `NO-SOURCE`) and produces the loader JARs under
   `<version>/<loader>/build/libs/`.
 - Root `build.gradle` has aggregate helpers (`build1201`, `build1211`, `build2612`,
-  `build262`, `dist`, `cleanAll`, per-loader `runXxx`) that just shell out to each
+  `build262`, `build263`, `dist`, `cleanAll`, per-loader `runXxx`) that just shell out to each
   version's wrapper. Running them from the repo root is fine on Linux.
 - The `runClientSelfTest` / `guiSelfTest*` tasks referenced in the root
   `build.gradle` are **not defined** in the subprojects and will fail — use the real

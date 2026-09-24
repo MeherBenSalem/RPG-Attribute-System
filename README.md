@@ -12,6 +12,7 @@ public integration API for other mods.
 | `1.21.1/` | 1.21.1 | Fabric, NeoForge | 21 |
 | `26.1.2/` | 26.1.2 | Fabric, NeoForge | 25 |
 | `26.2/` | 26.2 | Fabric, NeoForge | 25 |
+| `26.3/` | 26.3 | Fabric, NeoForge | 25 |
 
 Each version root is an independent Gradle project. Run build commands from the
 specific version folder you want to work on.
@@ -46,8 +47,8 @@ version roots, but the individual workspaces remain isolated.
 ## Publishing
 
 After merge, NightReviews tags the release (e.g. `v4.2.5`). Pushing that tag runs
-`.github/workflows/publish.yml`, which builds all four version roots and uploads **each
-loader jar** as its own Modrinth version and CurseForge file (8 jars total).
+`.github/workflows/publish.yml`, which builds all five version roots and uploads **each
+loader jar** as its own Modrinth version and CurseForge file (10 jars total).
 
 Required repo secrets: `MODRINTH_TOKEN`, `CURSEFORGE_TOKEN`, `CURSEFORGE_API_KEY`.
 Required repo variables: `MODRINTH_ID`, `CURSEFORGE_ID`.

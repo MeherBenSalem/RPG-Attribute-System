@@ -4,9 +4,9 @@
 
 | Component | Requirement |
 |-----------|-------------|
-| **Minecraft** | 1.20.1, 1.21.1, 26.1.2, or 26.2 |
-| **Mod Loader** | Fabric, Forge (1.20.1 only), or NeoForge (1.21.1, 26.1.2, 26.2) |
-| **Java** | 17 (1.20.1), 21 (1.21.1), or 25 (26.1.2, 26.2) |
+| **Minecraft** | 1.20.1, 1.21.1, 26.1.2, 26.2, or 26.3 |
+| **Mod Loader** | Fabric, Forge (1.20.1 only), or NeoForge (1.21.1, 26.1.2, 26.2, 26.3) |
+| **Java** | 17 (1.20.1), 21 (1.21.1), or 25 (26.1.2, 26.2, 26.3) |
 | **jauml** | Required on **every** loader. Download the jauml JAR that matches your Minecraft version **and** loader, and put it in `mods/` next to RAS. |
 
 RAS is a Fabric / Forge / NeoForge **mod**. There is no Paper, Folia, Spigot, or Bukkit plugin.
@@ -19,7 +19,7 @@ CurseForge and Modrinth publish **one file per loader**. The filename is the sou
 |---------|----------------------------|------------|
 | Fabric (any supported MC) | `rpg_attribute_system-fabric-<mc>-<ver>.jar` | Forge or NeoForge jars |
 | Forge **1.20.1 only** | `rpg_attribute_system-forge-1.20.1-<ver>.jar` | NeoForge jars, or any 1.21.1+ Forge filter result |
-| NeoForge 1.21.1 / 26.1.2 / 26.2 | `rpg_attribute_system-neoforge-<mc>-<ver>.jar` | Forge jars |
+| NeoForge 1.21.1 / 26.1.2 / 26.2 / 26.3 | `rpg_attribute_system-neoforge-<mc>-<ver>.jar` | Forge jars |
 
 On CurseForge, use the **loader tabs** (Fabric / Forge / NeoForge), not the Minecraft version filter alone:
 
@@ -114,7 +114,7 @@ Config files are forward-compatible across all RAS versions. The mod only writes
 - Command registration happens via `RegisterCommandsEvent`
 - Boss-specific drop rate randomization is active in 1.20.1 (unused in 1.21.1+)
 
-### NeoForge (1.21.1, 26.1.2, 26.2)
+### NeoForge (1.21.1, 26.1.2, 26.2, 26.3)
 
 - JARs go in `mods/`
 - Command registration happens via `RegisterCommandsEvent`

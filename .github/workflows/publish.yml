@@ -36,7 +36,7 @@ on:
         required: false
         default: "both"
       minecraft_version:
-        description: "Optional MC version filter (e.g. 26.2) — only upload matching jars"
+        description: "Optional MC version filter (e.g. 26.3) — only upload matching jars"
         required: false
 
 jobs:
@@ -84,7 +84,7 @@ jobs:
         if: steps.prebuilt.outputs.found != 'true'
         with:
           distribution: temurin
-          java-version: "21"
+          java-version: "25"
 
       - uses: gradle/actions/setup-gradle@v4
         if: steps.prebuilt.outputs.found != 'true'
@@ -94,7 +94,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for ws in 1.20.1 1.21.1 26.1.2 26.2; do
+          for ws in 1.20.1 1.21.1 26.1.2 26.2 26.3; do
             echo "Building workspace $ws"
             (
               cd "$ws"

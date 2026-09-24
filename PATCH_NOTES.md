@@ -2,7 +2,11 @@
 
 ## 4.2.6
 
-**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge)
+**Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge) · Minecraft 26.3 (Fabric, NeoForge)
+
+### Platforms
+
+- **Minecraft 26.3** — new isolated MultiLoader workspace (`26.3/`) for Fabric and NeoForge. Gameplay, attributes, configs, and commands match the 26.2 4.2.6 line.
 
 ### Bug fixes
 

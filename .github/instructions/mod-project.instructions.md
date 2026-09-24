@@ -14,9 +14,10 @@ Each MC version is a **completely independent project** — no shared source fil
 | `1.21.1/` | 1.21.1 | Fabric + NeoForge | 21 |
 | `26.1.2/` | 26.1.2 | Fabric + NeoForge | 25 |
 | `26.2/` | 26.2 | Fabric + NeoForge | 25 |
+| `26.3/` | 26.3 | Fabric + NeoForge | 25 |
 
 - **1.20.1** uses Forge; all newer versions use NeoForge
-- **1.20.1** targets Java 17; **1.21.1** targets Java 21; **26.1.2** and **26.2** target Java 25
+- **1.20.1** targets Java 17; **1.21.1** targets Java 21; **26.1.2**, **26.2**, and **26.3** target Java 25
 
 ---
 
@@ -59,6 +60,7 @@ The root `build.gradle` defines per-version and aggregate build tasks:
 | `build1211` | 1.21.1 (Fabric + NeoForge) |
 | `build2612` | 26.1.2 (Fabric + NeoForge) |
 | `build262` | 26.2 (Fabric + NeoForge) |
+| `build263` | 26.3 (Fabric + NeoForge) |
 | `dist` | All versions → copies JARs to `dist/` |
 
 Run from the workspace root: `gradlew dist`
