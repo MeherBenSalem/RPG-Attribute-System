@@ -86,7 +86,7 @@ public final class RasGuiSelfTest {
         int ink = readColorConstant("INK");
         boolean expectArgb = Boolean.getBoolean("ras.expectArgb");
         boolean colorOk = (ink & 0xFFFFFF) == 0x342730 && (!expectArgb || (ink >>> 24) == 0xFF);
-        Screen screen = client.gui.screen();
+        Screen screen = client.screen;
         boolean layoutOk = menuOpen && inspectLayout(client, screen);
         boolean widgetsOk = menuOpen && inspectWidgets(screen);
         boolean pass = menuOpen && colorOk && layoutOk && widgetsOk;

@@ -193,7 +193,7 @@ public class PlayerStatsOverviewScreen extends Screen {
                     "Invested points: " + RasGuiStyle.number(spentPoints(variables()))), mouseX, mouseY, width);
         }
     }
-    private void returnToParent() { if (minecraft != null) minecraft.gui.setScreen(parent); }
+    private void returnToParent() { if (minecraft != null) minecraft.setScreen(parent); }
     @Override public void onClose() { returnToParent(); }
     @Override public boolean keyPressed(KeyEvent event) {
         if (event.key() == 256) { returnToParent(); return true; }

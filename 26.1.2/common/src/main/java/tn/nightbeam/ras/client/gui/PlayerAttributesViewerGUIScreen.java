@@ -99,7 +99,7 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
         navigationButton(layout.panelWidth() - 164, 5, 68, "Attributes", "View and allocate attributes",
                 button -> Services.PLATFORM.sendButtonAction(0, x, y, z));
         navigationButton(layout.panelWidth() - 94, 5, 58, "Stats", "View player statistics and configured totals",
-                button -> { if (minecraft != null) minecraft.gui.setScreen(new PlayerStatsOverviewScreen(this)); });
+                button -> { if (minecraft != null) minecraft.setScreen(new PlayerStatsOverviewScreen(this)); });
         navigationButton(layout.closeX(), 5, 20, "x", "Close combat statistics", button -> closeContainerSafely());
         if (totalPages() > 1) {
             var previous = navigationButton(layout.pagePreviousX(), layout.footerY(), 20, "<", "Previous combat-stat page",

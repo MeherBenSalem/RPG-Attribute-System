@@ -38,9 +38,9 @@ public interface LevelAccessor {boolean isClientSide();}''',
 'net/minecraft/world/level/Level.java':'''package net.minecraft.world.level;
 public class Level implements LevelAccessor { public boolean client;public String difficulty="normal";private final String dimension;
 public Level(String dimension){this.dimension=dimension;}public boolean isClientSide(){return client;}
-public Dimension dimension(){return new Dimension(dimension);}public Difficulty getDifficulty(){return new Difficulty(difficulty);}
+public Dimension dimension(){return new Dimension(dimension);}public Difficulty getDifficulty(){return Difficulty.valueOf(difficulty.toUpperCase(java.util.Locale.ROOT));}
 public record Dimension(String value){public Object location(){return value;}public String toString(){return "ResourceKey[minecraft:dimension / "+value+"]";}}
-public record Difficulty(String value){public String getKey(){return value;}}}''',
+public enum Difficulty {PEACEFUL,EASY,NORMAL,HARD;public String getKey(){return name().toLowerCase(java.util.Locale.ROOT);}}}''',
 'net/minecraft/world/level/block/state/BlockState.java':'''package net.minecraft.world.level.block.state;
 public class BlockState {public Object getBlock(){return "minecraft:stone";}}''',
 'net/minecraft/world/entity/EntityType.java':'''package net.minecraft.world.entity;

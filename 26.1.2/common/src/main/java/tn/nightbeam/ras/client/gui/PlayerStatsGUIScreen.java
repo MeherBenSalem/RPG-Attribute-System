@@ -121,7 +121,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         navigationButton(layout.panelWidth() - 154, 5, 58, "Combat", "View actual combat statistics",
                 button -> Services.PLATFORM.sendButtonAction(9, x, y, z));
         navigationButton(layout.panelWidth() - 94, 5, 58, "Stats", "View player statistics and configured totals",
-                button -> { if (minecraft != null) minecraft.gui.setScreen(new PlayerStatsOverviewScreen(this)); });
+                button -> { if (minecraft != null) minecraft.setScreen(new PlayerStatsOverviewScreen(this)); });
         navigationButton(layout.closeX(), 5, 20, "x", "Close attributes", button -> closeContainerSafely());
         navigationButton(10, layout.footerY(), 20, "<", "Decrease allocation amount",
                 button -> Services.PLATFORM.sendButtonAction(10, x, y, z));

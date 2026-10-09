@@ -42,6 +42,6 @@ public final class MobXpConfig {
                 BuiltInRegistries.ENTITY_TYPE.getKey(victim.getType()).toString(),
                 tag -> victim.getType().builtInRegistryHolder().is(
                         TagKey.create(Registries.ENTITY_TYPE, Identifier.tryParse(tag))),
-                victim.level().getDifficulty().getKey(), armorPoints);
+                victim.level().getDifficulty().name().toLowerCase(java.util.Locale.ROOT), armorPoints);
     }
 }
