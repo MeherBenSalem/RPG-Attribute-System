@@ -1,0 +1,101 @@
+name: Real client GUI evidence
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/client-qa.yml'
+      - 'scripts/client-qa/**'
+      - 'tests/client-qa/**'
+      - '1.21.1/common/src/main/java/tn/nightbeam/ras/client/**'
+      - '26.3/common/src/main/java/tn/nightbeam/ras/client/**'
+      - '1.21.1/fabric/build.gradle'
+      - '26.3/fabric/build.gradle'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: real-client-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  LIBGL_ALWAYS_SOFTWARE: 'true'
+  GALLIUM_DRIVER: llvmpipe
+
+jobs:
+  client-1211:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.QA_SOURCE_SHA }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Validate evidence/watchdog code
+        run: python3 -m unittest discover -s tests/client-qa -v
+      - name: Prepare real software-rendered X11 client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb xauth mesa-utils libgl1-mesa-dri libglx-mesa0 libxrandr2 libxinerama1 libxcursor1 libxi6 libasound2t64 ffmpeg xdotool python3-pil
+      - name: Generate genuine demo world and exercise scales 2 through 4
+        run: |
+          xvfb-run -a -s '-screen 0 1280x960x24 +extension GLX -nolisten tcp' \
+            python3 scripts/client-qa/run.py --workspace 1.21.1 --source-sha "$QA_SOURCE_SHA" \
+            --output "$RUNNER_TEMP/ras-client-qa-1211" --fixture-output "$RUNNER_TEMP/ras-disposable-fixture"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: real-client-evidence-1.21.1
+          path: ${{ runner.temp }}/ras-client-qa-1211/
+          if-no-files-found: warn
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: generated-disposable-demo-fixture
+          path: ${{ runner.temp }}/ras-disposable-fixture/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 3
+
+  client-263:
+    needs: client-1211
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      RAS_GRAPHICS_BACKEND: opengl
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.QA_SOURCE_SHA }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: generated-disposable-demo-fixture
+          path: ${{ runner.temp }}/ras-disposable-fixture
+      - name: Prepare real software-rendered X11 client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb xauth mesa-utils libgl1-mesa-dri libglx-mesa0 libxrandr2 libxinerama1 libxcursor1 libxi6 libasound2t64 ffmpeg xdotool python3-pil
+      - name: Quick-play a verified generated world and exercise scales 2 through 4
+        run: |
+          xvfb-run -a -s '-screen 0 1280x960x24 +extension GLX -nolisten tcp' \
+            python3 scripts/client-qa/run.py --workspace 26.3 --source-sha "$QA_SOURCE_SHA" \
+            --output "$RUNNER_TEMP/ras-client-qa-263" --fixture-input "$RUNNER_TEMP/ras-disposable-fixture"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: real-client-evidence-26.3
+          path: ${{ runner.temp }}/ras-client-qa-263/
+          if-no-files-found: warn
+          retention-days: 14

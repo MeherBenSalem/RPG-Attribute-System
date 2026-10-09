@@ -26,6 +26,7 @@ public final class RasGuiSelfTest {
     }
 
     public static void onClientTick(Minecraft client) {
+        if (Boolean.getBoolean("ras.clientQa")) { ClientQa.tick(client); return; }
         if (!Boolean.getBoolean("ras.guiSelfTest") || finished) {
             return;
         }
@@ -151,5 +152,238 @@ public final class RasGuiSelfTest {
             Constants.LOG.error("[RAS GUI self-test] Missing color constant {}", name, e);
         }
         return 0;
+    }
+    /** Hosted-client instrumentation. This entire path is opt-in and never runs in ordinary play. */
+    private static final class ClientQa {
+        private static final String RUN_ID = System.getProperty("ras.clientQaRunId", "");
+        private static final String SOURCE_SHA = System.getProperty("ras.clientQaSourceSha", "");
+        private static final int REQUESTED_SCALE = Integer.getInteger("ras.clientQaScale", 0);
+        private static final long STARTED = System.nanoTime();
+        private static final long STARTUP_LIMIT_NS = java.util.concurrent.TimeUnit.SECONDS.toNanos(480);
+        private static final java.util.List<String> EXPECTED_IDS = java.util.stream.IntStream.rangeClosed(1, 8)
+                .mapToObj(id -> "attribute_" + id).toList();
+        private static boolean done;
+        private static boolean demoRequested;
+        private static boolean demoIntroDismissed;
+        private static boolean bindRequested;
+        private static boolean serverBound;
+        private static boolean initialMenuRequested;
+        private static boolean initialMenuSeen;
+        private static String lastState = "";
+        private static int stableTicks;
+        private static long sequence;
+
+        private static void tick(Minecraft client) {
+            if (done) return;
+            if (!RUN_ID.matches("[a-zA-Z0-9_-]{8,100}") || !SOURCE_SHA.matches("[0-9a-f]{40}")
+                    || REQUESTED_SCALE < 2 || REQUESTED_SCALE > 4) {
+                fail(client, "Invalid explicit QA run identity or GUI scale");
+                return;
+            }
+            try {
+                Path directory = client.gameDirectory.toPath();
+                Path stop = directory.resolve("ras-client-qa-stop.txt");
+                if (Files.isRegularFile(stop) && Files.readString(stop).trim().equals(RUN_ID + " " + SOURCE_SHA)) {
+                    if (!initialMenuSeen) { fail(client, "Stop requested before allocation readiness"); return; }
+                    com.google.gson.JsonObject result = identity(client, "STOPPED");
+                    result.addProperty("clean_stop_requested", true);
+                    write(directory.resolve("ras-client-qa-final.json"), result);
+                    done = true;
+                    client.stop();
+                    return;
+                }
+                if (!initialMenuSeen && System.nanoTime() - STARTED > STARTUP_LIMIT_NS) {
+                    fail(client, "Real world/player/synced allocation menu did not become ready within 480 seconds");
+                    return;
+                }
+                Screen screen = client.screen;
+                if (client.player == null || client.level == null || client.getSingleplayerServer() == null) {
+                    stableTicks = 0;
+                    if (Boolean.getBoolean("ras.clientQaAutoDemo") && !demoRequested && screen != null
+                            && screen.getClass().getName().equals("net.minecraft.client.gui.screens.TitleScreen")) {
+                        for (var child : screen.children()) {
+                            if (child instanceof Button button && button.active
+                                    && button.getMessage().getString().equals("Play Demo World")) {
+                                // Invoke only the real, known demo-world control. Never accept another prompt.
+                                demoRequested = true;
+                                Constants.LOG.info("[RAS client QA] Requesting a fresh disposable demo world");
+                                button.onPress();
+                                break;
+                            }
+                        }
+                    }
+                    return;
+                }
+                // Never replace a post-world prompt with our menu. Only a confirmed informational demo intro may be dismissed.
+                if (!initialMenuRequested && screen != null) {
+                    if (Boolean.getBoolean("ras.clientQaAutoDemo") && !demoIntroDismissed
+                            && screen.getClass().getName().equals("net.minecraft.client.gui.screens.DemoIntroScreen")) {
+                        for (var child : screen.children()) {
+                            if (child instanceof Button button && button.active
+                                    && button.getMessage().getString().equals("Continue Playing!")) {
+                                // Verified Mojang demo.help.later: closes informational help only; never Purchase Now.
+                                demoIntroDismissed = true;
+                                button.onPress();
+                                break;
+                            }
+                        }
+                    }
+                    return;
+                }
+                if (!bindRequested) {
+                    bindRequested = true;
+                    var uuid = client.player.getUUID();
+                    client.getSingleplayerServer().execute(() -> {
+                        var server = client.getSingleplayerServer();
+                        if (server != null && server.getPlayerList().getPlayer(uuid) != null) {
+                            client.execute(() -> serverBound = true);
+                        }
+                    });
+                }
+                var vars = tn.nightbeam.ras.platform.Services.PLATFORM.getPlayerVariables(client.player);
+                boolean synced = tn.nightbeam.ras.util.AttributeManager.getAttributeIds().containsAll(EXPECTED_IDS)
+                        && vars.attributes.keySet().containsAll(EXPECTED_IDS)
+                        && vars.Level >= 0 && Double.isFinite(vars.Level)
+                        && vars.SparePoints >= 0 && Double.isFinite(vars.SparePoints)
+                        && vars.nextevelXp > 0 && Double.isFinite(vars.nextevelXp);
+                for (String id : EXPECTED_IDS) {
+                    int number = Integer.parseInt(id.substring("attribute_".length()));
+                    var data = tn.nightbeam.ras.util.AttributeManager.getAttributeData(number);
+                    synced &= data != null && Double.isFinite(vars.attributes.getOrDefault(id, Double.NaN));
+                }
+                if (!serverBound || !synced) { stableTicks = 0; return; }
+                if (!initialMenuRequested) {
+                    initialMenuRequested = true;
+                    var uuid = client.player.getUUID();
+                    client.getSingleplayerServer().execute(() -> {
+                        var server = client.getSingleplayerServer();
+                        ServerPlayer exactPlayer = server == null ? null : server.getPlayerList().getPlayer(uuid);
+                        if (exactPlayer == null) client.execute(() -> fail(client, "Exact bound test player disappeared before menu request"));
+                        else OpenStatsMenuPacket.handle(exactPlayer);
+                    });
+                    return;
+                }
+                String state = state(screen);
+                int actualPage = -1;
+                if (!state.equals("WORLD") && !state.equals("OTHER")) {
+                    Field page = screen.getClass().getDeclaredField("currentPage");
+                    page.setAccessible(true);
+                    actualPage = page.getInt(screen);
+                }
+                String stateKey = state + ":" + actualPage;
+                if (!stateKey.equals(lastState)) { lastState = stateKey; stableTicks = 0; }
+                if (++stableTicks < 12) return;
+                if (state.equals("ALLOCATION")) initialMenuSeen = true;
+                if (!initialMenuSeen || state.equals("OTHER")) return;
+                double actualScale = windowNumber(client, "getGuiScale").doubleValue();
+                if (actualScale != REQUESTED_SCALE) {
+                    fail(client, "Requested GUI scale " + REQUESTED_SCALE + " but actual scale is " + actualScale);
+                    return;
+                }
+                com.google.gson.JsonObject ready = identity(client, "READY");
+                ready.addProperty("state", state);
+                ready.addProperty("sequence", ++sequence);
+                ready.addProperty("server_player_bound", serverBound);
+                ready.addProperty("client_player_present", true);
+                ready.addProperty("client_level_present", true);
+                ready.addProperty("expected_attributes_synced", synced);
+                ready.addProperty("level", vars.Level);
+                ready.addProperty("spare_points", vars.SparePoints);
+                ready.addProperty("next_level_xp", vars.nextevelXp);
+                ready.addProperty("screen_class", screen == null ? "none" : screen.getClass().getName());
+                com.google.gson.JsonArray ids = new com.google.gson.JsonArray();
+                tn.nightbeam.ras.util.AttributeManager.getAttributeIds().forEach(ids::add);
+                ready.add("synced_attribute_ids", ids);
+                com.google.gson.JsonArray buttons = new com.google.gson.JsonArray();
+                if (screen != null) {
+                    Field field = screen.getClass().getDeclaredField("layout");
+                    field.setAccessible(true);
+                    PixelRpgBookLayout layout = (PixelRpgBookLayout) field.get(screen);
+                    com.google.gson.JsonObject panel = new com.google.gson.JsonObject();
+                    panel.addProperty("x", layout.left()); panel.addProperty("y", layout.top());
+                    panel.addProperty("width", layout.panelWidth()); panel.addProperty("height", layout.panelHeight());
+                    panel.addProperty("native_scale", layout.scale()); panel.addProperty("rows", layout.rowsPerPage());
+                    ready.add("panel", panel);
+                    Field page = screen.getClass().getDeclaredField("currentPage");
+                    page.setAccessible(true);
+                    ready.addProperty("page", page.getInt(screen));
+                    for (var child : screen.children()) {
+                        if (child instanceof Button button) {
+                            if (button.getWidth() < 20 || button.getHeight() < 20
+                                    || button.getMessage().getString().isBlank()
+                                    || button.getX() < 0 || button.getY() < 0
+                                    || button.getX() + button.getWidth() > client.getWindow().getGuiScaledWidth()
+                                    || button.getY() + button.getHeight() > client.getWindow().getGuiScaledHeight()) {
+                                fail(client, "A real screen control is unlabeled, smaller than 20 GUI pixels, or outside the viewport");
+                                return;
+                            }
+                            com.google.gson.JsonObject item = new com.google.gson.JsonObject();
+                            item.addProperty("label", button.getMessage().getString());
+                            item.addProperty("x", button.getX()); item.addProperty("y", button.getY());
+                            item.addProperty("width", button.getWidth()); item.addProperty("height", button.getHeight());
+                            item.addProperty("active", button.active); item.addProperty("focused", button.isFocused());
+                            buttons.add(item);
+                        }
+                    }
+                }
+                ready.add("buttons", buttons);
+                write(directory.resolve("ras-client-qa-ready.json"), ready);
+            } catch (Exception e) {
+                fail(client, "QA instrumentation failed: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+            }
+        }
+        private static Number windowNumber(Minecraft client, String getter) throws ReflectiveOperationException {
+            Object value = client.getWindow().getClass().getMethod(getter).invoke(client.getWindow());
+            if (!(value instanceof Number number)) throw new IllegalStateException("Window getter is not numeric: " + getter);
+            return number;
+        }
+        private static String state(Screen screen) throws ReflectiveOperationException {
+            if (screen == null) return "WORLD";
+            if (screen instanceof PlayerStatsGUIScreen) return "ALLOCATION";
+            if (screen instanceof tn.nightbeam.ras.client.gui.PlayerAttributesViewerGUIScreen) return "COMBAT";
+            if (screen instanceof tn.nightbeam.ras.client.gui.PlayerStatsOverviewScreen) {
+                Field totals = screen.getClass().getDeclaredField("totalsView");
+                totals.setAccessible(true);
+                return totals.getBoolean(screen) ? "OVERVIEW_TOTALS" : "OVERVIEW_ATTRIBUTES";
+            }
+            return "OTHER";
+        }
+        private static com.google.gson.JsonObject identity(Minecraft client, String status) throws ReflectiveOperationException {
+            com.google.gson.JsonObject object = new com.google.gson.JsonObject();
+            object.addProperty("schema_version", 1); object.addProperty("status", status);
+            object.addProperty("run_id", RUN_ID); object.addProperty("source_sha", SOURCE_SHA);
+            object.addProperty("mc", System.getProperty("ras.mcVersion", "unknown"));
+            object.addProperty("loader", System.getProperty("ras.loader", "unknown"));
+            object.addProperty("written_at_ms", System.currentTimeMillis());
+            object.addProperty("requested_gui_scale", REQUESTED_SCALE);
+            object.addProperty("actual_gui_scale", windowNumber(client, "getGuiScale"));
+            object.addProperty("window_width", windowNumber(client, "getWidth"));
+            object.addProperty("window_height", windowNumber(client, "getHeight"));
+            object.addProperty("gui_width", client.getWindow().getGuiScaledWidth());
+            object.addProperty("gui_height", client.getWindow().getGuiScaledHeight());
+            return object;
+        }
+        private static void write(Path target, com.google.gson.JsonObject value) throws Exception {
+            Path temporary = target.resolveSibling(target.getFileName() + ".tmp");
+            Files.writeString(temporary, value.toString() + System.lineSeparator());
+            try {
+                Files.move(temporary, target, java.nio.file.StandardCopyOption.ATOMIC_MOVE,
+                        java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            } catch (java.nio.file.AtomicMoveNotSupportedException e) {
+                Files.move(temporary, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            }
+        }
+        private static void fail(Minecraft client, String reason) {
+            if (done) return;
+            done = true;
+            Constants.LOG.error("[RAS client QA] FAIL {}", reason);
+            com.google.gson.JsonObject failure = new com.google.gson.JsonObject();
+            failure.addProperty("schema_version", 1); failure.addProperty("status", "FAIL");
+            failure.addProperty("run_id", RUN_ID); failure.addProperty("source_sha", SOURCE_SHA);
+            failure.addProperty("reason", reason); failure.addProperty("written_at_ms", System.currentTimeMillis());
+            try { write(client.gameDirectory.toPath().resolve("ras-client-qa-final.json"), failure); }
+            catch (Exception e) { Constants.LOG.error("[RAS client QA] Could not write failure evidence", e); }
+            // Keep the genuine failed screen alive so the outer driver can capture it before cleanup.
+        }
     }
 }
