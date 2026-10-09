@@ -34,21 +34,23 @@ public class LevelingService {
     }
 
     public static void addXp(Entity entity, double amount) {
-        if (entity == null || entity.level().isClientSide() || amount <= 0) {
+        if (entity == null || entity.level().isClientSide() || !Double.isFinite(amount) || amount <= 0) {
             return;
         }
 
         initializeOrMigrate(entity);
         PlayerVariables vars = Services.PLATFORM.getPlayerVariables(entity);
         double oldLevel = vars.Level;
-        vars.totalXp = Math.max(0, vars.totalXp + amount);
+        double total = vars.totalXp + amount;
+        if (!Double.isFinite(total)) return;
+        vars.totalXp = Math.max(0, total);
         recalculateDisplayFields(vars);
         grantLevelPoints(entity, vars, oldLevel);
         Services.PLATFORM.syncPlayerVariables(vars, entity);
     }
 
     public static void setTotalXp(Entity entity, double amount) {
-        if (entity == null || entity.level().isClientSide()) {
+        if (entity == null || entity.level().isClientSide() || !Double.isFinite(amount)) {
             return;
         }
 

@@ -22,6 +22,7 @@ public class ConfigInitializer {
         createAttributeSettings();
         createDefaultAttributes();
         createDropRateConfig();
+        MobXpConfig.createDefaultIfMissing();
         createItemsLockConfig();
         createBlocksLockConfig();
         createLevelUpRewardsConfig();
@@ -374,7 +375,7 @@ public class ConfigInitializer {
             Services.CONFIG.addStringToArray(dir, file, "totals",
                     "[label]Total Damage Bonus[labelEnd][ids]2[idsEnd][mode]bonus[modeEnd]");
             Services.CONFIG.addStringToArray(dir, file, "totals",
-                    "[label]Total Mana Bonus[labelEnd][ids]3[idsEnd][mode]bonus[modeEnd]");
+                    "[label]Total Attack Speed Bonus[labelEnd][ids]3[idsEnd][mode]bonus[modeEnd]");
             Services.CONFIG.addStringToArray(dir, file, "totals",
                     "[label]Total Defense Bonus[labelEnd][ids]4[idsEnd][mode]bonus[modeEnd]");
         }

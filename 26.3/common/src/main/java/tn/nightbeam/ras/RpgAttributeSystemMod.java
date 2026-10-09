@@ -14,6 +14,7 @@ public class RpgAttributeSystemMod {
             throw new IllegalStateException("[RPGAS] Config validation failed in strict mode. Fix errors and restart.");
         }
         tn.nightbeam.ras.util.AttributeManager.refreshServerConfig();
+        tn.nightbeam.ras.config.MobXpConfig.reload();
         tn.nightbeam.ras.config.TemplateConfig.reload();
         tn.nightbeam.ras.config.StatsDisplayConfig.reload();
         report.logSummary(tn.nightbeam.ras.util.AttributeManager.getAttributeIds().size());

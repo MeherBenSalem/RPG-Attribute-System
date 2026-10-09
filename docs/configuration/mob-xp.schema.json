@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MeherBenSalem/RPG-Attribute-System/blob/main/docs/configuration/mob-xp.schema.json",
+  "title": "RAS mob_xp.json schema1 (4.3.0 development)",
+  "type": "object",
+  "required": [
+    "schema_version"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "difficulty_weighting": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "peaceful": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1.7976931348623157e+308,
+          "default": 1
+        },
+        "easy": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1.7976931348623157e+308,
+          "default": 1
+        },
+        "normal": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1.7976931348623157e+308,
+          "default": 1
+        },
+        "hard": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1.7976931348623157e+308,
+          "default": 1
+        }
+      }
+    },
+    "armor_weighting": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "per_armor_point": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1.7976931348623157e+308,
+          "default": 0
+        },
+        "max_multiplier": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 1.7976931348623157e+308,
+          "default": 5
+        }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "additionalProperties": true,
+        "oneOf": [
+          {
+            "required": [
+              "entity"
+            ],
+            "not": {
+              "required": [
+                "tag"
+              ]
+            }
+          },
+          {
+            "required": [
+              "tag"
+            ],
+            "not": {
+              "required": [
+                "entity"
+              ]
+            }
+          }
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": ".*\\S.*",
+            "description": "Unique within rules array"
+          },
+          "entity": {
+            "type": "string",
+            "pattern": "^[a-z0-9_.-]+:[a-z0-9/._-]+$"
+          },
+          "tag": {
+            "type": "string",
+            "pattern": "^[a-z0-9_.-]+:[a-z0-9/._-]+$"
+          },
+          "enabled": {
+            "type": "boolean",
+            "default": true
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": -2147483648,
+            "maximum": 2147483647,
+            "default": 0
+          },
+          "base_xp": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1.7976931348623157e+308
+          },
+          "multiplier": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1.7976931348623157e+308,
+            "default": 1
+          },
+          "apply_difficulty_weighting": {
+            "type": "boolean",
+            "default": true
+          },
+          "apply_armor_weighting": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      }
+    }
+  }
+}

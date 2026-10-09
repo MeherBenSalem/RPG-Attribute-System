@@ -1,5 +1,16 @@
 # RPG Attribute System — Patch Notes
 
+## 4.3.0 (development)
+
+- Optional cached server-side entity/tag VP rules, base overrides and difficulty/effective-armor weighting; generated defaults remain disabled.
+- Admin `/ras reload mob_xp` with last-good reload protection and validation diagnostics.
+- Readable native-pixel stats/allocation/combat UI with larger labeled controls, responsive paging, complete tooltips and configurable totals.
+- Fresh attribute3 summary label corrected to Attack Speed; imported configuration stays intact.
+- Configuration studio development export, shared runtime/preview fixtures, and a five-workspace loader CI matrix.
+- Reject nonfinite XP input and overflowing awards/player totals.
+
+No release publication yet. See [verification notes](docs/verification/4.3.0.md) for exact tested and pending stages.
+
 ## 4.2.6
 
 **Supported platforms:** Minecraft 1.20.1 (Fabric, Forge) · Minecraft 1.21.1 (Fabric, NeoForge) · Minecraft 26.1.2 (Fabric, NeoForge) · Minecraft 26.2 (Fabric, NeoForge) · Minecraft 26.3 (Fabric, NeoForge)

@@ -1,440 +1,191 @@
 package tn.nightbeam.ras.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import tn.nightbeam.ras.config.StatsDisplayConfig;
 import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.platform.Services;
-import tn.nightbeam.ras.procedures.CurrentXpToLevelProcedure;
 import tn.nightbeam.ras.procedures.ReturnDisplaySectionGenericProcedure;
-import tn.nightbeam.ras.procedures.ReturnPercentageProcedure;
 import tn.nightbeam.ras.procedures.ReturnSectionDisplayGenericProcedure;
-import tn.nightbeam.ras.util.AttributeManager;
 import tn.nightbeam.ras.world.inventory.PlayerAttributesViewerGUIMenu;
-
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Actual configured combat values, including active equipment and attribute modifiers. */
 public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<PlayerAttributesViewerGUIMenu>
         implements tn.nightbeam.ras.init.ScreenAccessor {
-    private static final int BOOK_WIDTH = PixelRpgBookLayout.BOOK_WIDTH;
-    private static final int BOOK_HEIGHT = PixelRpgBookLayout.BOOK_HEIGHT;
-    private static final int TAB_WIDTH = PixelRpgBookLayout.TAB_WIDTH;
-    private static final int DESIGN_WIDTH = PixelRpgBookLayout.DESIGN_WIDTH;
-    private static final int DESIGN_HEIGHT = PixelRpgBookLayout.DESIGN_HEIGHT;
-    private static final int SECTIONS_PER_PAGE = 7;
-    private static final int ROW_Y = 52;
-    private static final int ROW_HEIGHT = 32;
-    private static final int RIGHT_PAGE_X = 288;
-
-    private static final int INK = 0x342730;
-    private static final int VALUE_MAROON = 0x6B3A52;
-    private static final int POINTS_GREEN = 0x267326;
-    private static final int XP_TEXT = 0xF3E1B5;
-    private static final int HEADER_GOLD = 0xF3E1B5;
-
-    private static final ResourceLocation BOOK = texture("book.png");
-    private static final ResourceLocation TITLE_FRAME = texture("title_frame.png");
-    private static final ResourceLocation XP_EMPTY = texture("xp_bar_empty.png");
-    private static final ResourceLocation XP_FULL = texture("xp_bar_full.png");
-    private static final ResourceLocation[] DEFAULT_ICONS = {
-            null,
-            texture("symbol_1.png"),
-            texture("symbol_5.png"),
-            texture("symbol_2.png"),
-            texture("symbol_6.png"),
-            texture("symbol_3.png"),
-            texture("symbol_7.png"),
-            texture("symbol_4.png"),
-            texture("symbol_8.png")
-    };
-
-    private final Level world;
-    private final int x;
-    private final int y;
-    private final int z;
     private final Player entity;
+    private final int x, y, z;
+    private final PixelRpgBookLayout layout = new PixelRpgBookLayout();
+    private final List<RasGuiButton> navigation = new ArrayList<>();
+    private List<Integer> visibleSections;
     private boolean menuStateUpdateActive;
     private int currentPage;
-    private final PixelRpgBookLayout layout = new PixelRpgBookLayout();
-    private List<Integer> visibleSections;
-    private Button pagePreviousButton;
-    private Button pageNextButton;
 
-    public PlayerAttributesViewerGUIScreen(PlayerAttributesViewerGUIMenu container, Inventory inventory,
-            Component text) {
-        super(container, inventory, text);
-        this.world = container.world;
-        this.x = container.x;
-        this.y = container.y;
-        this.z = container.z;
-        this.entity = inventory.player;
-        this.imageWidth = DESIGN_WIDTH;
-        this.imageHeight = DESIGN_HEIGHT;
-        this.titleLabelX = 10000;
-        this.inventoryLabelX = 10000;
+    public PlayerAttributesViewerGUIScreen(PlayerAttributesViewerGUIMenu container, Inventory inventory, Component title) {
+        super(container, inventory, title);
+        entity = inventory.player;
+        x = container.x; y = container.y; z = container.z;
+        imageWidth = PixelRpgBookLayout.DESIGN_WIDTH; imageHeight = PixelRpgBookLayout.DESIGN_HEIGHT;
+        titleLabelX = 10000; inventoryLabelX = 10000;
     }
 
-    private static ResourceLocation texture(String name) {
-        return ResourceLocation.tryParse("rpg_attribute_system:textures/screens/pixel_rpg/" + name);
-    }
-
-    @Override
-    public void updateMenuState(int elementType, String name, Object elementState) {
+    @Override public void updateMenuState(int elementType, String name, Object state) {
         menuStateUpdateActive = true;
         menuStateUpdateActive = false;
     }
-
-    public void setMenuStateUpdateActive(boolean active) {
-        this.menuStateUpdateActive = active;
-    }
-
-    public boolean isMenuStateUpdateActive() {
-        return menuStateUpdateActive;
-    }
-
-    public void updateAttributeConfig() {
-        visibleSections = null;
-        currentPage = Math.min(currentPage, getTotalPages() - 1);
-        rebuildWidgets();
-    }
-
-    private void updatePanelSize() {
-        layout.update(width, height);
-        imageWidth = layout.panelWidth();
-        imageHeight = layout.panelHeight();
-    }
-
-    private float layoutScale() {
-        return imageWidth / (float) DESIGN_WIDTH;
-    }
-
-    private int px(int designX) {
-        return layout.x(designX);
-    }
-
-    private int py(int designY) {
-        return layout.y(designY);
-    }
-
-    private int scaled(int designSize) {
-        return layout.size(designSize);
-    }
-
-    private PlayerVariables variables() {
-        return Services.PLATFORM.getPlayerVariables(entity);
-    }
-
-    private String cleanText(String value) {
-        String clean = ChatFormatting.stripFormatting(value == null ? "" : value);
-        return clean == null ? "" : clean.trim();
-    }
-
-    private String number(double value) {
-        return new DecimalFormat("##.##").format(value);
-    }
-
-    private List<Integer> visibleSectionIds() {
-        if (visibleSections != null) {
-            return visibleSections;
-        }
+    @Override public void setMenuStateUpdateActive(boolean active) { menuStateUpdateActive = active; }
+    @Override public boolean isMenuStateUpdateActive() { return menuStateUpdateActive; }
+    public void updateAttributeConfig() { visibleSections = null; rebuildWidgets(); }
+    private PlayerVariables variables() { return Services.PLATFORM.getPlayerVariables(entity); }
+    private List<Integer> sectionIds() {
+        if (visibleSections != null) return visibleSections;
         List<Integer> ids = new ArrayList<>();
         for (int id = 1; id <= 256; id++) {
             String file = "attribute_" + id;
             boolean configured = Services.CONFIG.configFileExists("ras/display", file);
-            boolean visible = configured
-                    ? Services.CONFIG.getBooleanValue("ras/display", file, "enable")
+            boolean visible = configured ? Services.CONFIG.getBooleanValue("ras/display", file, "enable")
                     : ReturnDisplaySectionGenericProcedure.execute(id);
-            if (visible) {
-                ids.add(id);
-            }
+            if (visible) ids.add(id);
         }
         visibleSections = List.copyOf(ids);
         return visibleSections;
     }
-
+    private int totalPages() {
+        return Math.max(1, (sectionIds().size() + layout.rowsPerPage() - 1) / layout.rowsPerPage());
+    }
     private List<Integer> sectionsOnPage() {
-        List<Integer> visible = visibleSectionIds();
-        int start = currentPage * SECTIONS_PER_PAGE;
-        if (start >= visible.size()) {
-            return List.of();
-        }
-        return visible.subList(start, Math.min(start + SECTIONS_PER_PAGE, visible.size()));
+        List<Integer> ids = sectionIds();
+        int start = Math.min(ids.size(), currentPage * layout.rowsPerPage());
+        return ids.subList(start, Math.min(ids.size(), start + layout.rowsPerPage()));
     }
-
-    private int getTotalPages() {
-        return Math.max(1, (visibleSectionIds().size() + SECTIONS_PER_PAGE - 1) / SECTIONS_PER_PAGE);
+    private String sectionName(int id) {
+        String name = RasGuiStyle.clean(Services.CONFIG.getStringValue("ras/display", "attribute_" + id, "display_name"))
+                .replaceFirst("\\s*[:\\-|]+\\s*$", "").trim();
+        return name.isBlank() ? "Combat Stat " + id : name;
     }
-
-    private ResourceLocation iconFor(int sectionId) {
-        if (sectionId > 0 && sectionId < DEFAULT_ICONS.length && DEFAULT_ICONS[sectionId] != null) {
-            return DEFAULT_ICONS[sectionId];
-        }
-        return AttributeManager.getAttributeIconLocation(sectionId);
-    }
-
-    private String sectionName(int sectionId) {
-        String configured = cleanText(Services.CONFIG.getStringValue(
-                "ras/display", "attribute_" + sectionId, "display_name"));
-        configured = configured.replaceFirst("\\s*[:\\-|]+\\s*$", "").trim();
-        return configured.isBlank() ? "Combat Stat " + sectionId : configured;
-    }
-
-    private String sectionValue(int sectionId) {
-        String combined = cleanText(ReturnSectionDisplayGenericProcedure.execute(entity, sectionId));
-        String configured = cleanText(Services.CONFIG.getStringValue(
-                "ras/display", "attribute_" + sectionId, "display_name"));
-        if (!configured.isBlank() && combined.startsWith(configured)) {
-            String value = combined.substring(configured.length()).trim();
-            if (!value.isBlank()) {
-                return value;
-            }
+    private String sectionValue(int id) {
+        String combined = RasGuiStyle.clean(ReturnSectionDisplayGenericProcedure.execute(entity, id));
+        String name = RasGuiStyle.clean(Services.CONFIG.getStringValue("ras/display", "attribute_" + id, "display_name"));
+        if (!name.isBlank() && combined.startsWith(name)) {
+            String value = combined.substring(name.length()).trim();
+            if (!value.isBlank()) return value;
         }
         return combined.replaceFirst("^.*?(-?\\d+(?:[.,]\\d+)?)\\s*$", "$1");
     }
-
-    @Override
-    public void init() {
-        updatePanelSize();
+    private RasGuiButton navigationButton(int x, int y, int width, String symbol, String label,
+            net.minecraft.client.gui.components.Button.OnPress action) {
+        RasGuiButton button = new RasGuiButton(layout.x(x), layout.y(y), width, symbol, Component.literal(label), action);
+        navigation.add(button);
+        return addRenderableWidget(button);
+    }
+    @Override public void init() {
+        layout.update(width, height);
+        imageWidth = layout.panelWidth(); imageHeight = layout.panelHeight();
         super.init();
         ScreenMousePosition.restore();
-
-        addRenderableWidget(new StatisticsTabButton(px(BOOK_WIDTH), py(134), scaled(22), scaled(30),
-                Component.literal("Statistics"), button -> {
-                    if (minecraft != null) {
-                        minecraft.setScreen(new PlayerStatsOverviewScreen(this));
-                    }
-                }));
-        addRenderableWidget(new CloseButton(px(BOOK_WIDTH - 16), py(8), scaled(12), scaled(12)));
-
-        if (getTotalPages() > 1) {
-            pagePreviousButton = new BookArrowButton(px(RIGHT_PAGE_X + 78), py(282), scaled(14), scaled(14), false,
-                    button -> {
-                        if (currentPage > 0) {
-                            currentPage--;
-                            rebuildWidgets();
-                        }
-                    });
-            pageNextButton = new BookArrowButton(px(RIGHT_PAGE_X + 120), py(282), scaled(14), scaled(14), true,
-                    button -> {
-                        if (currentPage < getTotalPages() - 1) {
-                            currentPage++;
-                            rebuildWidgets();
-                        }
-                    });
-            addRenderableWidget(pagePreviousButton);
-            addRenderableWidget(pageNextButton);
+        navigation.clear();
+        currentPage = Math.max(0, Math.min(currentPage, totalPages() - 1));
+        navigationButton(layout.panelWidth() - 164, 5, 68, "Attributes", "View and allocate attributes",
+                button -> Services.PLATFORM.sendButtonAction(0, x, y, z));
+        navigationButton(layout.panelWidth() - 94, 5, 58, "Stats", "View player statistics and configured totals",
+                button -> { if (minecraft != null) minecraft.setScreen(new PlayerStatsOverviewScreen(this)); });
+        navigationButton(layout.closeX(), 5, 20, "x", "Close combat statistics", button -> closeContainerSafely());
+        if (totalPages() > 1) {
+            var previous = navigationButton(layout.pagePreviousX(), layout.footerY(), 20, "<", "Previous combat-stat page",
+                    button -> { if (currentPage > 0) { currentPage--; rebuildWidgets(); } });
+            previous.active = currentPage > 0;
+            var next = navigationButton(layout.pageNextX(), layout.footerY(), 20, ">", "Next combat-stat page",
+                    button -> { if (currentPage < totalPages() - 1) { currentPage++; rebuildWidgets(); } });
+            next.active = currentPage < totalPages() - 1;
         }
     }
-
-    @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    @Override public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         renderBackground(graphics, mouseX, mouseY, partialTicks);
         super.render(graphics, mouseX, mouseY, partialTicks);
         renderCustomTooltip(graphics, mouseX, mouseY);
     }
-
-    @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        drawFullTexture(graphics, BOOK, 0, 0, BOOK_WIDTH, BOOK_HEIGHT);
-        drawFullTexture(graphics, TITLE_FRAME, 34, 16, 180, 24);
-        drawFullTexture(graphics, TITLE_FRAME, RIGHT_PAGE_X + 8, 16, 180, 24);
-
-        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics,
-                px(84), py(56), px(164), py(136), scaled(34), 0.0625F,
-                mouseX - px(124), mouseY - py(112), entity);
-
-        renderXpSection(graphics);
-        renderAvailablePoints(graphics);
-        drawCentered(graphics, "Combat Stats", RIGHT_PAGE_X + 106, 22, INK, false);
-        drawCentered(graphics, "Combat Stats", 124, 248, HEADER_GOLD, true);
-
+    @Override protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+        RasGuiStyle.panel(graphics, layout);
+        RasGuiStyle.text(graphics, font, "Combat Stats", layout.x(12), layout.y(11), 0xFFF3E1B5, true);
+        renderSummary(graphics, mouseX, mouseY);
         List<Integer> visible = sectionsOnPage();
-        for (int index = 0; index < visible.size(); index++) {
-            renderSectionRow(graphics, visible.get(index), index);
+        for (int row = 0; row < visible.size(); row++) {
+            int id = visible.get(row), x = layout.bodyX(), y = layout.rowY(row), rowWidth = layout.bodyWidth();
+            RasGuiStyle.row(graphics, layout, row);
+            RasGuiStyle.icon(graphics, RasGuiStyle.icon(id), layout.x(x + 4), layout.y(y + 4));
+            text(graphics, RasGuiStyle.ellipsis(font, sectionName(id), rowWidth - 110), x + 30, y + 10, RasGuiStyle.INK);
+            String value = RasGuiStyle.ellipsis(font, sectionValue(id), 68);
+            text(graphics, value, x + rowWidth - 6 - font.width(value), y + 10, RasGuiStyle.VALUE);
         }
-        if (getTotalPages() > 1) {
-            drawCentered(graphics, (currentPage + 1) + "/" + getTotalPages(), RIGHT_PAGE_X + 106, 284, INK, false);
+        if (visible.isEmpty()) text(graphics, "No configured combat stats", layout.bodyX() + 6, layout.bodyY() + 8, RasGuiStyle.MUTED);
+        text(graphics, RasGuiStyle.ellipsis(font, "Equipment and modifiers included", layout.panelWidth() - 132),
+                12, layout.footerY() + 6, RasGuiStyle.MUTED);
+        if (totalPages() > 1) centered(graphics, (currentPage + 1) + "/" + totalPages(),
+                layout.pageCenterX(), layout.footerY() + 6, RasGuiStyle.INK);
+
+    }
+    private void text(GuiGraphics graphics, String text, int x, int y, int color) {
+        RasGuiStyle.text(graphics, font, text, layout.x(x), layout.y(y), color, false);
+    }
+    private void centered(GuiGraphics graphics, String text, int x, int y, int color) {
+        text(graphics, text, x - font.width(text) / 2, y, color);
+    }
+    private String xpText() {
+        PlayerVariables vars = variables();
+        return vars.nextevelXp <= 0 ? "Max level" : RasGuiStyle.number(vars.currentXpTLevel)
+                + "/" + RasGuiStyle.number(vars.nextevelXp) + " XP";
+    }
+    private void renderSummary(GuiGraphics graphics, int mouseX, int mouseY) {
+        PlayerVariables vars = variables();
+        if (layout.wide()) {
+            text(graphics, "Your progress", 14, 36, RasGuiStyle.INK);
+            text(graphics, RasGuiStyle.ellipsis(font, "Level " + RasGuiStyle.number(vars.Level), 134), 14, 54, RasGuiStyle.INK);
+            text(graphics, "Available points", 14, 74, RasGuiStyle.INK);
+            text(graphics, RasGuiStyle.ellipsis(font, RasGuiStyle.number(vars.SparePoints), 134), 14, 87, 0xFF267326);
+            text(graphics, RasGuiStyle.ellipsis(font, xpText(), 134), 14, 107, RasGuiStyle.INK);
+            if (layout.panelHeight() >= 270) { InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, layout.x(40), layout.y(141),
+                    layout.x(124), layout.y(233), 34, 0.0625F, mouseX - layout.x(82), mouseY - layout.y(198), entity); }
+        } else {
+            String summary = "Level " + RasGuiStyle.number(vars.Level) + " · " + xpText()
+                    + " · Points " + RasGuiStyle.number(vars.SparePoints);
+            text(graphics, RasGuiStyle.ellipsis(font, summary, layout.panelWidth() - 24), 12, 32, RasGuiStyle.INK);
         }
-        RenderSystem.disableBlend();
     }
-
-    private void renderXpSection(GuiGraphics graphics) {
-        String levelText = "Level " + number(variables().Level);
-        drawCentered(graphics, levelText, 124, 22, INK, false);
-
-        drawTexture(graphics, XP_EMPTY, 34, 142, 180, 11, 306, 22, 306, 22);
-        double ratio = Math.max(0.0D, Math.min(1.0D, ReturnPercentageProcedure.execute(entity) / 100.0D));
-        int fillWidth = Math.max(0, (int) Math.round(180 * ratio));
-        if (fillWidth > 0) {
-            int sourceFillWidth = Math.max(1, (int) Math.round(306 * ratio));
-            drawTexture(graphics, XP_FULL, 34, 142, fillWidth, 11,
-                    306, 22, sourceFillWidth, 22);
-        }
-        String xp = cleanText(CurrentXpToLevelProcedure.execute(entity)) + " XP";
-        drawCentered(graphics, xp, 124, 143, XP_TEXT, false);
-    }
-
-    private void renderAvailablePoints(GuiGraphics graphics) {
-        drawCentered(graphics, "Available", 124, 196, INK, false);
-        drawCentered(graphics, "Points", 124, 208, INK, false);
-        drawCentered(graphics, number(variables().SparePoints), 124, 224, POINTS_GREEN, false);
-    }
-
-    private void renderSectionRow(GuiGraphics graphics, int sectionId, int row) {
-        int rowY = ROW_Y + row * ROW_HEIGHT;
-        drawTexture(graphics, iconFor(sectionId), RIGHT_PAGE_X + 12, rowY + 4,
-                24, 24, 32, 32, 32, 32);
-
-        String value = sectionValue(sectionId);
-        int nameX = RIGHT_PAGE_X + 44;
-        int valueRight = RIGHT_PAGE_X + 196;
-        int maxNameWidth = Math.max(0, valueRight - font.width(value) - 6 - nameX);
-        String name = font.plainSubstrByWidth(sectionName(sectionId), maxNameWidth);
-        drawString(graphics, name, nameX, rowY + 10, INK, false);
-        drawString(graphics, value, valueRight - font.width(value), rowY + 10, VALUE_MAROON, false);
-    }
-
     private void renderCustomTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
         List<Integer> visible = sectionsOnPage();
-        for (int index = 0; index < visible.size(); index++) {
-            int rowY = ROW_Y + index * ROW_HEIGHT;
-            if (inside(mouseX, mouseY, px(RIGHT_PAGE_X + 4), py(rowY), scaled(196), scaled(28))) {
-                int id = visible.get(index);
-                String name = sectionName(id);
-                String value = sectionValue(id);
-                int maxWidth = 152 - font.width(value) - 6;
-                if (font.width(name) > maxWidth) {
-                    graphics.renderTooltip(font, Component.literal(name + ": " + value), mouseX, mouseY);
-                }
+        for (int row = 0; row < visible.size(); row++) {
+            if (layout.contains(mouseX, mouseY, layout.bodyX(), layout.rowY(row), layout.bodyWidth(), 28)) {
+                int id = visible.get(row);
+                RasGuiStyle.tooltip(graphics, font, List.of(sectionName(id) + ": " + sectionValue(id),
+                        "Actual combat value, including equipment and active modifiers"), mouseX, mouseY, width);
                 return;
             }
         }
-    }
-
-    private boolean inside(int mouseX, int mouseY, int x, int y, int width, int height) {
-        return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
-    }
-
-    private void drawFullTexture(GuiGraphics graphics, ResourceLocation texture, int x, int y, int width, int height) {
-        drawTexture(graphics, texture, x, y, width, height, width, height, width, height);
-    }
-
-    private void drawTexture(GuiGraphics graphics, ResourceLocation texture, int x, int y,
-            int designWidth, int designHeight, int textureWidth, int textureHeight,
-            int sourceWidth, int sourceHeight) {
-        if (designWidth <= 0 || designHeight <= 0 || sourceWidth <= 0 || sourceHeight <= 0) {
-            return;
-        }
-        graphics.pose().pushPose();
-        graphics.pose().translate(px(x), py(y), 0.0F);
-        graphics.pose().scale(layout.scale() * designWidth / sourceWidth,
-                layout.scale() * designHeight / sourceHeight, 1.0F);
-        graphics.blit(texture, 0, 0, 0, 0, sourceWidth, sourceHeight, textureWidth, textureHeight);
-        graphics.pose().popPose();
-    }
-
-    private void drawCentered(GuiGraphics graphics, String text, int x, int y, int color, boolean shadow) {
-        drawString(graphics, text, x - font.width(text) / 2, y, color, shadow);
-    }
-
-    private void drawString(GuiGraphics graphics, String text, int x, int y, int color, boolean shadow) {
-        graphics.pose().pushPose();
-        graphics.pose().translate(layout.left(), layout.top(), 0.0F);
-        graphics.pose().scale(layout.scale(), layout.scale(), 1.0F);
-        graphics.drawString(font, text, x + 1, y + 1, StatsDisplayConfig.getGuiShadowColor(), false);
-        graphics.drawString(font, text, x, y, color, true);
-        graphics.pose().popPose();
-    }
-
-    @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        // Labels are rendered in absolute panel coordinates in renderBg.
-    }
-
-    @Override
-    public boolean keyPressed(int key, int scanCode, int modifiers) {
-        if (key == 256) {
-            if (minecraft != null && minecraft.player != null) {
-                minecraft.player.closeContainer();
+        for (RasGuiButton button : navigation) {
+            if (button.isHoveredOrFocused()) {
+                RasGuiStyle.tooltip(graphics, font, List.of(button.getMessage().getString()),
+                        button.isFocused() ? button.getX() : mouseX, button.isFocused() ? button.getY() : mouseY, width);
+                return;
             }
-            return true;
         }
+        if (layout.contains(mouseX, mouseY, 10, 28, layout.wide() ? 140 : layout.panelWidth() - 20,
+                layout.wide() ? 90 : 19)) {
+            RasGuiStyle.tooltip(graphics, font, List.of("Level " + RasGuiStyle.number(variables().Level), xpText(),
+                    "Available points: " + RasGuiStyle.number(variables().SparePoints)), mouseX, mouseY, width);
+        }
+    }
+    @Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) { }
+    @Override public boolean keyPressed(int key, int scanCode, int modifiers) {
+        if (key == 256) { closeContainerSafely(); return true; }
         return super.keyPressed(key, scanCode, modifiers);
     }
-
-    private final class StatisticsTabButton extends Button {
-        private StatisticsTabButton(int x, int y, int width, int height, Component tooltip, OnPress onPress) {
-            super(x, y, width, height, tooltip, onPress, DEFAULT_NARRATION);
-        }
-
-        @Override
-        protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            drawTabBackground(graphics, this);
-            int base = getY() + height - Math.max(4, scaled(5));
-            int bar = Math.max(2, scaled(3));
-            int gap = Math.max(1, scaled(2));
-            int left = getX() + Math.max(3, scaled(4));
-            graphics.fill(left, base - scaled(6), left + bar, base, 0xFF342730);
-            graphics.fill(left + bar + gap, base - scaled(10), left + bar * 2 + gap, base, 0xFF342730);
-            graphics.fill(left + (bar + gap) * 2, base - scaled(15), left + bar * 3 + gap * 2, base, 0xFF342730);
-        }
-    }
-
-    private void drawTabBackground(GuiGraphics graphics, Button button) {
-        int background = button.isHovered() ? 0xFFF1E9C9 : 0xFFE8DFB5;
-        graphics.fill(button.getX(), button.getY(), button.getX() + button.getWidth(),
-                button.getY() + button.getHeight(), background);
-        graphics.renderOutline(button.getX(), button.getY(), button.getWidth(), button.getHeight(), 0xFFB9AA7C);
-    }
-
-    private final class CloseButton extends Button {
-        private CloseButton(int x, int y, int width, int height) {
-            super(x, y, width, height, Component.empty(), button -> closeContainerSafely(), DEFAULT_NARRATION);
-        }
-
-        @Override
-        protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            int background = isHovered ? 0xFF7A465D : 0xFF633A4D;
-            graphics.fill(getX(), getY(), getX() + width, getY() + height, background);
-            graphics.drawCenteredString(Minecraft.getInstance().font, "x",
-                    getX() + width / 2, getY() + Math.max(1, (height - 8) / 2), 0xFFF3E1B5);
-        }
-    }
-
-    private final class BookArrowButton extends Button {
-        private final boolean right;
-
-        private BookArrowButton(int x, int y, int width, int height, boolean right, OnPress onPress) {
-            super(x, y, width, height, Component.empty(), onPress, DEFAULT_NARRATION);
-            this.right = right;
-        }
-
-        @Override
-        protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            int background = isHovered ? 0xFF795066 : 0xFF5A3C4D;
-            graphics.fill(getX(), getY(), getX() + width, getY() + height, background);
-            graphics.drawCenteredString(font, right ? ">" : "<", getX() + width / 2,
-                    getY() + Math.max(1, (height - 8) / 2), HEADER_GOLD);
-        }
-    }
-
     private void closeContainerSafely() {
-        if (minecraft != null && minecraft.player != null) {
-            minecraft.player.closeContainer();
-        }
+        if (minecraft != null && minecraft.player != null) minecraft.player.closeContainer();
     }
 }

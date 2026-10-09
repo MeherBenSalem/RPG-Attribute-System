@@ -1,0 +1,69 @@
+name: Verify supported loaders
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - workspace: '1.20.1'
+            java: '17'
+          - workspace: '1.21.1'
+            java: '21'
+          - workspace: '26.1.2'
+            java: '25'
+          - workspace: '26.2'
+            java: '25'
+          - workspace: '26.3'
+            java: '25'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build both loaders and run common regression checks
+        working-directory: ${{ matrix.workspace }}
+        run: bash ./gradlew build --no-daemon
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-${{ matrix.workspace }}
+          path: |
+            ${{ matrix.workspace }}/common/build/reports/
+            ${{ matrix.workspace }}/fabric/build/libs/
+            ${{ matrix.workspace }}/forge/build/libs/
+            ${{ matrix.workspace }}/neoforge/build/libs/
+          if-no-files-found: ignore
+  gameplay-regressions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Fetch pinned Gson test dependency
+        run: |
+          curl --fail --location --retry 2 https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.11.0/gson-2.11.0.jar --output "$RUNNER_TEMP/gson.jar"
+          echo '57928d6e5a6edeb2abd3770a8f95ba44dce45f3b23b7a9dc2b309c581552a78b  '"$RUNNER_TEMP/gson.jar" | sha256sum --check
+      - name: Install pinned schema validator
+        run: python3 -m pip install jsonschema==4.26.0
+      - name: Validate schema and runtime/studio fixtures
+        run: python3 scripts/test-mob-xp-schema.py
+      - name: Actual production-source regression harnesses
+        run: |
+          python3 scripts/test-mob-xp.py --gson-jar "$RUNNER_TEMP/gson.jar"
+          python3 scripts/test-gameplay-regressions.py --gson-jar "$RUNNER_TEMP/gson.jar"
+          python3 scripts/test-ui-layout.py

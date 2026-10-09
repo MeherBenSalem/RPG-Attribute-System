@@ -17,6 +17,19 @@ import tn.nightbeam.ras.util.RasPermissions;
 public class RpgAttributeSystemModCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
     dispatcher.register(Commands.literal("ras")
+                .then(Commands.literal("reload").requires(RasPermissions::canAddLevel)
+                        .then(Commands.literal("mob_xp").executes(arguments -> {
+                            var result = tn.nightbeam.ras.config.MobXpConfig.reload();
+                            if (!result.loaded()) {
+                                arguments.getSource().sendFailure(net.minecraft.network.chat.Component.literal(
+                                        "Mob VP rules were not reloaded; previous rules remain active. Check server logs."));
+                                return 0;
+                            }
+                            arguments.getSource().sendSuccess(() -> net.minecraft.network.chat.Component.literal(
+                                    "Mob VP rules reloaded" + (result.diagnostics().isEmpty() ? "." :
+                                            "; invalid rules skipped. Check server logs.")), true);
+                            return 1;
+                        })))
                 .then(Commands.literal("add").then(Commands.literal("level")
                         .requires(RasPermissions::canAddLevel)
                         .then(Commands.argument("player", EntityArgument.player())

@@ -1,7 +1,7 @@
 # RPG Attribute System (RAS)
 
-> **Version:** 4.2.1 | **Mod ID:** `rpg_attribute_system`  
-> **Author:** Meher / [NightBeam](https://www.nightbeam.cloud/)  
+> **Version:** 4.3.0 development | **Mod ID:** `rpg_attribute_system`
+> **Author:** Meher / [NightBeam](https://www.nightbeam.cloud/)
 > **License:** Apache-2.0
 
 A comprehensive Minecraft RPG attribute and progression system that adds player leveling, attribute point allocation, configurable stat scaling, respec, build templates, and a public API for other mods.
@@ -42,6 +42,7 @@ A comprehensive Minecraft RPG attribute and progression system that adds player 
 | [Main Config Reference](configuration/main-config.md) | `settings.json` and attribute meta — every key explained |
 | [Additional Config Files](configuration/additional-config-files.md) | Per-attribute, respec, templates, locks, rewards, display |
 | [Client Configuration](configuration/client.md) | HUD overlay, display toggles, keybinds |
+| [Per-mob VP Rules](configuration/mob-xp.md) | Optional entity/tag rules, difficulty/armor weighting, reload |
 | [Gameplay Configuration](configuration/gameplay.md) | XP system, levelling, locks, respec, templates |
 | [Visuals Configuration](configuration/visuals.md) | GUI colours, stat display, icons |
 | [Performance Configuration](configuration/performance.md) | Settings that affect performance |
