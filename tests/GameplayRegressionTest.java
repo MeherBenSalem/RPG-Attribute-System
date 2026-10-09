@@ -21,6 +21,7 @@ public final class GameplayRegressionTest {
             testFreshAndImportedConfigs(directory);
             testKillAndSharing(directory);
             testMigrationDeathAndFiniteAmounts();
+            testServerAllocationGuard(args[0]);
             System.out.println("PASS GameplayRegressionTest: " + checks + " assertions (actual config/gameplay source, test doubles)");
         } finally {
             try (var paths=Files.walk(directory)) { for(Path p:paths.sorted(Comparator.reverseOrder()).toList()) Files.delete(p); }
@@ -135,6 +136,60 @@ public final class GameplayRegressionTest {
         LevelingService.setTotalXp(migrated,Double.MAX_VALUE);double finite=vars.totalXp;
         LevelingService.addXp(migrated,Double.MAX_VALUE);eq(finite,vars.totalXp,"total overflow rejected");
     }
+    private static AttributeData allocationData(boolean locked) {
+        try {
+            for (var constructor:AttributeData.class.getConstructors()) {
+                if (constructor.getParameterCount()==8)
+                    return (AttributeData)constructor.newInstance(1,0.5,20.0,locked,"","Health",10.0,"");
+                if (constructor.getParameterCount()==9)
+                    return (AttributeData)constructor.newInstance(1,0.5,20.0,locked,"","Health",10.0,"",0);
+            }
+            throw new AssertionError("Unknown version's AttributeData constructor");
+        } catch (ReflectiveOperationException error) {throw new AssertionError(error);}
+    }
+
+    private static void testServerAllocationGuard(String root) {
+        ServerLevel world=new ServerLevel("minecraft:overworld");
+        ServerPlayer player=new ServerPlayer(world,0);
+        PlayerVariables vars=vars(player);vars.SparePoints=5;vars.modifier=2;
+        vars.attributes.put("attribute_1",10.0);
+        Services.CONFIG.setNumberValue("ras/attributes","attribute_1","init_val_attribute",10);
+        Services.CONFIG.setNumberValue("ras/attributes","attribute_1","max_level",20);
+        Services.CONFIG.setNumberValue("ras/attributes","attribute_1","base_value_per_point",0.5);
+        Services.CONFIG.setStringArray("ras/attributes","attribute_1","cmd_to_exc",List.of(""));
+        Services.CONFIG.setStringValue("ras/attributes","attribute_1","on_level_event","say allocation");
+        tn.nightbeam.ras.util.AttributeManager.updateCache(1,allocationData(true));
+        int sync=Services.PLATFORM.syncCount,commands=ProcedureCommandHelper.calls;
+        tn.nightbeam.ras.network.GenericButtonActionPacket.handleAction(player,101,0,0,0);
+        tn.nightbeam.ras.network.GenericButtonActionPacket.handleAction(player,100,0,0,0);
+        tn.nightbeam.ras.network.GenericButtonActionPacket.handleAction(player,Integer.MAX_VALUE,0,0,0);
+        for(int invalid:new int[]{-1,0,99,999,Integer.MAX_VALUE}) AddPointsAttributeGenericProcedure.execute(world,player,invalid);
+        AddPointsAttributeGenericProcedure.execute(null,player,1);
+        AddPointsAttributeGenericProcedure.execute(world,null,1);
+        eq(5,vars.SparePoints,"locked/invalid allocation cannot spend points");
+        eq(10,vars.attributes.get("attribute_1"),"locked allocation cannot change value");
+        check(vars.attributePoints.isEmpty(),"locked/invalid allocation cannot create invested keys");
+        check(Services.PLATFORM.syncCount==sync && ProcedureCommandHelper.calls==commands,"locked/invalid allocation executes no commands or sync");
+        if(root.equals("1.20.1")) {
+            vars.playerUnlockedAttributes.add("attribute_1");
+            AddPointsAttributeGenericProcedure.execute(world,player,1);
+            eq(3,vars.SparePoints,"1.20 personal unlock remains usable");
+            eq(11,vars.attributes.get("attribute_1"),"1.20 personal unlock preserves normal value");
+            vars.SparePoints=5;vars.attributes.put("attribute_1",10.0);vars.attributePoints.clear();
+        }
+        tn.nightbeam.ras.util.AttributeManager.updateCache(1,allocationData(false));
+        world.client=true;AddPointsAttributeGenericProcedure.execute(world,player,1);world.client=false;
+        eq(5,vars.SparePoints,"client allocation cannot spend points");
+        AddPointsAttributeGenericProcedure.execute(world,player,1);
+        eq(3,vars.SparePoints,"valid unlocked allocation preserves modifier cost");
+        eq(2,vars.attributePoints.get("attribute_1"),"valid unlocked allocation preserves invested points");
+        eq(11,vars.attributes.get("attribute_1"),"valid unlocked allocation preserves final value");
+        vars.attributes.put("attribute_1",20.0);double spare=vars.SparePoints;
+        AddPointsAttributeGenericProcedure.execute(world,player,1);
+        eq(spare,vars.SparePoints,"at-cap allocation cannot spend points");
+        tn.nightbeam.ras.util.AttributeManager.DATA.clear();
+    }
+
     private static PlayerVariables vars(Entity entity){return Services.PLATFORM.getPlayerVariables(entity);}
     private static double sum(Entity... players){return Arrays.stream(players).mapToDouble(p->vars(p).totalXp).sum();}
     private static void eq(double expected,double actual,String label){check(Double.isFinite(actual)&&Math.abs(expected-actual)<=Math.max(1e-9,Math.abs(expected)*1e-12),label+": "+expected+" != "+actual);}

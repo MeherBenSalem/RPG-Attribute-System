@@ -8,6 +8,14 @@ import net.minecraft.world.entity.Entity;
 
 public class AddPointsAttributeGenericProcedure {
     public static void execute(LevelAccessor world, Entity entity, int attributeId) {
+        // The allocation packet is untrusted: validate the server cache and lock before any mutation/command.
+        // Reuse each version's existing visibility policy, including 1.20.1 personal unlocks.
+        if (world == null || entity == null || world.isClientSide() || entity.level().isClientSide()
+                || attributeId < 1 || tn.nightbeam.ras.util.AttributeManager.getAttributeData(attributeId) == null
+                || !DisplayLogicAttributeGenericProcedure.execute(entity, attributeId)) {
+            return;
+        }
+
         if (!(entity instanceof net.minecraft.world.entity.player.Player player) || world.isClientSide())
             return;
 

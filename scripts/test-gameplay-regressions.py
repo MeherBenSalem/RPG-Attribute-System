@@ -18,8 +18,18 @@ args=parser.parse_args()
 if not args.gson_jar or not Path(args.gson_jar).is_file(): parser.error('Supply --gson-jar PATH or GSON_JAR')
 repo=Path(__file__).resolve().parents[1]
 stubs={
-'net/minecraft/world/entity/ai/attributes/Attributes.java':"package net.minecraft.world.entity.ai.attributes; public class Attributes {public static final Object ARMOR=new Object();}",
-'net/minecraft/world/entity/ai/attributes/AttributeInstance.java':"package net.minecraft.world.entity.ai.attributes; public record AttributeInstance(double value) {public double getValue(){return value;}}",
+ 'net/minecraft/core/BlockPos.java':"package net.minecraft.core;public record BlockPos(int x,int y,int z){}",
+ 'net/minecraft/network/FriendlyByteBuf.java':"package net.minecraft.network;public class FriendlyByteBuf{public int readInt(){return 0;}public void writeInt(int value){}}",
+ 'tn/nightbeam/ras/procedures/OpenAttributesDisplayGUIProcedure.java':"package tn.nightbeam.ras.procedures;import net.minecraft.world.level.Level;import net.minecraft.world.entity.Entity;public class OpenAttributesDisplayGUIProcedure{public static void execute(Level world,int x,int y,int z,Entity entity){}}",
+ 'tn/nightbeam/ras/procedures/OpenStatsMenuProcedure.java':"package tn.nightbeam.ras.procedures;import net.minecraft.world.level.Level;import net.minecraft.world.entity.Entity;public class OpenStatsMenuProcedure{public static void execute(Level world,int x,int y,int z,Entity entity){}}",
+ 'tn/nightbeam/ras/procedures/AddModiferCountProcedure.java':"package tn.nightbeam.ras.procedures;import net.minecraft.world.entity.Entity;public class AddModiferCountProcedure{public static void execute(Entity entity){}}",
+ 'tn/nightbeam/ras/procedures/RemoveModiferCountProcedure.java':"package tn.nightbeam.ras.procedures;import net.minecraft.world.entity.Entity;public class RemoveModiferCountProcedure{public static void execute(Entity entity){}}",
+ 'net/minecraft/core/Holder.java':"package net.minecraft.core; public class Holder {public static Object direct(Object value){return value;}}",
+ 'tn/nightbeam/ras/init/RpgAttributeSystemModAttributes.java':"package tn.nightbeam.ras.init; public class RpgAttributeSystemModAttributes {public static final java.util.function.Supplier<Object> RPG_LEVEL=Object::new;}",
+ 'tn/nightbeam/ras/procedures/ProcedureCommandHelper.java':"package tn.nightbeam.ras.procedures; import net.minecraft.world.entity.Entity;public class ProcedureCommandHelper {public static int calls;public static void executeAsEntity(Entity entity,String command){calls++;}}",
+ 'tn/nightbeam/ras/procedures/OnPlayerSpawnAttributeGenericProcedure.java':"package tn.nightbeam.ras.procedures;import net.minecraft.world.entity.Entity;public class OnPlayerSpawnAttributeGenericProcedure {public static void execute(Entity entity,int id){}}",
+ 'net/minecraft/world/entity/ai/attributes/Attributes.java':"package net.minecraft.world.entity.ai.attributes; public class Attributes {public static final Object ARMOR=new Object();}",
+'net/minecraft/world/entity/ai/attributes/AttributeInstance.java':"package net.minecraft.world.entity.ai.attributes; public record AttributeInstance(double value) {public double getValue(){return value;}public void setBaseValue(double base){}}",
 'net/minecraft/resources/ResourceLocation.java':'''package net.minecraft.resources;
 public record ResourceLocation(String value) { public static ResourceLocation tryParse(String s){return new ResourceLocation(s);} public String toString(){return value;} }''',
 'net/minecraft/resources/Identifier.java':'''package net.minecraft.resources;
@@ -37,7 +47,7 @@ public record Component(String value){public static Component translatable(Strin
 public interface LevelAccessor {boolean isClientSide();}''',
 'net/minecraft/world/level/Level.java':'''package net.minecraft.world.level;
 public class Level implements LevelAccessor { public boolean client;public String difficulty="normal";private final String dimension;
-public Level(String dimension){this.dimension=dimension;}public boolean isClientSide(){return client;}
+public Level(String dimension){this.dimension=dimension;}public boolean isClientSide(){return client;}public boolean hasChunkAt(net.minecraft.core.BlockPos position){return true;}
 public Dimension dimension(){return new Dimension(dimension);}public Difficulty getDifficulty(){return Difficulty.valueOf(difficulty.toUpperCase(java.util.Locale.ROOT));}
 public record Dimension(String value){public Object location(){return value;}public String toString(){return "ResourceKey[minecraft:dimension / "+value+"]";}}
 public enum Difficulty {PEACEFUL,EASY,NORMAL,HARD;public String getKey(){return name().toLowerCase(java.util.Locale.ROOT);}}}''',
@@ -56,6 +66,7 @@ public EntityType getType(){return type;}public UUID getUUID(){return uuid;}}'''
 import net.minecraft.world.level.Level;
 public class LivingEntity extends Entity {private final float health;private final double armor;
 public LivingEntity(Level level,String id,float health,double armor){super(level,id);this.health=health;this.armor=armor;}
+public AttributesView getAttributes(){return new AttributesView();}public static class AttributesView{public boolean hasAttribute(Object attr){return false;}}
 public float getMaxHealth(){return health;}public int getArmorValue(){return (int)armor;}public net.minecraft.world.entity.ai.attributes.AttributeInstance getAttribute(Object attr){return new net.minecraft.world.entity.ai.attributes.AttributeInstance(armor);}}''',
 'net/minecraft/world/entity/player/Player.java':'''package net.minecraft.world.entity.player;
 import net.minecraft.world.entity.LivingEntity;import net.minecraft.world.level.Level;import net.minecraft.network.chat.Component;
@@ -70,16 +81,20 @@ import net.minecraft.world.entity.player.Player;
 public class ServerPlayer extends Player {public ServerPlayer(ServerLevel level,double position){super(level,position);level.players.add(this);}}''',
  'tn/nightbeam/ras/network/PlayerVariables.java':'''package tn.nightbeam.ras.network;
 import java.util.*;public class PlayerVariables {public double totalXp=0,Level,currentXpTLevel,nextevelXp=100,pointsGrantedThroughLevel=0,SparePoints;
+public double modifier=1;public Set<String> playerUnlockedAttributes=new HashSet<>();
 public Map<String,Double> attributes=new HashMap<>(),attributePoints=new HashMap<>();}''',
  'tn/nightbeam/ras/platform/Services.java':'''package tn.nightbeam.ras.platform;
 import java.nio.file.*;import java.util.*;import net.minecraft.world.entity.Entity;import tn.nightbeam.ras.network.PlayerVariables;
 public class Services {public static final TestConfigService CONFIG=new TestConfigService(Path.of("."));public static final Platform PLATFORM=new Platform();
 public static class Platform {private final Map<Entity,PlayerVariables> variables=new IdentityHashMap<>();public PlayerVariables getPlayerVariables(Entity entity){return variables.computeIfAbsent(entity,key->new PlayerVariables());}
-public void syncPlayerVariables(PlayerVariables vars,Entity entity){}}}''',
+public int syncCount;public void syncPlayerVariables(PlayerVariables vars,Entity entity){syncCount++;}}}''',
  'tn/nightbeam/ras/Constants.java':'''package tn.nightbeam.ras;
 public class Constants {public static final Log LOG=new Log();public static class Log {public void warn(String s,Object... args){}public void info(String s,Object... args){}public void error(String s,Object... args){}}}''',
  'tn/nightbeam/ras/util/AttributeManager.java':'''package tn.nightbeam.ras.util;
-import java.util.*;public class AttributeManager {public static List<String> getAttributeIds(){return List.of();}}''',
+import java.util.*;import tn.nightbeam.ras.config.AttributeData;
+public class AttributeManager {public static final Map<Integer,AttributeData> DATA=new TreeMap<>();
+public static List<String> getAttributeIds(){return DATA.keySet().stream().map(id->"attribute_"+id).toList();}
+public static AttributeData getAttributeData(int id){return DATA.get(id);}public static void updateCache(int id,AttributeData data){DATA.put(id,data);}}''',
  'tn/nightbeam/ras/api/RespecOptions.java':'''package tn.nightbeam.ras.api;
 public class RespecOptions {public static RespecOptions item(){return new RespecOptions();}}''',
  'tn/nightbeam/ras/procedures/RespecService.java':'''package tn.nightbeam.ras.procedures;
@@ -101,10 +116,12 @@ for root in ['1.20.1','1.21.1','26.1.2','26.2','26.3']:
             path=temp/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(source);files.append(str(path))
         for name in ['platform/IConfigService.java','config/ConfigInitializer.java','config/ConfigValidator.java',
                      'config/MobXpRules.java','config/MobXpRuleStore.java','config/MobXpConfig.java',
-                     'procedures/GameplayRulesProcedure.java','procedures/LevelingService.java','util/AttributeScaling.java']:
+                     'procedures/GameplayRulesProcedure.java','procedures/LevelingService.java','util/AttributeScaling.java',
+                     'config/AttributeData.java','procedures/AddPointsAttributeGenericProcedure.java','procedures/DisplayLogicAttributeGenericProcedure.java',
+                     'network/GenericButtonActionPacket.java']:
             files.append(str(package/name))
         files.extend([str(repo/'tests/GameplayRegressionTest.java'),str(repo/'tests/support/tn/nightbeam/ras/platform/TestConfigService.java')])
         classes=temp/'classes';classes.mkdir()
         subprocess.run([args.javac,'--release','17','-cp',args.gson_jar,'-d',str(classes),*files],check=True)
-        subprocess.run([args.java,'-cp',str(classes)+os.pathsep+args.gson_jar,'tn.nightbeam.ras.GameplayRegressionTest'],check=True)
+        subprocess.run([args.java,'-cp',str(classes)+os.pathsep+args.gson_jar,'tn.nightbeam.ras.GameplayRegressionTest',root],check=True)
         print(f'PASS {root}: actual config/gameplay source with test doubles',flush=True)
