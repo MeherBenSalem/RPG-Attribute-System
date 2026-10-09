@@ -18,38 +18,56 @@ jobs:
         include:
           - workspace: '1.20.1'
             java: '17'
+            second_loader: forge
           - workspace: '1.21.1'
             java: '21'
+            second_loader: neoforge
           - workspace: '26.1.2'
             java: '25'
+            second_loader: neoforge
           - workspace: '26.2'
             java: '25'
+            second_loader: neoforge
           - workspace: '26.3'
             java: '25'
+            second_loader: neoforge
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: ${{ matrix.java }}
       - uses: gradle/actions/setup-gradle@v4
+      - name: Read exact release version
+        id: mod-version
+        run: |
+          version="$(cat VERSION)"
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          echo "version=$version" >> "$GITHUB_OUTPUT"
       - name: Build both loaders and run common regression checks
         working-directory: ${{ matrix.workspace }}
-        run: bash ./gradlew build --no-daemon
+        env:
+          SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$SOURCE_COMMIT"
+          bash ./gradlew build --no-daemon -PrasSourceCommit="$SOURCE_COMMIT"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: verification-${{ matrix.workspace }}
           path: |
             ${{ matrix.workspace }}/common/build/reports/
-            ${{ matrix.workspace }}/fabric/build/libs/
-            ${{ matrix.workspace }}/forge/build/libs/
-            ${{ matrix.workspace }}/neoforge/build/libs/
+            ${{ matrix.workspace }}/fabric/build/libs/rpg_attribute_system-fabric-${{ matrix.workspace }}-${{ steps.mod-version.outputs.version }}.jar
+            ${{ matrix.workspace }}/${{ matrix.second_loader }}/build/libs/rpg_attribute_system-${{ matrix.second_loader }}-${{ matrix.workspace }}-${{ steps.mod-version.outputs.version }}.jar
           if-no-files-found: ignore
   gameplay-regressions:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -59,7 +77,7 @@ jobs:
           curl --fail --location --retry 2 https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.11.0/gson-2.11.0.jar --output "$RUNNER_TEMP/gson.jar"
           echo '57928d6e5a6edeb2abd3770a8f95ba44dce45f3b23b7a9dc2b309c581552a78b  '"$RUNNER_TEMP/gson.jar" | sha256sum --check
       - name: Install pinned schema validator
-        run: python3 -m pip install jsonschema==4.26.0
+        run: python3 -m pip install jsonschema==4.26.0 PyYAML==6.0.3
       - name: Validate schema and runtime/studio fixtures
         run: python3 scripts/test-mob-xp-schema.py
       - name: Actual production-source regression harnesses
@@ -67,3 +85,59 @@ jobs:
           python3 scripts/test-mob-xp.py --gson-jar "$RUNNER_TEMP/gson.jar"
           python3 scripts/test-gameplay-regressions.py --gson-jar "$RUNNER_TEMP/gson.jar"
           python3 scripts/test-ui-layout.py
+          python3 -B tests/test-release-artifacts.py
+          python3 -B tests/test-release-recovery.py
+          python3 -B tests/test-release-credentials.py
+          node --test tests/test-release-publisher.mjs
+
+  release-inventory-dry-run:
+    needs: [build, gameplay-regressions]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: verification-*
+          path: release-jars
+          merge-multiple: true
+      - name: Verify actual complete stamped JAR set and produce publication dry-run
+        env:
+          SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$SOURCE_COMMIT"
+          version="$(cat VERSION)"
+          python3 scripts/verify-release-artifacts.py --directory release-jars --version "$version" --commit "$SOURCE_COMMIT" --output verified-release.json
+          node scripts/publish-verified-release.mjs --manifest verified-release.json --directory release-jars --dependencies scripts/release-dependencies.json --changelog "RPG-Attribute-System-$version-PatchNotes.md" --state release-dry-run.json --platforms both --dry-run
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-release-dry-run-${{ github.event.pull_request.head.sha || github.sha }}
+          path: |
+            verified-release.json
+            release-dry-run.json
+          if-no-files-found: error
+
+  release-credential-preflight:
+    # Existing secrets are exposed only to the authenticated repository owner's reviewed branch.
+    if: ${{ github.repository == 'MeherBenSalem/RPG-Attribute-System' && github.actor_id == '74470806' && (github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.user.id == 74470806)) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Read-only existing credential presence and project identity preflight
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+        run: python3 scripts/release-credentials-preflight.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: release-credential-preflight-${{ github.event.pull_request.head.sha || github.sha }}
+          path: release-credential-preflight.json
+          if-no-files-found: ignore

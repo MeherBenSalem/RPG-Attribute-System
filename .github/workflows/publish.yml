@@ -1,304 +1,221 @@
-# Dual-publish RPG Attribute System to Modrinth + CurseForge on version tags.
-#
-# Each loader jar is its own Modrinth version:
-# version_number: 4.2.5+fabric-1.21.1
-# Never attach multiple loader jars to one Modrinth version.
-#
-# Org/repo secrets:
-#   MODRINTH_TOKEN
-#   CURSEFORGE_TOKEN
-#   CURSEFORGE_API_KEY
-#
-# Repo variables:
-#   MODRINTH_ID=d85UTOuq
-#   CURSEFORGE_ID=1079687
-#
-# Usage after merge (NightReviews tags):
-#   git tag v4.2.5 && git push origin v4.2.5
-
+# A release tag is created only after final source review, CI and client/gameplay QA.
+# Always build/verify all ten loader JARs; partial prebuilt directories are never trusted.
 name: Publish
 
 on:
   push:
-    tags:
-      - "v*.*.*"
+    tags: ['v*.*.*']
   workflow_dispatch:
     inputs:
       version:
-        description: Version (without v) when not tagging
+        description: Release version (must equal checked-out VERSION)
         required: false
+        type: string
       dry_run:
-        description: Skip uploads if true
+        description: Verify and prepare descriptors without store writes
         required: false
-        default: "false"
+        default: true
+        type: boolean
       platforms:
-        description: "modrinth, curseforge, or both"
+        description: Destination platforms (for partial-upload recovery)
+        type: choice
+        options: [both, modrinth, curseforge]
+        default: both
+      source_run_id:
+        description: Prior Publish run containing the exact ten source-bound JARs (avoids rebuilding on recovery)
         required: false
-        default: "both"
-      minecraft_version:
-        description: "Optional MC version filter (e.g. 26.3) — only upload matching jars"
+        type: string
+
+      receipt_run_id:
+        description: Latest prior Publish run containing the upload journal (defaults to source_run_id)
         required: false
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  # A branch dry-run and tag release must never create competing journals.
+  group: ras-release-publication
+  cancel-in-progress: false
 
 jobs:
-  publish:
+  resolve:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+      commit: ${{ steps.resolve.outputs.commit }}
+      platforms: ${{ steps.resolve.outputs.platforms }}
+      dry_run: ${{ steps.resolve.outputs.dry_run }}
+      source_run_id: ${{ steps.resolve.outputs.source_run_id }}
+      receipt_run_id: ${{ steps.resolve.outputs.receipt_run_id }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Resolve version
-        id: ver
-        shell: bash
+      - name: Resolve exact source/version and fail closed
+        id: resolve
+        env:
+          REQUESTED_VERSION: ${{ inputs.version }}
+          REQUESTED_PLATFORMS: ${{ inputs.platforms }}
+          REQUESTED_DRY_RUN: ${{ inputs.dry_run }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+          RECEIPT_RUN_ID: ${{ inputs.receipt_run_id }}
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
-            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
-          elif [[ -n "${{ inputs.version }}" ]]; then
-            echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "Provide a v*.*.* tag or workflow_dispatch version" >&2
-            exit 1
-          fi
-
-      - name: Find prebuilt release jars
-        id: prebuilt
-        shell: bash
-        run: |
-          VERSION="${{ steps.ver.outputs.version }}"
-          mapfile -t JARS < <(find releases -maxdepth 1 -type f -name "*-${VERSION}.jar" \
-            ! -name "*-sources.jar" ! -name "*-javadoc.jar" 2>/dev/null | sort)
-          if [ ${#JARS[@]} -gt 0 ]; then
-            echo "found=true" >> "$GITHUB_OUTPUT"
-            EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-            echo "list<<$EOF" >> "$GITHUB_OUTPUT"
-            printf '%s\n' "${JARS[@]}" >> "$GITHUB_OUTPUT"
-            echo "$EOF" >> "$GITHUB_OUTPUT"
-            printf 'Using prebuilt jars:\n'
-            printf '%s\n' "${JARS[@]}"
-          else
-            echo "found=false" >> "$GITHUB_OUTPUT"
-            echo "No releases/*-${VERSION}.jar — will build all workspaces"
-          fi
-
+          python3 - <<'PY'
+          import os,re,subprocess
+          from pathlib import Path
+          version=Path('VERSION').read_text().strip()
+          requested=os.environ.get('REQUESTED_VERSION','')
+          if not re.fullmatch(r'\d+\.\d+\.\d+',version) or (requested and requested!=version):
+              raise SystemExit('Requested version must equal checked-out VERSION')
+          for root in ['1.20.1','1.21.1','26.1.2','26.2','26.3']:
+              rows=Path(root,'gradle.properties').read_text().splitlines()
+              if 'version='+version not in rows: raise SystemExit('Version roots disagree')
+          platforms=os.environ.get('REQUESTED_PLATFORMS') or 'both'
+          if platforms not in ['both','modrinth','curseforge']: raise SystemExit('Unknown platforms')
+          dry_run='true' if os.environ.get('REQUESTED_DRY_RUN')=='true' else 'false'
+          if dry_run=='false' and os.environ['GITHUB_REF']!='refs/tags/v'+version:
+              raise SystemExit('Store writes require the exact release tag; use dry_run for branch verification')
+          run_id=os.environ.get('SOURCE_RUN_ID','')
+          receipt_id=os.environ.get('RECEIPT_RUN_ID','') or run_id
+          if receipt_id and not run_id: raise SystemExit('receipt_run_id requires source_run_id')
+          if any(value and not re.fullmatch(r'[1-9]\d*',value) for value in [run_id,receipt_id]): raise SystemExit('Invalid recovery run ID')
+          if dry_run=='false' and int(os.environ.get('GITHUB_RUN_ATTEMPT','1'))>1 and not run_id:
+              raise SystemExit('Bare job reruns cannot recover upload state; dispatch an explicit recovery run')
+          commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          if not re.fullmatch(r'[0-9a-f]{40}',commit): raise SystemExit('Invalid source commit')
+          with open(os.environ['GITHUB_OUTPUT'],'a') as output:
+              for key,value in [('version',version),('commit',commit),('platforms',platforms),('dry_run',dry_run),('source_run_id',run_id),('receipt_run_id',receipt_id)]:
+                  print(f'{key}={value}',file=output)
+          PY
+      - name: Reject blind fresh publication after a prior attempt
+        if: ${{ steps.resolve.outputs.source_run_id == '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_COMMIT: ${{ steps.resolve.outputs.commit }}
+        run: python3 scripts/validate-release-recovery.py --commit "$SOURCE_COMMIT" --current-run-id "$GITHUB_RUN_ID" --check-fresh
+  build:
+    name: Build ${{ matrix.workspace }}
+    needs: resolve
+    if: ${{ needs.resolve.outputs.source_run_id == '' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - workspace: '1.20.1'
+            java: '17'
+            second_loader: forge
+          - workspace: '1.21.1'
+            java: '21'
+            second_loader: neoforge
+          - workspace: '26.1.2'
+            java: '25'
+            second_loader: neoforge
+          - workspace: '26.2'
+            java: '25'
+            second_loader: neoforge
+          - workspace: '26.3'
+            java: '25'
+            second_loader: neoforge
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve.outputs.commit }}
       - uses: actions/setup-java@v4
-        if: steps.prebuilt.outputs.found != 'true'
         with:
           distribution: temurin
-          java-version: "25"
-
+          java-version: ${{ matrix.java }}
       - uses: gradle/actions/setup-gradle@v4
-        if: steps.prebuilt.outputs.found != 'true'
-
-      - name: Build MultiLoader workspaces
-        if: steps.prebuilt.outputs.found != 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          for ws in 1.20.1 1.21.1 26.1.2 26.2 26.3; do
-            echo "Building workspace $ws"
-            (
-              cd "$ws"
-              chmod +x gradlew 2>/dev/null || true
-              ./gradlew build --no-daemon
-            )
-          done
-
-      - name: Find jars
-        id: jars
-        shell: bash
-        run: |
-          VERSION="${{ steps.ver.outputs.version }}"
-          mapfile -t JARS < <(find releases -maxdepth 1 -type f -name "*-${VERSION}.jar" 2>/dev/null | sort)
-          if [ ${#JARS[@]} -eq 0 ]; then
-            mapfile -t JARS < <(find . -type f -path "*/build/libs/rpg_attribute_system-*-${VERSION}.jar" \
-              ! -name "*-sources.jar" ! -name "*-javadoc.jar" \
-              ! -name "*-dev.jar" ! -name "*-dev-shadow.jar" \
-              ! -name "*-common-*" | sort)
-          fi
-          if [ ${#JARS[@]} -eq 0 ]; then
-            echo "No jars found for version ${VERSION}" >&2
-            exit 1
-          fi
-          MC_FILTER="${{ inputs.minecraft_version }}"
-          if [ -n "$MC_FILTER" ]; then
-            FILTERED=()
-            for jar in "${JARS[@]}"; do
-              base=$(basename "$jar")
-              if echo "$base" | grep -qE "(^|-)${MC_FILTER}(-|$)"; then
-                FILTERED+=("$jar")
-              fi
-            done
-            if [ ${#FILTERED[@]} -eq 0 ]; then
-              echo "No jars matched minecraft_version filter ${MC_FILTER}" >&2
-              exit 1
-            fi
-            JARS=("${FILTERED[@]}")
-          fi
-          printf '%s\n' "${JARS[@]}"
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "list<<$EOF" >> "$GITHUB_OUTPUT"
-          printf '%s\n' "${JARS[@]}" >> "$GITHUB_OUTPUT"
-          echo "$EOF" >> "$GITHUB_OUTPUT"
-
+      - name: Build both loaders and common checks at exact source commit
+        working-directory: ${{ matrix.workspace }}
+        env:
+          SOURCE_COMMIT: ${{ needs.resolve.outputs.commit }}
+        run: bash ./gradlew build --no-daemon -PrasSourceCommit="$SOURCE_COMMIT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ras-release-${{ needs.resolve.outputs.commit }}-${{ matrix.workspace }}
+          path: |
+            ${{ matrix.workspace }}/fabric/build/libs/rpg_attribute_system-fabric-${{ matrix.workspace }}-${{ needs.resolve.outputs.version }}.jar
+            ${{ matrix.workspace }}/${{ matrix.second_loader }}/build/libs/rpg_attribute_system-${{ matrix.second_loader }}-${{ matrix.workspace }}-${{ needs.resolve.outputs.version }}.jar
+          if-no-files-found: error
+  publish:
+    needs: [resolve, build]
+    if: ${{ always() && needs.resolve.result == 'success' && (needs.build.result == 'success' || (needs.build.result == 'skipped' && needs.resolve.outputs.source_run_id != '')) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve.outputs.commit }}
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-
-      - name: Upload Modrinth + CurseForge
-        if: ${{ inputs.dry_run != 'true' }}
+          node-version: '24'
+      - name: Reject live publish-only job reruns without fresh recovery
+        env:
+          DRY_RUN: ${{ needs.resolve.outputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" != true ] && [ "$GITHUB_RUN_ATTEMPT" -gt 1 ]; then
+            echo 'Live publish job reruns cannot safely restore state; dispatch a fresh explicit recovery run.'
+            exit 1
+          fi
+      - name: Validate explicit recovery run provenance
+        if: ${{ needs.resolve.outputs.source_run_id != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_COMMIT: ${{ needs.resolve.outputs.commit }}
+          SOURCE_RUN_ID: ${{ needs.resolve.outputs.source_run_id }}
+          RECEIPT_RUN_ID: ${{ needs.resolve.outputs.receipt_run_id }}
+        run: python3 scripts/validate-release-recovery.py --commit "$SOURCE_COMMIT" --source-run-id "$SOURCE_RUN_ID" --receipt-run-id "$RECEIPT_RUN_ID" --current-run-id "$GITHUB_RUN_ID"
+      - uses: actions/download-artifact@v4
+        if: ${{ needs.resolve.outputs.source_run_id == '' }}
+        with:
+          pattern: ras-release-${{ needs.resolve.outputs.commit }}-*
+          path: release-jars
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        if: ${{ needs.resolve.outputs.source_run_id != '' }}
+        with:
+          pattern: ras-release-${{ needs.resolve.outputs.commit }}-*
+          path: release-jars
+          merge-multiple: true
+          run-id: ${{ needs.resolve.outputs.source_run_id }}
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        if: ${{ needs.resolve.outputs.source_run_id != '' }}
+        with:
+          name: release-provenance-${{ needs.resolve.outputs.commit }}
+          path: prior-release-provenance
+          run-id: ${{ needs.resolve.outputs.receipt_run_id }}
+          github-token: ${{ github.token }}
+      - name: Restore mandatory prior upload journal
+        if: ${{ needs.resolve.outputs.source_run_id != '' }}
+        run: |
+          test -f prior-release-provenance/publication-receipts.json
+          cp prior-release-provenance/publication-receipts.json publication-receipts.json
+      - name: Verify complete inventory/internal metadata/source/hash binding
+        env:
+          RELEASE_VERSION: ${{ needs.resolve.outputs.version }}
+          SOURCE_COMMIT: ${{ needs.resolve.outputs.commit }}
+        run: python3 scripts/verify-release-artifacts.py --directory release-jars --version "$RELEASE_VERSION" --commit "$SOURCE_COMMIT" --output verified-release.json
+      - name: Publish/resume verified binaries with per-loader dependencies
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
           MODRINTH_ID: ${{ vars.MODRINTH_ID }}
           CURSEFORGE_ID: ${{ vars.CURSEFORGE_ID }}
-          VERSION: ${{ steps.ver.outputs.version }}
-          JAR_LIST: ${{ steps.jars.outputs.list }}
-          PLATFORMS: ${{ inputs.platforms || 'both' }}
-        shell: bash
+          PLATFORMS: ${{ needs.resolve.outputs.platforms }}
+          RELEASE_VERSION: ${{ needs.resolve.outputs.version }}
+          DRY_RUN: ${{ needs.resolve.outputs.dry_run }}
         run: |
-          set -euo pipefail
-          test -n "${MODRINTH_ID:-}" && test -n "${CURSEFORGE_ID:-}"
-          node <<'NODE'
-          const fs = require('fs');
-          const path = require('path');
-          const { detectRequired, LOADER_IDS } = require('./.github/scripts/detect-jar-meta.js');
-          const version = process.env.VERSION;
-          const platforms = (process.env.PLATFORMS || 'both').toLowerCase();
-          const doModrinth = platforms === 'both' || platforms === 'modrinth';
-          const doCurse = platforms === 'both' || platforms === 'curseforge';
-          const jars = process.env.JAR_LIST.split(/\n/).map(s => s.trim()).filter(Boolean);
-          if (!jars.length) throw new Error('No jars to upload');
-
-          let changelog = `Release ${version}`;
-          const versionNotes = `RPG-Attribute-System-${version}-PatchNotes.md`;
-          if (fs.existsSync(versionNotes)) {
-            changelog = fs.readFileSync(versionNotes, 'utf8');
-          } else if (fs.existsSync('PATCH_NOTES.md')) {
-            changelog = fs.readFileSync('PATCH_NOTES.md', 'utf8');
-          }
-
-          function flattenVersions(payload) {
-            const flat = [];
-            const data = payload?.data ?? payload;
-            if (!Array.isArray(data)) return flat;
-            for (const entry of data) {
-              if (Array.isArray(entry?.versions)) {
-                for (const v of entry.versions) flat.push(v);
-              } else if (entry && (entry.id != null) && entry.name) {
-                flat.push(entry);
-              }
-            }
-            return flat;
-          }
-
-          function findVersionId(flat, name) {
-            const exact = flat.find((v) => v.name === name || v.slug === name);
-            if (exact) return exact.id;
-            const loose = flat.find((v) => String(v.name).toLowerCase() === String(name).toLowerCase());
-            return loose?.id;
-          }
-
-          (async () => {
-            if (doModrinth) {
-              for (const jar of jars) {
-                const { loader, gv } = detectRequired(jar);
-                const gameVersions = [gv];
-                const body = {
-                  name: `${version} · ${loader} · ${gameVersions[0]}`,
-                  version_number: `${version}+${loader}-${gameVersions[0]}`,
-                  changelog,
-                  dependencies: [],
-                  game_versions: gameVersions,
-                  version_type: 'release',
-                  loaders: [loader],
-                  featured: false,
-                  status: 'listed',
-                  project_id: process.env.MODRINTH_ID,
-                  file_parts: ['file_0'],
-                  primary_file: 'file_0',
-                };
-                const form = new FormData();
-                form.append('data', JSON.stringify(body));
-                form.append('file_0', new Blob([fs.readFileSync(jar)]), path.basename(jar));
-                const mrRes = await fetch('https://api.modrinth.com/v2/version', {
-                  method: 'POST',
-                  headers: { Authorization: process.env.MODRINTH_TOKEN },
-                  body: form,
-                });
-                const mrText = await mrRes.text();
-                if (!mrRes.ok) throw new Error('Modrinth ' + mrRes.status + ' ' + mrText.slice(0, 500));
-                console.log('Modrinth OK', path.basename(jar), 'game=' + gv, mrText.slice(0, 180));
-              }
-            } else {
-              console.log('Skipping Modrinth (platforms=' + platforms + ')');
-            }
-
-            if (!doCurse) {
-              console.log('Skipping CurseForge (platforms=' + platforms + ')');
-              return;
-            }
-
-            let flat = [];
-            const uploadGv = await fetch('https://minecraft.curseforge.com/api/game/versions', {
-              headers: { 'X-Api-Token': process.env.CURSEFORGE_TOKEN },
-            });
-            if (uploadGv.ok) {
-              flat = flattenVersions(await uploadGv.json());
-              console.log('CurseForge versions via upload API:', flat.length);
-            } else {
-              console.warn('Upload game/versions failed', uploadGv.status, (await uploadGv.text()).slice(0, 200));
-            }
-            if (!flat.length) {
-              const gvRes = await fetch('https://api.curseforge.com/v1/games/432/versions', {
-                headers: { 'x-api-key': process.env.CURSEFORGE_API_KEY },
-              });
-              const gvText = await gvRes.text();
-              if (!gvRes.ok) throw new Error('CurseForge versions ' + gvRes.status + ' ' + gvText.slice(0, 300));
-              flat = flattenVersions(JSON.parse(gvText));
-              console.log('CurseForge versions via core API:', flat.length);
-            }
-            if (!flat.length) throw new Error('No CurseForge game versions resolved');
-
-            let uploaded = 0;
-            for (const jar of jars) {
-              const { loader, gv: want } = detectRequired(jar);
-              const mcId = findVersionId(flat, want);
-              const loaderId = LOADER_IDS[loader];
-              const clientId = findVersionId(flat, 'Client');
-              const serverId = findVersionId(flat, 'Server');
-              if (mcId == null) {
-                throw new Error('No CurseForge game version id for ' + want + ' (' + path.basename(jar) + ')');
-              }
-              if (loaderId == null) {
-                throw new Error('No CurseForge loader id for ' + loader);
-              }
-              const gameVersions = [mcId, loaderId];
-              if (clientId != null) gameVersions.push(clientId);
-              if (serverId != null) gameVersions.push(serverId);
-              const gameVersionNames = [];
-              if (clientId == null) gameVersionNames.push('Client');
-              if (serverId == null) gameVersionNames.push('Server');
-              const meta = {
-                changelog,
-                changelogType: 'markdown',
-                displayName: `${version} · ${loader} · ${want}`,
-                gameVersions,
-                releaseType: 'release',
-              };
-              if (gameVersionNames.length) meta.gameVersionNames = gameVersionNames;
-              const cfForm = new FormData();
-              cfForm.append('metadata', JSON.stringify(meta));
-              cfForm.append('file', new Blob([fs.readFileSync(jar)]), path.basename(jar));
-              const cfRes = await fetch(
-                `https://minecraft.curseforge.com/api/projects/${process.env.CURSEFORGE_ID}/upload-file`,
-                { method: 'POST', headers: { 'X-Api-Token': process.env.CURSEFORGE_TOKEN }, body: cfForm },
-              );
-              const cfText = await cfRes.text();
-              if (!cfRes.ok) throw new Error('CurseForge ' + cfRes.status + ' ' + cfText.slice(0, 500));
-              console.log('CurseForge OK', path.basename(jar), 'game=' + want, cfText.slice(0, 180));
-              uploaded += 1;
-            }
-            console.log('CurseForge uploaded', uploaded, 'file(s) to project', process.env.CURSEFORGE_ID);
-          })().catch((e) => { console.error(e); process.exit(1); });
-          NODE
+          args=()
+          if [ "$DRY_RUN" = true ]; then args+=(--dry-run); fi
+          node scripts/publish-verified-release.mjs --manifest verified-release.json --directory release-jars --dependencies scripts/release-dependencies.json --changelog "RPG-Attribute-System-$RELEASE_VERSION-PatchNotes.md" --state publication-receipts.json --platforms "$PLATFORMS" "${args[@]}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: release-provenance-${{ needs.resolve.outputs.commit }}
+          path: |
+            verified-release.json
+            publication-receipts.json
+          if-no-files-found: ignore

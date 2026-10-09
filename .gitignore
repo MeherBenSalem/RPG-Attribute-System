@@ -77,3 +77,6 @@ graphify-out/manifest.json
 graphify-out/.needs_update
 graphify-out/20*/
 graphify-out/*.sig
+
+# Local Python test bytecode
+__pycache__/
