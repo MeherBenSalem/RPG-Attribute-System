@@ -45,8 +45,8 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         menuStateUpdateActive = true;
         menuStateUpdateActive = false;
     }
-    @Override public void setMenuStateUpdateActive(boolean active) { menuStateUpdateActive = active; }
-    @Override public boolean isMenuStateUpdateActive() { return menuStateUpdateActive; }
+    public void setMenuStateUpdateActive(boolean active) { menuStateUpdateActive = active; }
+    public boolean isMenuStateUpdateActive() { return menuStateUpdateActive; }
     public void updateAttributeConfig() { rebuildWidgets(); }
     private PlayerVariables variables() { return Services.PLATFORM.getPlayerVariables(entity); }
     private int id(String key) {

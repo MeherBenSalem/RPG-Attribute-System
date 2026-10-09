@@ -39,8 +39,8 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
         menuStateUpdateActive = true;
         menuStateUpdateActive = false;
     }
-    @Override public void setMenuStateUpdateActive(boolean active) { menuStateUpdateActive = active; }
-    @Override public boolean isMenuStateUpdateActive() { return menuStateUpdateActive; }
+    public void setMenuStateUpdateActive(boolean active) { menuStateUpdateActive = active; }
+    public boolean isMenuStateUpdateActive() { return menuStateUpdateActive; }
     public void updateAttributeConfig() { visibleSections = null; rebuildWidgets(); }
     private PlayerVariables variables() { return Services.PLATFORM.getPlayerVariables(entity); }
     private List<Integer> sectionIds() {

@@ -61,3 +61,6 @@ tasks.register('rasGuiLayoutTest', JavaExec) {
     mainClass = 'tn.nightbeam.ras.client.gui.RasGuiLayoutTest'
 }
 tasks.named('check') { dependsOn 'rasGuiLayoutTest' }
+
+// Minecraft exposes Gson to production compilation but not the test runtime.
+dependencies { testImplementation 'com.google.code.gson:gson:2.11.0' }
