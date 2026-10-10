@@ -93,8 +93,41 @@ jobs:
           python3 -B tests/test-release-credentials.py
           node --test tests/test-release-publisher.mjs
 
+  config-studio-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install pinned official browser QA dependencies
+        working-directory: tools/config-studio
+        run: |
+          npm ci --ignore-scripts
+          npx --no-install playwright install --with-deps chromium
+      - name: Exercise real rendered studio import, export, targets and mobile layout
+        working-directory: tools/config-studio
+        env:
+          QA_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$QA_SOURCE_SHA"
+          mkdir -p test-results
+          printf '%s\n' "$QA_SOURCE_SHA" > test-results/source-commit.txt
+          npm run build
+          npm run test:ui
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: config-studio-browser-${{ github.event.pull_request.head.sha || github.sha }}
+          path: tools/config-studio/test-results/
+          if-no-files-found: warn
+          retention-days: 14
+
   release-inventory-dry-run:
-    needs: [build, gameplay-regressions]
+    needs: [build, gameplay-regressions, config-studio-browser]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

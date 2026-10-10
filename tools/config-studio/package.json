@@ -5,11 +5,16 @@
   "description": "Local-only visual configuration builder for RPG Attribute System",
   "type": "module",
   "license": "Apache-2.0",
-  "engines": {"node": ">=22"},
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "check": "node --check dist/app.mjs && node --check dist/engine.mjs && node --check dist/zip.mjs && node --check dist/workspace.mjs",
     "test": "node tests/check.mjs && node tests/edge-cases.mjs && node tests/zip-safety.mjs && node tests/export-parity.mjs",
     "test:ui": "node tests/ui.mjs",
     "build": "npm run check"
+  },
+  "devDependencies": {
+    "playwright": "1.58.2"
   }
 }

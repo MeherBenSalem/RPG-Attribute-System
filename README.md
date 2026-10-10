@@ -76,8 +76,10 @@ before publication or retrying an interrupted upload.
 The standalone local-only editor is in [`tools/config-studio/`](tools/config-studio/README.md).
 Its authored `dist/` runs from a static local web server without an account,
 backend or API key. Configuration imports and previews stay in browser memory;
-export before closing or reloading. The 4.3.0 development target includes the
+export before closing or reloading. The 4.3.0 target includes the
 optional per-mob VP contract. The tool is separate from the Minecraft JARs.
+See the [4.3.0 verification record](docs/verification/4.3.0.md) for commit-bound
+loader builds, export/parser parity, native-client evidence, and coverage limits.
 
 ## Documentation
 

@@ -1,18 +1,18 @@
 # Compatibility
 
-## Current source targets (4.3.0 development)
+## Current source targets (4.3.0)
 
 | Minecraft | Fabric | Forge | NeoForge | Java | Source Version |
 |-----------|--------|-------|----------|------|-------------|
-| **1.20.1** | ✅ | ✅ | — | 17 | 4.3.0 development |
-| **1.21.1** | ✅ | — | ✅ | 21 | 4.3.0 development |
-| **26.1.2** | ✅ | — | ✅ | 25 | 4.3.0 development |
-| **26.2** | ✅ | — | ✅ | 25 | 4.3.0 development |
-| **26.3** | ✅ | — | ✅ | 25 | 4.3.0 development |
+| **1.20.1** | ✅ | ✅ | — | 17 | 4.3.0 |
+| **1.21.1** | ✅ | — | ✅ | 21 | 4.3.0 |
+| **26.1.2** | ✅ | — | ✅ | 25 | 4.3.0 |
+| **26.2** | ✅ | — | ✅ | 25 | 4.3.0 |
+| **26.3** | ✅ | — | ✅ | 25 | 4.3.0 |
 
 There is **no Forge jar** for 1.21.1, 26.1.2, 26.2, or 26.3. If CurseForge lists “Forge” on a file named `-neoforge-`, that label is wrong — install NeoForge. RAS is not a Paper/Folia plugin.
 
-This matrix describes the checked-in source, not completed store publication. See [release gates](releasing.md).
+This matrix describes the source targets. See the [commit-bound verification record](verification/4.3.0.md) for successful loader builds and separately scoped runtime coverage, and the [release gates](releasing.md) for publication checks.
 
 ## Required Dependencies
 

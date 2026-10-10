@@ -1,16 +1,16 @@
 # Changelog
 
-## 4.3.0 (development)
+## 4.3.0
 
 - Optional cached server-side entity/tag VP rules, base overrides and difficulty/effective-armor weighting; generated defaults remain disabled.
 - Admin `/ras reload mob_xp` with last-good reload protection and validation diagnostics.
 - Readable native-pixel stats/allocation/combat UI with larger labeled controls, responsive paging, complete tooltips and configurable totals.
 - Precise current/next-value tooltips reveal small upgrades while rows keep compact values.
-- Fresh attribute3 summary label corrected to Attack Speed; imported configuration stays intact.
-- Configuration studio development export, shared runtime/preview fixtures, and a five-workspace loader CI matrix.
+- Fresh attribute 3 summary label corrected to Attack Speed; imported configuration stays intact.
+- Standalone local-only configuration-studio export for the 4.3.0 contract, actual Java/export/preview parity checks, and a five-workspace loader CI matrix.
 - Reject nonfinite XP input and overflowing awards/player totals.
 
-No release publication yet. See [verification notes](verification/4.3.0.md) for exact tested and pending stages.
+See the [release notes](../RPG-Attribute-System-4.3.0-PatchNotes.md) and [commit-bound verification record](verification/4.3.0.md) for compatibility, exact evidence, and runtime/visual coverage limits.
 
 ## 4.2.6
 

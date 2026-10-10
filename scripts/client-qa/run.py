@@ -88,6 +88,26 @@ def numeric_close(actual, expected):
     return type(actual) in (int, float) and type(expected) in (int, float) and math.isfinite(actual) and math.isfinite(expected) and abs(actual - expected) <= 1e-8
 
 
+def seeded_agility_preview_ready(data):
+    """Observe the real post-reset widget too: variables can sync before its next render."""
+    if not isinstance(data, dict) or data.get("state") != "ALLOCATION":
+        return False
+    variables = data.get("player_variables")
+    if not isinstance(variables, dict) or not isinstance(variables.get("attributes"), dict) \
+            or not isinstance(variables.get("attribute_points"), dict) \
+            or not numeric_close(variables["attributes"].get("attribute_5"), .1) \
+            or not numeric_close(variables["attribute_points"].get("attribute_5"), 0) \
+            or not numeric_close(variables.get("spare_points"), 6):
+        return False
+    buttons = data.get("buttons")
+    if not isinstance(buttons, list):
+        return False
+    agility = [button for button in buttons if isinstance(button, dict)
+               and isinstance(button.get("label"), str) and button["label"].startswith("Allocate Agility.")]
+    return len(agility) == 1 and agility[0].get("active") is True \
+        and agility[0]["label"].startswith("Allocate Agility. Next value: 0.1025 · ")
+
+
 def snapshots_equal(actual, expected):
     if not isinstance(actual, dict) or not isinstance(expected, dict):
         return False
@@ -403,11 +423,14 @@ class Driver:
 
     def exercise_gameplay(self, ready):
         seeded = self.gameplay_action("seed", ready)
+        # The normal renderWidget refresh follows packet sync. Do not accept a
+        # prior-world 0.105 label merely because the reset variables already arrived.
+        seeded = self.wait_ready("ALLOCATION", since=seeded["sequence"], predicate=seeded_agility_preview_ready)
         buttons = [button for button in seeded["buttons"] if button["label"].startswith("Allocate Agility.")]
         if len(buttons) != 1:
             raise QaError("Exactly one actual Agility allocation control is required")
         label = buttons[0]["label"]
-        if "0.1025" not in label or seeded["player_variables"]["attributes"].get("attribute_5") != .1:
+        if not seeded_agility_preview_ready(seeded):
             raise QaError("Actual Agility preview must retain its 0.1 to 0.1025 precision")
         button, scale = buttons[0], seeded["actual_gui_scale"]
         self.find_window()
@@ -416,6 +439,8 @@ class Driver:
                  str(round((button["y"] + button["height"] / 2) * scale))])
         time.sleep(.5)
         self.capture("10-agility-precise-preview", seeded)
+        seeded = self.wait_ready("ALLOCATION", since=seeded["sequence"], predicate=seeded_agility_preview_ready)
+        label = next(button["label"] for button in seeded["buttons"] if button["label"].startswith("Allocate Agility."))
         self.click(seeded, label)
         allocated = self.wait_ready("ALLOCATION", since=seeded["sequence"],
             predicate=lambda data: isinstance(data.get("player_variables"), dict)
@@ -428,6 +453,21 @@ class Driver:
             verified = self.gameplay_action(action, verified)
             self.stable_capture(f"{index:02d}-{action}", verified)
         return verified
+
+    def exercise_page_pair(self, ready, next_label, previous_label, name):
+        """Use real physical next/back controls when this fresh-default view is paged."""
+        if not any(button["label"] == next_label and button.get("active") is True for button in ready["buttons"]):
+            return ready
+        initial_page = ready["page"]
+        self.click(ready, next_label)
+        paged = self.wait_ready(ready["state"], since=ready["sequence"], page=initial_page + 1)
+        self.stable_capture(name + "-next-page", paged)
+        self.click(paged, previous_label)
+        returned = self.wait_ready(ready["state"], since=paged["sequence"], page=initial_page)
+        self.stable_capture(name + "-previous-page", returned)
+        self.paging_exercised.append({"state": ready["state"], "from_page": initial_page,
+                                     "next_page": paged["page"], "returned_page": returned["page"]})
+        return returned
 
     def before_input(self):
         latest = read_json(self.game / "ras-client-qa-ready.json")
@@ -508,6 +548,7 @@ class Driver:
         self.window_id = None
         self.last_action_ms = 0
         self.last_action_sequence = 0
+        self.paging_exercised = []
         # Every run is disposable. No existing player options/world/result directory is read or overwritten.
         (self.game / "options.txt").write_text(f"guiScale:{scale}\nlang:en_us\nonboardAccessibility:false\ntutorialStep:none\nfullscreen:false\nrenderDistance:2\nsimulationDistance:5\nmaxFps:30\n")
         if self.fixture:
@@ -546,12 +587,15 @@ class Driver:
             self.click(focused, "View actual combat statistics")
             combat = self.wait_ready("COMBAT", since=focused["sequence"])
             self.stable_capture("03-combat", combat)
+            combat = self.exercise_page_pair(combat, "Next combat-stat page", "Previous combat-stat page", "03b-combat")
             self.click(combat, "View player statistics and configured totals")
             overview = self.wait_ready("OVERVIEW_ATTRIBUTES", since=combat["sequence"])
             self.stable_capture("04-overview-attributes", overview)
+            overview = self.exercise_page_pair(overview, "Next statistics page", "Previous statistics page", "04b-overview-attributes")
             self.click(overview, "View all configured totals")
             totals = self.wait_ready("OVERVIEW_TOTALS", since=overview["sequence"])
             self.stable_capture("05-overview-totals", totals)
+            totals = self.exercise_page_pair(totals, "Next statistics page", "Previous statistics page", "05b-overview-totals")
             self.click(totals, "Return to previous screen", width=52)
             returned = self.wait_ready("COMBAT", since=totals["sequence"])
             self.stable_capture("06-back-to-combat", returned)
@@ -568,8 +612,9 @@ class Driver:
             self.stop()
             (self.case / "driver-result.json").write_text(json.dumps({"status":"PASS", "run_id":self.run_id,
                 "source_sha":self.sha,"mc":self.mc,"loader":"fabric","gui_scale":scale,
+                "paging_exercised":self.paging_exercised,
                 "human_pixel_review":"required","coverage":["allocation","keyboard_focus","combat","overview_attributes",
-                "overview_totals","back","escape","keybind_reopen", "real_ui_allocation",
+                "overview_totals","available_page_next_back","back","escape","keybind_reopen", "real_ui_allocation",
                 "entity_rule_precedence", "builtin_entity_tag", "difficulty_weighting", "armor_weighting",
                 "invalid_reload_last_good_rules", "legacy_disabled_reward"]},indent=2)+"\n")
         except Exception:

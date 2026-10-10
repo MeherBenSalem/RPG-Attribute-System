@@ -4,6 +4,7 @@ import importlib.util
 from pathlib import Path
 import time
 import unittest
+from unittest.mock import Mock
 
 ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('qa_gameplay', ROOT / 'scripts/client-qa/run.py')
@@ -103,6 +104,51 @@ class GameplayEvidenceTests(unittest.TestCase):
         self.assertTrue(qa.snapshots_equal(self.snapshot, copy.deepcopy(self.snapshot)))
         for mutation in ({'total_xp': 1}, {'attributes': {'attribute_5': .1}}, {'attribute_points': {}}, {'modifier': None}):
             self.assertFalse(qa.snapshots_equal({**self.snapshot, **mutation}, self.snapshot))
+
+    def test_seed_preview_wait_rejects_real_reset_before_widget_refresh(self):
+        ready = {'state': 'ALLOCATION', 'player_variables': {
+            'attributes': {'attribute_5': .1}, 'attribute_points': {'attribute_5': 0}, 'spare_points': 6},
+            'buttons': [{'label': 'Allocate Agility. Next value: 0.105 · 1 point (max: 500)', 'active': True}]}
+        self.assertFalse(qa.seeded_agility_preview_ready(ready))
+        ready['buttons'][0]['label'] = 'Allocate Agility. Next value: 0.1025 · 1 point (max: 500)'
+        self.assertTrue(qa.seeded_agility_preview_ready(ready))
+        for label in ('Allocate Agility. Next value: 0.1 · 1 point',
+                      'Allocate Agility. Next value: 0.10256 · 1 point'):
+            broken = copy.deepcopy(ready); broken['buttons'][0]['label'] = label
+            self.assertFalse(qa.seeded_agility_preview_ready(broken))
+
+    def test_seed_preview_requires_active_unique_control_and_actual_reset_values(self):
+        ready = {'state': 'ALLOCATION', 'player_variables': {
+            'attributes': {'attribute_5': .1}, 'attribute_points': {'attribute_5': 0}, 'spare_points': 6},
+            'buttons': [{'label': 'Allocate Agility. Next value: 0.1025 · 1 point (max: 500)', 'active': True}]}
+        for field, value in (('attributes', {'attribute_5': .1025}), ('attribute_points', {'attribute_5': 1}), ('spare_points', 5)):
+            broken = copy.deepcopy(ready); broken['player_variables'][field] = value
+            self.assertFalse(qa.seeded_agility_preview_ready(broken))
+        for field, value in (('state', 'COMBAT'), ('player_variables', None), ('buttons', None)):
+            self.assertFalse(qa.seeded_agility_preview_ready({**ready, field: value}))
+        broken = copy.deepcopy(ready); broken['buttons'][0]['active'] = False
+        self.assertFalse(qa.seeded_agility_preview_ready(broken))
+        broken = copy.deepcopy(ready); broken['buttons'] *= 2
+        self.assertFalse(qa.seeded_agility_preview_ready(broken))
+
+    def test_physical_page_pair_awaits_both_exact_pages_and_records_only_observed_transitions(self):
+        driver = qa.Driver.__new__(qa.Driver)
+        driver.paging_exercised = []
+        ready = {'state': 'COMBAT', 'page': 0, 'sequence': 10,
+                 'buttons': [{'label': 'Next combat-stat page', 'active': True}]}
+        paged = {**ready, 'page': 1, 'sequence': 11}
+        returned = {**ready, 'sequence': 12}
+        driver.click = Mock(); driver.stable_capture = Mock()
+        driver.wait_ready = Mock(side_effect=[paged, returned])
+        self.assertIs(driver.exercise_page_pair(ready, 'Next combat-stat page', 'Previous combat-stat page', 'combat'), returned)
+        self.assertEqual(driver.click.call_args_list[0].args, (ready, 'Next combat-stat page'))
+        self.assertEqual(driver.click.call_args_list[1].args, (paged, 'Previous combat-stat page'))
+        self.assertEqual(driver.wait_ready.call_args_list[0].kwargs, {'since': 10, 'page': 1})
+        self.assertEqual(driver.wait_ready.call_args_list[1].kwargs, {'since': 11, 'page': 0})
+        self.assertEqual(driver.paging_exercised, [{'state': 'COMBAT', 'from_page': 0, 'next_page': 1, 'returned_page': 0}])
+        ready['buttons'][0]['active'] = False
+        self.assertIs(driver.exercise_page_pair(ready, 'Next combat-stat page', 'Previous combat-stat page', 'combat'), ready)
+        self.assertEqual(driver.click.call_count, 2)
 
     def test_source_hooks_are_bounded_default_off_real_death_not_direct_procedure(self):
         for version in ('1.21.1', '26.3'):

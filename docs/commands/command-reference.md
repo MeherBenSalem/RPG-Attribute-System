@@ -461,6 +461,6 @@ All platforms use the same Brigadier `CommandDispatcher<CommandSourceStack>` wit
 - [Templates Config](../configuration/additional-config-files.md#templates-config) — Template definitions
 
 
-## Reload per-mob VP rules (4.3.0 development)
+## Reload per-mob VP rules (4.3.0)
 
 `/ras reload mob_xp` requires permission level 4. It reloads only `ras/mob_xp.json`, retaining the last good cached rules when the whole replacement is malformed, unsupported, or unreadable. Invalid individual rules are skipped with server-log diagnostics. See [per-mob VP rules](../configuration/mob-xp.md).
