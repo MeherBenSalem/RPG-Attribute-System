@@ -59,6 +59,14 @@ loom {
     }
 }
 
+// Hosted QA owns the authenticated X11 display observed by its native controller.
+// Loom 1.18.1 otherwise starts a second xvfb-run display on CI.
+if (System.getenv('RAS_CLIENT_QA') == 'true') {
+    tasks.named('runClientSelfTest') {
+        getUseXvfb().set(false)
+    }
+}
+
 // Implement mcgradleconventions loader attribute
 def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
 ['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements', 'includeInternal', 'modCompileClasspath'].each { variant ->

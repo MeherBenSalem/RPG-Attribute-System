@@ -56,6 +56,60 @@ class WindowTests(unittest.TestCase):
         self.assertEqual(w.ClientValue.length.offset, 16)
         self.assertEqual(w.ClientValue.value.offset, 24)
 
+    def test_native_fact_receipts_keep_their_own_error_snapshot_across_later_queries(self):
+        # Exercise the actual facts() receipt lifecycle using mocked native calls, not an X server.
+        native = object.__new__(w.NativeDisplay)
+        native.name, native.display, native.errors = ':84', 1, []
+        native.x, native.res = mock.Mock(), mock.Mock()
+        native.x.XDefaultRootWindow.return_value = 99
+        ranges = (w.ClientRange * 1)(w.ClientRange(4096, 4095))
+        identities = (w.ClientValue * 1)(w.ClientValue(w.ClientSpec(4096, 2), 4, 1))
+        windows = (ctypes.c_ulong * 1)(7654)
+        def set_value(pointer, kind, value):
+            ctypes.cast(pointer, ctypes.POINTER(kind))[0] = value
+        def attributes(display, xid, pointer):
+            if xid == 9999:
+                native.errors.append({'resource_id': xid, 'code': 3, 'request': 3})
+                return 0
+            value = ctypes.cast(pointer, ctypes.POINTER(w.Attributes)).contents
+            value.root, value.window_class, value.map_state = 99, 1, 2
+            value.width, value.height = 1280, 960
+            return 1
+        def version(display, major, minor):
+            set_value(major, ctypes.c_int, 1); set_value(minor, ctypes.c_int, 2); return 1
+        def clients(display, count, pointer):
+            set_value(count, ctypes.c_int, 1)
+            set_value(pointer, ctypes.POINTER(w.ClientRange), ctypes.cast(ranges, ctypes.POINTER(w.ClientRange)))
+            return 1
+        def client_ids(display, count, spec, number, pointer):
+            set_value(number, ctypes.c_long, 1)
+            set_value(pointer, ctypes.POINTER(w.ClientValue), ctypes.cast(identities, ctypes.POINTER(w.ClientValue)))
+            return 0
+        def tree(display, root, returned_root, parent, pointer, count):
+            set_value(count, ctypes.c_uint, 1)
+            set_value(pointer, ctypes.POINTER(ctypes.c_ulong), ctypes.cast(windows, ctypes.POINTER(ctypes.c_ulong)))
+            return 1
+        native.x.XGetWindowAttributes.side_effect = attributes
+        native.x.XTranslateCoordinates.return_value = 1
+        native.x.XQueryPointer.return_value = 0
+        native.x.XQueryTree.side_effect = tree
+        native.res.XResQueryVersion.side_effect = version
+        native.res.XResQueryClients.side_effect = clients
+        native.res.XResQueryClientIds.side_effect = client_ids
+        native.res.XResGetClientPid.return_value = 4321
+        native.property = mock.Mock(return_value=None)
+        earlier = native.facts(7654)
+        self.owner(earlier)
+        self.assertEqual(earlier['x_errors'], [])
+        later = native.facts(9999)
+        self.assertEqual(later['x_errors'], [{'resource_id': 9999, 'code': 3, 'request': 3}])
+        self.assertEqual(earlier['x_errors'], [])
+        self.assertIsNot(earlier['x_errors'], native.errors)
+        self.assertIsNot(later['x_errors'], native.errors)
+        native.facts(7654)  # Clearing/reusing the native callback list cannot erase either earlier receipt.
+        self.assertEqual(earlier['x_errors'], [])
+        self.assertEqual(later['x_errors'], [{'resource_id': 9999, 'code': 3, 'request': 3}])
+
     def test_local_only_display_rejects_tcp_hostname_and_missing_before_library_access(self):
         for display in ('', 'localhost:99', '127.0.0.1:99', 'remote:99', 'unix/:99', ':99/x'):
             with self.subTest(display=display), mock.patch.dict('os.environ', {'DISPLAY': display}), \
@@ -217,6 +271,21 @@ class WindowTests(unittest.TestCase):
         for name in ('ras-client-qa-263', 'ras-client-qa-263-diagnostic'):
             self.assertIn('--output "$RUNNER_TEMP/' + name + '-x11-preflight.json"', text)
             self.assertNotIn('--output "$RUNNER_TEMP/' + name + '/x11-infrastructure-preflight.json"', text)
+
+    def test_loom_nested_xvfb_override_is_only_explicit_hosted_263_self_test(self):
+        from pathlib import Path
+        root = Path(__file__).resolve().parents[2]
+        source = (root/'26.3/fabric/build.gradle').read_text()
+        block = """if (System.getenv('RAS_CLIENT_QA') == 'true') {
+    tasks.named('runClientSelfTest') {
+        getUseXvfb().set(false)
+    }
+}"""
+        self.assertIn(block, source)
+        self.assertEqual(source.count('getUseXvfb()'), 1)
+        self.assertEqual(source.count('tasks.named(\'runClientSelfTest\')'), 1)
+        for version in ('1.20.1', '1.21.1', '26.1.2', '26.2'):
+            self.assertNotIn('getUseXvfb()', (root/version/'fabric/build.gradle').read_text())
 
     def test_capture_snapshot_rejects_same_xid_changed_screen_page_control_prompt_or_expiry(self):
         for status in ('STARTUP', 'READY'):

@@ -216,6 +216,7 @@ class NativeDisplay:
         finally:
             self.x.XUngrabServer(self.display)
             self.x.XSync(self.display, 0)
+            value['x_errors'] = [dict(error) for error in self.errors]
         return value
 
 
