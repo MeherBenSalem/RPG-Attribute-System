@@ -84,6 +84,76 @@ def validate_ready(data, *, run_id, sha, mc, scale, launched_ms, expected_state=
     return data
 
 
+def validate_startup_identity(data, *, run_id, sha, scale, launched_ms, game):
+    """Fail immediately on identity errors; incomplete rendering is observed separately."""
+    if not isinstance(data, dict) or data.get("schema_version") != 1 \
+            or data.get("status") not in {"STARTUP", "READY"} \
+            or data.get("run_id") != run_id or data.get("source_sha") != sha \
+            or data.get("mc") != "26.3" or data.get("loader") != "fabric":
+        raise QaError("Startup diagnostic identity/status mismatch")
+    written = data.get("written_at_ms")
+    if type(written) not in (int, float) or not math.isfinite(written) \
+            or written < launched_ms or written > time.time() * 1000 + 5000:
+        raise QaError("Startup diagnostic predates this launch or is future-dated")
+    if data.get("game_directory") != str(game.resolve()) or data.get("requested_gui_scale") != scale:
+        raise QaError("Startup diagnostic directory/requested scale differs")
+    if type(data.get("client_pid")) is not int or data["client_pid"] <= 0:
+        raise QaError("Missing real client PID")
+    return data
+
+
+def startup_drawable(data, scale):
+    """Transient loading may be stale/hidden/unscaled; it can never authorize capture or input."""
+    return time.time() * 1000 - data["written_at_ms"] <= 5000 \
+        and data.get("actual_gui_scale") == scale \
+        and data.get("window_width") == WIDTH and data.get("window_height") == HEIGHT \
+        and data.get("gui_width") == math.ceil(WIDTH / scale) and data.get("gui_height") == math.ceil(HEIGHT / scale) \
+        and type(data.get("x11_window_id")) is int and data["x11_window_id"] > 0 \
+        and isinstance(data.get("window_title"), str) and data["window_title"].startswith("Minecraft") \
+        and type(data.get("window_flags")) is int and not data["window_flags"] & (8 | 64)
+
+
+def validate_startup(data, *, run_id, sha, scale, launched_ms, game):
+    """Full strict freshness/drawability is still mandatory immediately before capture/input."""
+    validate_startup_identity(data, run_id=run_id, sha=sha, scale=scale, launched_ms=launched_ms, game=game)
+    if not startup_drawable(data, scale):
+        raise QaError("Startup diagnostic is not fresh or the actual SDL window is not fully drawable")
+    return data
+
+
+def migration_button(data, phase):
+    """Only the two exact 26.3 vanilla file-fix prompts. Unknown UI is never dismissed."""
+    if data.get("status") != "STARTUP" or data.get("overlay_class") != "none" \
+            or data.get("game_load_finished") is not True \
+            or any(data.get(key) is not False for key in
+                   ("client_player_present", "client_level_present", "integrated_server_present")):
+        return None
+    if phase == "COPIED" and data.get("screen_class") == "net.minecraft.client.gui.screens.BackupConfirmScreen" \
+            and data.get("screen_title_key") == "selectWorld.backupQuestion.file_fixing_required" \
+            and data.get("screen_message_key") == "selectWorld.backupWarning.file_fixing_required":
+        keys = {"selectWorld.backupJoinConfirmButton", "selectWorld.backupJoinSkipButton", "gui.cancel"}
+        selected = "selectWorld.backupJoinConfirmButton"
+    elif phase == "BACKUP_REQUESTED" and data.get("screen_class") == "net.minecraft.client.gui.screens.ConfirmScreen" \
+            and data.get("screen_title_key") == "upgradeWorld.done" \
+            and data.get("screen_message_key") == "upgradeWorld.joinNow":
+        keys = {"gui.yes", "gui.no"}
+        selected = "gui.yes"
+    else:
+        return None
+    buttons = data.get("buttons")
+    if not isinstance(buttons, list) or len(buttons) != len(keys) \
+            or {button.get("translation_key") for button in buttons if isinstance(button, dict)} != keys:
+        raise QaError("Known migration prompt has unexpected actual controls")
+    for button in buttons:
+        if button.get("active") is not True or not isinstance(button.get("label"), str) or not button["label"].strip() \
+                or any(type(button.get(key)) is not int for key in ("x", "y", "width", "height")) \
+                or button["x"] < 0 or button["y"] < 0 or button["width"] < 20 or button["height"] < 20 \
+                or button["x"] + button["width"] > data["gui_width"] \
+                or button["y"] + button["height"] > data["gui_height"]:
+            raise QaError("Migration prompt controls are inactive or outside the actual viewport")
+    return next(button for button in buttons if button["translation_key"] == selected)
+
+
 def numeric_close(actual, expected):
     return type(actual) in (int, float) and type(expected) in (int, float) and math.isfinite(actual) and math.isfinite(expected) and abs(actual - expected) <= 1e-8
 
@@ -308,6 +378,10 @@ class Driver:
         self.last_action_ms = 0
         self.last_action_sequence = 0
         self.environment = dict(os.environ if environment is None else environment)
+        self.fixture_identity = None
+        self.migration_phase = "UNVERIFIED"
+        self.startup_observed = None
+        self.startup_captures = set()
 
     def check_renderer_failure(self):
         backend = self.environment.get("RAS_GRAPHICS_BACKEND", "opengl")
@@ -326,6 +400,8 @@ class Driver:
         last = "No fresh readiness file"
         while time.monotonic() < limit:
             self.check_renderer_failure()
+            if self.mc == "26.3" and state == "ALLOCATION" and self.migration_phase != "JOIN_REQUESTED":
+                self.observe_startup()
             failure = read_json(self.game / "ras-client-qa-final.json")
             if failure and failure.get("run_id") == self.run_id and failure.get("source_sha") == self.sha and failure.get("status") == "FAIL":
                 raise QaError(f"Actual client failed: {failure.get('reason')}")
@@ -347,12 +423,82 @@ class Driver:
             time.sleep(.2)
         raise QaError(f"Timed out awaiting real {state}: {last}")
 
+    def observe_startup(self):
+        data = read_json(self.game / "ras-client-qa-startup.json")
+        if data is None: return
+        validate_startup_identity(data, run_id=self.run_id, sha=self.sha, scale=self.scale,
+                                  launched_ms=self.launched_ms, game=self.game)
+        self.require_owned_process(data)
+        if not startup_drawable(data, self.scale):
+            self.startup_observed = None
+            return  # The unchanged Java startup watchdog bounds this incomplete observation.
+        key = (data.get("screen_class"), data.get("screen_title_key"), data.get("screen_message_key"), data.get("overlay_class"))
+        previous = self.startup_observed
+        self.startup_observed = (key, data["written_at_ms"])
+        if previous is None or previous[0] != key or previous[1] == data["written_at_ms"]: return
+        button = migration_button(data, self.migration_phase)
+        if key not in self.startup_captures and (len(self.startup_captures) < 8 or button is not None):
+            name = f"startup-{len(self.startup_captures) + 1:02d}"
+            # The observed rendered prompt is saved BEFORE any migration input.
+            self.capture(name, data, verify=False)
+            self.startup_captures.add(key)
+        if button is None: return
+        if self.fixture_identity is None or self.fixture_identity.get("run_id") != self.run_id \
+                or self.fixture_identity.get("source_sha") != self.sha \
+                or self.fixture_identity.get("destination") != str((self.game / "saves/world").resolve()):
+            raise QaError("Migration input requires the exact hash-verified disposable saves/world identity")
+        self.find_window()
+        self.revalidate_migration_prompt(data, button)
+        scale = data["actual_gui_scale"]
+        checked(["xdotool", "mousemove", "--sync", "--window", self.window_id,
+                 str(round((button["x"] + button["width"] / 2) * scale)),
+                 str(round((button["y"] + button["height"] / 2) * scale))])
+        latest = self.revalidate_migration_prompt(data, button)
+        checked(["xdotool", "click", "1"])
+        self.migration_phase = "BACKUP_REQUESTED" if self.migration_phase == "COPIED" else "JOIN_REQUESTED"
+        (self.case / ("migration-" + self.migration_phase.lower() + ".json")).write_text(
+            json.dumps({"run_id": self.run_id, "source_sha": self.sha, "fixture": self.fixture_identity,
+                        "observed_prompt": data, "pre_click_prompt": latest,
+                        "clicked_translation_key": button["translation_key"]}, indent=2) + "\n")
+
+    def require_owned_process(self, data):
+        if self.pgid is None or os.getpgid(data["client_pid"]) != self.pgid:
+            raise QaError("SDL client PID is outside the launched disposable process group")
+
+    def revalidate_migration_prompt(self, captured, button):
+        latest = read_json(self.game / "ras-client-qa-startup.json")
+        validate_startup(latest, run_id=self.run_id, sha=self.sha, scale=self.scale,
+                         launched_ms=self.launched_ms, game=self.game)
+        self.require_owned_process(latest)
+        keys = ("screen_class", "screen_title_key", "screen_message_key", "overlay_class",
+                "client_pid", "x11_window_id", "window_title", "buttons")
+        if latest["written_at_ms"] < captured["written_at_ms"] \
+                or any(latest.get(key) != captured.get(key) for key in keys) \
+                or migration_button(latest, self.migration_phase) != button:
+            raise QaError("Actual migration prompt/control geometry changed after its native capture")
+        return latest
+
     def find_window(self):
-        result = checked(["xdotool", "search", "--onlyvisible", "--name", "^Minecraft"], capture_output=True)
-        windows = result.stdout.split()
-        if len(windows) != 1:
-            raise QaError(f"Expected exactly one real Minecraft X11 window; found {len(windows)}")
-        self.window_id = windows[0]
+        if self.mc == "26.3":
+            ready = read_json(self.game / "ras-client-qa-ready.json")
+            data = ready if ready is not None else read_json(self.game / "ras-client-qa-startup.json")
+            validate_startup(data, run_id=self.run_id, sha=self.sha, scale=self.scale,
+                             launched_ms=self.launched_ms, game=self.game)
+            pid = data["client_pid"]
+            self.require_owned_process(data)
+            window = str(data["x11_window_id"])
+            result = checked(["xdotool", "search", "--onlyvisible", "--pid", str(pid)], capture_output=True)
+            if result.stdout.split() != [window] \
+                    or checked(["xdotool", "getwindowpid", window], capture_output=True).stdout.strip() != str(pid) \
+                    or checked(["xdotool", "getwindowname", window], capture_output=True).stdout.strip() != data["window_title"]:
+                raise QaError("Actual SDL X11 window does not uniquely match the owned client PID/title")
+            self.window_id = window
+        else:
+            result = checked(["xdotool", "search", "--onlyvisible", "--name", "^Minecraft"], capture_output=True)
+            windows = result.stdout.split()
+            if len(windows) != 1:
+                raise QaError(f"Expected exactly one real Minecraft X11 window; found {len(windows)}")
+            self.window_id = windows[0]
         checked(["xdotool", "windowfocus", "--sync", self.window_id])
         geometry = checked(["xdotool", "getwindowgeometry", "--shell", self.window_id], capture_output=True).stdout
         rectangle = dict(line.split("=", 1) for line in geometry.splitlines() if "=" in line)
@@ -508,7 +654,7 @@ class Driver:
 
     def cleanup(self):
         if self.game and self.case:
-            for relative in ("logs/latest.log", "ras-client-qa-ready.json", "ras-client-qa-final.json", "qa-world-join.json", "options.txt", "ras-client-qa-action.json", "ras-client-qa-gameplay.json"):
+            for relative in ("logs/latest.log", "ras-client-qa-ready.json", "ras-client-qa-startup.json", "ras-client-qa-final.json", "qa-world-join.json", "options.txt", "ras-client-qa-action.json", "ras-client-qa-gameplay.json"):
                 source = self.game / relative
                 if source.is_file():
                     target = self.case / relative.replace("/", "-")
@@ -549,12 +695,24 @@ class Driver:
         self.last_action_ms = 0
         self.last_action_sequence = 0
         self.paging_exercised = []
+        self.fixture_identity = None
+        self.migration_phase = "UNVERIFIED"
+        self.startup_observed = None
+        self.startup_captures = set()
         # Every run is disposable. No existing player options/world/result directory is read or overwritten.
         (self.game / "options.txt").write_text(f"guiScale:{scale}\nlang:en_us\nonboardAccessibility:false\ntutorialStep:none\nfullscreen:false\nrenderDistance:2\nsimulationDistance:5\nmaxFps:30\n")
         if self.fixture:
             destination = self.game / "saves" / ("world" if self.mc == "26.3" else "Demo_World")
             destination.parent.mkdir(parents=True)
             shutil.copytree(self.fixture, destination)
+            if self.mc == "26.3":
+                inventory = world_inventory(self.fixture)
+                if world_inventory(destination) != inventory:
+                    raise QaError("Disposable world copy differs from its verified source inventory")
+                self.fixture_identity = {"run_id": self.run_id, "source_sha": self.sha,
+                    "destination": str(destination.resolve()), "world_files": inventory}
+                self.migration_phase = "COPIED"
+                (self.case / "fixture-copy-identity.json").write_text(json.dumps(self.fixture_identity, indent=2) + "\n")
         environment = self.environment.copy()
         environment.update({"RAS_CLIENT_QA":"true", "RAS_QA_RUN_ID":self.run_id, "RAS_QA_SOURCE_SHA":self.sha,
                             "RAS_QA_SCALE":str(scale), "LIBGL_ALWAYS_SOFTWARE":"true", "GALLIUM_DRIVER":"llvmpipe"})

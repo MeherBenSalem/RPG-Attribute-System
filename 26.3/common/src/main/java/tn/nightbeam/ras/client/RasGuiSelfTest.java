@@ -170,6 +170,7 @@ public final class RasGuiSelfTest {
         private static String lastState = "";
         private static int stableTicks;
         private static long sequence;
+        private static int startupTicks;
 
         private static void tick(Minecraft client) {
             if (done) return;
@@ -191,6 +192,7 @@ public final class RasGuiSelfTest {
                     client.stop();
                     return;
                 }
+                if (!initialMenuSeen) writeStartup(client, directory);
                 if (!initialMenuSeen && System.nanoTime() - STARTED > STARTUP_LIMIT_NS) {
                     fail(client, "Real world/player/synced allocation menu did not become ready within 480 seconds");
                     return;
@@ -326,7 +328,7 @@ public final class RasGuiSelfTest {
             }
             return "OTHER";
         }
-        private static com.google.gson.JsonObject identity(Minecraft client, String status) throws ReflectiveOperationException {
+        private static com.google.gson.JsonObject identity(Minecraft client, String status) throws Exception {
             com.google.gson.JsonObject object = new com.google.gson.JsonObject();
             object.addProperty("schema_version", 1); object.addProperty("status", status);
             object.addProperty("run_id", RUN_ID); object.addProperty("source_sha", SOURCE_SHA);
@@ -334,12 +336,62 @@ public final class RasGuiSelfTest {
             object.addProperty("loader", System.getProperty("ras.loader", "unknown"));
             object.addProperty("written_at_ms", System.currentTimeMillis());
             object.addProperty("requested_gui_scale", REQUESTED_SCALE);
+            object.addProperty("client_pid", ProcessHandle.current().pid());
+            object.addProperty("game_directory", client.gameDirectory.toPath().toRealPath().toString());
+            long handle = client.getWindow().handle();
+            object.addProperty("window_title", org.lwjgl.sdl.SDLVideo.SDL_GetWindowTitle(handle));
+            object.addProperty("window_flags", org.lwjgl.sdl.SDLVideo.SDL_GetWindowFlags(handle));
+            object.addProperty("x11_window_id", org.lwjgl.sdl.SDLProperties.SDL_GetNumberProperty(
+                    org.lwjgl.sdl.SDLVideo.SDL_GetWindowProperties(handle),
+                    org.lwjgl.sdl.SDLVideo.SDL_PROP_WINDOW_X11_WINDOW_NUMBER, 0));
             object.addProperty("actual_gui_scale", windowNumber(client, "getGuiScale"));
             object.addProperty("window_width", windowNumber(client, "getWidth"));
             object.addProperty("window_height", windowNumber(client, "getHeight"));
             object.addProperty("gui_width", client.getWindow().getGuiScaledWidth());
             object.addProperty("gui_height", client.getWindow().getGuiScaledHeight());
             return object;
+        }
+        /** Observe actual startup UI only. The outer driver may click two source-identified
+         * migration prompts for its hash-verified disposable saves/world, never arbitrary screens. */
+        private static void writeStartup(Minecraft client, Path directory) throws Exception {
+            if (++startupTicks % 12 != 1) return;
+            Screen screen = client.gui.screen();
+            com.google.gson.JsonObject startup = identity(client, "STARTUP");
+            startup.addProperty("game_load_finished", client.isGameLoadFinished());
+            startup.addProperty("client_player_present", client.player != null);
+            startup.addProperty("client_level_present", client.level != null);
+            startup.addProperty("integrated_server_present", client.getSingleplayerServer() != null);
+            startup.addProperty("screen_class", screen == null ? "none" : screen.getClass().getName());
+            startup.addProperty("screen_title", screen == null ? "" : screen.getTitle().getString());
+            startup.addProperty("screen_title_key", screen == null ? "" : translationKey(screen.getTitle()));
+            startup.addProperty("overlay_class", client.gui.overlay() == null ? "none" : client.gui.overlay().getClass().getName());
+            if (screen != null && (screen.getClass() == net.minecraft.client.gui.screens.BackupConfirmScreen.class
+                    || screen.getClass() == net.minecraft.client.gui.screens.ConfirmScreen.class)) {
+                String fieldName = screen.getClass() == net.minecraft.client.gui.screens.BackupConfirmScreen.class
+                        ? "description" : "message";
+                Field field = screen.getClass().getDeclaredField(fieldName);
+                field.setAccessible(true);
+                var message = (net.minecraft.network.chat.Component) field.get(screen);
+                startup.addProperty("screen_message", message.getString());
+                startup.addProperty("screen_message_key", translationKey(message));
+            }
+            com.google.gson.JsonArray buttons = new com.google.gson.JsonArray();
+            if (screen != null) for (var child : screen.children()) {
+                if (child instanceof Button button) {
+                    com.google.gson.JsonObject item = new com.google.gson.JsonObject();
+                    item.addProperty("label", button.getMessage().getString());
+                    item.addProperty("translation_key", translationKey(button.getMessage()));
+                    item.addProperty("x", button.getX()); item.addProperty("y", button.getY());
+                    item.addProperty("width", button.getWidth()); item.addProperty("height", button.getHeight());
+                    item.addProperty("active", button.active); buttons.add(item);
+                }
+            }
+            startup.add("buttons", buttons);
+            write(directory.resolve("ras-client-qa-startup.json"), startup);
+        }
+        private static String translationKey(net.minecraft.network.chat.Component component) {
+            return component.getContents() instanceof net.minecraft.network.chat.contents.TranslatableContents contents
+                    ? contents.getKey() : "";
         }
         private static void write(Path target, com.google.gson.JsonObject value) throws Exception {
             Path temporary = target.resolveSibling(target.getFileName() + ".tmp");
