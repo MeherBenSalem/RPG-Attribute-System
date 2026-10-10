@@ -32,6 +32,16 @@ class QaError(RuntimeError):
     pass
 
 
+class CaptureSnapshotError(QaError):
+    def __init__(self, message, details):
+        super().__init__(message)
+        self.details = details
+
+
+class StartupSnapshotTransition(CaptureSnapshotError):
+    """An owned, fresh pre-world screen transition rejects only its diagnostic frame."""
+
+
 def validate_ready(data, *, run_id, sha, mc, scale, launched_ms, expected_state=None, since=0, not_before_ms=0):
     """Fail closed on old files, invented state, missing sync, or a clamped GUI scale."""
     if not isinstance(data, dict) or data.get("schema_version") != 1:
@@ -392,6 +402,9 @@ class Driver:
         self.migration_phase = "UNVERIFIED"
         self.startup_observed = None
         self.startup_captures = set()
+        self.startup_capture_count = 0
+        self.capture_rejection_count = 0
+        self.last_capture_snapshot = None
 
     def check_renderer_failure(self):
         backend = self.environment.get("RAS_GRAPHICS_BACKEND", "opengl")
@@ -451,18 +464,31 @@ class Driver:
         self.startup_observed = (key, data["written_at_ms"])
         if previous is None or previous[0] != key or previous[1] == data["written_at_ms"]: return
         button = migration_button(data, self.migration_phase)
-        if key not in self.startup_captures and (len(self.startup_captures) < 8 or button is not None):
-            name = f"startup-{len(self.startup_captures) + 1:02d}"
+        if button is not None or (key not in self.startup_captures and len(self.startup_captures) < 8):
+            name = f"startup-{self.startup_capture_count + 1:02d}"
             # The observed rendered prompt is saved BEFORE any migration input.
-            self.capture(name, data, verify=False)
+            self.last_capture_snapshot = None
+            try:
+                self.capture(name, data, verify=False)
+            except StartupSnapshotTransition:
+                if button is not None: raise  # A mandatory migration prompt may never drift.
+                self.startup_observed = None
+                return  # Rejected/unverified frame: no input or phase change; unchanged startup watchdog.
+            self.startup_capture_count += 1
             self.startup_captures.add(key)
         if button is None: return
+        if not isinstance(self.last_capture_snapshot, dict):
+            raise QaError('Migration input lacks a newly accepted exact prompt capture')
+        data = self.last_capture_snapshot
+        button = migration_button(data, self.migration_phase)
+        if button is None: raise QaError('Accepted capture is not the exact actionable migration prompt')
         if self.fixture_identity is None or self.fixture_identity.get("run_id") != self.run_id \
                 or self.fixture_identity.get("source_sha") != self.sha \
                 or self.fixture_identity.get("destination") != str((self.game / "saves/world").resolve()):
             raise QaError("Migration input requires the exact hash-verified disposable saves/world identity")
         self.find_window()
-        self.revalidate_migration_prompt(data, button)
+        captured_prompt = data
+        data = self.revalidate_migration_prompt(data, button)
         scale = data["actual_gui_scale"]
         checked(["xdotool", "mousemove", "--sync", "--window", self.window_id,
                  str(round((button["x"] + button["width"] / 2) * scale)),
@@ -474,7 +500,7 @@ class Driver:
         self.migration_phase = "BACKUP_REQUESTED" if self.migration_phase == "COPIED" else "JOIN_REQUESTED"
         (self.case / ("migration-" + self.migration_phase.lower() + ".json")).write_text(
             json.dumps({"run_id": self.run_id, "source_sha": self.sha, "fixture": self.fixture_identity,
-                        "observed_prompt": data, "pre_click_prompt": latest,
+                        "observed_prompt": captured_prompt, "pre_click_prompt": latest,
                         "clicked_translation_key": button["translation_key"]}, indent=2) + "\n")
 
     def require_owned_process(self, data):
@@ -508,11 +534,12 @@ class Driver:
         self.verify_native_window(latest, require_focus=True, pointer=pointer)
         return latest
 
-    def verify_native_window(self, data, transient=False, require_focus=False, pointer=None):
+    def verify_native_window(self, data, transient=False, require_focus=False, pointer=None, deadline=None):
         """Independent pidfd/JVM proof plus the X server's peer PID for this exact SDL XID."""
         self.require_owned_process(data)
         began_ms = int(time.time() * 1000)
-        timeout = min(3, self.deadline - time.monotonic())
+        limit = min(self.deadline, self.deadline if deadline is None else deadline)
+        timeout = min(3, limit - time.monotonic())
         if timeout <= 0: raise QaError("Native window observation exceeded this case deadline")
         try:
             result = subprocess.run([sys.executable, str(Path(__file__).with_name('window_identity.py')),
@@ -537,6 +564,8 @@ class Driver:
         if not first.exists(): first.write_text(json.dumps(record, indent=2) + '\n')
         if result is None or result.returncode != 0:
             raise QaError("Exact XID native worker failed: " + facts.get('error_type', 'native-error'))
+        if time.monotonic() >= limit:
+            raise QaError("Native window observation exceeded its absolute deadline")
         try:
             window_identity.validate_owner(facts, xid=data['x11_window_id'], pid=data['client_pid'],
                                            display=self.environment.get('DISPLAY', ''))
@@ -585,20 +614,46 @@ class Driver:
         return int(rectangle["X"]), int(rectangle["Y"])
 
     def capture(self, name, ready=None, verify=True):
+        self.capture_stage = 'prepare'
+        try:
+            return self.capture_frame(name, ready, verify)
+        except CaptureSnapshotError as exc:
+            self.capture_rejection_count += 1
+            rejected_name = f'{name}-rejected-{self.capture_rejection_count:03d}'
+            frame = self.case / f'{name}.png'
+            rejected = self.case / f'{rejected_name}.png'
+            rejected_frame = None
+            if self.capture_stage == 'post_frame' and frame.exists():
+                frame.replace(rejected)
+                rejected_frame = rejected.name
+            (self.case / f'{name}.json').unlink(missing_ok=True)
+            receipt = {'schema_version': 1, 'status': 'REJECTED_UNVERIFIED_CAPTURE',
+                       'run_id': self.run_id, 'source_sha': self.sha, 'stage': self.capture_stage,
+                       'error_type': type(exc).__name__, 'rejected_frame': rejected_frame,
+                       **exc.details}
+            (self.case / f'{rejected_name}.json').write_text(json.dumps(receipt, indent=2)+'\n')
+            raise
+
+    def capture_frame(self, name, ready=None, verify=True):
         from PIL import Image
-        if self.mc == '26.3' and ready is not None: self.validate_capture_snapshot(ready)
+        if self.mc == '26.3' and ready is not None: ready = self.fresh_capture_snapshot(ready)
         x, y = self.find_window()
         captured_window = self.window_id
         if self.mc == '26.3' and ready is not None and captured_window != str(ready.get('x11_window_id')):
             raise QaError('Native capture window differs from its actual screen snapshot')
+        if self.mc == '26.3' and ready is not None:
+            ready = self.fresh_capture_snapshot(ready)
+            ready = self.validate_capture_snapshot(ready)
+        self.capture_stage = 'frame'
         path = self.case / f"{name}.png"
         checked(["ffmpeg", "-nostdin", "-loglevel", "error", "-y", "-f", "x11grab", "-video_size", f"{WIDTH}x{HEIGHT}",
                  "-draw_mouse", "0", "-i", f"{os.environ['DISPLAY']}+{x},{y}", "-frames:v", "1", "-update", "1", str(path)], capture_output=True)
         if self.mc == '26.3':
+            self.capture_stage = 'post_frame'
             after = self.find_window()
             if self.window_id != captured_window or after != (x, y):
                 raise QaError('Native capture owner/window geometry changed during the frame')
-            if ready is not None: self.validate_capture_snapshot(ready)
+            if ready is not None: after_snapshot = self.validate_capture_snapshot(ready)
         with Image.open(path) as image:
             image = image.convert("RGB")
             if image.size != (WIDTH, HEIGHT) or sum(high-low for low, high in image.getextrema()) < 20:
@@ -612,34 +667,145 @@ class Driver:
                         raise QaError(f"Expected real panel pixels absent in {name}: {pixel} vs {expected}")
         if ready:
             (self.case / f"{name}.json").write_text(json.dumps(ready, indent=2)+"\n")
+            if self.mc == '26.3': self.last_capture_snapshot = after_snapshot
         return path
 
-    def validate_capture_snapshot(self, captured):
+    def matching_capture_snapshot(self, captured):
         filename = 'ras-client-qa-ready.json' if captured.get('status') == 'READY' else 'ras-client-qa-startup.json'
         latest = read_json(self.game / filename)
+        if latest is None: return None
+        validate_startup_identity(latest, run_id=self.run_id, sha=self.sha, scale=self.scale,
+                                  launched_ms=self.launched_ms, game=self.game)
+        ignored = {'written_at_ms'} | ({'sequence'} if captured.get('status') == 'READY' else set())
+        try:
+            changed = {key for key in set(latest) | set(captured) if key not in ignored
+                       and (key not in latest or key not in captured
+                            or json.dumps(latest[key], sort_keys=True, allow_nan=False)
+                            != json.dumps(captured[key], sort_keys=True, allow_nan=False))}
+        except (ValueError, TypeError) as exc:
+            raise QaError('Actual capture snapshot contains a non-finite or unsupported field') from exc
+        known = {'status', 'state', 'page', 'panel', 'buttons', 'screen_class', 'screen_title', 'screen_title_key',
+                 'screen_message', 'screen_message_key', 'overlay_class', 'game_load_finished', 'client_pid',
+                 'x11_window_id', 'window_title', 'window_flags', 'actual_gui_scale', 'requested_gui_scale',
+                 'window_width', 'window_height', 'gui_width', 'gui_height', 'client_player_present',
+                 'client_level_present', 'integrated_server_present', 'server_player_bound',
+                 'expected_attributes_synced', 'synced_attribute_ids', 'level', 'spare_points', 'next_level_xp',
+                 'player_variables', 'movement_speed_base', 'movement_speed_value'}
+        fields = sorted({key if key in known else 'identity_or_unexpected_field' for key in changed})
+        details = {'captured_written_at_ms': captured['written_at_ms'], 'latest_written_at_ms': latest['written_at_ms'],
+                   'captured_sequence': captured.get('sequence') if type(captured.get('sequence')) is int else None,
+                   'latest_sequence': latest.get('sequence') if type(latest.get('sequence')) is int else None,
+                   'differing_fields': fields}
+        if latest['written_at_ms'] < captured['written_at_ms'] \
+                or (captured.get('status') == 'READY' and (type(latest.get('sequence')) is not int
+                    or type(captured.get('sequence')) is not int or latest['sequence'] < captured['sequence'])):
+            raise CaptureSnapshotError('Actual capture snapshot timestamp/sequence regressed', details)
+        if changed:
+            screen_fields = {'screen_class', 'screen_title', 'screen_title_key', 'screen_message',
+                             'screen_message_key', 'overlay_class', 'game_load_finished', 'buttons'}
+            error = CaptureSnapshotError
+            if captured.get('status') == latest.get('status') == 'STARTUP' and changed <= screen_fields:
+                if time.time() * 1000 - captured['written_at_ms'] > 5000 \
+                        or time.time() * 1000 - latest['written_at_ms'] > 5000:
+                    raise CaptureSnapshotError('Startup transition anchors are not both fresh', details)
+                validate_startup(captured, run_id=self.run_id, sha=self.sha, scale=self.scale,
+                                 launched_ms=self.launched_ms, game=self.game)
+                validate_startup(latest, run_id=self.run_id, sha=self.sha, scale=self.scale,
+                                 launched_ms=self.launched_ms, game=self.game)
+                for value in (captured, latest):
+                    if not isinstance(value.get('screen_class'), str) or not value['screen_class'] \
+                            or not isinstance(value.get('screen_title'), str) \
+                            or not isinstance(value.get('screen_title_key'), str) \
+                            or not isinstance(value.get('overlay_class'), str) \
+                            or type(value.get('game_load_finished')) is not bool \
+                            or not isinstance(value.get('buttons'), list) \
+                            or (value['screen_class'] in {'net.minecraft.client.gui.screens.BackupConfirmScreen',
+                                                        'net.minecraft.client.gui.screens.ConfirmScreen'}
+                                and any(not isinstance(value.get(key), str) for key in ('screen_message', 'screen_message_key'))) \
+                            or any(key in value and not isinstance(value[key], str) for key in
+                                   ('screen_title', 'screen_title_key', 'screen_message', 'screen_message_key')):
+                        raise QaError('Malformed startup transition diagnostic')
+                    for control in value['buttons']:
+                        if not isinstance(control, dict) or not isinstance(control.get('label'), str) \
+                                or not isinstance(control.get('translation_key'), str) \
+                                or not control['label'].strip() or type(control.get('active')) is not bool \
+                                or any(type(control.get(key)) is not int for key in ('x', 'y', 'width', 'height')) \
+                                or control['x'] < 0 or control['y'] < 0 or control['width'] < 20 or control['height'] < 20 \
+                                or control['x'] + control['width'] > value['gui_width'] \
+                                or control['y'] + control['height'] > value['gui_height']:
+                            raise QaError('Malformed startup transition control')
+                self.verify_native_window(latest)  # Foreign/missing ownership and native deadlines stay fatal.
+                error = StartupSnapshotTransition
+            raise error('Actual capture snapshot changed fields=' + ','.join(fields)
+                        + f" captured_ms={captured['written_at_ms']} latest_ms={latest['written_at_ms']}", details)
+        return latest
+
+    def fresh_capture_snapshot(self, expected, seconds=5):
+        """Refresh only timestamps/counters; every actual semantic field must remain identical."""
+        validate_startup_identity(expected, run_id=self.run_id, sha=self.sha, scale=self.scale,
+                                  launched_ms=self.launched_ms, game=self.game)
+        if expected.get('status') == 'READY':
+            validate_ready(expected, run_id=self.run_id, sha=self.sha, mc=self.mc,
+                           scale=self.scale, launched_ms=self.launched_ms)
+        limit = min(self.deadline, time.monotonic() + seconds)
+        observed = expected
+        while time.monotonic() < limit:
+            latest = self.matching_capture_snapshot(observed)
+            if latest is not None:
+                observed = latest  # A later stale read may not regress either counter while waiting.
+                if time.time() * 1000 - latest['written_at_ms'] <= 5000:
+                    validate_startup(latest, run_id=self.run_id, sha=self.sha, scale=self.scale,
+                                     launched_ms=self.launched_ms, game=self.game)
+                    if expected.get('status') == 'READY':
+                        validate_ready(latest, run_id=self.run_id, sha=self.sha, mc=self.mc,
+                                       scale=self.scale, launched_ms=self.launched_ms)
+                    return latest
+            time.sleep(.05)
+        raise QaError(f"No fresh same-semantic capture snapshot within bound; expected_ms={expected['written_at_ms']}")
+
+    def validate_capture_snapshot(self, captured):
+        latest = self.matching_capture_snapshot(captured)
         validate_startup(latest, run_id=self.run_id, sha=self.sha, scale=self.scale,
                          launched_ms=self.launched_ms, game=self.game)
         if captured.get('status') == 'READY':
             validate_ready(latest, run_id=self.run_id, sha=self.sha, mc=self.mc,
                            scale=self.scale, launched_ms=self.launched_ms)
-        keys = ('status', 'state', 'page', 'panel', 'buttons', 'screen_class', 'screen_title_key',
-                'screen_message_key', 'overlay_class', 'game_load_finished', 'client_pid', 'x11_window_id',
-                'window_title', 'actual_gui_scale', 'window_width', 'window_height', 'gui_width', 'gui_height')
-        if latest['written_at_ms'] < captured['written_at_ms'] \
-                or time.time() * 1000 - captured['written_at_ms'] > 5000 \
-                or any(latest.get(key) != captured.get(key) for key in keys):
-            raise QaError('Actual screen/prompt/control snapshot changed or expired during native capture')
+        if time.time() * 1000 - captured['written_at_ms'] > 5000:
+            raise CaptureSnapshotError(f"Actual capture snapshot expired; captured_ms={captured['written_at_ms']} latest_ms={latest['written_at_ms']}",
+                {'captured_written_at_ms': captured['written_at_ms'], 'latest_written_at_ms': latest['written_at_ms'],
+                 'differing_fields': [], 'reason': 'expired_frame_anchor'})
         return latest
+
+    def park_native_pointer(self, ready, target):
+        """No-op when already there; otherwise prove actual arrival instead of xdotool's departure wait."""
+        limit = min(self.deadline, time.monotonic() + 3)
+        moved = False
+        while time.monotonic() < limit:
+            ready = self.fresh_capture_snapshot(ready, seconds=max(0, limit-time.monotonic()))
+            facts = self.verify_native_window(ready, require_focus=True, deadline=limit)
+            if facts.get('pointer_same_screen') is not True or facts.get('pointer_on_window') is not True:
+                raise QaError('Native pointer is not on the exact owned window before parking')
+            if time.monotonic() >= limit: break
+            if (facts.get('pointer_x'), facts.get('pointer_y')) == target: return ready
+            if not moved:
+                # --sync waits for departure from origin, including 15s when target == origin.
+                checked(['xdotool', 'mousemove', '--window', self.window_id, str(target[0]), str(target[1])],
+                        timeout=min(3, limit-time.monotonic()))
+                moved = True
+            time.sleep(.05)
+        raise QaError('Native pointer did not reach the exact owned-window parking target within bound')
 
     def stable_capture(self, name, ready):
         if ready["state"] != "WORLD":
             # Move the real pointer, leaving intentional keyboard focus unchanged. No image edits/crops.
             self.find_window()
             x, y = neutral_pointer(ready)
-            checked(["xdotool", "mousemove", "--sync", "--window", self.window_id, str(x), str(y)])
+            if self.mc == '26.3': ready = self.park_native_pointer(ready, (x, y))
+            else: checked(["xdotool", "mousemove", "--sync", "--window", self.window_id, str(x), str(y)])
         # Readiness already requires twelve live client ticks. Capture two actual subsequent frames.
         time.sleep(.5)
         self.capture(name+"-frame1", ready)
+        if self.mc == '26.3': ready = self.last_capture_snapshot
         time.sleep(.5)
         self.capture(name, ready)
 
@@ -831,6 +997,8 @@ class Driver:
         self.migration_phase = "UNVERIFIED"
         self.startup_observed = None
         self.startup_captures = set()
+        self.startup_capture_count = 0
+        self.capture_rejection_count = 0
         # Every run is disposable. No existing player options/world/result directory is read or overwritten.
         (self.game / "options.txt").write_text(f"guiScale:{scale}\nlang:en_us\nonboardAccessibility:false\ntutorialStep:none\nfullscreen:false\nrenderDistance:2\nsimulationDistance:5\nmaxFps:30\n")
         if self.fixture:

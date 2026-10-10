@@ -26,7 +26,9 @@ class StartupTests(unittest.TestCase):
             'window_title': 'Minecraft* 26.3', 'window_flags': 8224, 'game_load_finished': True,
             'client_player_present': False, 'client_level_present': False, 'integrated_server_present': False,
             'overlay_class': 'none', 'screen_class': 'net.minecraft.client.gui.screens.BackupConfirmScreen',
+            'screen_title': 'Create backup before upgrading?',
             'screen_title_key': 'selectWorld.backupQuestion.file_fixing_required',
+            'screen_message': 'Create a backup before continuing.',
             'screen_message_key': 'selectWorld.backupWarning.file_fixing_required',
             'buttons': [dict(label=key, translation_key=key, x=x, y=100, width=100, height=20, active=True)
                         for key, x in [('selectWorld.backupJoinConfirmButton', 0),
@@ -59,6 +61,13 @@ class StartupTests(unittest.TestCase):
         data['buttons'] = [dict(label=key, translation_key=key, x=x, y=100, width=100, height=20, active=True)
                            for key, x in [('gui.yes', 0), ('gui.no', 110)]]
         return data
+
+    @staticmethod
+    def accepted_capture(driver, events):
+        def capture(name, data, **kwargs):
+            events.append('capture')
+            driver.last_capture_snapshot = copy.deepcopy(data)
+        return capture
 
     def test_valid_diagnostic_is_never_readiness(self):
         self.validate(self.data)
@@ -127,7 +136,7 @@ class StartupTests(unittest.TestCase):
         events = []
         with mock.patch.object(driver.process_tracker, 'verify_client', return_value={'pidfd_bound': True}), \
                 mock.patch.object(qa, 'read_json', return_value=self.data), \
-                mock.patch.object(driver, 'capture', side_effect=lambda *a, **kw: events.append('capture')), \
+                mock.patch.object(driver, 'capture', side_effect=self.accepted_capture(driver, events)), \
                 mock.patch.object(driver, 'find_window'), \
                 mock.patch.object(qa, 'checked', side_effect=lambda command, **kw: events.append(command[1])):
             driver.observe_startup(); driver.observe_startup()
@@ -193,7 +202,7 @@ class StartupTests(unittest.TestCase):
         latest = copy.deepcopy(self.data); events = []
         with mock.patch.object(qa, 'read_json', side_effect=[hidden, first, latest, latest, latest]), \
                 mock.patch.object(driver.process_tracker, 'verify_client', return_value={'pidfd_bound': True}), \
-                mock.patch.object(driver, 'capture', side_effect=lambda *a, **kw: events.append('capture')), \
+                mock.patch.object(driver, 'capture', side_effect=self.accepted_capture(driver, events)), \
                 mock.patch.object(driver, 'find_window'), \
                 mock.patch.object(qa, 'checked', side_effect=lambda command, **kw: events.append(command[1])):
             driver.observe_startup(); self.assertEqual(events, [])
@@ -218,7 +227,7 @@ class StartupTests(unittest.TestCase):
                     events = []
                     with mock.patch.object(qa, 'read_json', side_effect=reads), \
                             mock.patch.object(driver.process_tracker, 'verify_client', return_value={'pidfd_bound': True}), \
-                            mock.patch.object(driver, 'capture', side_effect=lambda *a, **kw: events.append('capture')), \
+                            mock.patch.object(driver, 'capture', side_effect=self.accepted_capture(driver, events)), \
                             mock.patch.object(driver, 'find_window'), \
                             mock.patch.object(qa, 'checked', side_effect=lambda command, **kw: events.append(command[1])):
                         with self.assertRaises(qa.QaError): driver.observe_startup()

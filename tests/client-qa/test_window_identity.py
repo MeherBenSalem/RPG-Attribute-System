@@ -202,7 +202,7 @@ class WindowTests(unittest.TestCase):
             driver.verify_native_window.side_effect = native
             events = []
             with mock.patch.object(qa, 'read_json', return_value=self.data), \
-                    mock.patch.object(driver, 'capture', side_effect=lambda *a, **k: events.append('capture')), \
+                    mock.patch.object(driver, 'capture', side_effect=startup.StartupTests.accepted_capture(driver, events)), \
                     mock.patch.object(driver, 'find_window'), \
                     mock.patch.object(qa, 'checked', side_effect=lambda command, **k: events.append(command[1])):
                 with self.assertRaises(qa.QaError): driver.observe_startup()
@@ -256,6 +256,7 @@ class WindowTests(unittest.TestCase):
                 driver.window_id = '9999' if change == 'snapshot' or (change == 'owner' and len(calls) == 2) else '7654'
                 return (1, 0) if change == 'geometry' and len(calls) == 2 else (0, 0)
             with mock.patch.object(driver, 'find_window', side_effect=find), \
+                    mock.patch.object(driver, 'fresh_capture_snapshot', return_value=self.data), \
                     mock.patch.object(driver, 'validate_capture_snapshot'), \
                     mock.patch.dict('sys.modules', {'PIL': SimpleNamespace(Image=mock.Mock())}), \
                     mock.patch.dict(qa.os.environ, {'DISPLAY': ':84'}), mock.patch.object(qa, 'checked') as commands:
@@ -306,6 +307,7 @@ class WindowTests(unittest.TestCase):
     def test_capture_checks_snapshot_before_and_after_native_frame(self):
         driver = self.driver(); driver.window_id = '7654'
         with mock.patch.object(driver, 'find_window', return_value=(0, 0)), \
+                mock.patch.object(driver, 'fresh_capture_snapshot', return_value=self.data), \
                 mock.patch.dict('sys.modules', {'PIL': SimpleNamespace(Image=mock.Mock())}), \
                 mock.patch.object(driver, 'validate_capture_snapshot', side_effect=[self.data, qa.QaError('changed same-XID prompt')]) as snapshots, \
                 mock.patch.dict(qa.os.environ, {'DISPLAY': ':84'}), mock.patch.object(qa, 'checked') as commands:
