@@ -80,7 +80,8 @@ jar {
                 'Implementation-Title'  : project.name,
                 'Implementation-Version': project.jar.archiveVersion,
                 'Implementation-Vendor' : mod_author,
-                'Built-On-Minecraft'    : minecraft_version
+                'Built-On-Minecraft'    : minecraft_version,
+                'RAS-Source-Commit'     : providers.gradleProperty('rasSourceCommit').orElse('unverified').get()
         ])
     }
 }

@@ -1,0 +1,14 @@
+{
+  "fabric-api": {
+    "modrinth": "P7dR8mSH",
+    "curseforge_slug": "fabric-api",
+    "curseforge_id": 306612,
+    "sources": ["https://api.modrinth.com/v2/project/fabric-api", "https://www.curseforge.com/minecraft/mc-mods/fabric-api"]
+  },
+  "jauml": {
+    "modrinth": "ihvBalM2",
+    "curseforge_slug": "jauml",
+    "curseforge_id": 1281310,
+    "sources": ["https://api.modrinth.com/v2/project/jauml", "https://www.curseforge.com/minecraft/mc-mods/jauml"]
+  }
+}

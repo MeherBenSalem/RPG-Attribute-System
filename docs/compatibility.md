@@ -1,24 +1,26 @@
 # Compatibility
 
-## Version & Platform Matrix
+## Current source targets (4.3.0)
 
-| Minecraft | Fabric | Forge | NeoForge | Java | Mod Version |
+| Minecraft | Fabric | Forge | NeoForge | Java | Source Version |
 |-----------|--------|-------|----------|------|-------------|
-| **1.20.1** | ✅ | ✅ | — | 17 | 4.2.1 |
-| **1.21.1** | ✅ | — | ✅ | 21 | 4.2.1 |
-| **26.1.2** | ✅ | — | ✅ | 25 | 4.2.1 |
-| **26.2** | ✅ | — | ✅ | 25 | 4.2.6 |
-| **26.3** | ✅ | — | ✅ | 25 | 4.2.6 |
+| **1.20.1** | ✅ | ✅ | — | 17 | 4.3.0 |
+| **1.21.1** | ✅ | — | ✅ | 21 | 4.3.0 |
+| **26.1.2** | ✅ | — | ✅ | 25 | 4.3.0 |
+| **26.2** | ✅ | — | ✅ | 25 | 4.3.0 |
+| **26.3** | ✅ | — | ✅ | 25 | 4.3.0 |
 
 There is **no Forge jar** for 1.21.1, 26.1.2, 26.2, or 26.3. If CurseForge lists “Forge” on a file named `-neoforge-`, that label is wrong — install NeoForge. RAS is not a Paper/Folia plugin.
+
+This matrix describes the source targets. See the [commit-bound verification record](verification/4.3.0.md) for successful loader builds and separately scoped runtime coverage, and the [release gates](releasing.md) for publication checks.
 
 ## Required Dependencies
 
 | Dependency | Status | Notes |
 |------------|--------|-------|
-| **jauml** | Required | Bundled with the mod. Install the jauml JAR for your platform in `mods/`. |
+| **jauml** | Required on 1.20.1 and 1.21.1 | Separate JAR for the same loader and Minecraft version. Not required on 26.1.2, 26.2 or 26.3. |
 | **Fabric API** | Required (Fabric) | Standard Fabric dependency |
-| **Minecraft/NeoForge** | Required (NeoForge) | No additional libs needed beyond jauml. Do not install Minecraft Forge for these versions. |
+| **Minecraft/NeoForge** | Required (NeoForge) | Only 1.21.1 NeoForge additionally needs jauml. Do not install Minecraft Forge for these versions. |
 
 ## Forge → NeoForge Migration
 

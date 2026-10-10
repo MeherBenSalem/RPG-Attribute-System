@@ -30,6 +30,7 @@ public final class ConfigValidator {
         validator.validateSettings();
         validator.validateRespec();
         validator.validateTemplates();
+        validator.validateMobXp();
         return new ValidationReport(validator.warnings, validator.errors);
     }
 
@@ -128,6 +129,18 @@ public final class ConfigValidator {
         }
         if (config.has("points_per_level") && getDouble(config, "points_per_level") < 0) {
             error("settings.json: points_per_level must be >= 0");
+        }
+    }
+
+    private void validateMobXp() {
+        Path path = MobXpConfig.path();
+        try {
+            MobXpRules.ParseResult result = MobXpRules.parse(Files.readString(path));
+            for (String diagnostic : result.diagnostics()) error(diagnostic);
+        } catch (java.nio.file.NoSuchFileException missing) {
+            // The extension is optional; a genuinely absent file keeps legacy behavior.
+        } catch (Exception failure) {
+            error("Invalid mob_xp.json: " + failure.getMessage());
         }
     }
 

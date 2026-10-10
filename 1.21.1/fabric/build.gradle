@@ -49,9 +49,22 @@ loom {
             client()
             setConfigName('Fabric Client Self-Test')
             ideConfigGenerated(true)
-            runDir('runs/client-selftest')
+            def clientQa = System.getenv('RAS_CLIENT_QA') == 'true'
+            def qaRunId = System.getenv('RAS_QA_RUN_ID')
+            if (clientQa && !(qaRunId ==~ /[a-zA-Z0-9_-]{8,100}/)) {
+                throw new GradleException('Hosted client QA requires a unique valid RAS_QA_RUN_ID')
+            }
+            runDir(clientQa ? "runs/client-qa/${qaRunId}" : 'runs/client-selftest')
             vmArgs('-Dras.guiSelfTest=true', '-Dras.loader=fabric', '-Dras.mcVersion=1.21.1')
             programArgs('--demo')
+            if (clientQa) {
+                vmArgs('-Dras.clientQa=true', '-Dras.guiSelfTestHold=true',
+                        "-Dras.clientQaRunId=${qaRunId}",
+                        "-Dras.clientQaSourceSha=${System.getenv('RAS_QA_SOURCE_SHA')}",
+                        "-Dras.clientQaScale=${System.getenv('RAS_QA_SCALE')}")
+                programArgs('--width', '1280', '--height', '960', '--quickPlayPath', 'qa-world-join.json')
+                vmArgs('-Dras.clientQaAutoDemo=true')
+            }
         }
         server {
             server()

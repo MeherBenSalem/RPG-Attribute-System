@@ -29,7 +29,7 @@ public class GameplayRulesProcedure {
         }
 
         double xp = calculateKillXp(killed, owner);
-        if (xp <= 0) {
+        if (!Double.isFinite(xp) || xp <= 0) {
             return;
         }
 
@@ -135,7 +135,7 @@ public class GameplayRulesProcedure {
                 break;
             }
         }
-        return living.getMaxHealth() * Math.max(0, multiplier);
+        return tn.nightbeam.ras.config.MobXpConfig.calculate(living, multiplier);
     }
 
     private static void grantSharedXp(LevelAccessor world, ServerPlayer owner, double xp) {

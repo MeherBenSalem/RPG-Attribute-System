@@ -45,3 +45,22 @@ artifacts {
     commonJava sourceSets.main.java.sourceDirectories.singleFile
     commonResources sourceSets.main.resources.sourceDirectories.singleFile
 }
+
+// Plain-Java regression runner; no extra test framework or game launch required.
+tasks.register('mobXpTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'tn.nightbeam.ras.config.MobXpRulesTest'
+    args rootProject.file('../tests/fixtures/mob-xp-contract.json').absolutePath
+}
+tasks.named('check') { dependsOn 'mobXpTest' }
+
+tasks.register('rasGuiLayoutTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'tn.nightbeam.ras.client.gui.RasGuiLayoutTest'
+}
+tasks.named('check') { dependsOn 'rasGuiLayoutTest' }
+
+// Minecraft exposes Gson to production compilation but not the test runtime.
+dependencies { testImplementation 'com.google.code.gson:gson:2.11.0' }

@@ -21,11 +21,12 @@ Docs: https://github.com/MeherBenSalem/RPG-Attribute-System/blob/main/docs/permi
 
 Use the jar whose **filename** matches your loader:
 
-- NeoForge 1.21.1 / 26.1.2 / 26.2 / 26.3 → `rpg_attribute_system-neoforge-<mc>-*.jar` + NeoForge + matching **jauml** NeoForge jar
+- NeoForge 1.21.1 → `rpg_attribute_system-neoforge-1.21.1-*.jar` + NeoForge + matching **jauml** NeoForge JAR
+- NeoForge 26.1.2 / 26.2 / 26.3 → `rpg_attribute_system-neoforge-<mc>-*.jar` + NeoForge; no jauml dependency
 - Forge **1.20.1 only** → `rpg_attribute_system-forge-1.20.1-*.jar`
 - Fabric → `rpg_attribute_system-fabric-<mc>-*.jar`
 
-There is no Forge build for 1.21.1+. If CurseForge still says “Requires Forge” on a `-neoforge-` file, ignore that label and open the **NeoForge** loader tab. jauml is required on every loader; it is not inside the RAS jar.
+There is no Forge build for 1.21.1+. If CurseForge still says “Requires Forge” on a `-neoforge-` file, ignore that label and open the **NeoForge** loader tab. jauml is required on both loaders for 1.20.1 and 1.21.1 and is not inside the RAS JAR. The 26.1.2, 26.2 and 26.3 builds do not require jauml. Fabric API is required on all Fabric builds.
 
 ## Theme 3 — Icon looks locked after 10 attributes
 
@@ -39,9 +40,9 @@ Expected:
 
 There is no `text_shadow` toggle.
 
-- Menu: `gui_shadow_color` in `config/ras/stats_display.json` (default `#80F3E1B5`). Set `#00000000` to hide the cream underlay. Vanilla drop-shadow on the text stays on.
+- Menu: `gui_shadow_color` in `config/ras/stats_display.json` (default `#80F3E1B5`). Set `#00000000` to hide the cream underlay. In the 4.3.0 native-pixel menu, foreground text has no vanilla drop-shadow; the configured underlay is used for headers.
 - HUD XP label: vanilla drop-shadow is always on. Hide the bar with `display_vp_overlay` or `hudEnabled`.
 
 ## Store metadata reminder (do not publish from this PR)
 
-When uploading, tag each file with **one** loader: Fabric, Forge (1.20.1 only), or NeoForge (10150). Do not attach Forge as a required dependency on NeoForge files. Keep jauml as the required library relation for every loader.
+When uploading, tag each file with **one** loader: Fabric, Forge (1.20.1 only), or NeoForge (10150). Do not attach Forge as a required dependency on NeoForge files. Required library relations must match each JAR descriptor: Fabric API for every Fabric file, jauml for both 1.20.1 and 1.21.1 loaders, and no external library for calendar-version NeoForge files. The verified publisher derives these per-file relations from the attested inventory.

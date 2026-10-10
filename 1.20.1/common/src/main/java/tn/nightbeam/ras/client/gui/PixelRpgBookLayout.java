@@ -1,83 +1,51 @@
 package tn.nightbeam.ras.client.gui;
 
-/** Shared design-space layout for the Pixel RPG book screens. */
+/** Responsive layout in Minecraft GUI pixels. Text and hit targets are never fractionally scaled. */
 public final class PixelRpgBookLayout {
-    public static final int BOOK_WIDTH = 532;
-    public static final int BOOK_HEIGHT = 304;
-    public static final int TAB_WIDTH = 32;
-    public static final int DESIGN_WIDTH = BOOK_WIDTH + TAB_WIDTH;
+    public static final int BOOK_WIDTH = 560;
+    public static final int BOOK_HEIGHT = 326;
+    public static final int TAB_WIDTH = 0;
+    public static final int DESIGN_WIDTH = BOOK_WIDTH;
     public static final int DESIGN_HEIGHT = BOOK_HEIGHT;
-    private static final float VIEWPORT_WIDTH_RATIO = 0.76F;
-    private static final float VIEWPORT_HEIGHT_RATIO = 0.84F;
-    private static final int MIN_MARGIN = 6;
-
-    private int screenWidth;
-    private int screenHeight;
+    public static final int CONTROL_SIZE = 20;
+    public static final int ROW_HEIGHT = 28;
+    private static final int MARGIN = 6;
     private int panelWidth = DESIGN_WIDTH;
     private int panelHeight = DESIGN_HEIGHT;
     private int left;
     private int top;
-    private float scale = 1.0F;
 
     public void update(int screenWidth, int screenHeight) {
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
-        float availableWidth = Math.max(1, Math.min(screenWidth - MIN_MARGIN * 2,
-                screenWidth * VIEWPORT_WIDTH_RATIO));
-        float availableHeight = Math.max(1, Math.min(screenHeight - MIN_MARGIN * 2,
-                screenHeight * VIEWPORT_HEIGHT_RATIO));
-        float widthScale = availableWidth / DESIGN_WIDTH;
-        float heightScale = availableHeight / DESIGN_HEIGHT;
-        scale = Math.min(1.0F, Math.min(widthScale, heightScale));
-        panelWidth = Math.max(1, Math.round(DESIGN_WIDTH * scale));
-        panelHeight = Math.max(1, Math.round(DESIGN_HEIGHT * scale));
+        panelWidth = Math.max(1, Math.min(DESIGN_WIDTH, screenWidth - MARGIN * 2));
+        panelHeight = Math.max(1, Math.min(DESIGN_HEIGHT, screenHeight - MARGIN * 2));
         left = Math.max(0, (screenWidth - panelWidth) / 2);
         top = Math.max(0, (screenHeight - panelHeight) / 2);
     }
 
-    public int x(int designX) {
-        return left + Math.round(designX * scale);
-    }
+    public int x(int offset) { return left + offset; }
+    public int y(int offset) { return top + offset; }
+    public int size(int size) { return Math.max(1, size); }
+    public float scale() { return 1.0F; }
+    public double designMouseX(double mouseX) { return mouseX - left; }
+    public double designMouseY(double mouseY) { return mouseY - top; }
+    public boolean wide() { return panelWidth >= 420 && panelHeight >= 210; }
+    public int bodyX() { return wide() ? 166 : 10; }
+    public int bodyY() { return wide() ? 34 : 48; }
+    public int bodyWidth() { return Math.max(1, panelWidth - bodyX() - 10); }
+    public int footerY() { return Math.max(0, panelHeight - 28); }
+    public int rowsPerPage() { return Math.max(1, (footerY() - bodyY() - 4) / ROW_HEIGHT); }
+    public int rowY(int row) { return bodyY() + row * ROW_HEIGHT; }
+    public int pagePreviousX() { return Math.max(0, panelWidth - 104); }
+    public int pageNextX() { return Math.max(0, panelWidth - 30); }
+    public int pageCenterX() { return Math.max(0, panelWidth - 57); }
+    public int closeX() { return Math.max(0, panelWidth - 28); }
+    public int panelWidth() { return panelWidth; }
+    public int panelHeight() { return panelHeight; }
+    public int left() { return left; }
+    public int top() { return top; }
 
-    public int y(int designY) {
-        return top + Math.round(designY * scale);
-    }
-
-    public int size(int designSize) {
-        return Math.max(1, Math.round(designSize * scale));
-    }
-
-    public double designMouseX(double mouseX) {
-        return (mouseX - left) / scale;
-    }
-
-    public double designMouseY(double mouseY) {
-        return (mouseY - top) / scale;
-    }
-
-    public boolean contains(int mouseX, int mouseY, int designX, int designY, int designWidth,
-            int designHeight) {
-        return mouseX >= x(designX) && mouseX < x(designX + designWidth)
-                && mouseY >= y(designY) && mouseY < y(designY + designHeight);
-    }
-
-    public int panelWidth() {
-        return panelWidth;
-    }
-
-    public int panelHeight() {
-        return panelHeight;
-    }
-
-    public float scale() {
-        return scale;
-    }
-
-    public int left() {
-        return left;
-    }
-
-    public int top() {
-        return top;
+    public boolean contains(int mouseX, int mouseY, int x, int y, int width, int height) {
+        return mouseX >= this.x(x) && mouseX < this.x(x + width)
+                && mouseY >= this.y(y) && mouseY < this.y(y + height);
     }
 }

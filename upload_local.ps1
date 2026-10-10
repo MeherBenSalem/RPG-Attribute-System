@@ -1,55 +1,11 @@
-# Local 26.1.2 upload to Modrinth + CurseForge (no GitHub Actions).
-# Tokens from env or C:\Users\mahou\NightBeam-Knowledge-Base\secrets\local.env
-#
-# Usage:
-#   .\upload_local.ps1 -Version 4.2.0
-#   .\upload_local.ps1 -Version 4.2.0 -DryRun
-
+# Compatibility entry point for legacy local uploads. No build or upload is performed.
+# Use the verified full-inventory publisher described in docs/releasing.md.
 param(
-    [string]$Version = "4.2.0",
+    [string]$Version = "",
     [string]$Workspace = "26.1.2",
     [switch]$CurseForgeOnly,
     [switch]$ModrinthOnly,
     [switch]$DryRun
 )
 
-$ErrorActionPreference = "Stop"
-$root = $PSScriptRoot
-Set-Location $root
-
-$workspaceDir = Join-Path $root $Workspace
-if (-not (Test-Path $workspaceDir)) {
-    throw "Workspace not found: $Workspace"
-}
-
-$notes = Join-Path $root "RPG-Attribute-System-$Version-PatchNotes.md"
-if (-not (Test-Path $notes)) { $notes = Join-Path $root "PATCH_NOTES.md" }
-
-Write-Host "=== Build RPG Attribute System v$Version ($Workspace) ===" -ForegroundColor Green
-Push-Location $workspaceDir
-try {
-    & ".\gradlew.bat" "build" "--no-daemon"
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-}
-finally {
-    Pop-Location
-}
-
-$nodeArgs = @(
-    "scripts/upload_platforms.mjs",
-    "--workspace", $Workspace,
-    "--version", $Version,
-    "--changelog-file", $notes
-)
-if ($CurseForgeOnly) { $nodeArgs += "--curseforge-only" }
-if ($ModrinthOnly) { $nodeArgs += "--modrinth-only" }
-if ($DryRun) { $nodeArgs += "--dry-run" }
-
-Write-Host "=== Local upload RPG Attribute System v$Version ($Workspace) ===" -ForegroundColor Green
-node @nodeArgs
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
-Write-Host ""
-Write-Host "Done. Verify:" -ForegroundColor Cyan
-Write-Host "  https://modrinth.com/mod/rpg-attribute-system/versions"
-Write-Host "  https://www.curseforge.com/minecraft/mc-mods/rpg-attribute-system/files"
+throw "Direct per-workspace uploads are disabled. Use the Publish workflow or scripts/publish-verified-release.mjs with a complete source-bound verified ten-JAR manifest and retained upload journal. See docs/releasing.md."
