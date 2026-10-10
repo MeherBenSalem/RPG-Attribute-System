@@ -22,6 +22,7 @@ import {
 
 const VERSION = '4.3.0';
 const COMMIT = '0123456789abcdef0123456789abcdef01234567';
+const ORIGINAL_430_COMMIT='09a559f500daa21ce6dbc60d80ea0b490a605915';
 const MODRINTH_PROJECT = 'd85UTOuq';
 const CURSEFORGE_PROJECT = '1079687';
 const CHANGELOG = 'Synthetic offline release changelog.\n';
@@ -138,6 +139,18 @@ function cfRecord(entry, id = TARGETS.findIndex(([mc, loader]) => mc === entry.m
     hashes: [{algo: 1, value: entry.sha1}],
     dependencies: entry.required_mod_ids.map(dep => ({modId: DEPENDENCIES[dep].curseforge_id, relationType: 3})),
   };
+}
+function isolationFixture(t) {
+  const fx=fixture(t);fakeCredentials(t);
+  fx.manifest.source_commit=ORIGINAL_430_COMMIT;
+  fx.files.forEach(entry=>{entry.source_commit=ORIGINAL_430_COMMIT;});fx.saveManifest();
+  const state={schema_version:1,source_commit:ORIGINAL_430_COMMIT,version:VERSION,publicly_verified:false,
+    uploads:[...fx.files.map(entry=>({platform:'modrinth',file:entry.file_name,sha256:entry.sha256,status:'verified',id:mrRecord(entry).id,provider_status:'listed'})),
+      {platform:'curseforge',file:fx.files[0].file_name,sha256:fx.files[0].sha256,status:'uncertain'}]};
+  const save=()=>fs.writeFileSync(fx.paths.state,JSON.stringify(state,null,2)+'\n');save();
+  return {...fx,inputState:state,saveState:save,isolateArgs:(preflight=false)=>[
+    ...fx.argv(preflight?'both':'curseforge'),'--isolate-never-attempted-curseforge',
+    ...(preflight?['--preflight-only','--require-public-modrinth']:[])]};
 }
 function jsonResponse(value, status = 200) {
   return new Response(JSON.stringify(value), {status, headers: {'content-type': 'application/json'}});
@@ -987,6 +1000,166 @@ test('failed read-only preflight preserves journal and sends no POST', async t =
   await assert.rejects(main([...fx.argv('curseforge'), '--preflight-only']), /mismatch/);
   assert.equal(store.posts.length, 0);
   assert.equal(fs.readFileSync(fx.paths.state, 'utf8'), bytes);
+});
+
+test('read-only audit reports exact approved or pending CF match facts and preserves the latest uncertain journal bytes', async t => {
+  for (const fileStatus of [4,10,1,2,8]) await t.test(`file status ${fileStatus}`, async t=>{
+    const fx=fixture(t);fakeCredentials(t);
+    const cf=cfRecord(fx.files[0]);cf.fileStatus=fileStatus;cf.isAvailable=[4,10].includes(fileStatus);
+    cf.downloadUrl='https://untrusted.invalid/reflected-secret';cf.unknown='offline-secret-reflection';
+    const state={schema_version:1,source_commit:COMMIT,version:VERSION,publicly_verified:false,
+      uploads:[...fx.files.map(entry=>({platform:'modrinth',file:entry.file_name,sha256:entry.sha256,status:'verified',id:mrRecord(entry).id})),
+        {platform:'curseforge',file:fx.files[0].file_name,sha256:fx.files[0].sha256,status:'uncertain'}]};
+    const bytes=JSON.stringify(state,null,2)+'\n';fs.writeFileSync(fx.paths.state,bytes);
+    const store=fakeStore(t,fx,{modrinth:fx.files.map(entry=>mrRecord(entry)),curseforge:[cf]});
+    const result=await main([...fx.argv(),'--preflight-only','--require-public-modrinth']);
+    const audit=result.curseforge_inventory;
+    assert.equal(audit.complete_core_inventory,true);assert.equal(audit.inventory_count,1);
+    assert.equal(audit.author_pending_upload_visibility,'not-established');
+    assert.equal(audit.journal_sha256,hash(bytes,'sha256'));assert.equal(audit.entries.length,10);
+    const entry=audit.entries[0];assert.equal(entry.journal_status,'uncertain');assert.equal(entry.journal_id,null);
+    assert.equal(entry.match.id,cf.id);assert.equal(entry.match.file_status,fileStatus);
+    assert.equal(entry.match.sha1,fx.files[0].sha1);
+    assert.deepEqual(entry.match.required_dependency_ids,[306612,1281310]);
+    assert.equal(entry.match.publicly_released,[4,10].includes(fileStatus));
+    assert.ok(audit.entries.slice(1).every(row=>row.match===null&&row.journal_status===null));
+    assert.equal(store.posts.length,0);assert.equal(fs.readFileSync(fx.paths.state,'utf8'),bytes);
+    assert.ok(!JSON.stringify(audit).includes('offline-secret-reflection'));
+    assert.ok(!JSON.stringify(audit).includes('untrusted.invalid'));
+  });
+});
+
+test('future uncertain upload diagnostics retain only bounded phase, HTTP and response-shape facts and never permit a retry', async t=>{
+  const secret='offline-credential-reflection-do-not-log';
+  const failures={
+    'fetch':{stage:'fetch',type:'TypeError',code:'ECONNRESET',fail:()=>{const error=new TypeError(secret);error.cause={code:'ECONNRESET',message:secret};throw error;}},
+    'timeout':{stage:'fetch',type:'TimeoutError',fail:()=>{throw new DOMException(secret,'TimeoutError');}},
+    'HTTP JSON':{stage:'http-status',status:403,jsonType:'object',fail:()=>jsonResponse({error:secret,message:secret,token:secret},403)},
+    'HTTP HTML':{stage:'http-status',status:502,jsonType:'invalid',fail:()=>new Response('<html>'+secret+'</html>',{status:502,headers:{'content-type':'text/html; reflected='+secret}})},
+    'invalid JSON':{stage:'response-json',type:'SyntaxError',status:200,jsonType:'invalid',fail:()=>new Response('{'+secret,{headers:{'content-type':'application/json'}})},
+    'wrong ID':{stage:'upload-id',status:200,jsonType:'object',idType:'string',fail:()=>jsonResponse({id:secret,message:secret})},
+    'empty response':{stage:'upload-id',status:200,jsonType:'null',fail:()=>new Response('')},
+    'body read':{stage:'response-body',type:'TypeError',status:200,fail:()=>({ok:true,status:200,headers:new Headers({'content-type':'application/json'}),text:async()=>{throw new TypeError(secret);}})},
+  };
+  for(const platform of ['modrinth','curseforge']) for(const [name,expected] of Object.entries(failures)) await t.test(`${platform}: ${name}`,async t=>{
+    const fx=fixture(t);fakeCredentials(t);let posts=0;
+    fakeStore(t,fx,{intercept(call){if(call.method==='POST'){posts++;return expected.fail();}}});
+    let message;await assert.rejects(main(fx.argv(platform)),error=>{message=error.message;return /Uncertain/.test(message);});
+    const row=fx.state().uploads[0],diagnostic=row.request_diagnostic;
+    assert.equal(row.status,'uncertain');assert.equal(row.id,undefined);assert.equal(diagnostic.schema_version,1);
+    assert.equal(diagnostic.stage,expected.stage);assert.equal(diagnostic.transmission_outcome,'unknown');
+    assert.equal(diagnostic.error_type,expected.type??'Error');assert.equal(diagnostic.transport_code,expected.code??null);
+    assert.equal(diagnostic.http_status,expected.status);assert.equal(diagnostic.response_json_type,expected.jsonType);
+    if(expected.idType) assert.equal(diagnostic.response_id_type,expected.idType);
+    assert.ok(!message.includes(secret));assert.ok(!JSON.stringify(fx.state()).includes(secret));
+    assert.ok(!Object.hasOwn(diagnostic,'message'));assert.ok(!Object.hasOwn(diagnostic,'body'));
+    await assert.rejects(main(fx.argv(platform)),/reconcile/);assert.equal(posts,1);
+    assert.deepEqual(fx.state().uploads[0],row);
+  });
+});
+
+test('a native Request validation error before transmission is still conservatively uncertain and unretryable',async t=>{
+  const fx=fixture(t);fakeCredentials(t);let postCalls=0,constructedRequests=0;
+  fakeStore(t,fx,{intercept(call){if(call.method==='POST'){
+    postCalls++;
+    // Synthetic invalid header, not any real environment credential. The real
+    // Request constructor throws before a request could reach any transport.
+    new Request(call.url,{...call.options,headers:{'X-Api-Token':'offline-token\u0100'}});
+    constructedRequests++;assert.fail('No transport must be reached');
+  }}});
+  await assert.rejects(main(fx.argv('curseforge')),/Uncertain/);
+  assert.equal(postCalls,1);assert.equal(constructedRequests,0);
+  const row=fx.state().uploads[0];assert.equal(row.status,'uncertain');assert.equal(row.request_diagnostic.stage,'fetch');
+  assert.equal(row.request_diagnostic.error_type,'TypeError');assert.equal(row.request_diagnostic.transmission_outcome,'unknown');
+  await assert.rejects(main(fx.argv('curseforge')),/reconcile/);assert.equal(postCalls,1);
+  assert.deepEqual(fx.state().uploads[0],row);
+});
+
+test('isolation preflight distinguishes excluded rows, exact existing files and never-attempted POST candidates without mutation',async t=>{
+  const fx=isolationFixture(t),bytes=fs.readFileSync(fx.paths.state,'utf8');
+  const store=fakeStore(t,fx,{modrinth:fx.files.map(entry=>mrRecord(entry)),curseforge:[cfRecord(fx.files[0]),cfRecord(fx.files[2])]});
+  const result=await main(fx.isolateArgs(true));
+  assert.equal(result.publication_scope,'never-attempted-curseforge');
+  assert.deepEqual(result.curseforge_isolation.selected_targets,fx.files.slice(1).map(entry=>entry.file_name));
+  assert.equal(result.curseforge_isolation.selected_count,9);assert.equal(result.curseforge_isolation.excluded_count,1);
+  assert.equal(result.curseforge_isolation.unresolved_excluded_count,1);
+  assert.equal(result.curseforge_inventory.journal_sha256,hash(bytes,'sha256'));
+  assert.deepEqual(result.curseforge_inventory.entries.slice(0,3).map(row=>row.isolation_class),
+    ['excluded-journaled','never-attempted-post-candidate','never-attempted-exact-existing']);
+  assert.equal(store.posts.length,0);assert.equal(fs.readFileSync(fx.paths.state,'utf8'),bytes);
+});
+
+test('explicit live isolation serially processes exactly nine unjournaled CF targets and keeps all MR/first CF rows unchanged',async t=>{
+  const fx=isolationFixture(t),frozen=clone(fx.inputState.uploads);
+  const store=fakeStore(t,fx,{curseforge:[cfRecord(fx.files[0])]});
+  const result=await main(fx.isolateArgs());
+  assert.equal(store.posts.length,9);assert.ok(store.posts.every(row=>row.platform==='curseforge'&&row.file!==fx.files[0].file_name));
+  assert.deepEqual(store.posts.map(row=>row.file),fx.files.slice(1).map(entry=>entry.file_name));
+  assert.deepEqual(fx.state().uploads.slice(0,11),frozen);
+  assert.equal(result.publicly_verified,false);assert.equal(result.isolated_curseforge_verified,true);
+  assert.equal(result.curseforge_isolation.selected_count,9);assert.equal(result.curseforge_isolation.excluded_count,1);
+  assert.ok(fx.state().uploads.slice(11).every(row=>row.platform==='curseforge'&&row.status==='verified'));
+  const postIndexes=store.requests.flatMap((row,index)=>row.method==='POST'?[index]:[]);
+  for(let i=1;i<postIndexes.length;i++) assert.ok(store.requests.slice(postIndexes[i-1]+1,postIndexes[i]).some(row=>row.method==='GET'&&row.url.includes('/files?')));
+  const before=fs.readFileSync(fx.paths.state,'utf8');
+  await assert.rejects(main(fx.isolateArgs()),/No never-attempted/);assert.equal(store.posts.length,9);
+  assert.equal(fs.readFileSync(fx.paths.state,'utf8'),before);
+});
+
+test('every journaled CF status is excluded from isolation POST and reconciliation',async t=>{
+  for(const status of ['dry-run','dry-run-metadata-IDs-placeholder','in-flight','uncertain','submitted','pending-publication','verified','verified-existing']) await t.test(status,async t=>{
+    const fx=isolationFixture(t);fx.inputState.uploads.push({platform:'curseforge',file:fx.files[1].file_name,
+      sha256:fx.files[1].sha256,status,id:cfRecord(fx.files[1]).id});fx.saveState();
+    const frozen=clone(fx.inputState.uploads),store=fakeStore(t,fx,{curseforge:[cfRecord(fx.files[0]),cfRecord(fx.files[1])]});
+    const result=await main(fx.isolateArgs());assert.equal(store.posts.length,8);
+    assert.ok(store.posts.every(row=>![fx.files[0].file_name,fx.files[1].file_name].includes(row.file)));
+    assert.deepEqual(fx.state().uploads.slice(0,12),frozen);assert.equal(result.publicly_verified,false);
+    assert.equal(result.curseforge_isolation.excluded_count,2);assert.equal(result.curseforge_isolation.selected_count,8);
+  });
+});
+
+test('first new uncertain isolation outcome stops serial writes and preserves all frozen receipts',async t=>{
+  const fx=isolationFixture(t),frozen=clone(fx.inputState.uploads);let posts=0;
+  const store=fakeStore(t,fx,{modrinth:fx.files.map(entry=>mrRecord(entry)),intercept(call){if(call.method==='POST'){posts++;return jsonResponse({message:'offline-reflection'},502);}}});
+  await assert.rejects(main(fx.isolateArgs()),/Uncertain.*"http_status":502/);
+  assert.equal(posts,1);assert.deepEqual(fx.state().uploads.slice(0,11),frozen);
+  assert.equal(fx.state().uploads[11].file,fx.files[1].file_name);assert.equal(fx.state().uploads[11].status,'uncertain');
+  const bytes=fs.readFileSync(fx.paths.state,'utf8'),audit=await main(fx.isolateArgs(true));
+  assert.equal(audit.curseforge_isolation.selected_count,8);assert.equal(audit.curseforge_isolation.unresolved_excluded_count,2);
+  assert.equal(posts,1);assert.equal(store.posts.length,0);assert.equal(fs.readFileSync(fx.paths.state,'utf8'),bytes);
+});
+
+test('isolation rejects changed source, frozen receipt, incomplete MR evidence and disallowed invocation modes before POST',async t=>{
+  for(const mutation of ['source','missing first','first ID','first status','first hash','missing MR','unverified MR','offline dry run','both live','MR only']) await t.test(mutation,async t=>{
+    const fx=isolationFixture(t);let args=fx.isolateArgs();
+    if(mutation==='source'){fx.manifest.source_commit=COMMIT;fx.files.forEach(entry=>{entry.source_commit=COMMIT;});fx.inputState.source_commit=COMMIT;fx.saveManifest();}
+    if(mutation==='missing first')fx.inputState.uploads.pop();
+    if(mutation==='first ID')fx.inputState.uploads.at(-1).id=1001;
+    if(mutation==='first status')fx.inputState.uploads.at(-1).status='verified';
+    if(mutation==='first hash')fx.inputState.uploads.at(-1).sha256='f'.repeat(64);
+    if(mutation==='missing MR')fx.inputState.uploads.shift();
+    if(mutation==='unverified MR')fx.inputState.uploads[0].status='pending-publication';
+    if(mutation==='offline dry run')args.push('--dry-run');
+    if(mutation==='both live')args[args.indexOf('--platforms')+1]='both';
+    if(mutation==='MR only')args[args.indexOf('--platforms')+1]='modrinth';
+    fx.saveState();const bytes=fs.readFileSync(fx.paths.state,'utf8');
+    const calls=installFetch(t,()=>assert.fail('Invalid isolation must fail before any fetch'));
+    await assert.rejects(main(args));assert.equal(calls.length,0);assert.equal(fs.readFileSync(fx.paths.state,'utf8'),bytes);
+  });
+});
+
+test('fresh conflicts in an excluded first file are fatal before any isolated POST',async t=>{
+  const fx=isolationFixture(t),frozen=clone(fx.inputState.uploads),conflict=cfRecord(fx.files[0]);
+  conflict.hashes[0].value='f'.repeat(40);const store=fakeStore(t,fx,{curseforge:[conflict]});
+  await assert.rejects(main(fx.isolateArgs()),/differs/);assert.equal(store.posts.length,0);
+  assert.deepEqual(fx.state().uploads,frozen);
+});
+
+test('isolated uploads pending indexing/public approval cannot claim scoped or full completion',async t=>{
+  const fx=isolationFixture(t),frozen=clone(fx.inputState.uploads),store=fakeStore(t,fx,{pendingIndex:true});
+  await assert.rejects(main(fx.isolateArgs()),/indexing|review/);assert.equal(store.posts.length,1);
+  assert.deepEqual(fx.state().uploads.slice(0,11),frozen);assert.equal(fx.state().uploads[11].status,'submitted');
+  assert.equal(fx.state().publicly_verified,false);
 });
 
 test('recovery preflight requires every preserved Modrinth ID freshly exact and publicly listed', async t => {

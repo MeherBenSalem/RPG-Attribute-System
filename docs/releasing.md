@@ -94,3 +94,73 @@ source/provenance artifact. Pending approval/indexing and uncertain submissions
 must be resumed from the newest attempted helper journal; never blindly retry or
 replace them. The existing publisher checks remote identity/hash/dependencies
 before deciding whether a journaled upload can be reconciled.
+
+The read-only `publisher-preflight.json` includes a `curseforge_inventory` audit
+for all ten expected files: complete strict Core inventory count, observation
+time, input journal SHA256, preserved journal status/ID, and each exact match's
+ID, SHA1, required dependency IDs, target tags, release type, availability and
+file status. It does not change the journal. An absent Core match does **not**
+establish that an author-visible pending upload does not exist; inspect the
+author Files page, including pending/review states, before resolving uncertainty.
+The cited APIs document no bounded indexing/read-after-write guarantee or
+negative-acceptance deadline. Neither elapsed time nor absent UI/Core matches
+can by itself clear an uncertain receipt. Resolve with an exact positive file
+match, or provider confirmation about non-acceptance of the specific attempt.
+
+For the first uncertain CurseForge attempt in run `38058514181`, retain artifact
+`11672176209` and restore that latest writer's journal for any subsequent audit.
+Do not restore the older Modrinth-only `38054427839` journal. The uncertain row
+is still evidence of an unresolved attempt even when a read-only audit succeeds.
+
+Future upload failures retain bounded `request_diagnostic` facts on an uncertain
+row: fixed phase/error enums, HTTP status when received, allowlisted content
+type, response size, JSON/ID type and known error/message-field presence. Raw
+body text, error messages/stacks, unknown keys, headers, credentials and request
+arguments are never retained. These diagnostic facts cannot reconstruct earlier
+discarded exceptions, prove acceptance or non-transmission, clear a receipt, or
+authorize another POST. The no-blind-retry guard is unchanged. Synthetic Node
+Request validation can fail before transport, but that category is not historical
+proof of the cause of any real uncertain submission.
+
+The upload protocol remains the documented `X-Api-Token` plus multipart
+`metadata`/`file` request and top-level numeric response `id`; see the
+[official Upload API](https://support.curseforge.com/support/solutions/articles/9000197321-curseforge-upload-api)
+and [Core file inventory API](https://docs.curseforge.com/rest-api/#get-mod-files).
+
+## Explicit isolation of never-attempted CurseForge targets
+
+The recovery workflow's `isolate_never_attempted_curseforge` boolean defaults to
+`false`. When explicitly authorized and independently reviewed, set it to `true`
+with `dry_run: true` first, using the exact reviewed helper commit and latest
+writer's receipt run. This passes `--isolate-never-attempted-curseforge` to the
+genuine read-only preflight of both stores. Review the resulting artifact before
+any separately authorized live dispatch. For the current unresolved first
+attempt, restore `receipt_run_id: 38058514181`, not the older Modrinth-only run.
+
+Isolation requires the immutable original09a4.3.0 ten-JAR plan, ten preserved
+verified Modrinth receipt rows, and the existing Fabric1.20.1 CurseForge row with
+status `uncertain`, the exact original hash, and no ID. It freezes **every**
+journaled CurseForge target regardless of its status, including dry-run rows.
+Only targets without any prior CurseForge row are selected. All-ten artifact,
+catalog and existing-file conflict checks still run before the first POST.
+
+The preflight reports exact selected/excluded target lists and counts, unresolved
+excluded count, and per-file classes: excluded journaled targets, never-attempted
+exact existing files, or never-attempted POST candidates. It retains the input
+journal SHA256. The workflow compares the restored journal bytes before/after
+preflight and records `journal_unchanged: true` only after that comparison passes.
+
+Live isolation is CurseForge-only and serial. Frozen targets are skipped before
+the existing-file reconciliation branch, so their receipt fields stay unchanged
+even when an exact file becomes visible. All ten Modrinth rows remain unchanged.
+The first new POST exception is recorded `uncertain` with sanitized diagnostics
+and stops the run immediately. Missing indexing or pending public approval keeps
+the scoped result pending/failed. Empty selection cannot claim completion.
+
+Successful isolation establishes only the reported selected scope. It includes
+the exact selected list/count and excluded/unresolved counts; the full release
+keeps `publicly_verified: false` while the first receipt is uncertain. The
+default full-release path and its success criteria are unchanged. Preserve a
+live isolation run as the newest writer, even when it fails, and restore that
+newest journal for the next read-only audit. Isolation never clears the first
+uncertainty and never authorizes a second POST for any journaled target.
