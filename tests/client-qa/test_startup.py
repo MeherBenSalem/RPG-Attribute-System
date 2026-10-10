@@ -44,6 +44,9 @@ class StartupTests(unittest.TestCase):
         driver.process_tracker = SimpleNamespace(verify_client=mock.Mock(return_value={'pidfd_bound': True}))
         driver.environment['JAVA_HOME'] = str(self.root / 'unit-test-jdk')
         driver.launched_ms = self.now - 10
+        driver.deadline = time.monotonic() + 100
+        driver.environment['DISPLAY'] = ':84'
+        driver.verify_native_window = mock.Mock(return_value={'x': 0, 'y': 0})
         driver.migration_phase = 'COPIED'
         driver.fixture_identity = {'run_id': driver.run_id, 'source_sha': driver.sha,
                                    'destination': str((self.root / 'saves/world').resolve())}
@@ -102,31 +105,20 @@ class StartupTests(unittest.TestCase):
         data = copy.deepcopy(self.data); data['buttons'].append(copy.deepcopy(data['buttons'][0]))
         with self.assertRaises(qa.QaError): qa.migration_button(data, 'COPIED')
 
-    def test_native_window_uses_exact_owned_sdl_id_pid_title_and_size(self):
+    def test_native_window_uses_exact_sdl_id_and_server_proof_without_search(self):
         driver = self.driver()
-        def checked(command, **kwargs):
-            responses = {'search': '7654\n', 'getwindowpid': '4321\n', 'getwindowname': 'Minecraft* 26.3\n',
-                         'getwindowgeometry': 'WIDTH=1280\nHEIGHT=960\nX=0\nY=0\n'}
-            return SimpleNamespace(stdout=responses.get(command[1], ''))
-        with mock.patch.object(qa, 'read_json', side_effect=[None, self.data]), \
-                mock.patch.object(driver.process_tracker, 'verify_client', return_value={'pidfd_bound': True}), mock.patch.object(qa, 'checked', side_effect=checked) as commands:
+        with mock.patch.object(qa, 'read_json', side_effect=[None, self.data]), mock.patch.object(qa, 'checked') as commands:
             self.assertEqual(driver.find_window(), (0, 0))
             self.assertEqual(driver.window_id, '7654')
-            self.assertIn(mock.call(['xdotool', 'search', '--onlyvisible', '--pid', '4321'], capture_output=True), commands.call_args_list)
-            self.assertFalse(any('--name' in call.args[0] for call in commands.call_args_list))
+            self.assertEqual(driver.verify_native_window.call_args_list,
+                             [mock.call(self.data), mock.call(self.data, require_focus=True)])
+            self.assertEqual(commands.call_args_list, [mock.call(['xdotool', 'windowfocus', '--sync', '7654'])])
 
-    def test_foreign_identity_duplicate_window_and_pid_title_mismatch_fail(self):
-        for group, listing, pid, title in [(999, '7654\n', '4321', 'Minecraft* 26.3'),
-                                          (1234, '7654\n9999\n', '4321', 'Minecraft* 26.3'),
-                                          (1234, '7654\n', '9999', 'Minecraft* 26.3'),
-                                          (1234, '7654\n', '4321', 'unowned')]:
-            with self.subTest(group=group, listing=listing, pid=pid, title=title):
-                def checked(command, **kwargs):
-                    return SimpleNamespace(stdout={'search': listing, 'getwindowpid': pid, 'getwindowname': title}.get(command[1], ''))
-                driver = self.driver()
-                with mock.patch.object(qa, 'read_json', side_effect=[None, self.data]), \
-                        mock.patch.object(driver.process_tracker, 'verify_client', return_value={'pidfd_bound': True}, side_effect=qa.process_identity.OwnershipError('foreign identity') if group != 1234 else None), mock.patch.object(qa, 'checked', side_effect=checked):
-                    with self.assertRaises(qa.QaError): driver.find_window()
+    def test_failed_server_proof_prevents_window_focus(self):
+        driver = self.driver(); driver.verify_native_window.side_effect = qa.QaError('foreign server PID')
+        with mock.patch.object(qa, 'read_json', side_effect=[None, self.data]), mock.patch.object(qa, 'checked') as commands:
+            with self.assertRaises(qa.QaError): driver.find_window()
+            commands.assert_not_called()
 
     def test_actual_prompt_capture_precedes_single_physical_click(self):
         driver = self.driver()

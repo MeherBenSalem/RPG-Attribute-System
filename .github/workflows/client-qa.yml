@@ -87,12 +87,24 @@ jobs:
       - name: Prepare real lavapipe Vulkan X11 client
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb xauth mesa-utils libgl1-mesa-dri libglx-mesa0 mesa-vulkan-drivers libvulkan1 vulkan-tools libxrandr2 libxinerama1 libxcursor1 libxi6 libasound2t64 ffmpeg xdotool python3-pil
+          sudo apt-get install -y xvfb xauth mesa-utils libgl1-mesa-dri libglx-mesa0 mesa-vulkan-drivers libvulkan1 vulkan-tools libxres1 libxrandr2 libxinerama1 libxcursor1 libxi6 libasound2t64 ffmpeg xdotool python3-pil
       - name: Quick-play a verified generated world and exercise scales 2 through 4
         run: |
-          xvfb-run -a -s '-screen 0 1280x960x24 +extension GLX -nolisten tcp' \
+          xvfb-run -a -s '-screen 0 1280x960x24 +extension GLX -nolisten tcp' bash -e -c '
+            preserve_preflight() {
+              mkdir -p "$RUNNER_TEMP/ras-client-qa-263"
+              if [ -f "$RUNNER_TEMP/ras-client-qa-263-x11-preflight.json" ]; then
+                cp "$RUNNER_TEMP/ras-client-qa-263-x11-preflight.json" "$RUNNER_TEMP/ras-client-qa-263/x11-infrastructure-preflight.json"
+              else
+                printf "{\"schema_version\":1,\"source_sha\":\"%s\",\"status\":\"FAIL\",\"kind\":\"x11-infrastructure-only-not-minecraft-acceptance\",\"reason\":\"bounded_preflight_no_result\"}\n" "$QA_SOURCE_SHA" > "$RUNNER_TEMP/ras-client-qa-263/x11-infrastructure-preflight.json"
+              fi
+            }
+            trap preserve_preflight EXIT
+            env -u GITHUB_TOKEN timeout 20s python3 scripts/client-qa/window_identity.py --self-test --source-sha "$QA_SOURCE_SHA" \
+              --output "$RUNNER_TEMP/ras-client-qa-263-x11-preflight.json"
             python3 scripts/client-qa/run.py --workspace 26.3 --source-sha "$QA_SOURCE_SHA" \
-            --output "$RUNNER_TEMP/ras-client-qa-263" --fixture-input "$RUNNER_TEMP/ras-disposable-fixture"
+              --output "$RUNNER_TEMP/ras-client-qa-263" --fixture-input "$RUNNER_TEMP/ras-disposable-fixture"
+          '
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -137,15 +149,27 @@ jobs:
       - name: Prepare real lavapipe Vulkan X11 client
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb xauth mesa-utils libgl1-mesa-dri libglx-mesa0 mesa-vulkan-drivers libvulkan1 vulkan-tools libxrandr2 libxinerama1 libxcursor1 libxi6 libasound2t64 ffmpeg xdotool python3-pil
+          sudo apt-get install -y xvfb xauth mesa-utils libgl1-mesa-dri libglx-mesa0 mesa-vulkan-drivers libvulkan1 vulkan-tools libxres1 libxrandr2 libxinerama1 libxcursor1 libxi6 libasound2t64 ffmpeg xdotool python3-pil
       - name: Diagnose 26.3 with the exact verified 891 producer fixture
         env:
           # Existing ephemeral token, read-only job scope. A denied artifact read fails closed.
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          xvfb-run -a -s '-screen 0 1280x960x24 +extension GLX -nolisten tcp' \
+          xvfb-run -a -s '-screen 0 1280x960x24 +extension GLX -nolisten tcp' bash -e -c '
+            preserve_preflight() {
+              mkdir -p "$RUNNER_TEMP/ras-client-qa-263-diagnostic"
+              if [ -f "$RUNNER_TEMP/ras-client-qa-263-diagnostic-x11-preflight.json" ]; then
+                cp "$RUNNER_TEMP/ras-client-qa-263-diagnostic-x11-preflight.json" "$RUNNER_TEMP/ras-client-qa-263-diagnostic/x11-infrastructure-preflight.json"
+              else
+                printf "{\"schema_version\":1,\"source_sha\":\"%s\",\"status\":\"FAIL\",\"kind\":\"x11-infrastructure-only-not-minecraft-acceptance\",\"reason\":\"bounded_preflight_no_result\"}\n" "$QA_SOURCE_SHA" > "$RUNNER_TEMP/ras-client-qa-263-diagnostic/x11-infrastructure-preflight.json"
+              fi
+            }
+            trap preserve_preflight EXIT
+            env -u GITHUB_TOKEN timeout 20s python3 scripts/client-qa/window_identity.py --self-test --source-sha "$QA_SOURCE_SHA" \
+              --output "$RUNNER_TEMP/ras-client-qa-263-diagnostic-x11-preflight.json"
             python3 scripts/client-qa/run.py --workspace 26.3 --source-sha "$QA_SOURCE_SHA" \
-            --output "$RUNNER_TEMP/ras-client-qa-263-diagnostic" --diagnostic-pr48-fixture
+              --output "$RUNNER_TEMP/ras-client-qa-263-diagnostic" --diagnostic-pr48-fixture
+          '
       - uses: actions/upload-artifact@v4
         if: always()
         with:

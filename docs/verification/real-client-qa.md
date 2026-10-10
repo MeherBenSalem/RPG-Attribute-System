@@ -30,6 +30,9 @@ Each case includes full-resolution PNGs, matching per-state readiness JSON, real
 - The Java startup watchdog covers the title/world/player/sync stage before the player-null return: 480 seconds after the instrumentation starts ticking.
 - Exact selected-backend graphics creation failures abort promptly rather than waiting for initial readiness.
 - Identity-correct startup observations may temporarily be stale, hidden, minimized, unscaled or not yet at the requested window size. The driver waits under the same startup watchdog without capture or input until full freshness, drawability and owned-window validation succeed. Wrong nonce/SHA, directory, requested scale or independent client process ownership still fails immediately.
+- On 26.3, a bounded native worker queries only the published SDL XID on the authenticated local-UNIX display. XRes 1.2 must identify exactly one resource range and local peer PID matching the independently verified, still-live pidfd-bound JVM. `_NET_WM_PID` is recorded as a hint; absence never substitutes for server proof, and a conflicting hint fails. The actual selected-screen root, mapped input/output window, exact title/1280×960 rectangle, zero-border root bounds and unobscured root-child stacking are required. Native mapping/title/geometry transients wait without capture/input. Raw foreign titles are never archived: exact-XID diagnostic files retain numeric facts and title presence/length/equality only.
+- Actual selected-window keyboard focus and the exact pointer target are rechecked immediately before input. Fresh screen/page/window identity and the selected active control rectangle must still match after pointer movement. Native captures re-prove ownership/drawability and the same XID/rectangle after the frame. These checks do not change any real player/sync, allocation, reward, paging, raster or human-review assertions.
+- Both 26.3 jobs first run a 20-second infrastructure preflight on the same isolated authenticated Xvfb display, with the artifact-read token removed. Separate explicitly launched harmless window children prove real server PID ownership and reject foreign/spoofed hints, occlusion, unmapped and destroyed XIDs; only those direct children are cleaned up. `x11-infrastructure-preflight.json` is source-bound and marked infrastructure-only. It cannot establish Minecraft gameplay or screenshot acceptance. Its sibling temporary output is copied into the evidence directory only after the driver finishes or fails, preserving the driver's fresh-output guard.
 - The outer driver also covers asset/Gradle launch and a frozen game: 1,200 seconds per launch, up to 1,000 seconds for initial readiness, 60 seconds per navigation state, and 90 seconds for clean shutdown.
 - A missing, stale, malformed, mismatched, FAIL or clamped-scale result fails even if the process exits zero. A nonce/SHA-matching STOPPED result and process exit zero are required before fixture reuse.
 - Each auxiliary command has a 20-second timeout. The driver saves a failure screenshot and logs before terminating only pidfd-bound, verified launcher descendants, including a detached Gradle daemon/client that survives launcher exit. Result directories are never cached or reused. Workflow timeouts bound the complete jobs.
@@ -49,6 +52,8 @@ These APIs and keys were checked against the [official 26.3 version package](htt
 
 The c10ca06 failure logs show genuine Vulkan/X11 initialization and no integrated-server start before the 480-second watchdog. They did not record the actual startup screen, so that historical screen remains unobserved. The migration requirement is established from the exact official control flow and hash-verified old-version fixture, rather than inferred from an auth warning or missing title-search result. New startup JSON and captures expose the actual screen without satisfying or weakening any real-world/player/sync, allocation, reward, navigation, or human screenshot-review gates.
 
+The 17f60af run independently passed the JVM/pidfd process proof, then failed the old `xdotool search --onlyvisible --pid` lookup before capture. Its native map state and PID property were not observed. The exact packaged SDL commit [147a8ee](https://github.com/libsdl-org/SDL/blob/147a8ee32dbf9ac02f3794964490687b6bbda1bc/src/video/x11/SDL_x11window.c) writes `_NET_WM_PID`; [SDL video initialization](https://github.com/libsdl-org/SDL/blob/147a8ee32dbf9ac02f3794964490687b6bbda1bc/src/video/x11/SDL_x11video.c) sets that value from `getpid()`. Therefore missing-property or changed-title explanations are not established historical facts. The controller now uses the exact XID and the [X Resource protocol's local peer PID](https://xorg.freedesktop.org/archive/current/doc/resourceproto/resproto.txt), with the official [libXRes ABI](https://sources.debian.org/src/libxres/2%3A1.2.1-1/include/X11/extensions/XRes.h/) and [implementation](https://sources.debian.org/src/libxres/2%3A1.2.1-1/src/XRes.c/). `XResQueryClientIds` returns zero for success, native XIDs are unsigned longs, and the selected PID record has four bytes of uint32 data; the server normalizes its returned client field to the resource base. Positive local-UNIX native proof was blocked by this development executor's socket restrictions and is required from the fail-closed hosted preflight, separate from the final real Minecraft gates.
+
 ## Linux process ownership across the Gradle daemon
 
 Gradle 9.7.1 can fork a single-use daemon even with `--no-daemon`. Its [DaemonMain](https://github.com/gradle/gradle/blob/v9.7.1/platforms/core-runtime/daemon-server/src/main/java/org/gradle/launcher/daemon/bootstrap/DaemonMain.java) explicitly detaches from the parent terminal/session, and [JavaExec](https://github.com/gradle/gradle/blob/v9.7.1/platforms/core-runtime/process-services/src/main/java/org/gradle/process/internal/DefaultJavaExecAction.java) launches the game from that daemon. An actual checksum-verified 9.7.1 JavaExec probe reproduced wrapper PID/group 49/49, daemon 89/89, and client 160/89. Requiring the game to share the wrapper's process group is therefore invalid.
@@ -67,9 +72,11 @@ or migration diagnosis can start while the normal fresh 1.21.1 bootstrap is runn
 It is not available through `workflow_dispatch`. Its failure is allowed only to keep
 this auxiliary job from changing the original workflow gate; its logs and separately
 named `diagnostic-only-client-evidence-26.3-pr48` artifact still show the result.
-The original `client-1211` and dependent `client-263` steps and fixture rules are
-unchanged. Their full same-source runtime evidence and human screenshot inspection
-are still required. A successful diagnostic is never native acceptance.
+The normal `client-1211` generation and dependent `client-263` fresh same-head
+fixture, gameplay and screenshot gates remain required. Both 26.3 jobs also require
+the fail-closed X11 infrastructure preflight before launching Minecraft. Full
+same-source runtime evidence and human screenshot inspection remain required.
+A successful diagnostic is never native acceptance.
 
 The explicit `--diagnostic-pr48-fixture` option rejects other workspaces, normal
 fixture input/output, dispatches, forks, other PRs/branches, and a target SHA that
@@ -77,6 +84,7 @@ does not match the authenticated GitHub PR event and actual checkout. It reads o
 this pinned genuine producer:
 
 - Repository: `MeherBenSalem/RPG-Attribute-System` (ID `896773299`)
+- Linked pull request: #48 (ID `4802378941`), same-repository feature branch
 - Workflow: `379809394`, `.github/workflows/client-qa.yml`
 - Run: `38042988005`, producer SHA `8913087ca9484147539a3d608a82aa0e51bbeed7`
 - Successful live-client producer job: `client-1211`, ID `114186793149`, attempt 1
@@ -87,6 +95,11 @@ this pinned genuine producer:
 Live GitHub repository, workflow, run/head, successful job/generation/upload step,
 and artifact metadata must match those pins, including the artifact's GitHub digest,
 same-repository PR binding and creation within the exact successful upload step.
+The associated PR record retains exact ID/number, both repository IDs and branch
+linkage. Its head SHA can advance in an old run response and is preserved as
+mutable descriptive metadata; producer identity comes only from the separately
+pinned run, successful job and artifact head SHAs. The authenticated current PR
+event SHA must still match the actual target checkout.
 The producer must be an ancestor of the current target, and the entire `1.21.1`
 Git tree must remain identical with no local subtree changes. Actual downloaded ZIP
 size/hash, safe ZIP paths/types, the original producer nonce, and the existing complete

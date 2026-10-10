@@ -16,6 +16,7 @@ import zipfile
 REPOSITORY = "MeherBenSalem/RPG-Attribute-System"
 REPOSITORY_ID = 896773299
 BRANCH = "feat/ras-4.3.0-progression-studio"
+PULL_REQUEST_ID = 4802378941
 WORKFLOW_ID = 379809394
 WORKFLOW_PATH = ".github/workflows/client-qa.yml"
 WORKFLOW_NAME = "Real client GUI evidence"
@@ -50,7 +51,7 @@ def check_pr48_context(environment, target_sha):
     try:
         event = json.loads(Path(environment["GITHUB_EVENT_PATH"]).read_text())
         pr = event["pull_request"]
-        require(event["number"] == 48 and pr["number"] == 48
+        require(event["number"] == 48 and pr["number"] == 48 and pr["id"] == PULL_REQUEST_ID
                 and pr["head"]["repo"]["full_name"] == REPOSITORY
                 and pr["head"]["repo"]["id"] == REPOSITORY_ID
                 and pr["base"]["repo"]["full_name"] == REPOSITORY
@@ -164,7 +165,11 @@ def validate_metadata(metadata):
                 and run["event"] == "pull_request" and run["status"] == "completed" and run["run_attempt"] == 1
                 and all(run[key]["id"] == REPOSITORY_ID and run[key]["full_name"] == REPOSITORY
                         for key in ("repository", "head_repository")), "Pinned producing run/head metadata mismatch")
-        require(any(pr["number"] == 48 and pr["head"]["sha"] == PRODUCER_SHA
+        # Linked PR heads are mutable in historical run responses. Only the run,
+        # successful job and artifact identify the producer SHA; preserve the raw
+        # linked PR head honestly as descriptive metadata in the evidence receipt.
+        require(any(pr["id"] == PULL_REQUEST_ID and pr["number"] == 48
+                    and pr["head"]["ref"] == BRANCH
                     and pr["head"]["repo"]["id"] == pr["base"]["repo"]["id"] == REPOSITORY_ID
                     for pr in run["pull_requests"]), "Pinned producer run is not bound to same-repository PR48")
         require(job["id"] == JOB_ID and job["run_id"] == RUN_ID and job["run_attempt"] == 1

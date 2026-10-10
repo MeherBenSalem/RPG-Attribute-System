@@ -37,7 +37,8 @@ def metadata():
         'run': {'id': diag.RUN_ID, 'workflow_id': diag.WORKFLOW_ID, 'path': diag.WORKFLOW_PATH,
             'head_sha': diag.PRODUCER_SHA, 'head_branch': diag.BRANCH, 'event': 'pull_request',
             'status': 'completed', 'run_attempt': 1, 'repository': repository, 'head_repository': repository,
-            'pull_requests': [{'number': 48, 'head': {'sha': diag.PRODUCER_SHA, 'repo': {'id': diag.REPOSITORY_ID}},
+            'pull_requests': [{'id': diag.PULL_REQUEST_ID, 'number': 48,
+                               'head': {'ref': diag.BRANCH, 'sha': diag.PRODUCER_SHA, 'repo': {'id': diag.REPOSITORY_ID}},
                                'base': {'repo': {'id': diag.REPOSITORY_ID}}}]},
         'job': {'id': diag.JOB_ID, 'run_id': diag.RUN_ID, 'run_attempt': 1, 'head_sha': diag.PRODUCER_SHA,
             'head_branch': diag.BRANCH, 'workflow_name': diag.WORKFLOW_NAME, 'name': 'client-1211',
@@ -55,6 +56,40 @@ class DiagnosticMetadataTests(unittest.TestCase):
     def test_exact_successful_producer_is_allowed_despite_failed_later_263_job(self):
         data = metadata(); data['run']['conclusion'] = 'failure'
         diag.validate_metadata(data)
+
+    def test_historical_run_accepts_changing_linked_pr_head_without_rewriting_it(self):
+        for linked_sha in (diag.PRODUCER_SHA, '17f60af725073fe6b49b5585f2802381f31b3f1b', 'c'*40):
+            with self.subTest(linked_sha=linked_sha):
+                data = metadata(); data['run']['pull_requests'][0]['head']['sha'] = linked_sha
+                original = copy.deepcopy(data)
+                diag.validate_metadata(data)
+                self.assertEqual(data, original)
+                self.assertEqual(data['run']['head_sha'], diag.PRODUCER_SHA)
+                self.assertEqual(data['job']['head_sha'], diag.PRODUCER_SHA)
+                self.assertEqual(data['artifact']['workflow_run']['head_sha'], diag.PRODUCER_SHA)
+                self.assertEqual(data['run']['pull_requests'][0]['head']['sha'], linked_sha)
+
+    def test_mutable_linked_head_never_replaces_authoritative_producer_identity(self):
+        for group, container in [('run', None), ('job', None), ('artifact', 'workflow_run')]:
+            with self.subTest(group=group):
+                data = metadata(); data['run']['pull_requests'][0]['head']['sha'] = 'c'*40
+                source = data[group] if container is None else data[group][container]
+                source['head_sha'] = 'c'*40
+                with self.assertRaises(diag.DiagnosticError): diag.validate_metadata(data)
+
+    def test_linked_pr_still_requires_exact_id_number_repositories_and_branch(self):
+        for container, field, value in [(None, 'id', 1), (None, 'number', 49), ('head', 'ref', 'main'),
+                                         ('head_repo', 'id', 1), ('base_repo', 'id', 1)]:
+            with self.subTest(container=container, field=field):
+                data = copy.deepcopy(metadata()); pr = data['run']['pull_requests'][0]
+                pr['head']['sha'] = '17f60af725073fe6b49b5585f2802381f31b3f1b'
+                if container == 'head_repo': target = pr['head']['repo']
+                elif container == 'base_repo': target = pr['base']['repo']
+                else: target = pr if container is None else pr[container]
+                target[field] = value
+                with self.assertRaises(diag.DiagnosticError): diag.validate_metadata(data)
+                del target[field]
+                with self.assertRaises(diag.DiagnosticError): diag.validate_metadata(data)
 
     def test_rejects_changed_missing_or_expired_metadata(self):
         mutations = [('repository', 'id', 1), ('repository', 'full_name', 'other/repo'),
@@ -89,7 +124,7 @@ class DiagnosticMetadataTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / 'event.json'
             repo = {'full_name': diag.REPOSITORY, 'id': diag.REPOSITORY_ID}
-            event = {'number': 48, 'pull_request': {'number': 48,
+            event = {'number': 48, 'pull_request': {'id': diag.PULL_REQUEST_ID, 'number': 48,
                 'head': {'ref': diag.BRANCH, 'sha': 'a'*40, 'repo': repo}, 'base': {'repo': repo}}}
             path.write_text(json.dumps(event))
             env = {'GITHUB_ACTIONS': 'true', 'GITHUB_REPOSITORY': diag.REPOSITORY,
@@ -100,6 +135,7 @@ class DiagnosticMetadataTests(unittest.TestCase):
                 bad = dict(env); bad[key] = value
                 with self.assertRaises(diag.DiagnosticError): diag.check_pr48_context(bad, 'a'*40)
             for mutate in [lambda e: e.update(number=49),
+                           lambda e: e['pull_request'].update(id=1),
                            lambda e: e['pull_request']['head'].update(ref='main'),
                            lambda e: e['pull_request']['head'].update(sha='b'*40),
                            lambda e: e['pull_request']['head']['repo'].update(full_name='fork/repo')]:

@@ -12,6 +12,7 @@ import platform
 import re
 import shutil
 import subprocess
+import sys
 import time
 import uuid
 
@@ -21,6 +22,10 @@ WIDTH, HEIGHT = 1280, 960
 _process_spec = importlib.util.spec_from_file_location('ras_client_qa_process_identity', Path(__file__).with_name('process_identity.py'))
 process_identity = importlib.util.module_from_spec(_process_spec)
 _process_spec.loader.exec_module(process_identity)
+
+_window_spec = importlib.util.spec_from_file_location('ras_client_qa_window_identity', Path(__file__).with_name('window_identity.py'))
+window_identity = importlib.util.module_from_spec(_window_spec)
+_window_spec.loader.exec_module(window_identity)
 
 
 class QaError(RuntimeError):
@@ -438,6 +443,9 @@ class Driver:
         if not startup_drawable(data, self.scale):
             self.startup_observed = None
             return  # The unchanged Java startup watchdog bounds this incomplete observation.
+        if self.verify_native_window(data, transient=True) is None:
+            self.startup_observed = None
+            return  # SDL flags can precede actual server-side mapping/geometry/title application.
         key = (data.get("screen_class"), data.get("screen_title_key"), data.get("screen_message_key"), data.get("overlay_class"))
         previous = self.startup_observed
         self.startup_observed = (key, data["written_at_ms"])
@@ -459,7 +467,9 @@ class Driver:
         checked(["xdotool", "mousemove", "--sync", "--window", self.window_id,
                  str(round((button["x"] + button["width"] / 2) * scale)),
                  str(round((button["y"] + button["height"] / 2) * scale))])
-        latest = self.revalidate_migration_prompt(data, button)
+        pointer = (round((button['x'] + button['width'] / 2) * scale),
+                   round((button['y'] + button['height'] / 2) * scale))
+        latest = self.revalidate_migration_prompt(data, button, pointer=pointer)
         checked(["xdotool", "click", "1"])
         self.migration_phase = "BACKUP_REQUESTED" if self.migration_phase == "COPIED" else "JOIN_REQUESTED"
         (self.case / ("migration-" + self.migration_phase.lower() + ".json")).write_text(
@@ -484,7 +494,7 @@ class Driver:
         evidence = self.case / "client-process-identity.json"
         if not evidence.exists(): evidence.write_text(json.dumps(proof, indent=2) + "\n")
 
-    def revalidate_migration_prompt(self, captured, button):
+    def revalidate_migration_prompt(self, captured, button, pointer=None):
         latest = read_json(self.game / "ras-client-qa-startup.json")
         validate_startup(latest, run_id=self.run_id, sha=self.sha, scale=self.scale,
                          launched_ms=self.launched_ms, game=self.game)
@@ -495,7 +505,60 @@ class Driver:
                 or any(latest.get(key) != captured.get(key) for key in keys) \
                 or migration_button(latest, self.migration_phase) != button:
             raise QaError("Actual migration prompt/control geometry changed after its native capture")
+        self.verify_native_window(latest, require_focus=True, pointer=pointer)
         return latest
+
+    def verify_native_window(self, data, transient=False, require_focus=False, pointer=None):
+        """Independent pidfd/JVM proof plus the X server's peer PID for this exact SDL XID."""
+        self.require_owned_process(data)
+        began_ms = int(time.time() * 1000)
+        timeout = min(3, self.deadline - time.monotonic())
+        if timeout <= 0: raise QaError("Native window observation exceeded this case deadline")
+        try:
+            result = subprocess.run([sys.executable, str(Path(__file__).with_name('window_identity.py')),
+                                     '--xid', str(data['x11_window_id'])],
+                                    capture_output=True, text=True, env=self.environment, timeout=timeout)
+            facts = json.loads(result.stdout)
+            if not isinstance(facts, dict):
+                facts = {'schema_version': 1, 'xid': data['x11_window_id'], 'error_type': 'InvalidSchema'}
+                result = None
+        except (subprocess.TimeoutExpired, json.JSONDecodeError) as exc:
+            facts = {'schema_version': 1, 'xid': data['x11_window_id'], 'error_type': type(exc).__name__}
+            result = None
+        # Exact-window facts are retained even when ownership/drawability fails. Never dump global windows.
+        sanitized = dict(facts)
+        title = sanitized.pop('title', None)
+        sanitized.update(title_present=title is not None, title_matches=title == data['window_title'],
+                         title_length=len(title) if isinstance(title, str) else None)
+        record = {'run_id': self.run_id, 'source_sha': self.sha, 'client_pid': data['client_pid'],
+                  'startup_written_at_ms': data['written_at_ms'], 'native': sanitized}
+        (self.case / 'x11-window-latest.json').write_text(json.dumps(record, indent=2) + '\n')
+        first = self.case / 'x11-window-first.json'
+        if not first.exists(): first.write_text(json.dumps(record, indent=2) + '\n')
+        if result is None or result.returncode != 0:
+            raise QaError("Exact XID native worker failed: " + facts.get('error_type', 'native-error'))
+        try:
+            window_identity.validate_owner(facts, xid=data['x11_window_id'], pid=data['client_pid'],
+                                           display=self.environment.get('DISPLAY', ''))
+        except window_identity.WindowError as exc:
+            raise QaError(str(exc)) from exc
+        self.require_owned_process(data)  # Retained kernel identity must still be alive after the server query.
+        validate_startup(data, run_id=self.run_id, sha=self.sha, scale=self.scale,
+                         launched_ms=self.launched_ms, game=self.game)
+        written = facts.get('written_at_ms')
+        if type(written) is not int or written < began_ms or written > time.time() * 1000 + 1000 \
+                or time.time() * 1000 - written > 3000:
+            raise QaError("Native window observation is not fresh")
+        if not window_identity.drawable(facts, title=data['window_title'], width=WIDTH, height=HEIGHT):
+            if transient: return None
+            raise QaError("Exact owned XID is not viewable with the required title/root/geometry")
+        if require_focus and facts.get('focused') is not True:
+            raise QaError("Exact owned XID does not have actual X11 keyboard focus")
+        if pointer is not None and (facts.get('pointer_same_screen') is not True \
+                or facts.get('pointer_on_window') is not True \
+                or (facts.get('pointer_x'), facts.get('pointer_y')) != pointer):
+            raise QaError("Actual X11 pointer is not at the exact owned-window input target")
+        return facts
 
     def find_window(self):
         if self.mc == "26.3":
@@ -503,15 +566,8 @@ class Driver:
             data = ready if ready is not None else read_json(self.game / "ras-client-qa-startup.json")
             validate_startup(data, run_id=self.run_id, sha=self.sha, scale=self.scale,
                              launched_ms=self.launched_ms, game=self.game)
-            pid = data["client_pid"]
-            self.require_owned_process(data)
-            window = str(data["x11_window_id"])
-            result = checked(["xdotool", "search", "--onlyvisible", "--pid", str(pid)], capture_output=True)
-            if result.stdout.split() != [window] \
-                    or checked(["xdotool", "getwindowpid", window], capture_output=True).stdout.strip() != str(pid) \
-                    or checked(["xdotool", "getwindowname", window], capture_output=True).stdout.strip() != data["window_title"]:
-                raise QaError("Actual SDL X11 window does not uniquely match the owned client PID/title")
-            self.window_id = window
+            self.verify_native_window(data)
+            self.window_id = str(data["x11_window_id"])
         else:
             result = checked(["xdotool", "search", "--onlyvisible", "--name", "^Minecraft"], capture_output=True)
             windows = result.stdout.split()
@@ -519,6 +575,9 @@ class Driver:
                 raise QaError(f"Expected exactly one real Minecraft X11 window; found {len(windows)}")
             self.window_id = windows[0]
         checked(["xdotool", "windowfocus", "--sync", self.window_id])
+        if self.mc == "26.3":
+            facts = self.verify_native_window(data, require_focus=True)
+            return facts['x'], facts['y']
         geometry = checked(["xdotool", "getwindowgeometry", "--shell", self.window_id], capture_output=True).stdout
         rectangle = dict(line.split("=", 1) for line in geometry.splitlines() if "=" in line)
         if int(rectangle["WIDTH"]) != WIDTH or int(rectangle["HEIGHT"]) != HEIGHT:
@@ -527,10 +586,19 @@ class Driver:
 
     def capture(self, name, ready=None, verify=True):
         from PIL import Image
+        if self.mc == '26.3' and ready is not None: self.validate_capture_snapshot(ready)
         x, y = self.find_window()
+        captured_window = self.window_id
+        if self.mc == '26.3' and ready is not None and captured_window != str(ready.get('x11_window_id')):
+            raise QaError('Native capture window differs from its actual screen snapshot')
         path = self.case / f"{name}.png"
         checked(["ffmpeg", "-nostdin", "-loglevel", "error", "-y", "-f", "x11grab", "-video_size", f"{WIDTH}x{HEIGHT}",
                  "-draw_mouse", "0", "-i", f"{os.environ['DISPLAY']}+{x},{y}", "-frames:v", "1", "-update", "1", str(path)], capture_output=True)
+        if self.mc == '26.3':
+            after = self.find_window()
+            if self.window_id != captured_window or after != (x, y):
+                raise QaError('Native capture owner/window geometry changed during the frame')
+            if ready is not None: self.validate_capture_snapshot(ready)
         with Image.open(path) as image:
             image = image.convert("RGB")
             if image.size != (WIDTH, HEIGHT) or sum(high-low for low, high in image.getextrema()) < 20:
@@ -545,6 +613,23 @@ class Driver:
         if ready:
             (self.case / f"{name}.json").write_text(json.dumps(ready, indent=2)+"\n")
         return path
+
+    def validate_capture_snapshot(self, captured):
+        filename = 'ras-client-qa-ready.json' if captured.get('status') == 'READY' else 'ras-client-qa-startup.json'
+        latest = read_json(self.game / filename)
+        validate_startup(latest, run_id=self.run_id, sha=self.sha, scale=self.scale,
+                         launched_ms=self.launched_ms, game=self.game)
+        if captured.get('status') == 'READY':
+            validate_ready(latest, run_id=self.run_id, sha=self.sha, mc=self.mc,
+                           scale=self.scale, launched_ms=self.launched_ms)
+        keys = ('status', 'state', 'page', 'panel', 'buttons', 'screen_class', 'screen_title_key',
+                'screen_message_key', 'overlay_class', 'game_load_finished', 'client_pid', 'x11_window_id',
+                'window_title', 'actual_gui_scale', 'window_width', 'window_height', 'gui_width', 'gui_height')
+        if latest['written_at_ms'] < captured['written_at_ms'] \
+                or time.time() * 1000 - captured['written_at_ms'] > 5000 \
+                or any(latest.get(key) != captured.get(key) for key in keys):
+            raise QaError('Actual screen/prompt/control snapshot changed or expired during native capture')
+        return latest
 
     def stable_capture(self, name, ready):
         if ready["state"] != "WORLD":
@@ -634,10 +719,23 @@ class Driver:
                                      "next_page": paged["page"], "returned_page": returned["page"]})
         return returned
 
-    def before_input(self):
+    def before_input(self, native=False, pointer=None, captured=None, button=None):
         latest = read_json(self.game / "ras-client-qa-ready.json")
         validate_ready(latest,run_id=self.run_id,sha=self.sha,mc=self.mc,scale=self.scale,launched_ms=self.launched_ms)
+        if self.mc == '26.3' and captured is not None:
+            keys = ('state', 'page', 'actual_gui_scale', 'window_width', 'window_height', 'gui_width', 'gui_height',
+                    'client_pid', 'x11_window_id', 'window_title', 'panel')
+            if any(latest.get(key) != captured.get(key) for key in keys):
+                raise QaError('Actual screen/page/window geometry changed before physical input')
+            if button is not None:
+                controls = [item for item in latest['buttons'] if item.get('label') == button['label']
+                            and item.get('width') == button['width']]
+                fields = ('label', 'x', 'y', 'width', 'height', 'active')
+                if len(controls) != 1 or any(controls[0].get(key) != button.get(key) for key in fields):
+                    raise QaError('Selected active control moved or changed before physical input')
+        if native and self.mc == '26.3': self.verify_native_window(latest, require_focus=True, pointer=pointer)
         self.last_action_sequence = latest["sequence"]
+        self.last_input_snapshot = latest
         return {button["label"] for button in latest["buttons"] if button.get("focused") is True}
 
     def click(self, ready, label, width=None):
@@ -650,12 +748,18 @@ class Driver:
         self.find_window()
         checked(["xdotool", "mousemove", "--window", self.window_id,
                  str(round((button["x"]+button["width"]/2)*scale)), str(round((button["y"]+button["height"]/2)*scale))])
+        if self.mc == '26.3':
+            self.before_input(native=True, pointer=(round((button['x']+button['width']/2)*scale),
+                                                    round((button['y']+button['height']/2)*scale)),
+                              captured=ready, button=button)
         checked(["xdotool", "click", "1"])
         self.last_action_ms = int(time.time()*1000)
 
     def key(self, key):
         previous_focus = self.before_input()
+        captured = self.last_input_snapshot
         self.find_window()
+        if self.mc == '26.3': self.before_input(native=True, captured=captured)
         checked(["xdotool", "key", key])
         self.last_action_ms = int(time.time()*1000)
         return previous_focus
