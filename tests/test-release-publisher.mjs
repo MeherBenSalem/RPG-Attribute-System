@@ -156,12 +156,35 @@ function installFetch(t, handler) {
     const parsed = new URL(value);
     assert.ok(['api.modrinth.com', 'api.curseforge.com', 'minecraft.curseforge.com'].includes(parsed.hostname),
       `Unexpected network destination: ${value}`);
+    assert.equal(options.redirect, 'error', 'Authenticated store requests must reject redirects');
     const call = {url: value, method: options.method || 'GET', options};
     requests.push(call);
     return await handler(call, requests);
   };
   t.after(() => {globalThis.fetch = forbiddenFetch;});
   return requests;
+}
+function catalogFixture() {
+  const mcTypes = Object.fromEntries(Object.keys(IDS.minecraft).map((name, index) => [name, 70100 + index]));
+  const upload = [
+    {name: 'Client', id: IDS.client, gameVersionTypeID: 70001},
+    {name: 'Server', id: IDS.server, gameVersionTypeID: 70001},
+    ...Object.entries(LOADER_NAMES).map(([loader, name]) => ({name, id: IDS.loader[loader], gameVersionTypeID: 70002})),
+    ...Object.entries(IDS.minecraft).map(([name, id]) => ({name, id, gameVersionTypeID: mcTypes[name]})),
+  ];
+  const types = {data: [
+    {id: 70001, gameId: 432, name: 'Environment', slug: 'environment', status: 1},
+    {id: 70002, gameId: 432, name: 'Modloader', slug: 'modloader', status: 1},
+    ...Object.entries(mcTypes).map(([name, id]) => ({id, gameId: 432, name: 'Minecraft ' + name,
+      slug: 'minecraft-' + name.split('.').slice(0,2).join('-'), status: 1})),
+  ]};
+  const groups = {data: types.data.map(type => ({type: type.id,
+    versions: upload.filter(row => row.gameVersionTypeID === type.id).map(({name, id}) => ({name, id}))}))};
+  const canonical = Object.fromEntries(Object.entries(IDS.minecraft).map(([name, id], index) => [name, {data: {
+    id: index + 200, gameVersionId: id, gameVersionTypeId: mcTypes[name], versionString: name,
+    approved: false, gameVersionStatus: 1, gameVersionTypeStatus: 1,
+  }}]));
+  return {upload, types, groups, canonical};
 }
 function fakeStore(t, fx, options = {}) {
   const remote = {
@@ -177,13 +200,15 @@ function fakeStore(t, fx, options = {}) {
       const offset = Number(new URL(call.url).searchParams.get('index'));
       return jsonResponse(cfPage(remote.curseforge.slice(offset, offset + 50), offset, remote.curseforge.length));
     }
-    if (call.method === 'GET' && call.url === 'https://minecraft.curseforge.com/api/game/versions') {
-      const data = [
-        {name: 'Client', id: IDS.client}, {name: 'Server', id: IDS.server},
-        ...Object.entries(LOADER_NAMES).map(([loader, name]) => ({name, id: IDS.loader[loader]})),
-        ...Object.entries(IDS.minecraft).map(([name, id]) => ({name, id})),
-      ];
-      return jsonResponse(data);
+    if (call.method === 'GET') {
+      const catalog = catalogFixture();
+      if (call.url === 'https://minecraft.curseforge.com/api/game/versions') return jsonResponse(catalog.upload);
+      if (call.url === 'https://api.curseforge.com/v1/mods/1079687') return jsonResponse({data: {id: 1079687, gameId: 432}});
+      if (call.url === 'https://api.curseforge.com/v1/games/432') return jsonResponse({data: {id: 432, slug: 'minecraft'}});
+      if (call.url === 'https://api.curseforge.com/v1/games/432/version-types') return jsonResponse(catalog.types);
+      if (call.url === 'https://api.curseforge.com/v2/games/432/versions') return jsonResponse(catalog.groups);
+      const name = call.url.replace('https://api.curseforge.com/v1/minecraft/version/', '');
+      if (catalog.canonical[name]) return jsonResponse(catalog.canonical[name]);
     }
     if (call.method === 'POST') {
       assert.ok(call.options.body instanceof FormData);
@@ -936,4 +961,52 @@ test('legacy PowerShell entry point rejects a native dry-run when PowerShell is 
   const result = spawnSync('pwsh', ['-NoLogo', '-NoProfile', '-File', entry, '-DryRun'], {encoding: 'utf8', env: {}});
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /Direct per-workspace uploads are disabled/);
+});
+
+test('credentialed read-only preflight validates actual catalogs without any journal changes or POST', async t => {
+  const fx = fixture(t); fakeCredentials(t);
+  const state = {schema_version: 1, source_commit: COMMIT, version: VERSION, publicly_verified: true,
+    uploads: fx.files.map(entry => ({platform: 'modrinth', file: entry.file_name, sha256: entry.sha256, status: 'verified', id: mrRecord(entry).id}))};
+  const bytes = JSON.stringify(state, null, 2) + '\n';
+  fs.writeFileSync(fx.paths.state, bytes);
+  const store = fakeStore(t, fx, {modrinth: fx.files.map(entry => mrRecord(entry))});
+  const result = await main([...fx.argv('both'), '--preflight-only', '--require-public-modrinth']);
+  assert.equal(result.preflight_verified, true);
+  assert.deepEqual(result.curseforge_ids, IDS);
+  assert.equal(store.posts.length, 0);
+  assert.equal(fs.readFileSync(fx.paths.state, 'utf8'), bytes);
+  await assert.rejects(main([...fx.argv(), '--preflight-only', '--dry-run']), /mutually exclusive/);
+});
+test('failed read-only preflight preserves journal and sends no POST', async t => {
+  const fx = fixture(t); fakeCredentials(t);
+  const bytes = JSON.stringify({schema_version: 1, source_commit: COMMIT, version: VERSION, uploads: [], publicly_verified: false});
+  fs.writeFileSync(fx.paths.state, bytes);
+  const store = fakeStore(t, fx, {intercept(call) {
+    if (call.url.endsWith('/minecraft/version/26.3')) return jsonResponse({data: {...catalogFixture().canonical['26.3'].data, gameVersionId: 55555}});
+  }});
+  await assert.rejects(main([...fx.argv('curseforge'), '--preflight-only']), /mismatch/);
+  assert.equal(store.posts.length, 0);
+  assert.equal(fs.readFileSync(fx.paths.state, 'utf8'), bytes);
+});
+
+test('recovery preflight requires every preserved Modrinth ID freshly exact and publicly listed', async t => {
+  for (const mutation of ['missing remote', 'hidden remote', 'draft remote', 'changed remote ID', 'changed journal ID', 'missing journal row', 'wrong hash', 'wrong dependency']) await t.test(mutation, async t => {
+    const fx = fixture(t); fakeCredentials(t);
+    const records = fx.files.map(entry => mrRecord(entry));
+    const rows = fx.files.map(entry => ({platform: 'modrinth', file: entry.file_name, sha256: entry.sha256, status: 'verified', id: mrRecord(entry).id}));
+    if (mutation === 'missing remote') records.pop();
+    if (mutation === 'hidden remote') records[0].status = 'unlisted';
+    if (mutation === 'draft remote') records[0].status = 'draft';
+    if (mutation === 'changed remote ID') records[0].id = 'OtherMRid';
+    if (mutation === 'changed journal ID') rows[0].id = 'OtherMRid';
+    if (mutation === 'missing journal row') rows.pop();
+    if (mutation === 'wrong hash') records[0].files[0].hashes.sha512 = 'f'.repeat(128);
+    if (mutation === 'wrong dependency') records[0].dependencies.pop();
+    const bytes = JSON.stringify({schema_version: 1, source_commit: COMMIT, version: VERSION, uploads: rows, publicly_verified: true}, null, 2) + '\n';
+    fs.writeFileSync(fx.paths.state, bytes);
+    const store = fakeStore(t, fx, {modrinth: records});
+    await assert.rejects(main([...fx.argv('both'), '--preflight-only', '--require-public-modrinth']), /Modrinth/);
+    assert.equal(store.posts.length, 0);
+    assert.equal(fs.readFileSync(fx.paths.state, 'utf8'), bytes);
+  });
 });

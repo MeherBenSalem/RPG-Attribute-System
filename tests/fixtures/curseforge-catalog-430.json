@@ -1,0 +1,433 @@
+{
+  "schema_version": 1,
+  "read_only": true,
+  "selection_performed": false,
+  "helper_commit": "4409214be68d25e673835aea5d4b5a0bfc8cfc26",
+  "requested_names": [
+    "1.20.1",
+    "1.21.1",
+    "26.1.2",
+    "26.2",
+    "26.3",
+    "Fabric",
+    "Forge",
+    "NeoForge",
+    "Client",
+    "Server"
+  ],
+  "endpoints": {
+    "upload_versions": {
+      "http_status": 200
+    },
+    "project_namespace": {
+      "http_status": 200
+    },
+    "game_namespace": {
+      "http_status": 200
+    },
+    "version_types": {
+      "http_status": 200
+    },
+    "core_versions_v2": {
+      "http_status": 200
+    },
+    "minecraft_1.20.1": {
+      "http_status": 200
+    },
+    "minecraft_1.21.1": {
+      "http_status": 200
+    },
+    "minecraft_26.1.2": {
+      "http_status": 200
+    },
+    "minecraft_26.2": {
+      "http_status": 200
+    },
+    "minecraft_26.3": {
+      "http_status": 200
+    }
+  },
+  "upload_candidates": {
+    "1.20.1": [
+      {
+        "id": 9990,
+        "gameVersionTypeID": 75125,
+        "name": "1.20.1",
+        "slug": "1-20-1"
+      },
+      {
+        "id": 9993,
+        "gameVersionTypeID": 615,
+        "name": "1.20.1",
+        "slug": "1-20-1"
+      },
+      {
+        "id": 9994,
+        "gameVersionTypeID": 1,
+        "name": "1.20.1",
+        "slug": "1-20-1"
+      }
+    ],
+    "1.21.1": [
+      {
+        "id": 11779,
+        "gameVersionTypeID": 77784,
+        "name": "1.21.1",
+        "slug": "1-21-1"
+      },
+      {
+        "id": 12735,
+        "gameVersionTypeID": 1,
+        "name": "1.21.1",
+        "slug": "1-21-1"
+      },
+      {
+        "id": 16115,
+        "gameVersionTypeID": 615,
+        "name": "1.21.1",
+        "slug": "1-21-1"
+      }
+    ],
+    "26.1.2": [
+      {
+        "id": 16082,
+        "gameVersionTypeID": 83806,
+        "name": "26.1.2",
+        "slug": "26-1-2"
+      },
+      {
+        "id": 16085,
+        "gameVersionTypeID": 1,
+        "name": "26.1.2",
+        "slug": "26-1-2"
+      },
+      {
+        "id": 16130,
+        "gameVersionTypeID": 615,
+        "name": "26.1.2",
+        "slug": "26-1-2"
+      }
+    ],
+    "26.2": [
+      {
+        "id": 16498,
+        "gameVersionTypeID": 86297,
+        "name": "26.2",
+        "slug": "26-2"
+      },
+      {
+        "id": 16500,
+        "gameVersionTypeID": 1,
+        "name": "26.2",
+        "slug": "26-2"
+      }
+    ],
+    "26.3": [
+      {
+        "id": 17045,
+        "gameVersionTypeID": 88556,
+        "name": "26.3",
+        "slug": "26-3"
+      },
+      {
+        "id": 17046,
+        "gameVersionTypeID": 1,
+        "name": "26.3",
+        "slug": "26-3"
+      }
+    ],
+    "Fabric": [
+      {
+        "id": 7499,
+        "gameVersionTypeID": 68441,
+        "name": "Fabric",
+        "slug": "fabric"
+      }
+    ],
+    "Forge": [
+      {
+        "id": 7498,
+        "gameVersionTypeID": 68441,
+        "name": "Forge",
+        "slug": "forge"
+      }
+    ],
+    "NeoForge": [
+      {
+        "id": 10150,
+        "gameVersionTypeID": 68441,
+        "name": "NeoForge",
+        "slug": "neoforge"
+      }
+    ],
+    "Client": [
+      {
+        "id": 9638,
+        "gameVersionTypeID": 75208,
+        "name": "Client",
+        "slug": "client"
+      }
+    ],
+    "Server": [
+      {
+        "id": 9639,
+        "gameVersionTypeID": 75208,
+        "name": "Server",
+        "slug": "server"
+      }
+    ]
+  },
+  "core_minecraft": {
+    "1.20.1": {
+      "id": 82,
+      "gameVersionId": 9990,
+      "versionString": "1.20.1",
+      "gameVersionTypeId": 75125,
+      "approved": false,
+      "gameVersionStatus": 1,
+      "gameVersionTypeStatus": 1
+    },
+    "1.21.1": {
+      "id": 89,
+      "gameVersionId": 11779,
+      "versionString": "1.21.1",
+      "gameVersionTypeId": 77784,
+      "approved": false,
+      "gameVersionStatus": 1,
+      "gameVersionTypeStatus": 1
+    },
+    "26.1.2": {
+      "id": 103,
+      "gameVersionId": 16082,
+      "versionString": "26.1.2",
+      "gameVersionTypeId": 83806,
+      "approved": false,
+      "gameVersionStatus": 1,
+      "gameVersionTypeStatus": 1
+    },
+    "26.2": {
+      "id": 104,
+      "gameVersionId": 16498,
+      "versionString": "26.2",
+      "gameVersionTypeId": 86297,
+      "approved": false,
+      "gameVersionStatus": 1,
+      "gameVersionTypeStatus": 1
+    },
+    "26.3": {
+      "id": 105,
+      "gameVersionId": 17045,
+      "versionString": "26.3",
+      "gameVersionTypeId": 88556,
+      "approved": false,
+      "gameVersionStatus": 1,
+      "gameVersionTypeStatus": 1
+    }
+  },
+  "namespace_facts": {
+    "project": {
+      "id": 1079687,
+      "gameId": 432
+    },
+    "game": {
+      "id": 432,
+      "slug": "minecraft"
+    },
+    "version_types": [
+      {
+        "id": 75208,
+        "gameId": 432,
+        "name": "Environment",
+        "slug": "environment",
+        "status": 1
+      },
+      {
+        "id": 615,
+        "gameId": 432,
+        "name": "Addons",
+        "slug": "addons",
+        "status": 1
+      },
+      {
+        "id": 1,
+        "gameId": 432,
+        "name": "Bukkit",
+        "slug": "bukkit",
+        "status": 1
+      },
+      {
+        "id": 75125,
+        "gameId": 432,
+        "name": "Minecraft 1.20",
+        "slug": "minecraft-1-20",
+        "status": 1
+      },
+      {
+        "id": 77784,
+        "gameId": 432,
+        "name": "Minecraft 1.21",
+        "slug": "minecraft-1-21",
+        "status": 1
+      },
+      {
+        "id": 83806,
+        "gameId": 432,
+        "name": "Minecraft 26.1",
+        "slug": "minecraft-26-1",
+        "status": 1
+      },
+      {
+        "id": 68441,
+        "gameId": 432,
+        "name": "Modloader",
+        "slug": "modloader",
+        "status": 1
+      },
+      {
+        "id": 86297,
+        "gameId": 432,
+        "name": "26.2",
+        "slug": "minecraft-26-2",
+        "status": 1
+      },
+      {
+        "id": 88556,
+        "gameId": 432,
+        "name": "26.3",
+        "slug": "minecraft-26-3",
+        "status": 1
+      }
+    ]
+  },
+  "core_candidates": {
+    "1.20.1": [
+      {
+        "id": 9994,
+        "gameVersionTypeId": 1,
+        "name": "1.20.1",
+        "slug": "1-20-1"
+      },
+      {
+        "id": 9993,
+        "gameVersionTypeId": 615,
+        "name": "1.20.1",
+        "slug": "1-20-1"
+      },
+      {
+        "id": 9990,
+        "gameVersionTypeId": 75125,
+        "name": "1.20.1",
+        "slug": "1-20-1"
+      }
+    ],
+    "1.21.1": [
+      {
+        "id": 12735,
+        "gameVersionTypeId": 1,
+        "name": "1.21.1",
+        "slug": "1-21-1"
+      },
+      {
+        "id": 16115,
+        "gameVersionTypeId": 615,
+        "name": "1.21.1",
+        "slug": "1-21-1"
+      },
+      {
+        "id": 11779,
+        "gameVersionTypeId": 77784,
+        "name": "1.21.1",
+        "slug": "1-21-1"
+      }
+    ],
+    "26.1.2": [
+      {
+        "id": 16085,
+        "gameVersionTypeId": 1,
+        "name": "26.1.2",
+        "slug": "26-1-2"
+      },
+      {
+        "id": 16130,
+        "gameVersionTypeId": 615,
+        "name": "26.1.2",
+        "slug": "26-1-2"
+      },
+      {
+        "id": 16082,
+        "gameVersionTypeId": 83806,
+        "name": "26.1.2",
+        "slug": "26-1-2"
+      }
+    ],
+    "26.2": [
+      {
+        "id": 16500,
+        "gameVersionTypeId": 1,
+        "name": "26.2",
+        "slug": "26-2"
+      },
+      {
+        "id": 16498,
+        "gameVersionTypeId": 86297,
+        "name": "26.2",
+        "slug": "26-2"
+      }
+    ],
+    "26.3": [
+      {
+        "id": 17046,
+        "gameVersionTypeId": 1,
+        "name": "26.3",
+        "slug": "26-3"
+      },
+      {
+        "id": 17045,
+        "gameVersionTypeId": 88556,
+        "name": "26.3",
+        "slug": "26-3"
+      }
+    ],
+    "Fabric": [
+      {
+        "id": 7499,
+        "gameVersionTypeId": 68441,
+        "name": "Fabric",
+        "slug": "fabric"
+      }
+    ],
+    "Forge": [
+      {
+        "id": 7498,
+        "gameVersionTypeId": 68441,
+        "name": "Forge",
+        "slug": "forge"
+      }
+    ],
+    "NeoForge": [
+      {
+        "id": 10150,
+        "gameVersionTypeId": 68441,
+        "name": "NeoForge",
+        "slug": "neoforge"
+      }
+    ],
+    "Client": [
+      {
+        "id": 9638,
+        "gameVersionTypeId": 75208,
+        "name": "Client",
+        "slug": "client"
+      }
+    ],
+    "Server": [
+      {
+        "id": 9639,
+        "gameVersionTypeId": 75208,
+        "name": "Server",
+        "slug": "server"
+      }
+    ]
+  },
+  "complete": true
+}

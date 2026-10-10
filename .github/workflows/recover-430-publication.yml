@@ -1,0 +1,142 @@
+# Publisher code is reviewed separately. The v4.3.0 tag,09a source and original ten JARs never move/rebuild.
+name: Recover RAS 4.3.0 publication
+on:
+  workflow_dispatch:
+    inputs:
+      helper_commit:
+        description: Exact reviewed helper commit (must equal dispatch main SHA)
+        required: true
+        type: string
+      receipt_run_id:
+        description: Latest attempted Publish or publisher-recovery journal (first is 38054427839)
+        required: true
+        type: string
+      dry_run:
+        description: Read-only real-catalog preflight; no journal changes or store POSTs
+        required: true
+        default: true
+        type: boolean
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: ras-release-publication
+  cancel-in-progress: false
+jobs:
+  recover:
+    if: ${{ github.repository == 'MeherBenSalem/RPG-Attribute-System' && github.actor_id == '74470806' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SOURCE_COMMIT: 09a559f500daa21ce6dbc60d80ea0b490a605915
+      SOURCE_RUN_ID: '38053545236'
+      RELEASE_VERSION: '4.3.0'
+      HELPER_COMMIT: ${{ inputs.helper_commit }}
+      RECEIPT_RUN_ID: ${{ inputs.receipt_run_id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Reject unreviewed helper identity and every job rerun
+        run: |
+          test "$GITHUB_REF" = refs/heads/main
+          test "$GITHUB_RUN_ATTEMPT" = 1
+          test "$HELPER_COMMIT" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$HELPER_COMMIT"
+          [[ "$HELPER_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$RECEIPT_RUN_ID" =~ ^[1-9][0-9]*$ ]]
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install pinned official workflow test dependency
+        run: python3 -m pip install PyYAML==6.0.3
+      - name: Verify publisher and recovery guards offline
+        run: |
+          python3 -B tests/test-430-publisher-recovery.py
+          python3 -B tests/test-release-recovery.py
+          python3 -B tests/test-release-artifacts.py
+          node --test tests/test-release-publisher.mjs tests/test-curseforge-release-catalog.mjs
+      - name: Validate exact source archives and latest attempted journal
+        id: provenance
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/validate-430-publisher-recovery.py --helper-commit "$HELPER_COMMIT" --receipt-run-id "$RECEIPT_RUN_ID" --current-run-id "$GITHUB_RUN_ID"
+      - uses: actions/checkout@v4
+        with:
+          ref: 09a559f500daa21ce6dbc60d80ea0b490a605915
+          path: original-release-source
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: '11670102800,11670187828,11669822989,11669718462,11669923021'
+          path: release-jars
+          merge-multiple: true
+          run-id: '38053545236'
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: '11670572653'
+          path: original-release-provenance
+          merge-multiple: true
+          run-id: '38053545236'
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ steps.provenance.outputs.receipt_artifact_id }}
+          path: prior-release-provenance
+          merge-multiple: true
+          run-id: ${{ inputs.receipt_run_id }}
+          github-token: ${{ github.token }}
+      - name: Restore exact original manifest and mandatory latest journal
+        run: python3 scripts/validate-430-publisher-recovery.py --helper-commit "$HELPER_COMMIT" --receipt-run-id "$RECEIPT_RUN_ID" --current-run-id "$GITHUB_RUN_ID" --prepare
+      - name: Reverify unchanged complete original09a binaries and metadata
+        run: |
+          test "$(git -C original-release-source rev-parse HEAD)" = "$SOURCE_COMMIT"
+          python3 scripts/verify-release-artifacts.py --directory release-jars --version "$RELEASE_VERSION" --commit "$SOURCE_COMMIT" --output reverified-release.json
+          python3 - <<'PY'
+          import hashlib,json,os,subprocess
+          from pathlib import Path
+          original=json.loads(Path('verified-release.json').read_text())
+          checked=json.loads(Path('reverified-release.json').read_text())
+          if original!=checked: raise SystemExit('Reverified inventory differs from immutable original09a manifest')
+          record=json.loads(Path('recovery-provenance.json').read_text())
+          record['helper_tree']=subprocess.check_output(['git','rev-parse','HEAD^{tree}'],text=True).strip()
+          record['original_metadata_sha256']={name:hashlib.sha256(Path('original-release-source',name).read_bytes()).hexdigest()
+            for name in ['scripts/release-dependencies.json','RPG-Attribute-System-4.3.0-PatchNotes.md']}
+          record['original_inventory_reverified']=True
+          Path('recovery-provenance.json').write_text(json.dumps(record,indent=2)+'\n')
+          PY
+      - name: Preflight both exact store inventories and strict real catalog IDs
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+        run: |
+          node --input-type=module - <<'JS'
+          import fs from 'node:fs';
+          import {main} from './scripts/publish-verified-release.mjs';
+          const result=await main(['--manifest','verified-release.json','--directory','release-jars',
+            '--dependencies','original-release-source/scripts/release-dependencies.json',
+            '--changelog','original-release-source/RPG-Attribute-System-4.3.0-PatchNotes.md',
+            '--state','publication-receipts.json','--platforms','both','--preflight-only','--require-public-modrinth']);
+          fs.writeFileSync('publisher-preflight.json',JSON.stringify(result,null,2)+'\n');
+          JS
+      - name: Publish exact verified original binaries
+        if: ${{ inputs.dry_run == false }}
+        env:
+          # CF only. Modrinth is verified read-only above; its ten receipt rows are retained.
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+        run: |
+          node scripts/publish-verified-release.mjs --manifest verified-release.json --directory release-jars --dependencies original-release-source/scripts/release-dependencies.json --changelog original-release-source/RPG-Attribute-System-4.3.0-PatchNotes.md --state publication-receipts.json --platforms curseforge
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: publisher-recovery-provenance-09a559f500daa21ce6dbc60d80ea0b490a605915
+          path: |
+            verified-release.json
+            publication-receipts.json
+            recovery-provenance.json
+            publisher-preflight.json
+          if-no-files-found: warn

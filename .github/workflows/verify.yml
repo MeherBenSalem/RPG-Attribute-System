@@ -91,7 +91,9 @@ jobs:
           python3 -B tests/test-release-artifacts.py
           python3 -B tests/test-release-recovery.py
           python3 -B tests/test-release-credentials.py
-          node --test tests/test-release-publisher.mjs
+          python3 -B tests/test-curseforge-catalog-diagnostic.py
+          python3 -B tests/test-430-publisher-recovery.py
+          node --test tests/test-release-publisher.mjs tests/test-curseforge-release-catalog.mjs
 
   config-studio-browser:
     runs-on: ubuntu-24.04
