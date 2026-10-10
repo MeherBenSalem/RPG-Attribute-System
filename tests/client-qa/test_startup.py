@@ -41,7 +41,8 @@ class StartupTests(unittest.TestCase):
         driver.game = driver.case = self.root
         driver.run_id = 'unit-test-only'
         driver.scale = 4
-        driver.pgid = 1234
+        driver.process_tracker = SimpleNamespace(verify_client=mock.Mock(return_value={'pidfd_bound': True}))
+        driver.environment['JAVA_HOME'] = str(self.root / 'unit-test-jdk')
         driver.launched_ms = self.now - 10
         driver.migration_phase = 'COPIED'
         driver.fixture_identity = {'run_id': driver.run_id, 'source_sha': driver.sha,
@@ -108,13 +109,13 @@ class StartupTests(unittest.TestCase):
                          'getwindowgeometry': 'WIDTH=1280\nHEIGHT=960\nX=0\nY=0\n'}
             return SimpleNamespace(stdout=responses.get(command[1], ''))
         with mock.patch.object(qa, 'read_json', side_effect=[None, self.data]), \
-                mock.patch.object(qa.os, 'getpgid', return_value=1234), mock.patch.object(qa, 'checked', side_effect=checked) as commands:
+                mock.patch.object(driver.process_tracker, 'verify_client', return_value={'pidfd_bound': True}), mock.patch.object(qa, 'checked', side_effect=checked) as commands:
             self.assertEqual(driver.find_window(), (0, 0))
             self.assertEqual(driver.window_id, '7654')
             self.assertIn(mock.call(['xdotool', 'search', '--onlyvisible', '--pid', '4321'], capture_output=True), commands.call_args_list)
             self.assertFalse(any('--name' in call.args[0] for call in commands.call_args_list))
 
-    def test_foreign_group_duplicate_window_and_pid_title_mismatch_fail(self):
+    def test_foreign_identity_duplicate_window_and_pid_title_mismatch_fail(self):
         for group, listing, pid, title in [(999, '7654\n', '4321', 'Minecraft* 26.3'),
                                           (1234, '7654\n9999\n', '4321', 'Minecraft* 26.3'),
                                           (1234, '7654\n', '9999', 'Minecraft* 26.3'),
@@ -122,16 +123,17 @@ class StartupTests(unittest.TestCase):
             with self.subTest(group=group, listing=listing, pid=pid, title=title):
                 def checked(command, **kwargs):
                     return SimpleNamespace(stdout={'search': listing, 'getwindowpid': pid, 'getwindowname': title}.get(command[1], ''))
+                driver = self.driver()
                 with mock.patch.object(qa, 'read_json', side_effect=[None, self.data]), \
-                        mock.patch.object(qa.os, 'getpgid', return_value=group), mock.patch.object(qa, 'checked', side_effect=checked):
-                    with self.assertRaises(qa.QaError): self.driver().find_window()
+                        mock.patch.object(driver.process_tracker, 'verify_client', return_value={'pidfd_bound': True}, side_effect=qa.process_identity.OwnershipError('foreign identity') if group != 1234 else None), mock.patch.object(qa, 'checked', side_effect=checked):
+                    with self.assertRaises(qa.QaError): driver.find_window()
 
     def test_actual_prompt_capture_precedes_single_physical_click(self):
         driver = self.driver()
         driver.startup_observed = ((self.data['screen_class'], self.data['screen_title_key'],
                                     self.data['screen_message_key'], 'none'), self.now - 1)
         events = []
-        with mock.patch.object(qa.os, 'getpgid', return_value=1234), \
+        with mock.patch.object(driver.process_tracker, 'verify_client', return_value={'pidfd_bound': True}), \
                 mock.patch.object(qa, 'read_json', return_value=self.data), \
                 mock.patch.object(driver, 'capture', side_effect=lambda *a, **kw: events.append('capture')), \
                 mock.patch.object(driver, 'find_window'), \
@@ -147,7 +149,7 @@ class StartupTests(unittest.TestCase):
             driver.startup_observed = ((self.data['screen_class'], self.data['screen_title_key'],
                                         self.data['screen_message_key'], 'none'), self.now - 1)
             if failure == 'identity': driver.fixture_identity['destination'] = '/other/world'
-            with mock.patch.object(qa.os, 'getpgid', return_value=1234), \
+            with mock.patch.object(driver.process_tracker, 'verify_client', return_value={'pidfd_bound': True}), \
                 mock.patch.object(qa, 'read_json', return_value=self.data), \
                     mock.patch.object(driver, 'capture', side_effect=qa.QaError('capture failed') if failure == 'capture' else None), \
                     mock.patch.object(qa, 'checked') as checked:
@@ -157,7 +159,7 @@ class StartupTests(unittest.TestCase):
     def test_unknown_prompt_is_captured_without_input_or_phase_change(self):
         driver = self.driver(); data = copy.deepcopy(self.data); data['screen_title_key'] = 'unknown'
         driver.startup_observed = ((data['screen_class'], 'unknown', data['screen_message_key'], 'none'), self.now - 1)
-        with mock.patch.object(qa.os, 'getpgid', return_value=1234), \
+        with mock.patch.object(driver.process_tracker, 'verify_client', return_value={'pidfd_bound': True}), \
                 mock.patch.object(qa, 'read_json', return_value=data), mock.patch.object(driver, 'capture') as capture, \
                 mock.patch.object(qa, 'checked') as checked:
             driver.observe_startup()
@@ -173,7 +175,7 @@ class StartupTests(unittest.TestCase):
                 driver = self.driver(); driver.launched_ms = self.now - 10000
                 data = copy.deepcopy(self.data); data[field] = value
                 with mock.patch.object(qa, 'read_json', return_value=data), \
-                        mock.patch.object(qa.os, 'getpgid', return_value=1234), \
+                        mock.patch.object(driver.process_tracker, 'verify_client', return_value={'pidfd_bound': True}), \
                         mock.patch.object(driver, 'capture') as capture, mock.patch.object(qa, 'checked') as checked:
                     driver.observe_startup(); driver.observe_startup()
                     capture.assert_not_called(); checked.assert_not_called()
@@ -188,7 +190,7 @@ class StartupTests(unittest.TestCase):
             with self.subTest(field=field, value=value, group=group):
                 driver = self.driver(); data = copy.deepcopy(self.data); data['window_flags'] = 8; data[field] = value
                 with mock.patch.object(qa, 'read_json', return_value=data), \
-                        mock.patch.object(qa.os, 'getpgid', return_value=group), \
+                        mock.patch.object(driver.process_tracker, 'verify_client', return_value={'pidfd_bound': True}, side_effect=qa.process_identity.OwnershipError('foreign identity') if group != 1234 else None), \
                         mock.patch.object(driver, 'capture') as capture, mock.patch.object(qa, 'checked') as checked:
                     with self.assertRaises(qa.QaError): driver.observe_startup()
                     capture.assert_not_called(); checked.assert_not_called()
@@ -198,7 +200,7 @@ class StartupTests(unittest.TestCase):
         first = copy.deepcopy(self.data); first['written_at_ms'] -= 1
         latest = copy.deepcopy(self.data); events = []
         with mock.patch.object(qa, 'read_json', side_effect=[hidden, first, latest, latest, latest]), \
-                mock.patch.object(qa.os, 'getpgid', return_value=1234), \
+                mock.patch.object(driver.process_tracker, 'verify_client', return_value={'pidfd_bound': True}), \
                 mock.patch.object(driver, 'capture', side_effect=lambda *a, **kw: events.append('capture')), \
                 mock.patch.object(driver, 'find_window'), \
                 mock.patch.object(qa, 'checked', side_effect=lambda command, **kw: events.append(command[1])):
@@ -223,7 +225,7 @@ class StartupTests(unittest.TestCase):
                     reads = [self.data, self.data, changed] if after_move else [self.data, changed]
                     events = []
                     with mock.patch.object(qa, 'read_json', side_effect=reads), \
-                            mock.patch.object(qa.os, 'getpgid', return_value=1234), \
+                            mock.patch.object(driver.process_tracker, 'verify_client', return_value={'pidfd_bound': True}), \
                             mock.patch.object(driver, 'capture', side_effect=lambda *a, **kw: events.append('capture')), \
                             mock.patch.object(driver, 'find_window'), \
                             mock.patch.object(qa, 'checked', side_effect=lambda command, **kw: events.append(command[1])):

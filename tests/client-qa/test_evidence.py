@@ -4,6 +4,8 @@ import importlib.util
 from pathlib import Path
 import tempfile
 import time
+import subprocess
+import sys
 import unittest
 from unittest import mock
 from types import SimpleNamespace
@@ -45,14 +47,53 @@ class EvidenceTests(unittest.TestCase):
         for timestamp in (float('nan'),float('inf'),float('-inf')):
             data=copy.deepcopy(self.data);data['written_at_ms']=timestamp
             with self.assertRaises(qa.QaError): self.validate(data)
-    def test_cleanup_terminates_owned_group_after_launcher_exit(self):
+    def test_cleanup_uses_verified_tracker_after_launcher_exit(self):
         driver=qa.Driver(Path('/unused-unit-test'), '1.21.1', Path('/unused-unit-test'), 'a'*40, None)
-        driver.pgid=43210
+        tracker=SimpleNamespace(cleanup=mock.Mock(return_value={'method':'verified-pidfd-descendants'}))
+        driver.process_tracker=tracker
         driver.process=SimpleNamespace(poll=lambda: 0)
-        with mock.patch.object(qa.os,'killpg') as kill, mock.patch.object(qa,'checked',return_value=SimpleNamespace(stdout='43210 Z\n')):
+        with mock.patch.object(qa.os,'killpg') as kill:
             driver.cleanup()
-            kill.assert_called_once_with(43210,qa.signal.SIGTERM)
-        self.assertIsNone(driver.pgid)
+            tracker.cleanup.assert_called_once_with()
+            kill.assert_not_called()
+        self.assertIsNone(driver.process_tracker)
+    def test_failed_launcher_binding_stops_only_its_explicit_popen_child(self):
+        driver=qa.Driver(Path('/unused-unit-test'), '26.3', Path('/unused-unit-test'), 'a'*40, None)
+        driver.process_tracker=SimpleNamespace(bind_launcher=mock.Mock(side_effect=qa.process_identity.OwnershipError('unit failure')))
+        process=subprocess.Popen([sys.executable,'-c','import time; time.sleep(60)'],
+                                 stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        driver.process=process
+        try:
+            with mock.patch.object(qa.os,'killpg') as group:
+                with self.assertRaises(qa.process_identity.OwnershipError): driver.bind_launched_process()
+                self.assertIsNotNone(process.poll()); group.assert_not_called()
+        finally:
+            if process.poll() is None: process.terminate(); process.wait(timeout=5)
+
+    def test_failed_launcher_binding_has_bounded_exact_child_kill_fallback(self):
+        driver=qa.Driver(Path('/unused-unit-test'), '26.3', Path('/unused-unit-test'), 'a'*40, None)
+        driver.process_tracker=SimpleNamespace(bind_launcher=mock.Mock(side_effect=qa.process_identity.OwnershipError('unit failure')))
+        process=SimpleNamespace(pid=43210,poll=lambda:None,terminate=mock.Mock(),kill=mock.Mock(),
+                                wait=mock.Mock(side_effect=[subprocess.TimeoutExpired('unit-child',10),0]))
+        driver.process=process
+        with mock.patch.object(qa.os,'killpg') as group:
+            with self.assertRaises(qa.process_identity.OwnershipError): driver.bind_launched_process()
+            process.terminate.assert_called_once(); process.kill.assert_called_once()
+            self.assertEqual(process.wait.call_args_list,[mock.call(timeout=10),mock.call(timeout=10)])
+            group.assert_not_called()
+
+    def test_evidence_copy_failure_cannot_skip_retained_process_cleanup_or_stdout_close(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary); (root/'options.txt').write_text('unit-test-only')
+            driver=qa.Driver(root,'26.3',root,'a'*40,None); driver.case=driver.game=root
+            tracker=SimpleNamespace(cleanup=mock.Mock(return_value={'method':'verified-pidfd-descendants'}))
+            driver.process_tracker=tracker; stream=mock.Mock(); driver.stdout=stream
+            with mock.patch.object(qa.shutil,'copyfile',side_effect=OSError('unit-copy-failure')):
+                with self.assertRaises(OSError): driver.cleanup()
+            tracker.cleanup.assert_called_once(); stream.close.assert_called_once()
+            self.assertIsNone(driver.process_tracker); self.assertIsNone(driver.stdout)
+            self.assertTrue((root/'process-cleanup.json').is_file())
+
     def test_rejects_pre_input_readiness(self):
         with self.assertRaises(qa.QaError):
             qa.validate_ready(self.data,run_id='test-run-only',sha='a'*40,mc='1.21.1',scale=4,
@@ -81,8 +122,9 @@ class EvidenceTests(unittest.TestCase):
         self.assertIn('start_new_session=True',driver)
         self.assertIn('timeout=kwargs.pop("timeout", 20)',driver)
         self.assertIn('self.last_action_ms = int(time.time()*1000)',driver)
-        self.assertIn('if self.pgid is not None:',driver)
-        self.assertIn('os.killpg(self.pgid',driver)
+        self.assertIn('if self.process_tracker is not None:',driver)
+        self.assertIn('self.process_tracker.cleanup()',driver)
+        self.assertNotIn('os.killpg(',driver)
         self.assertNotIn('pkill',driver)
         self.assertNotIn('eula=true',driver)
 

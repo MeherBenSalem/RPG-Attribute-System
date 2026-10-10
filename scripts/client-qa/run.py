@@ -3,6 +3,7 @@
 from __future__ import annotations
 import argparse
 import hashlib
+import importlib.util
 import json
 import math
 import os
@@ -10,13 +11,16 @@ from pathlib import Path
 import platform
 import re
 import shutil
-import signal
 import subprocess
 import time
 import uuid
 
 EXPECTED_IDS = {f"attribute_{i}" for i in range(1, 9)}
 WIDTH, HEIGHT = 1280, 960
+
+_process_spec = importlib.util.spec_from_file_location('ras_client_qa_process_identity', Path(__file__).with_name('process_identity.py'))
+process_identity = importlib.util.module_from_spec(_process_spec)
+_process_spec.loader.exec_module(process_identity)
 
 
 class QaError(RuntimeError):
@@ -366,7 +370,7 @@ class Driver:
     def __init__(self, repo, mc, output, sha, fixture, environment=None):
         self.repo, self.mc, self.output, self.sha, self.fixture = repo, mc, output, sha, fixture
         self.process = None
-        self.pgid = None
+        self.process_tracker = None
         self.game = None
         self.case = None
         self.window_id = None
@@ -379,6 +383,7 @@ class Driver:
         self.last_action_sequence = 0
         self.environment = dict(os.environ if environment is None else environment)
         self.fixture_identity = None
+        self.fixture_evidence_context = {}
         self.migration_phase = "UNVERIFIED"
         self.startup_observed = None
         self.startup_captures = set()
@@ -400,6 +405,7 @@ class Driver:
         last = "No fresh readiness file"
         while time.monotonic() < limit:
             self.check_renderer_failure()
+            if self.process_tracker is not None: self.process_tracker.refresh()
             if self.mc == "26.3" and state == "ALLOCATION" and self.migration_phase != "JOIN_REQUESTED":
                 self.observe_startup()
             failure = read_json(self.game / "ras-client-qa-final.json")
@@ -462,8 +468,21 @@ class Driver:
                         "clicked_translation_key": button["translation_key"]}, indent=2) + "\n")
 
     def require_owned_process(self, data):
-        if self.pgid is None or os.getpgid(data["client_pid"]) != self.pgid:
-            raise QaError("SDL client PID is outside the launched disposable process group")
+        if self.process_tracker is None:
+            raise QaError("No verified launcher process identity exists")
+        java_home = self.environment.get("JAVA_HOME")
+        if not java_home:
+            raise QaError("Exact JAVA_HOME executable is required for real-client ownership proof")
+        properties = {"ras.guiSelfTest": "true", "ras.loader": "fabric", "ras.mcVersion": self.mc,
+                      "ras.clientQa": "true", "ras.guiSelfTestHold": "true", "ras.clientQaRunId": self.run_id,
+                      "ras.clientQaSourceSha": self.sha, "ras.clientQaScale": str(self.scale)}
+        try:
+            proof = self.process_tracker.verify_client(data["client_pid"], executable=Path(java_home) / "bin/java",
+                                                       cwd=self.game, properties=properties)
+        except (process_identity.OwnershipError, OSError) as exc:
+            raise QaError("Actual client process proof failed: " + str(exc)) from exc
+        evidence = self.case / "client-process-identity.json"
+        if not evidence.exists(): evidence.write_text(json.dumps(proof, indent=2) + "\n")
 
     def revalidate_migration_prompt(self, captured, button):
         latest = read_json(self.game / "ras-client-qa-startup.json")
@@ -652,7 +671,37 @@ class Driver:
         if self.process.returncode != 0 or not final or final.get("status") != "STOPPED" or final.get("run_id") != self.run_id or final.get("source_sha") != self.sha:
             raise QaError(f"Missing clean run-specific stop evidence (exit {self.process.returncode})")
 
+    def bind_launched_process(self):
+        try:
+            return self.process_tracker.bind_launcher(self.process.pid)
+        except Exception:
+            # This Popen child was created directly here and is still owned/reaped by this object.
+            # Do not use an untrusted diagnostic PID or group when pidfd binding failed.
+            if self.process.poll() is None:
+                self.process.terminate()
+                try: self.process.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    self.process.kill()
+                    self.process.wait(timeout=10)
+            raise
+
     def cleanup(self):
+        try:
+            self.copy_evidence()
+        finally:
+            # Artifact failures cannot skip termination of retained, exact kernel identities.
+            try:
+                if self.process_tracker is not None:
+                    report = self.process_tracker.cleanup()
+                    if self.case: (self.case / "process-cleanup.json").write_text(json.dumps(report, indent=2) + "\n")
+                    if self.process and self.process.poll() is None: self.process.wait(timeout=10)
+            finally:
+                self.process_tracker = None
+                if self.stdout:
+                    self.stdout.close()
+                    self.stdout = None
+
+    def copy_evidence(self):
         if self.game and self.case:
             for relative in ("logs/latest.log", "ras-client-qa-ready.json", "ras-client-qa-startup.json", "ras-client-qa-final.json", "qa-world-join.json", "options.txt", "ras-client-qa-action.json", "ras-client-qa-gameplay.json"):
                 source = self.game / relative
@@ -662,27 +711,6 @@ class Driver:
             crashes = self.game / "crash-reports"
             if crashes.is_dir():
                 shutil.copytree(crashes, self.case / "crash-reports", dirs_exist_ok=True)
-        # The launcher may have exited while its client survives. Track and terminate only our own session group.
-        if self.pgid is not None:
-            try:
-                os.killpg(self.pgid, signal.SIGTERM)
-                limit = time.monotonic()+20
-                while time.monotonic() < limit:
-                    listing = checked(["ps", "-eo", "pgid=,stat="], capture_output=True, timeout=2).stdout
-                    live = any(int(parts[0]) == self.pgid and not parts[1].startswith("Z")
-                               for line in listing.splitlines() if len(parts := line.split()) == 2)
-                    if not live: break
-                    time.sleep(.2)
-                else:
-                    os.killpg(self.pgid, signal.SIGKILL)
-                if self.process and self.process.poll() is None: self.process.wait(timeout=10)
-            except ProcessLookupError:
-                pass
-            finally:
-                self.pgid = None
-        if self.stdout:
-            self.stdout.close()
-            self.stdout = None
 
     def launch(self, scale):
         self.scale = scale
@@ -710,7 +738,7 @@ class Driver:
                 if world_inventory(destination) != inventory:
                     raise QaError("Disposable world copy differs from its verified source inventory")
                 self.fixture_identity = {"run_id": self.run_id, "source_sha": self.sha,
-                    "destination": str(destination.resolve()), "world_files": inventory}
+                    "destination": str(destination.resolve()), "world_files": inventory, **self.fixture_evidence_context}
                 self.migration_phase = "COPIED"
                 (self.case / "fixture-copy-identity.json").write_text(json.dumps(self.fixture_identity, indent=2) + "\n")
         environment = self.environment.copy()
@@ -724,10 +752,12 @@ class Driver:
         (self.case / "launch.json").write_text(json.dumps({"run_id":self.run_id,"source_sha":self.sha,"mc":self.mc,
             "loader":"fabric","requested_gui_scale":scale,"launched_at_ms":self.launched_ms,"physical_size":[WIDTH,HEIGHT],
             "graphics_backend":environment.get("RAS_GRAPHICS_BACKEND", "opengl"),
-            "capture":"native-x11grab-without-pointer-overlay","tutorial_step":"none"},indent=2)+"\n")
+            "capture":"native-x11grab-without-pointer-overlay","tutorial_step":"none", **self.fixture_evidence_context},indent=2)+"\n")
+        self.process_tracker = process_identity.ProcessTracker()
         self.process = subprocess.Popen(["bash","./gradlew",":fabric:runClientSelfTest","--no-daemon"], cwd=self.repo/self.mc,
                                         env=environment, stdout=self.stdout, stderr=subprocess.STDOUT, start_new_session=True)
-        self.pgid = self.process.pid
+        launcher = self.bind_launched_process()
+        (self.case / "launcher-process-identity.json").write_text(json.dumps(launcher, indent=2) + "\n")
         try:
             ready = self.wait_ready("ALLOCATION", seconds=1000)
             self.stable_capture("01-allocation", ready)
@@ -769,7 +799,7 @@ class Driver:
             self.exercise_gameplay(reopened)
             self.stop()
             (self.case / "driver-result.json").write_text(json.dumps({"status":"PASS", "run_id":self.run_id,
-                "source_sha":self.sha,"mc":self.mc,"loader":"fabric","gui_scale":scale,
+                "source_sha":self.sha,"mc":self.mc,"loader":"fabric","gui_scale":scale, **self.fixture_evidence_context,
                 "paging_exercised":self.paging_exercised,
                 "human_pixel_review":"required","coverage":["allocation","keyboard_focus","combat","overview_attributes",
                 "overview_totals","available_page_next_back","back","escape","keybind_reopen", "real_ui_allocation",
@@ -797,7 +827,16 @@ def main():
     parser.add_argument("--source-sha", required=True)
     parser.add_argument("--fixture-input", type=Path)
     parser.add_argument("--fixture-output", type=Path)
+    parser.add_argument("--diagnostic-pr48-fixture", action="store_true",
+                        help="PR48-only pinned producer reuse; never native acceptance")
     args=parser.parse_args()
+    diagnostic_environment = None
+    diagnostic_proof = None
+    if args.diagnostic_pr48_fixture:
+        if args.workspace != "26.3" or args.fixture_input or args.fixture_output:
+            raise QaError("PR48 diagnostic reuse requires 26.3 and forbids normal fixture input/output")
+        diagnostic_environment = dict(os.environ)
+        os.environ.pop("GITHUB_TOKEN", None)  # Never pass the artifact-read token to git, graphics or Minecraft.
     repo=Path(__file__).resolve().parents[2]
     sha=checked(["git","rev-parse","HEAD"],cwd=repo,capture_output=True).stdout.strip()
     if args.source_sha != sha:
@@ -807,6 +846,16 @@ def main():
     for tool in ("xdotool","ffmpeg"):
         if not shutil.which(tool): raise QaError(f"Missing real-client QA tool: {tool}")
     args.output.mkdir(parents=True,exist_ok=False)
+    if args.diagnostic_pr48_fixture:
+        import diagnostic_fixture
+        try:
+            fixture, diagnostic_proof = diagnostic_fixture.prepare_fixture(
+                repo, args.source_sha, args.output, validate_fixture, diagnostic_environment)
+        except Exception as exc:
+            (args.output / "diagnostic-fixture-failure.txt").write_text(str(exc) + "\n")
+            raise
+        finally:
+            diagnostic_environment.pop("GITHUB_TOKEN", None)
     try:
         environment = prepare_renderer(args.workspace, args.output)
     except Exception as exc:
@@ -816,9 +865,12 @@ def main():
         raise QaError("The bootstrap run must generate its own fresh demo world")
     if args.workspace == "26.3" and args.fixture_output:
         raise QaError("Only the actual 1.21.1 bootstrap may export the demo fixture")
-    fixture=validate_fixture(args.fixture_input,args.source_sha) if args.fixture_input else None
+    if not args.diagnostic_pr48_fixture:
+        fixture=validate_fixture(args.fixture_input,args.source_sha) if args.fixture_input else None
     if args.workspace=="26.3" and fixture is None: raise QaError("26.3 requires this workflow's live-client-generated fixture")
     driver=Driver(repo,args.workspace,args.output,args.source_sha,fixture,environment)
+    if diagnostic_proof is not None:
+        driver.fixture_evidence_context = diagnostic_fixture.evidence_context(diagnostic_proof)
     for scale in (2,3,4):
         try:
             generated = driver.launch(scale)
@@ -838,7 +890,12 @@ def main():
             raise
         finally:
             driver.cleanup()
-    print("PASS actual client navigation/screenshots (human pixel review remains required)")
+            if diagnostic_proof is not None and driver.case:
+                diagnostic_fixture.write_evidence_manifest(driver.case, args.source_sha, driver.run_id, diagnostic_proof)
+    if diagnostic_proof is not None:
+        print("PASS PR48-only 26.3 diagnostic; full same-source native acceptance and human pixel review remain required")
+    else:
+        print("PASS actual client navigation/screenshots (human pixel review remains required)")
 
 
 if __name__ == "__main__":

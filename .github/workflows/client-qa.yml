@@ -100,3 +100,57 @@ jobs:
           path: ${{ runner.temp }}/ras-client-qa-263/
           if-no-files-found: warn
           retention-days: 14
+
+
+  # Auxiliary PR48 diagnosis only. It cannot replace either normal native job.
+  client-263-diagnostic:
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.number == 48 &&
+      github.repository == 'MeherBenSalem/RPG-Attribute-System' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.base.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref == 'feat/ras-4.3.0-progression-studio'
+    name: PR48 26.3 diagnostic only (not native acceptance)
+    continue-on-error: true  # Auxiliary failure must not change the normal native gate.
+    permissions:
+      contents: read
+      actions: read  # Ephemeral, diagnostic-job-only access to the pinned public artifact.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      RAS_GRAPHICS_BACKEND: vulkan
+      SDL_VIDEO_DRIVER: x11
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.QA_SOURCE_SHA }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Validate diagnostic and unchanged evidence/watchdog code
+        run: python3 -m unittest discover -s tests/client-qa -v
+      - name: Prepare real lavapipe Vulkan X11 client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb xauth mesa-utils libgl1-mesa-dri libglx-mesa0 mesa-vulkan-drivers libvulkan1 vulkan-tools libxrandr2 libxinerama1 libxcursor1 libxi6 libasound2t64 ffmpeg xdotool python3-pil
+      - name: Diagnose 26.3 with the exact verified 891 producer fixture
+        env:
+          # Existing ephemeral token, read-only job scope. A denied artifact read fails closed.
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          xvfb-run -a -s '-screen 0 1280x960x24 +extension GLX -nolisten tcp' \
+            python3 scripts/client-qa/run.py --workspace 26.3 --source-sha "$QA_SOURCE_SHA" \
+            --output "$RUNNER_TEMP/ras-client-qa-263-diagnostic" --diagnostic-pr48-fixture
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: diagnostic-only-client-evidence-26.3-pr48
+          path: ${{ runner.temp }}/ras-client-qa-263-diagnostic/
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 3
