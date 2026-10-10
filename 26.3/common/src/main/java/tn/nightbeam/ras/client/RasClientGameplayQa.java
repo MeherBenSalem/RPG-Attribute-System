@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Difficulty;
@@ -128,9 +129,18 @@ final class RasClientGameplayQa {
                                 result.addProperty("invalid_reload_retained_previous_rules", true);
                             }
                             server.setDifficulty(Difficulty.HARD, true);
-                            var level = player.serverLevel();
-                            var victim = EntityType.SKELETON.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
-                            if (victim == null) throw new IllegalStateException("Real Minecraft Skeleton factory returned no entity");
+                            var level = (net.minecraft.server.level.ServerLevel) player.level();
+                            EntityType<?> skeleton = null;
+                            for (EntityType<?> type : BuiltInRegistries.ENTITY_TYPE) {
+                                if (BuiltInRegistries.ENTITY_TYPE.getKey(type).toString().equals("minecraft:skeleton")) {
+                                    skeleton = type;
+                                    break;
+                                }
+                            }
+                            if (skeleton == null || !(skeleton.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND)
+                                    instanceof net.minecraft.world.entity.Mob victim)) {
+                                throw new IllegalStateException("Real registered Minecraft Skeleton factory returned no mob");
+                            }
                             victim.setNoAi(true);
                             victim.setPos(player.getX() + 2, player.getY(), player.getZ());
                             var armor = victim.getAttribute(Attributes.ARMOR);
