@@ -137,12 +137,70 @@ export function isPubliclyReleased(platform, record) {
   return false;
 }
 
-async function requestJson(url, options = {}) {
-  const response = await fetch(url, {...options, redirect: 'error', signal: AbortSignal.timeout(options.method === 'POST' ? 60000 : 30000)});
-  const text = await response.text();
-  if (!response.ok) throw new Error(`HTTP${response.status} from ${new URL(url).hostname}`);
-  try { return text ? JSON.parse(text) : null; }
-  catch { throw new Error(`Malformed JSON from ${new URL(url).hostname}`); }
+const errorTypes=new Set(['Error','TypeError','RangeError','SyntaxError','TimeoutError','AbortError']);
+const transportCodes=new Set(['ECONNRESET','ECONNREFUSED','ENOTFOUND','EAI_AGAIN','ETIMEDOUT',
+  'UND_ERR_CONNECT_TIMEOUT','UND_ERR_HEADERS_TIMEOUT','UND_ERR_BODY_TIMEOUT','UND_ERR_SOCKET']);
+const valueType=value=>value===null?'null':Array.isArray(value)?'array':typeof value;
+function requestFailure(stage, facts, error) {
+  // Never retain arbitrary error messages, causes, URLs, headers or body text:
+  // any of those can echo authentication values. Fixed enums and shapes only.
+  const diagnostic={schema_version:1,stage,...facts,
+    error_type:errorTypes.has(error?.name)?error.name:'Error',
+    transport_code:transportCodes.has(error?.code)?error.code:
+      transportCodes.has(error?.cause?.code)?error.cause.code:null,
+    transmission_outcome:'unknown'};
+  const failure=new Error(`Store request failed at ${stage}${facts.http_status?` (HTTP${facts.http_status})`:''}`);
+  failure.requestDiagnostic=diagnostic;
+  return failure;
+}
+
+async function requestJson(url, options = {}, uploadIdValidator = null) {
+  const facts={method:options.method==='POST'?'POST':'GET'};
+  let response;
+  try {response=await fetch(url, {...options, redirect: 'error', signal: AbortSignal.timeout(options.method === 'POST' ? 60000 : 30000)});}
+  catch(error) {throw requestFailure('fetch',facts,error);}
+  facts.http_status=response.status;
+  const contentType=response.headers.get('content-type')?.split(';')[0].trim().toLowerCase();
+  facts.response_content_type=['application/json','text/html','text/plain'].includes(contentType)?contentType:contentType?'other':'absent';
+  let body;
+  try {body=await response.text();}
+  catch(error) {throw requestFailure('response-body',facts,error);}
+  facts.response_bytes=Buffer.byteLength(body);
+  let payload;
+  try {payload=body?JSON.parse(body):null;facts.response_json_type=valueType(payload);}
+  catch(error) {facts.response_json_type='invalid';if(response.ok) throw requestFailure('response-json',facts,error);}
+  if (payload && typeof payload==='object' && !Array.isArray(payload)) {
+    facts.response_id_type=Object.hasOwn(payload,'id')?valueType(payload.id):'absent';
+    facts.response_has_error=Object.hasOwn(payload,'error');
+    facts.response_has_message=Object.hasOwn(payload,'message');
+  }
+  if (!response.ok) throw requestFailure('http-status',facts);
+  if (uploadIdValidator && !uploadIdValidator(payload?.id)) throw requestFailure('upload-id',facts);
+  return payload;
+}
+
+function curseForgeAudit(existing, entries, version, changelog, ids, dependencies, state, journalBytes, isolation) {
+  return {schema_version:1,observed_at:new Date().toISOString(),project_id:1079687,
+    complete_core_inventory:true,inventory_count:existing.length,
+    author_pending_upload_visibility:'not-established',
+    journal_sha256:journalBytes===null?null:crypto.createHash('sha256').update(journalBytes).digest('hex'),
+    entries:entries.map(entry=>{
+      const descriptor=curseForgeDescriptor(entry,version,changelog,ids,dependencies);
+      const id=matchingCurseForge(existing,entry,descriptor,dependencies);
+      const remote=existing.find(file=>file.id===id);
+      const receipt=state.uploads.find(row=>row.platform==='curseforge'&&row.file===entry.file_name);
+      return {file_name:entry.file_name,expected_sha1:entry.sha1,expected_sha256:entry.sha256,
+        expected_required_dependency_ids:entry.required_mod_ids.map(dep=>dependencies[dep].curseforge_id).sort((a,b)=>a-b),
+        journal_status:receipt?.status??null,journal_id:curseForgeId(receipt?.id)?receipt.id:null,
+        isolation_class:isolation?(receipt?'excluded-journaled':remote?'never-attempted-exact-existing':'never-attempted-post-candidate'):null,
+        match:remote?{id,mod_id:remote.modId,file_name:remote.fileName,display_name:remote.displayName,
+          sha1:remote.hashes.find(hash=>hash.algo===1).value.toLowerCase(),
+          required_dependency_ids:remote.dependencies.filter(dep=>dep.relationType===3).map(dep=>dep.modId).sort((a,b)=>a-b),
+          target_tags:remote.gameVersions.filter(tag=>[entry.minecraft,{fabric:'Fabric',forge:'Forge',neoforge:'NeoForge'}[entry.loader],'Client','Server'].includes(tag)),
+          release_type:remote.releaseType,file_status:Number.isInteger(remote.fileStatus)?remote.fileStatus:null,
+          is_available:typeof remote.isAvailable==='boolean'?remote.isAvailable:null,
+          publicly_released:isPubliclyReleased('curseforge',remote)}:null};
+    })};
 }
 
 async function curseForgeFiles(projectId, apiKey) {
@@ -183,6 +241,7 @@ export async function main(argv=process.argv.slice(2)) {
     if (argv[i]==='--dry-run') args.dryRun=true;
     else if (argv[i]==='--preflight-only') args.preflightOnly=true;
     else if (argv[i]==='--require-public-modrinth') args.requirePublicModrinth=true;
+    else if (argv[i]==='--isolate-never-attempted-curseforge') args.isolateNeverAttemptedCurseForge=true;
     else if (['--manifest','--directory','--dependencies','--changelog','--state','--platforms'].includes(argv[i])) args[argv[i].slice(2)]=argv[++i];
     else throw new Error('Unknown argument: '+argv[i]);
   }
@@ -192,6 +251,8 @@ export async function main(argv=process.argv.slice(2)) {
   if (!['both','modrinth','curseforge'].includes(platforms)) throw new Error('Unknown platforms');
   if (args.requirePublicModrinth && (!args.preflightOnly || platforms==='curseforge'))
     throw new Error('Public Modrinth recovery guard requires credentialed Modrinth preflight');
+  if (args.isolateNeverAttemptedCurseForge && (args.dryRun || platforms==='modrinth' || (!args.preflightOnly && platforms!=='curseforge')))
+    throw new Error('Isolation requires credentialed read-only preflight or CurseForge-only live publication');
   const manifest=JSON.parse(fs.readFileSync(args.manifest,'utf8'));
   const entries=validatePlan(manifest,args.directory);
   const dependencies=JSON.parse(fs.readFileSync(args.dependencies,'utf8'));
@@ -199,7 +260,8 @@ export async function main(argv=process.argv.slice(2)) {
   const version=manifest.release_version;
   const projectMr=process.env.MODRINTH_ID||'d85UTOuq', projectCf=process.env.CURSEFORGE_ID||'1079687';
   if (projectMr!=='d85UTOuq' || projectCf!=='1079687') throw new Error('Unexpected release destination');
-  const state=fs.existsSync(args.state) ? JSON.parse(fs.readFileSync(args.state,'utf8'))
+  const journalBytes=fs.existsSync(args.state)?fs.readFileSync(args.state):null;
+  const state=journalBytes!==null ? JSON.parse(journalBytes.toString('utf8'))
     : {schema_version:1,source_commit:manifest.source_commit,version,uploads:[]};
   if (state.schema_version!==1 || state.source_commit!==manifest.source_commit || state.version!==version || !Array.isArray(state.uploads))
     throw new Error('Invalid publication journal/source/version; reconcile before retry');
@@ -231,6 +293,29 @@ export async function main(argv=process.argv.slice(2)) {
     if (row && !row.status.startsWith('dry-run'))
       throw new Error('Prior upload is pending/submitted or missing from inventory; reconcile before retry: '+entry.file_name);
   };
+  let isolation=null;
+  if (args.isolateNeverAttemptedCurseForge) {
+    const firstFile='rpg_attribute_system-fabric-1.20.1-4.3.0.jar';
+    const first=entries.find(entry=>entry.file_name===firstFile),receipt=first&&prior('curseforge',first);
+    const mrRows=state.uploads.filter(row=>row.platform==='modrinth');
+    if (version!=='4.3.0' || manifest.source_commit!=='09a559f500daa21ce6dbc60d80ea0b490a605915'
+        || !receipt || receipt.status!=='uncertain' || Object.hasOwn(receipt,'id') || receipt.sha256!==first.sha256
+        || mrRows.length!==10 || entries.some(entry=>{const row=prior('modrinth',entry);
+          return !row || !['verified','verified-existing'].includes(row.status) || !modrinthId(row.id);}))
+      throw new Error('Isolation requires immutable09a4.3.0, ten preserved verified Modrinth rows and the unchanged first uncertain CurseForge receipt without ID');
+    // No prior journal status, including a dry-run status, is permission for a
+    // POST here. Every journaled target is frozen and excluded from this loop.
+    isolation={scope:'never-attempted-curseforge',frozen_first_file:firstFile,
+      selected_targets:entries.filter(entry=>!prior('curseforge',entry)).map(entry=>entry.file_name),
+      excluded_targets:entries.filter(entry=>prior('curseforge',entry)).map(entry=>({
+        file_name:entry.file_name,reason:entry.file_name===firstFile?'frozen-first-uncertain':'prior-journal-entry',
+        journal_status:prior('curseforge',entry).status}))};
+    isolation.selected_count=isolation.selected_targets.length;
+    isolation.excluded_count=isolation.excluded_targets.length;
+    isolation.unresolved_excluded_count=isolation.excluded_targets.filter(row=>!['verified','verified-existing'].includes(row.journal_status)).length;
+    if (!args.preflightOnly && isolation.selected_count===0)
+      throw new Error('No never-attempted CurseForge targets remain; use read-only preflight and retain every unresolved receipt');
+  }
   if (!args.dryRun && !args.preflightOnly) {state.publicly_verified=false;save();}
   for (const entry of entries) for (const id of entry.required_mod_ids) {
     if (!dependencies[id]?.modrinth || !dependencies[id]?.curseforge_slug || !Number.isInteger(dependencies[id]?.curseforge_id))
@@ -264,7 +349,9 @@ export async function main(argv=process.argv.slice(2)) {
   }
   if (args.preflightOnly) {
     console.log(`Read-only preflight verified release ${version}: ${entries.length} artifacts; no journal changes or store writes`);
-    return {preflight_verified:true,source_commit:manifest.source_commit,version,platforms,curseforge_ids:cfIds,curseforge_catalog:cfCatalogEvidence};
+    return {preflight_verified:true,source_commit:manifest.source_commit,version,platforms,curseforge_ids:cfIds,curseforge_catalog:cfCatalogEvidence,
+      publication_scope:isolation?'never-attempted-curseforge':'full',curseforge_isolation:isolation,
+      curseforge_inventory:platforms==='modrinth'?null:curseForgeAudit(cfInventory,entries,version,changelog,cfIds,dependencies,state,journalBytes,isolation)};
   }
   if (platforms!=='curseforge') {
     let existing=mrInventory;
@@ -281,11 +368,11 @@ export async function main(argv=process.argv.slice(2)) {
       record('modrinth',entry,'in-flight'); // Durable before the POST, including lost-response cases.
       let created;
       try {
-        created=await requestJson('https://api.modrinth.com/v2/version',{method:'POST',headers:{Authorization:process.env.MODRINTH_TOKEN},body:form});
-        if (!modrinthId(created?.id)) throw new Error('Missing/malformed Modrinth upload ID');
+        created=await requestJson('https://api.modrinth.com/v2/version',{method:'POST',headers:{Authorization:process.env.MODRINTH_TOKEN},body:form},modrinthId);
       } catch (error) {
-        record('modrinth',entry,'uncertain');
-        throw new Error('Uncertain Modrinth upload outcome; reconcile before retry: '+entry.file_name);
+        const diagnostic=error.requestDiagnostic??{schema_version:1,stage:'unknown',error_type:'Error',transmission_outcome:'unknown'};
+        record('modrinth',entry,'uncertain',{request_diagnostic:diagnostic});
+        throw new Error('Uncertain Modrinth upload outcome; reconcile before retry: '+entry.file_name+'; '+JSON.stringify(diagnostic));
       }
       record('modrinth',entry,'submitted',{id:created.id});
       existing=await requestJson(`https://api.modrinth.com/v2/project/${projectMr}/version`,{headers:{Authorization:process.env.MODRINTH_TOKEN}});
@@ -298,6 +385,9 @@ export async function main(argv=process.argv.slice(2)) {
     let existing=cfInventory;
     const ids=cfIds;
     for (const entry of entries) {
+      // Frozen entries are skipped before even the existing-file reconciliation
+      // branch. Isolation cannot change their status/ID/diagnostic or POST them.
+      if (isolation && !isolation.selected_targets.includes(entry.file_name)) continue;
       const descriptor=curseForgeDescriptor(entry,version,changelog,ids,dependencies);
       const duplicate=matchingCurseForge(existing,entry,descriptor,dependencies);
       if (duplicate) {const remote=existing.find(item=>item.id===duplicate);record('curseforge',entry,isPubliclyReleased('curseforge',remote)?'verified-existing':'pending-publication',{id:duplicate,provider_status:remote?.fileStatus});continue;}
@@ -310,11 +400,11 @@ export async function main(argv=process.argv.slice(2)) {
       let created;
       try {
         created=await requestJson(`https://minecraft.curseforge.com/api/projects/${projectCf}/upload-file`,
-          {method:'POST',headers:{'X-Api-Token':process.env.CURSEFORGE_TOKEN},body:form});
-        if (!curseForgeId(created?.id)) throw new Error('Missing/malformed CurseForge upload ID');
+          {method:'POST',headers:{'X-Api-Token':process.env.CURSEFORGE_TOKEN},body:form},curseForgeId);
       } catch (error) {
-        record('curseforge',entry,'uncertain');
-        throw new Error('Uncertain CurseForge upload outcome; reconcile before retry: '+entry.file_name);
+        const diagnostic=error.requestDiagnostic??{schema_version:1,stage:'unknown',error_type:'Error',transmission_outcome:'unknown'};
+        record('curseforge',entry,'uncertain',{request_diagnostic:diagnostic});
+        throw new Error('Uncertain CurseForge upload outcome; reconcile before retry: '+entry.file_name+'; '+JSON.stringify(diagnostic));
       }
       record('curseforge',entry,'submitted',{id:created.id});
       existing=await curseForgeFiles(projectCf,process.env.CURSEFORGE_API_KEY);
@@ -328,6 +418,15 @@ export async function main(argv=process.argv.slice(2)) {
   state.publicly_verified=!args.dryRun && selected.length===(platforms==='both'?20:10)
     && selected.every(row=>['verified','verified-existing'].includes(row.status));
   save();
+  if (isolation) {
+    const isolatedVerified=isolation.selected_targets.every(file=>{
+      const row=state.uploads.find(row=>row.platform==='curseforge'&&row.file===file);
+      return row && ['verified','verified-existing'].includes(row.status);
+    });
+    if (!isolatedVerified) throw new Error('Isolated CurseForge targets await publication; retain latest receipts without retrying journaled targets');
+    console.log(`Verified isolated CurseForge targets: ${isolation.selected_targets.length}; full release remains unresolved`);
+    return {...state,publication_scope:isolation.scope,curseforge_isolation:isolation,isolated_curseforge_verified:true};
+  }
   if (!args.dryRun && !state.publicly_verified) throw new Error('Release artifacts submitted but public listing/approval is pending; retain receipts and resume read-only reconciliation');
   console.log(`${args.dryRun?'Dry-run':'Verified'} release ${version}: ${state.uploads.length} platform entries`);
   return state;

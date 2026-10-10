@@ -16,6 +16,11 @@ on:
         required: true
         default: true
         type: boolean
+      isolate_never_attempted_curseforge:
+        description: Explicitly freeze all journaled CF targets and process only never-attempted targets; full release remains unresolved
+        required: true
+        default: false
+        type: boolean
 permissions:
   contents: read
   actions: read
@@ -112,14 +117,20 @@ jobs:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+          ISOLATE_NEVER_ATTEMPTED_CURSEFORGE: ${{ inputs.isolate_never_attempted_curseforge }}
         run: |
           node --input-type=module - <<'JS'
           import fs from 'node:fs';
           import {main} from './scripts/publish-verified-release.mjs';
-          const result=await main(['--manifest','verified-release.json','--directory','release-jars',
+          const args=['--manifest','verified-release.json','--directory','release-jars',
             '--dependencies','original-release-source/scripts/release-dependencies.json',
             '--changelog','original-release-source/RPG-Attribute-System-4.3.0-PatchNotes.md',
-            '--state','publication-receipts.json','--platforms','both','--preflight-only','--require-public-modrinth']);
+            '--state','publication-receipts.json','--platforms','both','--preflight-only','--require-public-modrinth'];
+          if(process.env.ISOLATE_NEVER_ATTEMPTED_CURSEFORGE==='true') args.push('--isolate-never-attempted-curseforge');
+          const before=fs.readFileSync('publication-receipts.json');
+          const result=await main(args);
+          if(!before.equals(fs.readFileSync('publication-receipts.json'))) throw new Error('Read-only preflight changed the restored journal');
+          result.journal_unchanged=true;
           fs.writeFileSync('publisher-preflight.json',JSON.stringify(result,null,2)+'\n');
           JS
       - name: Publish exact verified original binaries
@@ -128,8 +139,11 @@ jobs:
           # CF only. Modrinth is verified read-only above; its ten receipt rows are retained.
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+          ISOLATE_NEVER_ATTEMPTED_CURSEFORGE: ${{ inputs.isolate_never_attempted_curseforge }}
         run: |
-          node scripts/publish-verified-release.mjs --manifest verified-release.json --directory release-jars --dependencies original-release-source/scripts/release-dependencies.json --changelog original-release-source/RPG-Attribute-System-4.3.0-PatchNotes.md --state publication-receipts.json --platforms curseforge
+          args=()
+          if [ "$ISOLATE_NEVER_ATTEMPTED_CURSEFORGE" = true ]; then args+=(--isolate-never-attempted-curseforge); fi
+          node scripts/publish-verified-release.mjs --manifest verified-release.json --directory release-jars --dependencies original-release-source/scripts/release-dependencies.json --changelog original-release-source/RPG-Attribute-System-4.3.0-PatchNotes.md --state publication-receipts.json --platforms curseforge "${args[@]}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

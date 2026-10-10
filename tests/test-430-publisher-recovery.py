@@ -172,9 +172,16 @@ class RecoveryTests(unittest.TestCase):
         self.assertLess(names.index('Preflight both exact store inventories and strict real catalog IDs'), names.index(helper.HELPER_STEP))
         preflight = next(row for row in steps if row.get('name') == 'Preflight both exact store inventories and strict real catalog IDs')
         self.assertIn('--require-public-modrinth', preflight['run'])
+        self.assertIn("before.equals(fs.readFileSync('publication-receipts.json'))", preflight['run'])
+        self.assertIn('result.journal_unchanged=true', preflight['run'])
+        isolation = workflow['on']['workflow_dispatch']['inputs']['isolate_never_attempted_curseforge'] if 'on' in workflow else workflow[True]['workflow_dispatch']['inputs']['isolate_never_attempted_curseforge']
+        self.assertFalse(isolation['default']); self.assertEqual(isolation['type'], 'boolean')
+        self.assertIn('--isolate-never-attempted-curseforge', preflight['run'])
         live = next(row for row in steps if row.get('name') == helper.HELPER_STEP)
         self.assertEqual(live['if'], '${{ inputs.dry_run == false }}')
         self.assertNotIn('MODRINTH_TOKEN', live['env']); self.assertIn('--platforms curseforge', live['run'])
+        self.assertIn('--isolate-never-attempted-curseforge', live['run'])
+        self.assertEqual(live['env']['ISOLATE_NEVER_ATTEMPTED_CURSEFORGE'], '${{ inputs.isolate_never_attempted_curseforge }}')
         downloads = [row for row in steps if row.get('uses') == 'actions/download-artifact@v4']
         self.assertEqual({int(value) for value in downloads[0]['with']['artifact-ids'].split(',')}, {row['id'] for row in LOCK['source_artifacts']})
         self.assertTrue(all(row['with']['merge-multiple'] is True for row in downloads))
