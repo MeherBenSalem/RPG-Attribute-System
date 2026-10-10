@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { pathToFileURL } from 'node:url';
+import { curseForgeIds } from './curseforge-release-catalog.mjs';
 
 const modrinthId = id => typeof id === 'string' && /^[0-9A-Za-z]+$/.test(id);
 const curseForgeId = id => Number.isSafeInteger(id) && id > 0 && id <= 0xffffffff;
@@ -137,7 +138,7 @@ export function isPubliclyReleased(platform, record) {
 }
 
 async function requestJson(url, options = {}) {
-  const response = await fetch(url, {...options, signal: AbortSignal.timeout(options.method === 'POST' ? 60000 : 30000)});
+  const response = await fetch(url, {...options, redirect: 'error', signal: AbortSignal.timeout(options.method === 'POST' ? 60000 : 30000)});
   const text = await response.text();
   if (!response.ok) throw new Error(`HTTP${response.status} from ${new URL(url).hostname}`);
   try { return text ? JSON.parse(text) : null; }
@@ -176,30 +177,21 @@ async function curseForgeFiles(projectId, apiKey) {
   throw new Error('CurseForge file inventory exceeds safe bound; cannot deduplicate');
 }
 
-async function curseForgeIds(token, entries) {
-  const payload=await requestJson('https://minecraft.curseforge.com/api/game/versions',{headers:{'X-Api-Token':token}});
-  const flat=Array.isArray(payload)?payload:payload?.data;
-  if (!Array.isArray(flat)) throw new Error('Malformed CurseForge version catalog');
-  function exact(name) {
-    const matches=flat.filter(version=>version.name===name);
-    if (matches.length!==1 || !Number.isInteger(matches[0].id)) throw new Error('Missing/ambiguous CurseForge version: '+name);
-    return matches[0].id;
-  }
-  const ids={client:exact('Client'),server:exact('Server'),loader:{fabric:exact('Fabric'),forge:exact('Forge'),neoforge:exact('NeoForge')},minecraft:{}};
-  for (const entry of entries) ids.minecraft[entry.minecraft]=exact(entry.minecraft);
-  return ids;
-}
-
 export async function main(argv=process.argv.slice(2)) {
   const args={};
   for (let i=0;i<argv.length;i++) {
     if (argv[i]==='--dry-run') args.dryRun=true;
+    else if (argv[i]==='--preflight-only') args.preflightOnly=true;
+    else if (argv[i]==='--require-public-modrinth') args.requirePublicModrinth=true;
     else if (['--manifest','--directory','--dependencies','--changelog','--state','--platforms'].includes(argv[i])) args[argv[i].slice(2)]=argv[++i];
     else throw new Error('Unknown argument: '+argv[i]);
   }
+  if (args.dryRun && args.preflightOnly) throw new Error('Offline dry-run and credentialed read-only preflight are mutually exclusive');
   for (const key of ['manifest','directory','dependencies','changelog','state']) if (!args[key]) throw new Error('--'+key+' is required');
   const platforms=args.platforms||'both';
   if (!['both','modrinth','curseforge'].includes(platforms)) throw new Error('Unknown platforms');
+  if (args.requirePublicModrinth && (!args.preflightOnly || platforms==='curseforge'))
+    throw new Error('Public Modrinth recovery guard requires credentialed Modrinth preflight');
   const manifest=JSON.parse(fs.readFileSync(args.manifest,'utf8'));
   const entries=validatePlan(manifest,args.directory);
   const dependencies=JSON.parse(fs.readFileSync(args.dependencies,'utf8'));
@@ -239,7 +231,7 @@ export async function main(argv=process.argv.slice(2)) {
     if (row && !row.status.startsWith('dry-run'))
       throw new Error('Prior upload is pending/submitted or missing from inventory; reconcile before retry: '+entry.file_name);
   };
-  if (!args.dryRun) {state.publicly_verified=false;save();}
+  if (!args.dryRun && !args.preflightOnly) {state.publicly_verified=false;save();}
   for (const entry of entries) for (const id of entry.required_mod_ids) {
     if (!dependencies[id]?.modrinth || !dependencies[id]?.curseforge_slug || !Number.isInteger(dependencies[id]?.curseforge_id))
       throw new Error('Incomplete verified dependency mapping: '+id);
@@ -247,20 +239,32 @@ export async function main(argv=process.argv.slice(2)) {
   if (!args.dryRun && platforms!=='curseforge' && !process.env.MODRINTH_TOKEN) throw new Error('MODRINTH_TOKEN required');
   if (!args.dryRun && platforms!=='modrinth' && (!process.env.CURSEFORGE_TOKEN || !process.env.CURSEFORGE_API_KEY))
     throw new Error('CURSEFORGE_TOKEN and CURSEFORGE_API_KEY required');
-  state.publicly_verified=false;
-  save();
+  if (!args.preflightOnly) {state.publicly_verified=false;save();}
   // Preflight both selected providers and all descriptors/conflicts before the first POST.
-  let mrInventory=null,cfInventory=null,cfIds=null;
+  let mrInventory=null,cfInventory=null,cfIds=null,cfCatalogEvidence=null;
   if (platforms!=='curseforge') {
     mrInventory=args.dryRun?[]:await requestJson(`https://api.modrinth.com/v2/project/${projectMr}/version`,{headers:{Authorization:process.env.MODRINTH_TOKEN}});
     if (!Array.isArray(mrInventory)) throw new Error('Malformed Modrinth release inventory');
-    for (const entry of entries) matchingModrinth(mrInventory,entry,modrinthDescriptor(entry,version,changelog,projectMr,dependencies));
+    for (const entry of entries) {
+      const duplicate=matchingModrinth(mrInventory,entry,modrinthDescriptor(entry,version,changelog,projectMr,dependencies));
+      if (args.requirePublicModrinth) {
+        const receipt=prior('modrinth',entry);
+        const remote=mrInventory.find(record=>record.id===duplicate);
+        if (!duplicate || !receipt || receipt.id!==duplicate || !['verified','verified-existing'].includes(receipt.status)
+            || !isPubliclyReleased('modrinth',remote))
+          throw new Error('Preserved Modrinth receipt is missing, changed or not publicly listed: '+entry.file_name);
+      }
+    }
   }
   if (platforms!=='modrinth') {
     cfInventory=args.dryRun?[]:await curseForgeFiles(projectCf,process.env.CURSEFORGE_API_KEY);
     cfIds=args.dryRun?{client:1,server:2,loader:{fabric:3,forge:4,neoforge:5},minecraft:Object.fromEntries(entries.map(entry=>[entry.minecraft,6]))}
-      :await curseForgeIds(process.env.CURSEFORGE_TOKEN,entries);
+      :await curseForgeIds(process.env.CURSEFORGE_TOKEN,process.env.CURSEFORGE_API_KEY,entries,requestJson,evidence=>{cfCatalogEvidence=evidence;});
     for (const entry of entries) matchingCurseForge(cfInventory,entry,curseForgeDescriptor(entry,version,changelog,cfIds,dependencies),dependencies);
+  }
+  if (args.preflightOnly) {
+    console.log(`Read-only preflight verified release ${version}: ${entries.length} artifacts; no journal changes or store writes`);
+    return {preflight_verified:true,source_commit:manifest.source_commit,version,platforms,curseforge_ids:cfIds,curseforge_catalog:cfCatalogEvidence};
   }
   if (platforms!=='curseforge') {
     let existing=mrInventory;
