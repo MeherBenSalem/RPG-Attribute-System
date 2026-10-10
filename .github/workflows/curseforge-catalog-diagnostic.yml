@@ -1,0 +1,29 @@
+# GET-only exact release catalog facts. Never builds, uploads to stores or edits journals.
+name: CurseForge catalog diagnostic
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  catalog:
+    if: ${{ github.repository == 'MeherBenSalem/RPG-Attribute-System' && github.actor_id == '74470806' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Verify sanitized read-only diagnostic offline
+        run: python3 tests/test-curseforge-catalog-diagnostic.py
+      - name: Read exact catalog and canonical namespace facts
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+        run: python3 scripts/diagnose-curseforge-catalog.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: curseforge-catalog-${{ github.sha }}-${{ github.run_id }}
+          path: curseforge-catalog-diagnostic.json
+          if-no-files-found: error
