@@ -7,7 +7,8 @@
 | **Minecraft** | 1.20.1, 1.21.1, 26.1.2, 26.2, or 26.3 |
 | **Mod Loader** | Fabric, Forge (1.20.1 only), or NeoForge (1.21.1, 26.1.2, 26.2, 26.3) |
 | **Java** | 17 (1.20.1), 21 (1.21.1), or 25 (26.1.2, 26.2, 26.3) |
-| **jauml** | Required on **every** loader. Download the jauml JAR that matches your Minecraft version **and** loader, and put it in `mods/` next to RAS. |
+| **Fabric API** | Required on every Fabric build. Use the file for your Minecraft version. |
+| **jauml** | Required on both loaders for **1.20.1 and 1.21.1**. Use the matching Minecraft version and loader. **26.1.2, 26.2 and 26.3 do not require jauml.** |
 
 RAS is a Fabric / Forge / NeoForge **mod**. There is no Paper, Folia, Spigot, or Bukkit plugin.
 
@@ -25,15 +26,15 @@ On CurseForge, use the **loader tabs** (Fabric / Forge / NeoForge), not the Mine
 
 - **NeoForge** files are tagged with the NeoForge loader (game version type **6**).
 - **Forge** files are tagged with Forge (type **1**). Only **1.20.1** has a Forge jar.
-- If a NeoForge file's relations panel still says "Requires Forge", ignore that leftover label. Install **NeoForge** + the `-neoforge-` jar + matching **jauml**. You do not install Minecraft Forge for 1.21.1+.
+- If a NeoForge file's relations panel still says "Requires Forge", install **NeoForge** with the matching `-neoforge-` RAS JAR. Only **1.21.1 NeoForge** additionally requires jauml. You do not install Minecraft Forge for 1.21.1+.
 
-jauml is a **separate** required dependency on CurseForge/Modrinth. It is not inside the RAS jar. Use the jauml file for the same loader and Minecraft version.
+For the 1.20.1 and 1.21.1 builds, jauml is a **separate** required dependency, not bundled inside RAS. Use the jauml file for the same loader and Minecraft version. Calendar-version builds (26.1.2, 26.2, 26.3) do not declare jauml. Fabric builds always require Fabric API.
 
 ## Singleplayer Installation
 
 1. Download the RAS mod JAR for your Minecraft version and platform
-2. Download the matching jauml JAR from `libs/` or the mod's download page
-3. Place both JARs in your `.minecraft/mods/` folder
+2. Download Fabric API if you use Fabric, and matching jauml if you use 1.20.1 or 1.21.1
+3. Place RAS and its required dependencies in your `.minecraft/mods/` folder
 4. Launch Minecraft
 
 The mod generates all config files on first launch in `.minecraft/config/ras/`.
@@ -41,8 +42,8 @@ The mod generates all config files on first launch in `.minecraft/config/ras/`.
 ## Dedicated Server Installation
 
 1. Install the mod on **both** the server and **all** clients — clients need the mod for GUI screens, HUD overlay, and network protocol
-2. Place the RAS and jauml JARs in the server's `mods/` folder
-3. Place the RAS and jauml JARs in each client's `mods/` folder
+2. Place RAS and the dependencies listed above in the server's `mods/` folder
+3. Place the same RAS and required dependency versions in each client's `mods/` folder
 4. Configure `config/ras/` on the **server only** — clients receive attribute metadata on join
 5. Restart the server after changing attribute JSON files
 
@@ -95,7 +96,7 @@ Respawn, dimension change, and player clone events re-run the spawn procedure an
 To update RAS to a newer version:
 
 1. Replace the RAS JAR in your `mods/` folder
-2. Replace the jauml JAR if the new version requires a different jauml version
+2. Update any required dependency JARs for your Minecraft version and loader
 3. Restart the server
 
 Config files are forward-compatible across all RAS versions. The mod only writes keys that don't exist — your existing configuration is preserved. Player NBT data is automatically migrated if the format changed between versions.
@@ -104,7 +105,8 @@ Config files are forward-compatible across all RAS versions. The mod only writes
 
 ### Fabric
 
-- Requires **Fabric API** in addition to RAS and jauml
+- Requires **Fabric API** on all supported versions
+- Also requires **jauml** on 1.20.1 and 1.21.1
 - JARs go in `mods/` on both client and server
 - Command registration happens during `ModInitializer`
 
@@ -116,6 +118,7 @@ Config files are forward-compatible across all RAS versions. The mod only writes
 
 ### NeoForge (1.21.1, 26.1.2, 26.2, 26.3)
 
+- **1.21.1** additionally requires jauml; **26.1.2, 26.2 and 26.3** have no external library dependency
 - JARs go in `mods/`
 - Command registration happens via `RegisterCommandsEvent`
 - Uses `AttachmentType` for player data storage

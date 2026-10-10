@@ -27,6 +27,7 @@ public final class RasGuiStyle {
         return clean == null ? "" : clean.trim();
     }
     public static String number(double value) { return new DecimalFormat("0.##").format(value); }
+    public static String preciseNumber(double value) { return RasGuiNumbers.tooltip(value); }
     public static int opaque(int color) { return (color & 0xFF000000) == 0 ? 0xFF000000 | color : color; }
     public static String ellipsis(Font font, String text, int width) {
         if (width <= 0) return "";

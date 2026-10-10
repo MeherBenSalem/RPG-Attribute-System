@@ -1,0 +1,744 @@
+{
+  "fixture_version": 1,
+  "cases": [
+    {
+      "name": "disabled preserves dimension replacement",
+      "config": {
+        "schema_version": 1,
+        "enabled": false,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": [
+          {
+            "id": "ignored",
+            "entity": "minecraft:zombie",
+            "base_xp": 999
+          }
+        ]
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 30,
+      "expected_rule": null
+    },
+    {
+      "name": "unmatched legacy health baseline",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": []
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 30,
+      "expected_rule": null
+    },
+    {
+      "name": "explicit zero",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": [
+          {
+            "id": "zero",
+            "entity": "minecraft:zombie",
+            "base_xp": 0
+          }
+        ]
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 0,
+      "expected_rule": "zero"
+    },
+    {
+      "name": "base before effective rate",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": [
+          {
+            "id": "base",
+            "entity": "minecraft:zombie",
+            "base_xp": 40
+          }
+        ]
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 60,
+      "expected_rule": "base"
+    },
+    {
+      "name": "entity tier beats high priority tag",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": [
+          {
+            "id": "tag",
+            "tag": "minecraft:undead",
+            "priority": 100,
+            "base_xp": 200,
+            "multiplier": 9
+          },
+          {
+            "id": "entity",
+            "entity": "minecraft:zombie",
+            "priority": -1,
+            "base_xp": 40
+          }
+        ]
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 60,
+      "expected_rule": "entity"
+    },
+    {
+      "name": "priority within entity tier",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": [
+          {
+            "id": "first",
+            "entity": "minecraft:zombie",
+            "priority": 0,
+            "base_xp": 5
+          },
+          {
+            "id": "high",
+            "entity": "minecraft:zombie",
+            "priority": 2,
+            "base_xp": 40
+          }
+        ]
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 60,
+      "expected_rule": "high"
+    },
+    {
+      "name": "array order breaks ties",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": [
+          {
+            "id": "first",
+            "tag": "minecraft:undead",
+            "base_xp": 12
+          },
+          {
+            "id": "second",
+            "tag": "minecraft:undead",
+            "base_xp": 500
+          }
+        ]
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 18,
+      "expected_rule": "first"
+    },
+    {
+      "name": "disabled rule ignored",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": [
+          {
+            "id": "off",
+            "entity": "minecraft:zombie",
+            "enabled": false,
+            "base_xp": 100
+          },
+          {
+            "id": "tag",
+            "tag": "minecraft:undead",
+            "base_xp": 12
+          }
+        ]
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 18,
+      "expected_rule": "tag"
+    },
+    {
+      "name": "winner does not merge losing tag base",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": [
+          {
+            "id": "tag",
+            "tag": "minecraft:undead",
+            "base_xp": 100
+          },
+          {
+            "id": "entity",
+            "entity": "minecraft:zombie",
+            "multiplier": 2
+          }
+        ]
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 60,
+      "expected_rule": "entity"
+    },
+    {
+      "name": "negative legacy rate clamped",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": []
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": -2,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 0,
+      "expected_rule": null
+    },
+    {
+      "name": "fractional doubles not rounded",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": [
+          {
+            "id": "fraction",
+            "entity": "minecraft:zombie",
+            "base_xp": 1.25,
+            "multiplier": 1.1
+          }
+        ]
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 2.0625,
+      "expected_rule": "fraction"
+    },
+    {
+      "name": "global difficulty affects unmatched",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": true,
+          "peaceful": 0,
+          "easy": 0.5,
+          "normal": 1,
+          "hard": 2
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": []
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 60,
+      "expected_rule": null
+    },
+    {
+      "name": "peaceful zero multiplier",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": true,
+          "peaceful": 0,
+          "easy": 0.5,
+          "normal": 1,
+          "hard": 2
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": []
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "peaceful",
+        "armor": 10
+      },
+      "expected_vp": 0,
+      "expected_rule": null
+    },
+    {
+      "name": "armor grows and caps",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": true,
+          "per_armor_point": 0.5,
+          "max_multiplier": 3
+        },
+        "rules": []
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 90,
+      "expected_rule": null
+    },
+    {
+      "name": "negative armor treated as zero",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": true,
+          "per_armor_point": 0.5,
+          "max_multiplier": 3
+        },
+        "rules": []
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": -2
+      },
+      "expected_vp": 30,
+      "expected_rule": null
+    },
+    {
+      "name": "difficulty armor weighted together",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": true,
+          "hard": 2
+        },
+        "armor_weighting": {
+          "enabled": true,
+          "per_armor_point": 0.1,
+          "max_multiplier": 5
+        },
+        "rules": [
+          {
+            "id": "weighted",
+            "entity": "minecraft:zombie",
+            "base_xp": 40,
+            "multiplier": 1.25
+          }
+        ]
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 300,
+      "expected_rule": "weighted"
+    },
+    {
+      "name": "opt out both weights",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": true,
+          "hard": 2
+        },
+        "armor_weighting": {
+          "enabled": true,
+          "per_armor_point": 0.1,
+          "max_multiplier": 5
+        },
+        "rules": [
+          {
+            "id": "opt-out",
+            "entity": "minecraft:zombie",
+            "apply_difficulty_weighting": false,
+            "apply_armor_weighting": false
+          }
+        ]
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 30,
+      "expected_rule": "opt-out"
+    },
+    {
+      "name": "global disable wins rule apply true",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": [
+          {
+            "id": "gate",
+            "entity": "minecraft:zombie",
+            "apply_difficulty_weighting": true,
+            "apply_armor_weighting": true
+          }
+        ]
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 30,
+      "expected_rule": "gate"
+    },
+    {
+      "name": "overflow rejected",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "difficulty_weighting": {
+          "enabled": false,
+          "peaceful": 1,
+          "easy": 1,
+          "normal": 1,
+          "hard": 1
+        },
+        "armor_weighting": {
+          "enabled": false,
+          "per_armor_point": 0,
+          "max_multiplier": 5
+        },
+        "rules": [
+          {
+            "id": "overflow",
+            "entity": "minecraft:zombie",
+            "base_xp": 1e+308,
+            "multiplier": 1e+308
+          }
+        ]
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [
+          "minecraft:undead"
+        ],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "hard",
+        "armor": 10
+      },
+      "expected_vp": 0,
+      "expected_rule": "overflow"
+    },
+    {
+      "name": "fractional effective armor attribute",
+      "config": {
+        "schema_version": 1,
+        "enabled": true,
+        "armor_weighting": {
+          "enabled": true,
+          "per_armor_point": 0.1,
+          "max_multiplier": 5
+        },
+        "rules": []
+      },
+      "context": {
+        "entity": "minecraft:zombie",
+        "tags": [],
+        "max_health": 20,
+        "effective_rate": 1.5,
+        "difficulty": "normal",
+        "armor": 2.5
+      },
+      "expected_vp": 37.5,
+      "expected_rule": null
+    }
+  ]
+}

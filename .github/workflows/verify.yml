@@ -80,9 +80,12 @@ jobs:
         run: python3 -m pip install jsonschema==4.26.0 PyYAML==6.0.3
       - name: Validate schema and runtime/studio fixtures
         run: python3 scripts/test-mob-xp-schema.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
       - name: Actual production-source regression harnesses
         run: |
-          python3 scripts/test-mob-xp.py --gson-jar "$RUNNER_TEMP/gson.jar"
+          python3 scripts/test-config-studio.py --gson-jar "$RUNNER_TEMP/gson.jar"
           python3 scripts/test-gameplay-regressions.py --gson-jar "$RUNNER_TEMP/gson.jar"
           python3 scripts/test-ui-layout.py
           python3 -B tests/test-release-artifacts.py

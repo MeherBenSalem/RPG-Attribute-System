@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RAS Config Studio</title><meta name="description" content="A private, local-only visual configuration builder for RPG Attribute System."><meta name="color-scheme" content="dark"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell">
+<aside class="rail">
+<a class="brand" href="#" aria-label="RAS Config Studio home"><span class="brand-mark">R</span><span><strong>RAS</strong><small>CONFIG STUDIO</small></span></a>
+<p class="rail-label">WORKSPACE</p>
+<nav aria-label="Configuration sections" id="nav"></nav>
+<div class="rail-bottom"><div class="privacy"><span aria-hidden="true">◇</span><strong>Local by design</strong><p>Your configs stay in this browser. Nothing is uploaded.</p></div><a id="source-link" target="_blank" rel="noopener noreferrer">View source contract <span aria-hidden="true">↗</span></a><div class="rail-meta">RPG ATTRIBUTE SYSTEM<br>NightBeam · Private preview</div></div>
+</aside>
+<div class="workspace">
+<header class="topbar"><div class="workspace-name"><span class="tiny-diamond"></span><span id="workspace-label">Fresh defaults</span><span id="dirty-badge" class="badge muted">Unchanged</span></div><div class="top-actions"><button class="button secondary" id="import-button"><span aria-hidden="true">⇣</span> Import config</button><button class="button primary" id="export-button"><span aria-hidden="true">▣</span> Review export</button></div></header>
+<div class="targetbar"><div class="target"><label for="target-version">Mod version</label><select id="target-version"><option value="4.2.6">4.2.6 · Released</option value="4.3.0">4.3.0 · Development</option></select></div><div class="target"><label for="minecraft-version">Minecraft</label><select id="minecraft-version"><option>26.3</option><option>26.2</option><option>26.1.2</option><option>1.21.1</option><option>1.20.1</option></select></div><span class="target-status" id="target-status">Source-verified defaults</span></div>
+<main id="main" tabindex="-1"></main>
+<footer><span id="file-count">27 files</span><span>Changes are kept in memory. Export before closing this page.</span><button class="text-button" id="reset-button">Reset workspace</button></footer>
+</div>
+</div>
+<input type="file" id="file-input" accept=".json,.zip,application/json,application/zip" hidden>
+<dialog id="modal"><div class="modal-inner" id="modal-content"></div></dialog><div id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="app.mjs"></script>
+</body></html>

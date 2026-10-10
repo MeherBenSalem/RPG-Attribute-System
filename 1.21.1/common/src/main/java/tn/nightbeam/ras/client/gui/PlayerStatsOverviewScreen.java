@@ -163,7 +163,7 @@ public class PlayerStatsOverviewScreen extends Screen {
             List<String> lines = new ArrayList<>();
             if (totalsView) {
                 var total = StatsDisplayConfig.getTotals().get(index);
-                lines.add(RasGuiStyle.clean(total.label()) + ": " + RasGuiStyle.number(totalValue(total, variables())));
+                lines.add(RasGuiStyle.clean(total.label()) + ": " + RasGuiStyle.preciseNumber(totalValue(total, variables())));
                 lines.add("bonus".equalsIgnoreCase(total.mode()) ? "Bonus above initial values" : "Current attribute values");
                 for (int id : total.attributeIds()) lines.add(name(AttributeManager.getAttributeData(id), id));
             } else {
@@ -171,9 +171,9 @@ public class PlayerStatsOverviewScreen extends Screen {
                 int id = parseId(key);
                 AttributeData data = AttributeManager.getAttributeData(id);
                 double current = value(variables(), key, data);
-                lines.add(name(data, id) + ": " + RasGuiStyle.number(current));
-                lines.add("Initial value: " + RasGuiStyle.number(data == null ? 0 : data.initValue));
-                lines.add("Invested points: " + RasGuiStyle.number(variables().attributePoints.getOrDefault(key, 0.0D)));
+                lines.add(name(data, id) + ": " + RasGuiStyle.preciseNumber(current));
+                lines.add("Initial value: " + RasGuiStyle.preciseNumber(data == null ? 0 : data.initValue));
+                lines.add("Invested points: " + RasGuiStyle.preciseNumber(variables().attributePoints.getOrDefault(key, 0.0D)));
                 if (data != null && data.tipToDisplay != null && !data.tipToDisplay.isBlank()) lines.add(data.tipToDisplay);
             }
             RasGuiStyle.tooltip(graphics, font, lines, mouseX, mouseY, width);
@@ -188,9 +188,9 @@ public class PlayerStatsOverviewScreen extends Screen {
         }
         if (layout.contains(mouseX, mouseY, 10, 28, layout.wide() ? 140 : layout.panelWidth() - 20,
                 layout.wide() ? 105 : 19)) {
-            RasGuiStyle.tooltip(graphics, font, List.of("Level " + RasGuiStyle.number(variables().Level), xpText(),
-                    "Available points: " + RasGuiStyle.number(variables().SparePoints),
-                    "Invested points: " + RasGuiStyle.number(spentPoints(variables()))), mouseX, mouseY, width);
+            RasGuiStyle.tooltip(graphics, font, List.of("Level " + RasGuiStyle.preciseNumber(variables().Level), xpText(),
+                    "Available points: " + RasGuiStyle.preciseNumber(variables().SparePoints),
+                    "Invested points: " + RasGuiStyle.preciseNumber(spentPoints(variables()))), mouseX, mouseY, width);
         }
     }
     private void returnToParent() { if (minecraft != null) minecraft.setScreen(parent); }

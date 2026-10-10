@@ -2,7 +2,7 @@
 
 ## Cursor Cloud specific instructions
 
-This repo is the **RPG Attribute System** Minecraft mod. It contains **four fully
+This repo is the **RPG Attribute System** Minecraft mod. It contains **five fully
 independent version roots** (no shared sources), each a MultiLoader-Template Gradle
 project. Always run Gradle from inside the version folder you are targeting.
 
@@ -28,8 +28,8 @@ project. Always run Gradle from inside the version folder you are targeting.
 
 ### Build / lint / test
 - Build one version: `cd 1.21.1 && ./gradlew build --no-daemon` (swap the folder for
-  the other versions). `build` also runs `check`/`test` (there are currently no unit
-  tests, so `test` is `NO-SOURCE`) and produces the loader JARs under
+  the other versions). `build` also runs `check`/`test` (common `check` runs the plain-Java
+  `mobXpTest` and `rasGuiLayoutTest` entry points) and produces the loader JARs under
   `<version>/<loader>/build/libs/`.
 - Root `build.gradle` has aggregate helpers (`build1201`, `build1211`, `build2612`,
   `build262`, `build263`, `dist`, `cleanAll`, per-loader `runXxx`) that just shell out to each

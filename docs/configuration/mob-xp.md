@@ -2,7 +2,7 @@
 
 `config/ras/mob_xp.json` is an optional **server-authoritative** extension to the existing kill-VP calculation. The generated file is disabled. Updating from 4.2.6 does not enable rules or weighting, change existing rates, rewrite imported files, or use the legacy `bosses_list`, `min_drop_rate`, or `max_drop_rate` keys as VP modifiers. Existing loader-specific boss item drops (including Forge1.20.1 Tome drops using those keys) are unchanged.
 
-The configuration studio's 4.3-development export writes this separate file. Do not install that file expecting 4.2.6 to read it.
+The [local configuration studio](../../tools/config-studio/README.md)'s 4.3-development export writes this separate file. Do not install that file expecting 4.2.6 to read it.
 
 ## Default file
 

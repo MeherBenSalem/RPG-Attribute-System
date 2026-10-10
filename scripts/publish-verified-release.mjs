@@ -5,6 +5,9 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 
+const modrinthId = id => typeof id === 'string' && /^[0-9A-Za-z]+$/.test(id);
+const curseForgeId = id => Number.isSafeInteger(id) && id > 0 && id <= 0xffffffff;
+
 export function validatePlan(manifest, directory) {
   if (manifest?.schema_version !== 1 || manifest.complete_inventory !== true || manifest.artifact_count !== 10
       || !/^[0-9a-f]{40}$/.test(manifest.source_commit) || !/^\d+\.\d+\.\d+$/.test(manifest.release_version)
@@ -74,12 +77,23 @@ export function matchingModrinth(existing, entry, descriptor) {
   if (!matches.length) return null;
   if (matches.length !== 1) throw new Error('Ambiguous existing Modrinth release: ' + entry.file_name);
   const version = matches[0], file = (version.files || []).find(file => file.filename === entry.file_name);
-  if (version.project_id !== descriptor.project_id || !file || file.hashes?.sha512 !== entry.sha512 || file.hashes?.sha1 !== entry.sha1
+  // Modrinth allows nullable project/version IDs and external filenames, but
+  // each dependency must have a valid relation and at least one usable target.
+  if (!Array.isArray(version.dependencies) || version.dependencies.some(dep => !dep
+      || !['required','optional','incompatible','embedded'].includes(dep.dependency_type)
+      || (dep.project_id != null && !modrinthId(dep.project_id))
+      || (dep.version_id != null && !modrinthId(dep.version_id))
+      || (dep.file_name != null && (typeof dep.file_name !== 'string' || !dep.file_name.trim()))
+      || (!modrinthId(dep.project_id) && !modrinthId(dep.version_id) && !dep.file_name))) {
+    throw new Error('Malformed Modrinth dependencies; cannot verify artifact: ' + entry.file_name);
+  }
+  const required = version.dependencies.filter(dep => dep.dependency_type === 'required').map(dep => dep.project_id).sort();
+  const expectedRequired = descriptor.dependencies.map(dep => dep.project_id).sort();
+  if (!modrinthId(version.id) || version.project_id !== descriptor.project_id || !file || file.hashes?.sha512 !== entry.sha512 || file.hashes?.sha1 !== entry.sha1
       || version.version_number !== descriptor.version_number || version.version_type !== 'release'
       || JSON.stringify([...version.loaders].sort()) !== JSON.stringify(descriptor.loaders)
       || JSON.stringify([...version.game_versions].sort()) !== JSON.stringify(descriptor.game_versions)
-      || JSON.stringify((version.dependencies || []).filter(item => item.dependency_type === 'required')
-        .map(item => item.project_id).sort()) !== JSON.stringify(descriptor.dependencies.map(item => item.project_id).sort())) {
+      || expectedRequired.some(id => !modrinthId(id)) || JSON.stringify(required) !== JSON.stringify(expectedRequired)) {
     throw new Error('Existing Modrinth artifact differs; refusing overwrite/duplicate: ' + entry.file_name);
   }
   return version.id;
@@ -97,11 +111,20 @@ export function matchingCurseForge(existing, entry, descriptor, dependencyMap) {
       || JSON.stringify(mcTags) !== JSON.stringify([entry.minecraft]) || !tags.includes('Client') || !tags.includes('Server'))
     throw new Error('Existing CurseForge target tags differ: ' + entry.file_name);
   const sha1 = (file.hashes || []).find(hash => hash.algo === 1)?.value?.toLowerCase();
-  if (file.modId !== 1079687 || file.fileName !== entry.file_name || file.displayName !== descriptor.displayName || sha1 !== entry.sha1
+  // Core FileDependency.relationType is the documented 1..6 enum. An absent
+  // dependency list is not evidence of an empty required-dependency set.
+  if (!Array.isArray(file.dependencies) || file.dependencies.some(dep => !dep
+      || !curseForgeId(dep.modId)
+      || !Number.isInteger(dep.relationType) || dep.relationType < 1 || dep.relationType > 6)) {
+    throw new Error('Malformed CurseForge dependencies; cannot verify artifact: ' + entry.file_name);
+  }
+  const required = file.dependencies.filter(dep => dep.relationType === 3).map(dep => dep.modId).sort((a,b) => a-b);
+  const expectedRequired = entry.required_mod_ids.map(id => dependencyMap[id]?.curseforge_id).sort((a,b) => a-b);
+  if (!curseForgeId(file.id) || file.modId !== 1079687 || file.fileName !== entry.file_name || file.displayName !== descriptor.displayName || sha1 !== entry.sha1
       || file.releaseType !== 1 || !(file.gameVersions || []).includes(entry.minecraft)
       || !(file.gameVersions || []).includes({fabric:'Fabric',forge:'Forge',neoforge:'NeoForge'}[entry.loader])
-      || JSON.stringify((file.dependencies || []).filter(dep => dep.relationType === 3).map(dep => dep.modId).sort())
-        !== JSON.stringify(entry.required_mod_ids.map(id => dependencyMap[id]?.curseforge_id).sort())) {
+      || expectedRequired.some(id => !curseForgeId(id))
+      || JSON.stringify(required) !== JSON.stringify(expectedRequired)) {
     throw new Error('Existing CurseForge artifact differs; refusing overwrite/duplicate: ' + entry.file_name);
   }
   return file.id;
@@ -122,14 +145,33 @@ async function requestJson(url, options = {}) {
 }
 
 async function curseForgeFiles(projectId, apiKey) {
-  const files=[];
-  for (let index=0; index<20000; index+=50) {
-    const payload=await requestJson(`https://api.curseforge.com/v1/mods/${projectId}/files?pageSize=50&index=${index}`,
+  // https://docs.curseforge.com/rest-api/#pagination-limits and #schemapagination
+  // require index + pageSize <= 10000, with all four pagination fields present.
+  const pageSize=50, limit=10000, files=[], seen=new Set();
+  let totalCount=null;
+  for (let index=0; index+pageSize<=limit; index+=pageSize) {
+    const payload=await requestJson(`https://api.curseforge.com/v1/mods/${projectId}/files?pageSize=${pageSize}&index=${index}`,
       {headers:{'x-api-key':apiKey}});
-    if (!Array.isArray(payload?.data)) throw new Error('Malformed CurseForge file inventory');
+    const pagination=payload?.pagination;
+    if (!Array.isArray(payload?.data) || !pagination
+        || !['index','pageSize','resultCount','totalCount'].every(key => Number.isSafeInteger(pagination[key]))
+        || pagination.index!==index || pagination.pageSize!==pageSize
+        || pagination.resultCount!==payload.data.length || pagination.totalCount<index
+        || pagination.totalCount>limit || pagination.resultCount!==Math.min(pageSize,pagination.totalCount-index)
+        || (totalCount!==null && pagination.totalCount!==totalCount)) {
+      throw new Error('Malformed/truncated/changing CurseForge file inventory; cannot deduplicate');
+    }
+    totalCount=pagination.totalCount;
+    for (const file of payload.data) {
+      if (!file || !curseForgeId(file.id) || seen.has(file.id)
+          || typeof file.fileName!=='string' || !file.fileName
+          || typeof file.displayName!=='string' || !file.displayName) {
+        throw new Error('Malformed/duplicate CurseForge file inventory; cannot deduplicate');
+      }
+      seen.add(file.id);
+    }
     files.push(...payload.data);
-    if (payload.data.length<50 || (Number.isInteger(payload.pagination?.totalCount)
-        && index+payload.data.length>=payload.pagination.totalCount)) return files;
+    if (files.length===totalCount) return files;
   }
   throw new Error('CurseForge file inventory exceeds safe bound; cannot deduplicate');
 }
@@ -236,7 +278,7 @@ export async function main(argv=process.argv.slice(2)) {
       let created;
       try {
         created=await requestJson('https://api.modrinth.com/v2/version',{method:'POST',headers:{Authorization:process.env.MODRINTH_TOKEN},body:form});
-        if (!created?.id) throw new Error('Missing Modrinth upload ID');
+        if (!modrinthId(created?.id)) throw new Error('Missing/malformed Modrinth upload ID');
       } catch (error) {
         record('modrinth',entry,'uncertain');
         throw new Error('Uncertain Modrinth upload outcome; reconcile before retry: '+entry.file_name);
@@ -265,7 +307,7 @@ export async function main(argv=process.argv.slice(2)) {
       try {
         created=await requestJson(`https://minecraft.curseforge.com/api/projects/${projectCf}/upload-file`,
           {method:'POST',headers:{'X-Api-Token':process.env.CURSEFORGE_TOKEN},body:form});
-        if (!created?.id) throw new Error('Missing CurseForge upload ID');
+        if (!curseForgeId(created?.id)) throw new Error('Missing/malformed CurseForge upload ID');
       } catch (error) {
         record('curseforge',entry,'uncertain');
         throw new Error('Uncertain CurseForge upload outcome; reconcile before retry: '+entry.file_name);

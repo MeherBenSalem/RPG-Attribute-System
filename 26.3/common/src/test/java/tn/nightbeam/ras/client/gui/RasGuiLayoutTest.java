@@ -14,7 +14,8 @@ public final class RasGuiLayoutTest {
         PixelRpgBookLayout tiny = new PixelRpgBookLayout(); tiny.update(1,1);
         check(tiny.panelWidth() > 0 && tiny.panelHeight() > 0, "Degenerate viewport remains finite");
         allocationFixtures();
-        System.out.println("PASS RAS UI geometry/allocation checks=" + checks);
+        numberFixtures();
+        System.out.println("PASS RAS UI geometry/allocation/number checks=" + checks);
     }
     private static void checkLayout(int width, int height) {
         PixelRpgBookLayout layout = new PixelRpgBookLayout(); layout.update(width,height);
@@ -71,6 +72,25 @@ public final class RasGuiLayoutTest {
         check(AttributeAllocationPreview.calculate(0,0,0,Double.POSITIVE_INFINITY,10,10,10).points()==0,"Reject infinite preview");
         var huge=AttributeAllocationPreview.calculate(0,0,0,0,10,Integer.MAX_VALUE,Integer.MAX_VALUE);
         check(huge.points()==Integer.MAX_VALUE && huge.value()==0,"Huge zero-increment preview is bounded");
+    }
+    private static void numberFixtures() {
+        check(RasGuiNumbers.tooltip(.1).equals("0.1"), "Agility current value");
+        var agility = AttributeAllocationPreview.calculate(.1,.1,0,.0025,1,1,1);
+        check(RasGuiNumbers.tooltip(agility.value()).equals("0.1025"), "Agility next value stays distinct");
+        check(RasGuiNumbers.tooltip(.1 + .2).equals("0.3"), "Hide binary arithmetic noise");
+        check(RasGuiNumbers.tooltip(.09999999999999999).equals("0.1"), "Hide boundary arithmetic noise");
+        check(RasGuiNumbers.tooltip(.0000000001).equals("0.0000000001"), "Small values do not round to zero");
+        check(RasGuiNumbers.tooltip(-.0025).equals("-0.0025"), "Negative increments stay precise");
+        check(RasGuiNumbers.tooltip(-0.0).equals("0"), "Normalize signed zero");
+        check(RasGuiNumbers.tooltip(20).equals("20"), "Whole numbers stay compact");
+        check(RasGuiNumbers.tooltip(1234567.8912345).equals("1234567.8912345"), "Retain useful significant digits");
+        check(RasGuiNumbers.tooltip(Double.NaN).equals("NaN"), "Nonfinite diagnostic values stay safe");
+        check(RasGuiNumbers.tooltip(Double.POSITIVE_INFINITY).equals("Infinity"), "Infinite diagnostic values stay safe");
+        java.util.Locale old = java.util.Locale.getDefault();
+        try {
+            java.util.Locale.setDefault(java.util.Locale.GERMANY);
+            check(RasGuiNumbers.tooltip(.1025).equals("0.1025"), "Tooltip values use stable decimal notation");
+        } finally { java.util.Locale.setDefault(old); }
     }
     private static void parity(double current,double initial,int invested,double increment,double maximum,double spare,double modifier) {
         double serverValue=current,serverSpare=spare,serverPoints=invested;

@@ -1,0 +1,12 @@
+test-results/
+.sites-runtime/
+*.tar.gz
+repo-package/
+
+# Authored browser source, not generated build output
+!dist/
+!dist/**
+
+# Optional developer-only browser test tools
+node_modules/
+.playwright/

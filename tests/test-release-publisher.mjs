@@ -9,6 +9,8 @@
  */
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -117,7 +119,7 @@ function fakeCredentials(t, overrides = {}) {
 }
 function mrDescriptor(entry) {return modrinthDescriptor(entry, VERSION, CHANGELOG, MODRINTH_PROJECT, DEPENDENCIES);}
 function cfDescriptor(entry) {return curseForgeDescriptor(entry, VERSION, CHANGELOG, IDS, DEPENDENCIES);}
-function mrRecord(entry, id = `mr-${entry.loader}-${entry.minecraft}`) {
+function mrRecord(entry, id = `MR${String(TARGETS.findIndex(([mc, loader]) => mc === entry.minecraft && loader === entry.loader) + 1).padStart(6, '0')}`) {
   const descriptor = mrDescriptor(entry);
   return {
     id, project_id: MODRINTH_PROJECT, version_number: descriptor.version_number,
@@ -139,6 +141,13 @@ function cfRecord(entry, id = TARGETS.findIndex(([mc, loader]) => mc === entry.m
 }
 function jsonResponse(value, status = 200) {
   return new Response(JSON.stringify(value), {status, headers: {'content-type': 'application/json'}});
+}
+function cfPage(files, index = 0, totalCount = files.length) {
+  return {data: files, pagination: {index, pageSize: 50, resultCount: files.length, totalCount}};
+}
+function cfHistorical(count, start = 0) {
+  return Array.from({length: count}, (_, index) => ({id: start + index + 2001,
+    fileName: `historical-${start + index}.jar`, displayName: `Historical ${start + index}`}));
 }
 function installFetch(t, handler) {
   const requests = [];
@@ -166,7 +175,7 @@ function fakeStore(t, fx, options = {}) {
     }
     if (call.method === 'GET' && call.url.startsWith(`https://api.curseforge.com/v1/mods/${CURSEFORGE_PROJECT}/files?`)) {
       const offset = Number(new URL(call.url).searchParams.get('index'));
-      return jsonResponse({data: remote.curseforge.slice(offset, offset + 50), pagination: {totalCount: remote.curseforge.length}});
+      return jsonResponse(cfPage(remote.curseforge.slice(offset, offset + 50), offset, remote.curseforge.length));
     }
     if (call.method === 'GET' && call.url === 'https://minecraft.curseforge.com/api/game/versions') {
       const data = [
@@ -328,6 +337,52 @@ test('matchingModrinth rejects filename/version collisions with wrong hash, targ
     assert.throws(() => matchingModrinth([existing], entry, mrDescriptor(entry)));
   });
 });
+test('matchingModrinth requires explicit valid dependency metadata including empty 26.x Neo targets', async t => {
+  const mutations = {
+    'missing array': row => {delete row.dependencies;},
+    'null array': row => {row.dependencies = null;},
+    'object instead of array': row => {row.dependencies = {};},
+    'null row': row => {row.dependencies.push(null);},
+    'no target': row => {row.dependencies.push({dependency_type: 'optional'});},
+    'all null targets': row => {row.dependencies.push({project_id: null, version_id: null, file_name: null, dependency_type: 'optional'});},
+    'empty project ID': row => {row.dependencies.push({project_id: '', dependency_type: 'optional'});},
+    'nonstring project ID': row => {row.dependencies.push({project_id: 1281310, dependency_type: 'optional'});},
+    'non-base62 project ID': row => {row.dependencies.push({project_id: 'invalid-project', dependency_type: 'optional'});},
+    'non-base62 version ID': row => {row.dependencies.push({project_id: 'ihvBalM2', version_id: 'invalid-version', dependency_type: 'optional'});},
+    'empty external filename': row => {row.dependencies.push({file_name: ' ', dependency_type: 'optional'});},
+    'nonstring external filename': row => {row.dependencies.push({file_name: 123, dependency_type: 'optional'});},
+    'missing relation': row => {row.dependencies.push({project_id: 'ihvBalM2'});},
+    'null relation': row => {row.dependencies.push({project_id: 'ihvBalM2', dependency_type: null});},
+    'unknown relation': row => {row.dependencies.push({project_id: 'ihvBalM2', dependency_type: 'unknown'});},
+  };
+  for (const index of [0, 5, 7, 9]) for (const [name, mutate] of Object.entries(mutations)) {
+    await t.test(`${TARGETS[index][0]} ${TARGETS[index][1]}: ${name}`, t => {
+      const fx = fixture(t), entry = fx.files[index], existing = mrRecord(entry);
+      mutate(existing);
+      assert.throws(() => matchingModrinth([existing], entry, mrDescriptor(entry)), /dependencies/i);
+    });
+  }
+  await t.test('duplicate required destination', t => {
+    const fx = fixture(t), entry = fx.files[0], existing = mrRecord(entry);
+    existing.dependencies.push(clone(existing.dependencies[0]));
+    assert.throws(() => matchingModrinth([existing], entry, mrDescriptor(entry)), /differs/i);
+  });
+  await t.test('unresolved required version or external file cannot stand in for a reviewed project', t => {
+    const fx = fixture(t), entry = fx.files[0];
+    for (const target of [{project_id: null, version_id: 'IIJJKKLL'}, {project_id: null, file_name: 'external.jar'}]) {
+      const existing = mrRecord(entry);
+      existing.dependencies[0] = {...target, dependency_type: 'required'};
+      assert.throws(() => matchingModrinth([existing], entry, mrDescriptor(entry)), /differs/i);
+    }
+  });
+  await t.test('documented optional, incompatible, embedded and external targets remain valid', t => {
+    const fx = fixture(t), entry = fx.files[9], existing = mrRecord(entry);
+    existing.dependencies = ['optional', 'incompatible', 'embedded'].map(dependency_type => ({project_id: 'ihvBalM2', dependency_type}));
+    existing.dependencies.push({project_id: null, version_id: 'IIJJKKLL', file_name: null, dependency_type: 'optional'},
+      {project_id: null, version_id: null, file_name: 'external.jar', dependency_type: 'embedded'});
+    assert.equal(matchingModrinth([existing], entry, mrDescriptor(entry)), existing.id);
+  });
+});
 test('matchingCurseForge accepts one exact match and recognizes uppercase SHA1', t => {
   const fx = fixture(t), entry = fx.files[0], existing = cfRecord(entry);
   existing.hashes[0].value = existing.hashes[0].value.toUpperCase();
@@ -360,6 +415,81 @@ test('matchingCurseForge rejects filename/display collisions with wrong hash, ta
     const fx = fixture(t), entry = fx.files[9], existing = cfRecord(entry);
     existing.dependencies.push({modId: DEPENDENCIES.jauml.curseforge_id, relationType: 3});
     assert.throws(() => matchingCurseForge([existing], entry, cfDescriptor(entry), DEPENDENCIES));
+  });
+});
+test('matchingCurseForge requires explicit well-formed dependencies even for empty 26.x Neo targets', async t => {
+  const mutations = {
+    'missing array': row => {delete row.dependencies;},
+    'null array': row => {row.dependencies = null;},
+    'object instead of array': row => {row.dependencies = {};},
+    'null row': row => {row.dependencies.push(null);},
+    'missing mod ID': row => {row.dependencies.push({relationType: 2});},
+    'string mod ID': row => {row.dependencies.push({modId: '1281310', relationType: 2});},
+    'zero mod ID': row => {row.dependencies.push({modId: 0, relationType: 2});},
+    'negative mod ID': row => {row.dependencies.push({modId: -1, relationType: 2});},
+    'noninteger mod ID': row => {row.dependencies.push({modId: 1.5, relationType: 2});},
+    'above unsigned int32 mod ID': row => {row.dependencies.push({modId: 0x100000000, relationType: 2});},
+    'unsafe mod ID': row => {row.dependencies.push({modId: Number.MAX_SAFE_INTEGER + 1, relationType: 2});},
+    'missing relation type': row => {row.dependencies.push({modId: 1281310});},
+    'string relation type': row => {row.dependencies.push({modId: 1281310, relationType: '3'});},
+    'zero relation type': row => {row.dependencies.push({modId: 1281310, relationType: 0});},
+    'unknown relation type': row => {row.dependencies.push({modId: 1281310, relationType: 7});},
+    'noninteger relation type': row => {row.dependencies.push({modId: 1281310, relationType: 2.5});},
+  };
+  for (const index of [0, 5, 7, 9]) for (const [name, mutate] of Object.entries(mutations)) {
+    await t.test(`${TARGETS[index][0]} ${TARGETS[index][1]}: ${name}`, t => {
+      const fx = fixture(t), entry = fx.files[index], existing = cfRecord(entry);
+      mutate(existing);
+      assert.throws(() => matchingCurseForge([existing], entry, cfDescriptor(entry), DEPENDENCIES), /dependencies/i);
+    });
+  }
+  await t.test('duplicate required destination', t => {
+    const fx = fixture(t), entry = fx.files[0], existing = cfRecord(entry);
+    existing.dependencies.push(clone(existing.dependencies[0]));
+    assert.throws(() => matchingCurseForge([existing], entry, cfDescriptor(entry), DEPENDENCIES), /differs/i);
+  });
+  await t.test('documented non-required relation types are valid rows', t => {
+    const fx = fixture(t), entry = fx.files[9], existing = cfRecord(entry);
+    existing.dependencies = [1, 2, 4, 5, 6].map(relationType => ({modId: 1281310, relationType}));
+    assert.equal(matchingCurseForge([existing], entry, cfDescriptor(entry), DEPENDENCIES), existing.id);
+  });
+});
+test('an otherwise exact existing record with a missing or malformed provider ID cannot trigger a fresh POST', async t => {
+  const variants = {
+    modrinth: [undefined, null, '', ' ', 123, {}, [], 'invalid-id'],
+    curseforge: [undefined, null, '', '1001', 0, -1, 1.5, {}, [], 0x100000000],
+  };
+  for (const [platform, ids] of Object.entries(variants)) for (const id of ids) await t.test(`${platform}: ${JSON.stringify(id)}`, async t => {
+    const fx = fixture(t); fakeCredentials(t);
+    const entry = fx.files[0];
+    const row = platform === 'modrinth' ? mrRecord(entry) : cfRecord(entry);
+    if (id === undefined) delete row.id;
+    else row.id = id;
+    assert.throws(() => platform === 'modrinth' ? matchingModrinth([row], entry, mrDescriptor(entry))
+      : matchingCurseForge([row], entry, cfDescriptor(entry), DEPENDENCIES));
+    const store = fakeStore(t, fx, {[platform]: [row]});
+    await assert.rejects(main(fx.argv(platform)), /differs|inventory|deduplicate/i);
+    assert.equal(store.requests.filter(call => call.method === 'POST').length, 0);
+  });
+});
+test('malformed POST response IDs remain uncertain and block all later or repeated uploads', async t => {
+  const variants = {modrinth: [null, '', ' ', 123, {}, [], 'invalid-id'],
+    curseforge: [null, '', '1001', 0, -1, 1.5, {}, [], 0x100000000]};
+  for (const [platform, ids] of Object.entries(variants)) for (const id of ids) await t.test(`${platform}: ${JSON.stringify(id)}`, async t => {
+    const fx = fixture(t); fakeCredentials(t);
+    let posts = 0;
+    fakeStore(t, fx, {intercept(call) {
+      if (call.method === 'POST') {posts++; return jsonResponse({id});}
+    }});
+    await assert.rejects(main(fx.argv(platform)), /uncertain|reconcile|outcome/i);
+    assert.equal(posts, 1);
+    assertDurableSubmission(fx, fx.files[0]);
+    const receipt = fx.state().uploads[0];
+    assert.equal(receipt.status, 'uncertain');
+    assert.equal(receipt.id, undefined);
+    await assert.rejects(main(fx.argv(platform)), /reconcile|pending|submitted/i);
+    assert.equal(posts, 1);
+    assert.deepEqual(fx.state().uploads[0], receipt);
   });
 });
 test('dry run needs no tokens and makes no network requests or writes to either platform', async t => {
@@ -584,12 +714,175 @@ test('dry-run cannot erase the durable journal of a live pending submission', as
 });
 test('CurseForge recovery exhausts pagination before deciding an artifact is missing', async t => {
   const fx = fixture(t); fakeCredentials(t);
-  const unrelated = Array.from({length: 50}, (_, index) => ({id: index + 1, fileName: `historical-${index}.jar`, displayName: `Historical ${index}`}));
+  const unrelated = cfHistorical(50);
   const store = fakeStore(t, fx, {curseforge: [...unrelated, ...fx.files.map(entry => cfRecord(entry))]});
   const state = await main(fx.argv('curseforge'));
   assert.equal(store.posts.length, 0);
   assert.equal(state.uploads.length, 10);
   assert.ok(store.requests.some(call => call.url.includes('index=50')));
+  assert.deepEqual(store.requests.filter(call => call.url.includes('/files?'))
+    .map(call => Number(new URL(call.url).searchParams.get('index'))), [0, 50]);
+});
+test('malformed, truncated, changing, or duplicate CurseForge inventories stop all provider POSTs', async t => {
+  const mutations = {
+    'missing pagination': page => {delete page.pagination;},
+    'null pagination': page => {page.pagination = null;},
+    'missing index': page => {delete page.pagination.index;},
+    'missing page size': page => {delete page.pagination.pageSize;},
+    'missing result count': page => {delete page.pagination.resultCount;},
+    'missing total count': page => {delete page.pagination.totalCount;},
+    'string index': page => {page.pagination.index = '0';},
+    'string page size': page => {page.pagination.pageSize = '50';},
+    'string result count': page => {page.pagination.resultCount = '50';},
+    'string total count': page => {page.pagination.totalCount = '60';},
+    'wrong index': page => {page.pagination.index++;},
+    'zero page size': page => {page.pagination.pageSize = 0;},
+    'wrong page size': page => {page.pagination.pageSize = 25;},
+    'oversized page size': page => {page.pagination.pageSize = 51;},
+    'negative result count': page => {page.pagination.resultCount = -1;},
+    'wrong result count': page => {page.pagination.resultCount--;},
+    'negative total count': page => {page.pagination.totalCount = -1;},
+    'total count smaller than page': page => {page.pagination.totalCount = 40;},
+    'total count above Core bound': page => {page.pagination.totalCount = 10001;},
+    'unsafe total count': page => {page.pagination.totalCount = Number.MAX_SAFE_INTEGER + 1;},
+    'missing data': page => {delete page.data;},
+    'nonarray data': page => {page.data = {};},
+    'short first page with further records': page => {page.data.pop(); page.pagination.resultCount--;},
+    'empty page with further records': page => {page.data = []; page.pagination.resultCount = 0;},
+    'oversized data': page => {page.data.push(cfHistorical(1, 100)[0]); page.pagination.resultCount++;},
+    'duplicate ID within first page': page => {page.data[1] = clone(page.data[0]);},
+    'null file row': page => {page.data[0] = null;},
+    'missing file ID': page => {delete page.data[0].id;},
+    'string file ID': page => {page.data[0].id = '2001';},
+    'zero file ID': page => {page.data[0].id = 0;},
+    'missing filename': page => {delete page.data[0].fileName;},
+    'missing display name': page => {delete page.data[0].displayName;},
+    'growing total count': (page, index) => {if (index === 50) page.pagination.totalCount++;},
+    'shrinking total count': (page, index) => {if (index === 50) page.pagination.totalCount--;},
+    'short last page': (page, index) => {if (index === 50) {page.data.pop(); page.pagination.resultCount--;}},
+    'duplicate ID across pages': (page, index, inventory) => {if (index === 50) page.data[0] = clone(inventory[0]);},
+  };
+  for (const [name, mutate] of Object.entries(mutations)) await t.test(name, async t => {
+    const fx = fixture(t); fakeCredentials(t);
+    const inventory = [...cfHistorical(50), ...fx.files.map(entry => cfRecord(entry))];
+    const store = fakeStore(t, fx, {intercept(call) {
+      if (call.url.includes('/files?')) {
+        const index = Number(new URL(call.url).searchParams.get('index'));
+        const page = cfPage(clone(inventory.slice(index, index + 50)), index, inventory.length);
+        mutate(page, index, inventory);
+        return jsonResponse(page);
+      }
+    }});
+    await assert.rejects(main(fx.argv()), /inventory|deduplicate|bound/i);
+    assert.equal(store.requests.filter(call => call.method === 'POST').length, 0,
+      'An incomplete deduplication inventory must stop both providers before any write');
+    assert.equal(fx.state().uploads.length, 0);
+    assert.equal(fx.state().publicly_verified, false);
+  });
+});
+test('CurseForge inventory reads at most 10000 records and never requests an out-of-bounds page', async t => {
+  const fx = fixture(t); fakeCredentials(t);
+  const store = fakeStore(t, fx, {curseforge: [...cfHistorical(9990), ...fx.files.map(entry => cfRecord(entry))]});
+  const state = await main(fx.argv('curseforge'));
+  assert.equal(store.posts.length, 0);
+  assert.equal(state.publicly_verified, true);
+  const requests = store.requests.filter(call => call.url.includes('/files?'));
+  assert.equal(requests.length, 200);
+  for (const call of requests) {
+    const params = new URL(call.url).searchParams;
+    assert.ok(Number(params.get('index')) + Number(params.get('pageSize')) <= 10000);
+  }
+  assert.equal(new URL(requests.at(-1).url).searchParams.get('index'), '9950');
+});
+test('malformed or wrong CurseForge dependency inventories fail preflight before either provider writes', async t => {
+  for (const index of [0, 5, 7, 9]) for (const mode of ['missing', 'null', 'wrong required', 'unknown relation', 'missing relation']) {
+    await t.test(`${TARGETS[index][0]} ${TARGETS[index][1]}: ${mode}`, async t => {
+      const fx = fixture(t); fakeCredentials(t);
+      const inventory = fx.files.map(entry => cfRecord(entry));
+      const row = inventory[index];
+      if (mode === 'missing') delete row.dependencies;
+      else if (mode === 'null') row.dependencies = null;
+      else row.dependencies = [{modId: 1281310, ...(mode === 'wrong required' ? {relationType: 3}
+        : mode === 'unknown relation' ? {relationType: 999} : {})}];
+      const store = fakeStore(t, fx, {curseforge: inventory});
+      await assert.rejects(main(fx.argv()), /dependencies|differs/i);
+      assert.equal(store.requests.filter(call => call.method === 'POST').length, 0);
+      assert.equal(fx.state().uploads.length, 0);
+    });
+  }
+});
+test('accepted CurseForge POST followed by missing or wrong indexed dependencies retains submitted journal and halts', async t => {
+  for (const index of [0, 5, 7, 9]) for (const mode of ['missing', 'null', 'wrong required', 'unknown relation', 'missing relation']) {
+    await t.test(`${TARGETS[index][0]} ${TARGETS[index][1]}: ${mode}`, async t => {
+      const fx = fixture(t); fakeCredentials(t);
+      const entry = fx.files[index];
+      const store = fakeStore(t, fx, {curseforge: fx.files.slice(0, index).map(row => cfRecord(row)),
+        intercept(call, remote) {
+          if (call.url.includes('/files?') && remote.posts.length) {
+            const row = remote.curseforge.find(row => row.fileName === entry.file_name);
+            if (mode === 'missing') delete row.dependencies;
+            else if (mode === 'null') row.dependencies = null;
+            else row.dependencies = [{modId: 1281310, ...(mode === 'wrong required' ? {relationType: 3}
+              : mode === 'unknown relation' ? {relationType: 999} : {})}];
+          }
+        }});
+      await assert.rejects(main(fx.argv('curseforge')), /dependencies|differs/i);
+      assert.equal(store.posts.length, 1, 'The successful ID-only POST must halt before the next upload');
+      assertDurableSubmission(fx, entry);
+      const receipt = fx.state().uploads.find(row => row.file === entry.file_name);
+      assert.equal(receipt.status, 'submitted');
+      assert.equal(receipt.id, cfRecord(entry).id);
+      assert.equal(fx.state().publicly_verified, false);
+      await assert.rejects(main(fx.argv('curseforge')), /dependencies|differs/i);
+      assert.equal(store.posts.length, 1, 'Invalid indexing metadata must never permit a blind second POST');
+      assert.deepEqual(fx.state().uploads.find(row => row.file === entry.file_name), receipt);
+    });
+  }
+});
+test('invalid Modrinth dependencies fail preflight before either provider writes', async t => {
+  for (const index of [0, 5, 7, 9]) for (const mode of ['missing', 'null', 'wrong required', 'unknown relation', 'missing relation']) {
+    await t.test(`${TARGETS[index][0]} ${TARGETS[index][1]}: ${mode}`, async t => {
+      const fx = fixture(t); fakeCredentials(t);
+      const inventory = fx.files.map(entry => mrRecord(entry));
+      const row = inventory[index];
+      if (mode === 'missing') delete row.dependencies;
+      else if (mode === 'null') row.dependencies = null;
+      else row.dependencies = [{project_id: 'ihvBalM2', ...(mode === 'wrong required' ? {dependency_type: 'required'}
+        : mode === 'unknown relation' ? {dependency_type: 'unknown'} : {})}];
+      const store = fakeStore(t, fx, {modrinth: inventory});
+      await assert.rejects(main(fx.argv()), /dependencies|differs/i);
+      assert.equal(store.requests.filter(call => call.method === 'POST').length, 0);
+      assert.equal(fx.state().uploads.length, 0);
+    });
+  }
+});
+test('accepted Modrinth POST followed by invalid indexed dependencies retains submitted journal and halts', async t => {
+  for (const index of [0, 5, 7, 9]) for (const mode of ['missing', 'null', 'wrong required', 'unknown relation', 'missing relation']) {
+    await t.test(`${TARGETS[index][0]} ${TARGETS[index][1]}: ${mode}`, async t => {
+      const fx = fixture(t); fakeCredentials(t);
+      const entry = fx.files[index];
+      const store = fakeStore(t, fx, {modrinth: fx.files.slice(0, index).map(row => mrRecord(row)),
+        intercept(call, remote) {
+          if (call.url === `https://api.modrinth.com/v2/project/${MODRINTH_PROJECT}/version` && remote.posts.length) {
+            const row = remote.modrinth.find(row => row.version_number === mrDescriptor(entry).version_number);
+            if (mode === 'missing') delete row.dependencies;
+            else if (mode === 'null') row.dependencies = null;
+            else row.dependencies = [{project_id: 'ihvBalM2', ...(mode === 'wrong required' ? {dependency_type: 'required'}
+              : mode === 'unknown relation' ? {dependency_type: 'unknown'} : {})}];
+          }
+        }});
+      await assert.rejects(main(fx.argv('modrinth')), /dependencies|differs/i);
+      assert.equal(store.posts.length, 1);
+      assertDurableSubmission(fx, entry);
+      const receipt = fx.state().uploads.find(row => row.file === entry.file_name);
+      assert.equal(receipt.status, 'submitted');
+      assert.equal(receipt.id, mrRecord(entry).id);
+      assert.equal(fx.state().publicly_verified, false);
+      await assert.rejects(main(fx.argv('modrinth')), /dependencies|differs/i);
+      assert.equal(store.posts.length, 1, 'Invalid dependency metadata must stop any next or rerun POST');
+      assert.deepEqual(fx.state().uploads.find(row => row.file === entry.file_name), receipt);
+    });
+  }
 });
 test('missing or ambiguous CurseForge game catalog IDs fail before the first CurseForge POST', async t => {
   for (const mode of ['missing game', 'duplicate game', 'missing loader']) await t.test(mode, async t => {
@@ -609,4 +902,38 @@ test('missing or ambiguous CurseForge game catalog IDs fail before the first Cur
     await assert.rejects(main(fx.argv('curseforge')), /missing|ambiguous|catalog|version/i);
     assert.equal(store.posts.length, 0);
   });
+});
+
+
+test('legacy per-workspace Node entry point rejects uploads including dry-run', () => {
+  const entry = fileURLToPath(new URL('../scripts/upload_platforms.mjs', import.meta.url));
+  for (const flags of [[], ['--dry-run'], ['--workspace', '26.1.2', '--version', VERSION]]) {
+    const result = spawnSync(process.execPath, [entry, ...flags], {encoding: 'utf8', env: {}});
+    assert.equal(result.status, 1);
+    assert.equal(result.stdout, '');
+    assert.match(result.stderr, /Direct per-workspace uploads are disabled/);
+    assert.match(result.stderr, /source-bound verified ten-JAR manifest/);
+    assert.match(result.stderr, /docs\/releasing\.md/);
+  }
+});
+
+test('legacy PowerShell entry point only accepts compatibility flags and fails closed', () => {
+  const entry = fileURLToPath(new URL('../upload_local.ps1', import.meta.url));
+  const source = fs.readFileSync(entry, 'utf8').replace(/^\s*#.*$/gm, '').trim();
+  // No credential reads, build subprocesses, network calls or delegated uploader before failure.
+  assert.match(source, /^param\([\s\S]*?\)\s*throw "Direct per-workspace uploads are disabled[^"\r\n]*"$/);
+  assert.match(source, /retained upload journal/);
+  for (const flag of ['Version', 'Workspace', 'CurseForgeOnly', 'ModrinthOnly', 'DryRun']) {
+    assert.ok(source.includes('$' + flag), 'Preserve compatibility flag: ' + flag);
+  }
+});
+
+test('legacy PowerShell entry point rejects a native dry-run when PowerShell is available', t => {
+  const probe = spawnSync('pwsh', ['-NoLogo', '-NoProfile', '-Command', '$PSVersionTable.PSVersion.ToString()'], {encoding: 'utf8'});
+  if (probe.error?.code === 'ENOENT') {t.skip('PowerShell is not installed; static fail-closed check still runs'); return;}
+  assert.equal(probe.status, 0, probe.stderr);
+  const entry = fileURLToPath(new URL('../upload_local.ps1', import.meta.url));
+  const result = spawnSync('pwsh', ['-NoLogo', '-NoProfile', '-File', entry, '-DryRun'], {encoding: 'utf8', env: {}});
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Direct per-workspace uploads are disabled/);
 });

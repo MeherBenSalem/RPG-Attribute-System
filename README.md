@@ -19,7 +19,9 @@ specific version folder you want to work on.
 
 Download the jar whose name matches your **loader** (`-fabric-`, `-forge-` on
 1.20.1 only, or `-neoforge-`). There is no Forge build for 1.21.1+. This is a
-mod, not a Paper/Folia plugin. jauml is required on every loader.
+mod, not a Paper/Folia plugin. Fabric API is required for every Fabric build.
+jauml is also required for both loaders on 1.20.1 and 1.21.1; the 26.1.2, 26.2
+and 26.3 builds do not require jauml. See [Installation](docs/installation.md).
 
 Player-facing docs live in `docs/`. Paste-ready CurseForge/Modrinth answers are
 in `docs/listing-notes.md`.
@@ -46,21 +48,36 @@ version roots, but the individual workspaces remain isolated.
 
 ## Publishing
 
-After merge, NightReviews tags the release (e.g. `v4.2.5`). Pushing that tag runs
-`.github/workflows/publish.yml`, which builds all five version roots and uploads **each
-loader jar** as its own Modrinth version and CurseForge file (10 jars total).
+Create a release tag only after final independent source review, exact-commit
+loader CI, verified ten-JAR inventory, and the required client/gameplay checks.
+Pushing `v<version>` runs `.github/workflows/publish.yml`. Each loader JAR has
+its own Modrinth version and CurseForge file (10 JARs total).
 
-Required repo secrets: `MODRINTH_TOKEN`, `CURSEFORGE_TOKEN`, `CURSEFORGE_API_KEY`.
-Required repo variables: `MODRINTH_ID`, `CURSEFORGE_ID`.
+The workflow uses existing `MODRINTH_TOKEN`, `CURSEFORGE_TOKEN`, and
+`CURSEFORGE_API_KEY` repository secrets. The RAS project identities are checked;
+`MODRINTH_ID` and `CURSEFORGE_ID` variables, when set, must match them.
 
-Changelog text is read from `RPG-Attribute-System-{version}-PatchNotes.md`, falling
-back to `PATCH_NOTES.md`.
+Changelog text comes from `RPG-Attribute-System-{version}-PatchNotes.md`. That
+file must exist and describe the reviewed release; there is no fallback.
 
-### Local publishing
+### Legacy local commands
 
-For a single workspace without Actions, build the jars then run
-`scripts/upload_platforms.mjs` (see `upload_local.ps1`). Each jar is uploaded as its
-own Modrinth version and its own CurseForge file, with no secondary attached artifacts.
+`scripts/upload_platforms.mjs` and `upload_local.ps1` are retained as compatibility
+entry points, but fail closed without building or uploading. Per-workspace
+uploads cannot satisfy the complete release inventory gate.
+
+Use the Publish workflow, or the source-bound full-inventory
+`scripts/publish-verified-release.mjs` with a verified manifest and retained
+upload journal. See [release and recovery instructions](docs/releasing.md)
+before publication or retrying an interrupted upload.
+
+## Configuration studio
+
+The standalone local-only editor is in [`tools/config-studio/`](tools/config-studio/README.md).
+Its authored `dist/` runs from a static local web server without an account,
+backend or API key. Configuration imports and previews stay in browser memory;
+export before closing or reloading. The 4.3.0 development target includes the
+optional per-mob VP contract. The tool is separate from the Minecraft JARs.
 
 ## Documentation
 

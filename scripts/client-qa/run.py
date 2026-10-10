@@ -7,6 +7,8 @@ import json
 import math
 import os
 from pathlib import Path
+import platform
+import re
 import shutil
 import signal
 import subprocess
@@ -82,6 +84,63 @@ def validate_ready(data, *, run_id, sha, mc, scale, launched_ms, expected_state=
     return data
 
 
+def numeric_close(actual, expected):
+    return type(actual) in (int, float) and type(expected) in (int, float) and math.isfinite(actual) and math.isfinite(expected) and abs(actual - expected) <= 1e-8
+
+
+def snapshots_equal(actual, expected):
+    if not isinstance(actual, dict) or not isinstance(expected, dict):
+        return False
+    if set(actual) != {"total_xp", "level", "spare_points", "modifier", "attributes", "attribute_points"}:
+        return False
+    for key in ("total_xp", "level", "spare_points", "modifier"):
+        if not numeric_close(actual.get(key), expected.get(key, float("nan"))):
+            return False
+    for key in ("attributes", "attribute_points"):
+        if not isinstance(actual.get(key), dict) or not isinstance(expected.get(key), dict) or set(actual[key]) != set(expected[key]):
+            return False
+        if any(not numeric_close(value, expected[key][name]) for name, value in actual[key].items()):
+            return False
+    return True
+
+
+def validate_gameplay(data, *, run_id, sha, request_id, action, not_before_ms):
+    if not isinstance(data, dict) or data.get("schema_version") != 1:
+        raise QaError("Missing real gameplay evidence schema")
+    if any(data.get(key) != value for key, value in (("run_id", run_id), ("source_sha", sha),
+            ("request_id", request_id), ("action", action))):
+        raise QaError("Gameplay request/source/run identity differs")
+    written = data.get("written_at_ms")
+    if type(written) not in (int, float) or not math.isfinite(written) or written < not_before_ms or written > time.time() * 1000 + 5000:
+        raise QaError("Gameplay evidence is stale or future-dated")
+    if data.get("status") != "PASS":
+        raise QaError(f"Actual bound-server gameplay failed: {data.get('reason', 'missing pass')}")
+    for key in ("before", "after"):
+        if not snapshots_equal(data.get(key), data.get(key)):
+            raise QaError("Gameplay requires actual finite server variable snapshots")
+    if action == "seed" and data.get("fixture_setup_only") is not True:
+        raise QaError("Fixture seed lacks explicit setup-only boundary")
+    if action == "verify-allocation":
+        if data.get("normal_ui_packet_allocation_verified") is not True or not numeric_close(data.get("expected_agility"), .1025) \
+                or not numeric_close(data["after"]["attributes"].get("attribute_5"), .1025) \
+                or not numeric_close(data["after"]["attribute_points"].get("attribute_5"), 1) \
+                or not numeric_close(data["after"].get("spare_points"), 5) \
+                or not numeric_close(data.get("server_movement_speed_base"), .1025) \
+                or not numeric_close(data.get("server_movement_speed_value"), .1025):
+            raise QaError("Actual server-authoritative Agility allocation was not verified")
+    if action in {"kill-entity", "kill-tag", "invalid-reload", "kill-legacy"}:
+        expected = {"kill-entity": 31.5, "kill-tag": 33.75, "invalid-reload": 33.75, "kill-legacy": 20}[action]
+        if data.get("normal_loader_death_event_verified") is not True or data.get("real_tag_match") is not True \
+                or data.get("mob") != "minecraft:skeleton" or data.get("difficulty") != "hard" \
+                or not numeric_close(data.get("armor_points"), 2) or not numeric_close(data.get("expected_reward"), expected) \
+                or not numeric_close(data.get("observed_reward"), expected) \
+                or not numeric_close(data["after"]["total_xp"] - data["before"]["total_xp"], expected):
+            raise QaError("Actual player damage/loader death reward evidence is incomplete or wrong")
+        if action == "invalid-reload" and data.get("invalid_reload_retained_previous_rules") is not True:
+            raise QaError("Last-good rules were not preserved after malformed reload")
+    return data
+
+
 def checked(command, **kwargs):
     return subprocess.run(command, check=True, text=True, timeout=kwargs.pop("timeout", 20), **kwargs)
 
@@ -91,6 +150,97 @@ def read_json(path):
         return json.loads(path.read_text())
     except (FileNotFoundError, json.JSONDecodeError):
         return None
+
+
+def renderer_environment(mc, base=None, icd_directory=Path("/usr/share/vulkan/icd.d")):
+    """Choose genuine packaged software drivers, never advertise invented GL capabilities."""
+    environment = dict(os.environ if base is None else base)
+    if any(key.startswith("MESA_") and key.endswith("VERSION_OVERRIDE") for key in environment):
+        raise QaError("GL/GLSL version overrides are prohibited in real-client QA")
+    environment.update({"LIBGL_ALWAYS_SOFTWARE": "true", "GALLIUM_DRIVER": "llvmpipe"})
+    if mc == "1.21.1":
+        environment.pop("RAS_GRAPHICS_BACKEND", None)  # This client only has the OpenGL path.
+    if mc == "26.3":
+        # SDL3 must use the same X11 display that our native captures observe.
+        environment["SDL_VIDEO_DRIVER"] = "x11"
+        backend = environment.setdefault("RAS_GRAPHICS_BACKEND", "vulkan")
+        if backend not in {"opengl", "vulkan"}:
+            raise QaError("26.3 QA requires an explicit OpenGL or Vulkan backend")
+        if backend == "vulkan":
+            # Ubuntu Mesa has used both architecture-qualified and plain manifest names.
+            names = (f"lvp_icd.{platform.machine()}.json", "lvp_icd.json")
+            manifest = next((icd_directory / name for name in names if (icd_directory / name).is_file()), None)
+            if manifest is None:
+                raise QaError("Missing packaged Mesa lavapipe ICD; install mesa-vulkan-drivers")
+            data = read_json(manifest)
+            icd = data.get("ICD") if isinstance(data, dict) else None
+            library = icd.get("library_path", "") if isinstance(icd, dict) else ""
+            if not isinstance(library, str) or not Path(library).name.startswith("libvulkan_lvp.so"):
+                raise QaError("Packaged lavapipe manifest does not identify the real Mesa driver")
+            # VK_DRIVER_FILES is the supported Vulkan-loader selector, not a capability override.
+            environment["VK_DRIVER_FILES"] = str(manifest.resolve())
+            environment.pop("VK_ICD_FILENAMES", None)
+    return environment
+
+
+def validate_vulkan_renderer(renderer):
+    """Fail before the client starts when a software device or its X11 WSI is missing."""
+    extensions = set(re.findall(r"^\s*(VK_[A-Za-z0-9_]+)\s*:", renderer, re.MULTILINE))
+    if not {"VK_KHR_surface", "VK_KHR_xlib_surface"}.issubset(extensions):
+        raise QaError("Mesa Vulkan is missing VK_KHR_surface/VK_KHR_xlib_surface for the actual X11 display")
+    devices = re.findall(r"^\s*deviceName\s*=\s*(.+)$", renderer, re.MULTILINE)
+    types = re.findall(r"^\s*deviceType\s*=\s*(\S+)", renderer, re.MULTILINE)
+    drivers = re.findall(r"^\s*driverID\s*=\s*(\S+)", renderer, re.MULTILINE)
+    if len(devices) != 1 or len(types) != 1 or len(drivers) != 1 or not devices[0].lower().startswith(("llvmpipe", "lavapipe")) \
+            or types[0] != "PHYSICAL_DEVICE_TYPE_CPU" or drivers[0] != "DRIVER_ID_MESA_LLVMPIPE":
+        raise QaError("Exactly one verified Mesa lavapipe CPU Vulkan device is required")
+
+
+def prepare_renderer(mc, output):
+    environment = renderer_environment(mc)
+    vulkan = mc == "26.3" and environment["RAS_GRAPHICS_BACKEND"] == "vulkan"
+    tool = "vulkaninfo" if vulkan else "glxinfo"
+    if not shutil.which(tool):
+        raise QaError(f"Missing real-client QA renderer probe: {tool}")
+    command = [tool, "--summary" if vulkan else "-B"]
+    result = subprocess.run(command, text=True, capture_output=True, timeout=30, env=environment)
+    (output / "renderer.txt").write_text(result.stdout)
+    (output / "renderer-stderr.txt").write_text(result.stderr)
+    if result.returncode != 0:
+        raise QaError(f"Actual {tool} renderer setup failed (exit {result.returncode}); see renderer-stderr.txt")
+    if vulkan:
+        validate_vulkan_renderer(result.stdout)
+    elif "llvmpipe" not in result.stdout.lower():
+        raise QaError("A verified Mesa software OpenGL renderer is required")
+    selected = {key: environment[key] for key in ("LIBGL_ALWAYS_SOFTWARE", "GALLIUM_DRIVER", "RAS_GRAPHICS_BACKEND",
+                "SDL_VIDEO_DRIVER", "VK_DRIVER_FILES") if key in environment}
+    (output / "renderer-environment.json").write_text(json.dumps(selected, indent=2) + "\n")
+    return environment
+
+
+def renderer_failure(log, backend):
+    """Recognize renderer-creation failures, not harmless audio/authentication diagnostics."""
+    markers = ["No available video device", "Failed to initialize SDL"]
+    if backend == "vulkan":
+        markers += ["Failed to create backend Vulkan", "Vulkan is not supported:"]
+    elif backend == "opengl":
+        markers += ["Failed to create backend OpenGL", "Couldn't find matching GLX visual",
+                    "Failed to create window for OpenGL context"]
+    for line in log.splitlines():
+        if any(marker in line for marker in markers):
+            return line.strip()
+    return None
+
+
+def neutral_pointer(ready):
+    """Find a native framebuffer corner away from every actual interactive control."""
+    scale = ready["actual_gui_scale"]
+    for x, y in ((1, 1), (WIDTH-2, 1), (1, HEIGHT-2), (WIDTH-2, HEIGHT-2)):
+        if all(not (button["x"]*scale <= x < (button["x"]+button["width"])*scale
+                    and button["y"]*scale <= y < (button["y"]+button["height"])*scale)
+               for button in ready["buttons"]):
+            return x, y
+    raise QaError("No neutral native pointer position outside actual controls")
 
 
 def world_inventory(world):
@@ -123,7 +273,7 @@ def validate_fixture(directory, sha):
 
 
 class Driver:
-    def __init__(self, repo, mc, output, sha, fixture):
+    def __init__(self, repo, mc, output, sha, fixture, environment=None):
         self.repo, self.mc, self.output, self.sha, self.fixture = repo, mc, output, sha, fixture
         self.process = None
         self.pgid = None
@@ -137,11 +287,25 @@ class Driver:
         self.stdout = None
         self.last_action_ms = 0
         self.last_action_sequence = 0
+        self.environment = dict(os.environ if environment is None else environment)
+
+    def check_renderer_failure(self):
+        backend = self.environment.get("RAS_GRAPHICS_BACKEND", "opengl")
+        for path in (self.case / "gradle-client.log", self.game / "logs/latest.log"):
+            try:
+                with path.open("rb") as handle:
+                    handle.seek(max(0, path.stat().st_size - 128 * 1024))
+                    failure = renderer_failure(handle.read().decode("utf-8", errors="replace"), backend)
+            except FileNotFoundError:
+                continue
+            if failure:
+                raise QaError(f"Actual {backend} renderer creation failed: {failure}")
 
     def wait_ready(self, state, since=0, seconds=60, page=None, predicate=None):
         limit = min(self.deadline, time.monotonic() + seconds)
         last = "No fresh readiness file"
         while time.monotonic() < limit:
+            self.check_renderer_failure()
             failure = read_json(self.game / "ras-client-qa-final.json")
             if failure and failure.get("run_id") == self.run_id and failure.get("source_sha") == self.sha and failure.get("status") == "FAIL":
                 raise QaError(f"Actual client failed: {failure.get('reason')}")
@@ -181,7 +345,7 @@ class Driver:
         x, y = self.find_window()
         path = self.case / f"{name}.png"
         checked(["ffmpeg", "-nostdin", "-loglevel", "error", "-y", "-f", "x11grab", "-video_size", f"{WIDTH}x{HEIGHT}",
-                 "-i", f"{os.environ['DISPLAY']}+{x},{y}", "-frames:v", "1", "-update", "1", str(path)], capture_output=True)
+                 "-draw_mouse", "0", "-i", f"{os.environ['DISPLAY']}+{x},{y}", "-frames:v", "1", "-update", "1", str(path)], capture_output=True)
         with Image.open(path) as image:
             image = image.convert("RGB")
             if image.size != (WIDTH, HEIGHT) or sum(high-low for low, high in image.getextrema()) < 20:
@@ -198,11 +362,72 @@ class Driver:
         return path
 
     def stable_capture(self, name, ready):
+        if ready["state"] != "WORLD":
+            # Move the real pointer, leaving intentional keyboard focus unchanged. No image edits/crops.
+            self.find_window()
+            x, y = neutral_pointer(ready)
+            checked(["xdotool", "mousemove", "--sync", "--window", self.window_id, str(x), str(y)])
         # Readiness already requires twelve live client ticks. Capture two actual subsequent frames.
         time.sleep(.5)
         self.capture(name+"-frame1", ready)
         time.sleep(.5)
         self.capture(name, ready)
+
+    def gameplay_action(self, action, ready):
+        self.before_input()
+        request_id = "action-" + uuid.uuid4().hex
+        request = {"schema_version": 1, "run_id": self.run_id, "source_sha": self.sha,
+                   "request_id": request_id, "action": action}
+        path = self.game / "ras-client-qa-action.json"
+        temporary = path.with_suffix(".tmp")
+        temporary.write_text(json.dumps(request) + "\n")
+        self.last_action_ms = int(time.time() * 1000)
+        temporary.replace(path)
+        deadline = min(self.deadline, time.monotonic() + 60)
+        while time.monotonic() < deadline:
+            self.check_renderer_failure()
+            result = read_json(self.game / "ras-client-qa-gameplay.json")
+            if isinstance(result, dict) and result.get("request_id") == request_id:
+                validate_gameplay(result, run_id=self.run_id, sha=self.sha, request_id=request_id,
+                                  action=action, not_before_ms=self.last_action_ms)
+                (self.case / ("gameplay-" + action + ".json")).write_text(json.dumps(result, indent=2) + "\n")
+                synchronized = self.wait_ready(ready["state"], since=ready["sequence"],
+                    predicate=lambda data: snapshots_equal(data.get("player_variables"), result["after"])
+                        and (action != "verify-allocation" or (numeric_close(data.get("movement_speed_base"), .1025)
+                             and numeric_close(data.get("movement_speed_value"), .1025))))
+                return synchronized
+            if self.process.poll() is not None:
+                raise QaError(f"Client exited before real gameplay evidence: {action}")
+            time.sleep(.2)
+        raise QaError(f"Timed out waiting for actual bound-server gameplay action: {action}")
+
+    def exercise_gameplay(self, ready):
+        seeded = self.gameplay_action("seed", ready)
+        buttons = [button for button in seeded["buttons"] if button["label"].startswith("Allocate Agility.")]
+        if len(buttons) != 1:
+            raise QaError("Exactly one actual Agility allocation control is required")
+        label = buttons[0]["label"]
+        if "0.1025" not in label or seeded["player_variables"]["attributes"].get("attribute_5") != .1:
+            raise QaError("Actual Agility preview must retain its 0.1 to 0.1025 precision")
+        button, scale = buttons[0], seeded["actual_gui_scale"]
+        self.find_window()
+        checked(["xdotool", "mousemove", "--sync", "--window", self.window_id,
+                 str(round((button["x"] + button["width"] / 2) * scale)),
+                 str(round((button["y"] + button["height"] / 2) * scale))])
+        time.sleep(.5)
+        self.capture("10-agility-precise-preview", seeded)
+        self.click(seeded, label)
+        allocated = self.wait_ready("ALLOCATION", since=seeded["sequence"],
+            predicate=lambda data: isinstance(data.get("player_variables"), dict)
+                and numeric_close(data["player_variables"].get("spare_points"), 5)
+                and numeric_close(data["player_variables"].get("attribute_points", {}).get("attribute_5"), 1)
+                and numeric_close(data["player_variables"].get("attributes", {}).get("attribute_5"), .1025))
+        verified = self.gameplay_action("verify-allocation", allocated)
+        self.stable_capture("11-real-agility-allocation", verified)
+        for index, action in enumerate(("kill-entity", "kill-tag", "invalid-reload", "kill-legacy"), 12):
+            verified = self.gameplay_action(action, verified)
+            self.stable_capture(f"{index:02d}-{action}", verified)
+        return verified
 
     def before_input(self):
         latest = read_json(self.game / "ras-client-qa-ready.json")
@@ -243,7 +468,7 @@ class Driver:
 
     def cleanup(self):
         if self.game and self.case:
-            for relative in ("logs/latest.log", "ras-client-qa-ready.json", "ras-client-qa-final.json", "qa-world-join.json", "options.txt"):
+            for relative in ("logs/latest.log", "ras-client-qa-ready.json", "ras-client-qa-final.json", "qa-world-join.json", "options.txt", "ras-client-qa-action.json", "ras-client-qa-gameplay.json"):
                 source = self.game / relative
                 if source.is_file():
                     target = self.case / relative.replace("/", "-")
@@ -284,12 +509,12 @@ class Driver:
         self.last_action_ms = 0
         self.last_action_sequence = 0
         # Every run is disposable. No existing player options/world/result directory is read or overwritten.
-        (self.game / "options.txt").write_text(f"guiScale:{scale}\nlang:en_us\nonboardAccessibility:false\nfullscreen:false\nrenderDistance:2\nsimulationDistance:5\nmaxFps:30\n")
+        (self.game / "options.txt").write_text(f"guiScale:{scale}\nlang:en_us\nonboardAccessibility:false\ntutorialStep:none\nfullscreen:false\nrenderDistance:2\nsimulationDistance:5\nmaxFps:30\n")
         if self.fixture:
             destination = self.game / "saves" / ("world" if self.mc == "26.3" else "Demo_World")
             destination.parent.mkdir(parents=True)
             shutil.copytree(self.fixture, destination)
-        environment = os.environ.copy()
+        environment = self.environment.copy()
         environment.update({"RAS_CLIENT_QA":"true", "RAS_QA_RUN_ID":self.run_id, "RAS_QA_SOURCE_SHA":self.sha,
                             "RAS_QA_SCALE":str(scale), "LIBGL_ALWAYS_SOFTWARE":"true", "GALLIUM_DRIVER":"llvmpipe"})
         if any(key.startswith("MESA_") and key.endswith("VERSION_OVERRIDE") for key in environment):
@@ -298,7 +523,9 @@ class Driver:
         self.launched_ms = int(time.time()*1000)
         self.deadline = time.monotonic()+1200
         (self.case / "launch.json").write_text(json.dumps({"run_id":self.run_id,"source_sha":self.sha,"mc":self.mc,
-            "loader":"fabric","requested_gui_scale":scale,"launched_at_ms":self.launched_ms,"physical_size":[WIDTH,HEIGHT]},indent=2)+"\n")
+            "loader":"fabric","requested_gui_scale":scale,"launched_at_ms":self.launched_ms,"physical_size":[WIDTH,HEIGHT],
+            "graphics_backend":environment.get("RAS_GRAPHICS_BACKEND", "opengl"),
+            "capture":"native-x11grab-without-pointer-overlay","tutorial_step":"none"},indent=2)+"\n")
         self.process = subprocess.Popen(["bash","./gradlew",":fabric:runClientSelfTest","--no-daemon"], cwd=self.repo/self.mc,
                                         env=environment, stdout=self.stdout, stderr=subprocess.STDOUT, start_new_session=True)
         self.pgid = self.process.pid
@@ -337,11 +564,14 @@ class Driver:
             self.key("k")
             reopened = self.wait_ready("ALLOCATION", since=world["sequence"])
             self.stable_capture("09-keybind-reopened", reopened)
+            self.exercise_gameplay(reopened)
             self.stop()
             (self.case / "driver-result.json").write_text(json.dumps({"status":"PASS", "run_id":self.run_id,
                 "source_sha":self.sha,"mc":self.mc,"loader":"fabric","gui_scale":scale,
                 "human_pixel_review":"required","coverage":["allocation","keyboard_focus","combat","overview_attributes",
-                "overview_totals","back","escape","keybind_reopen"]},indent=2)+"\n")
+                "overview_totals","back","escape","keybind_reopen", "real_ui_allocation",
+                "entity_rule_precedence", "builtin_entity_tag", "difficulty_weighting", "armor_weighting",
+                "invalid_reload_last_good_rules", "legacy_disabled_reward"]},indent=2)+"\n")
         except Exception:
             raise
         return self.game / "saves" / ("world" if self.mc == "26.3" else "Demo_World")
@@ -371,19 +601,21 @@ def main():
         raise QaError("Checked-out source SHA differs from requested evidence SHA")
     if not os.environ.get("DISPLAY"):
         raise QaError("No actual X11 display provided")
-    for tool in ("xdotool","ffmpeg","glxinfo"):
+    for tool in ("xdotool","ffmpeg"):
         if not shutil.which(tool): raise QaError(f"Missing real-client QA tool: {tool}")
     args.output.mkdir(parents=True,exist_ok=False)
-    renderer=checked(["glxinfo","-B"],capture_output=True,env={**os.environ,"LIBGL_ALWAYS_SOFTWARE":"true","GALLIUM_DRIVER":"llvmpipe"}).stdout
-    (args.output/"renderer.txt").write_text(renderer)
-    if "llvmpipe" not in renderer.lower(): raise QaError("A verified Mesa software renderer is required")
+    try:
+        environment = prepare_renderer(args.workspace, args.output)
+    except Exception as exc:
+        (args.output / "renderer-failure.txt").write_text(str(exc) + "\n")
+        raise
     if args.workspace == "1.21.1" and args.fixture_input:
         raise QaError("The bootstrap run must generate its own fresh demo world")
     if args.workspace == "26.3" and args.fixture_output:
         raise QaError("Only the actual 1.21.1 bootstrap may export the demo fixture")
     fixture=validate_fixture(args.fixture_input,args.source_sha) if args.fixture_input else None
     if args.workspace=="26.3" and fixture is None: raise QaError("26.3 requires this workflow's live-client-generated fixture")
-    driver=Driver(repo,args.workspace,args.output,args.source_sha,fixture)
+    driver=Driver(repo,args.workspace,args.output,args.source_sha,fixture,environment)
     for scale in (2,3,4):
         try:
             generated = driver.launch(scale)

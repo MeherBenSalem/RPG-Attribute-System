@@ -2,6 +2,7 @@
 import copy
 import importlib.util
 from pathlib import Path
+import tempfile
 import time
 import unittest
 from unittest import mock
@@ -84,5 +85,133 @@ class EvidenceTests(unittest.TestCase):
         self.assertIn('os.killpg(self.pgid',driver)
         self.assertNotIn('pkill',driver)
         self.assertNotIn('eula=true',driver)
+
+
+class RenderingDriverTests(unittest.TestCase):
+    # Probe-output fixtures for parser regressions only. These never run/render a client.
+    VULKAN_SUMMARY = '''Vulkan Instance Version: 1.3.275
+Instance Extensions: count = 2
+    VK_KHR_surface : extension revision 25
+    VK_KHR_xlib_surface : extension revision 6
+Devices:
+GPU0:
+    apiVersion = 1.3.290
+    deviceType = PHYSICAL_DEVICE_TYPE_CPU
+    deviceName = llvmpipe (LLVM 20.1.2, 256 bits)
+    driverID = DRIVER_ID_MESA_LLVMPIPE
+    driverName = llvmpipe
+'''
+
+    def test_accepts_verified_cpu_vulkan_with_x11_extensions(self):
+        qa.validate_vulkan_renderer(self.VULKAN_SUMMARY)
+
+    def test_rejects_missing_surface_wrong_device_and_multiple_devices(self):
+        for bad in (
+                self.VULKAN_SUMMARY.replace('VK_KHR_surface', 'VK_KHR_surface_fake'),
+                self.VULKAN_SUMMARY.replace('VK_KHR_xlib_surface', 'VK_KHR_wayland_surface'),
+                self.VULKAN_SUMMARY.replace('PHYSICAL_DEVICE_TYPE_CPU', 'PHYSICAL_DEVICE_TYPE_DISCRETE_GPU'),
+                self.VULKAN_SUMMARY.replace('deviceName = llvmpipe', 'deviceName = unrelated'),
+                self.VULKAN_SUMMARY.replace('DRIVER_ID_MESA_LLVMPIPE', 'DRIVER_ID_UNKNOWN'),
+                self.VULKAN_SUMMARY + '\n    deviceName = llvmpipe\n'):
+            with self.subTest(output=bad), self.assertRaises(qa.QaError):
+                qa.validate_vulkan_renderer(bad)
+
+    def test_selects_existing_packaged_lavapipe_manifest_for_probe_and_client(self):
+        for filename in ('lvp_icd.x86_64.json', 'lvp_icd.json'):
+            with self.subTest(filename=filename), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                manifest = root / filename
+                manifest.write_text('{"ICD":{"library_path":"/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so"}}')
+                with mock.patch.object(qa.platform, 'machine', return_value='x86_64'):
+                    environment = qa.renderer_environment('26.3', {'DISPLAY': ':test', 'VK_ICD_FILENAMES': '/old.json'}, root)
+                self.assertEqual(environment['RAS_GRAPHICS_BACKEND'], 'vulkan')
+                self.assertEqual(environment['SDL_VIDEO_DRIVER'], 'x11')
+                self.assertEqual(environment['VK_DRIVER_FILES'], str(manifest.resolve()))
+                self.assertNotIn('VK_ICD_FILENAMES', environment)
+
+    def test_missing_or_unrelated_icd_fails_before_launch(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with self.assertRaisesRegex(qa.QaError, 'Missing packaged'):
+                qa.renderer_environment('26.3', {}, root)
+            (root / 'lvp_icd.json').write_text('{"ICD":{"library_path":"/unrelated.so"}}')
+            with self.assertRaisesRegex(qa.QaError, 'real Mesa driver'):
+                qa.renderer_environment('26.3', {}, root)
+
+    def test_old_client_retains_software_gl_without_vulkan_setup(self):
+        environment = qa.renderer_environment('1.21.1', {'RAS_GRAPHICS_BACKEND': 'vulkan'})
+        self.assertEqual(environment, {'LIBGL_ALWAYS_SOFTWARE': 'true', 'GALLIUM_DRIVER': 'llvmpipe'})
+
+    def test_prohibits_gl_version_overrides_before_any_probe(self):
+        for variable in ('MESA_GL_VERSION_OVERRIDE', 'MESA_GLSL_VERSION_OVERRIDE'):
+            with self.subTest(variable=variable), self.assertRaisesRegex(qa.QaError, 'overrides are prohibited'):
+                qa.renderer_environment('1.21.1', {variable: '4.5'})
+
+    def test_failed_probe_keeps_actual_stdout_stderr(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with mock.patch.object(qa, 'renderer_environment', return_value={'RAS_GRAPHICS_BACKEND': 'vulkan'}), \
+                    mock.patch.object(qa.shutil, 'which', return_value='/usr/bin/vulkaninfo'), \
+                    mock.patch.object(qa.subprocess, 'run', return_value=SimpleNamespace(returncode=1, stdout='probe stdout', stderr='probe stderr')):
+                with self.assertRaisesRegex(qa.QaError, 'renderer setup failed'):
+                    qa.prepare_renderer('26.3', root)
+            self.assertEqual((root / 'renderer.txt').read_text(), 'probe stdout')
+            self.assertEqual((root / 'renderer-stderr.txt').read_text(), 'probe stderr')
+
+    def test_probe_uses_the_same_environment_returned_for_launch(self):
+        environment = {'RAS_GRAPHICS_BACKEND': 'vulkan', 'VK_DRIVER_FILES': '/packaged/lvp_icd.json', 'SDL_VIDEO_DRIVER': 'x11'}
+        with tempfile.TemporaryDirectory() as temporary, \
+                mock.patch.object(qa, 'renderer_environment', return_value=environment), \
+                mock.patch.object(qa.shutil, 'which', return_value='/usr/bin/vulkaninfo'), \
+                mock.patch.object(qa.subprocess, 'run', return_value=SimpleNamespace(returncode=0, stdout=self.VULKAN_SUMMARY, stderr='')) as probe:
+            self.assertEqual(qa.prepare_renderer('26.3', Path(temporary)), environment)
+            self.assertEqual(probe.call_args.args[0], ['vulkaninfo', '--summary'])
+            self.assertEqual(probe.call_args.kwargs['env'], environment)
+
+    def test_fails_immediately_on_actual_selected_backend_errors_while_process_alive(self):
+        for backend, failure in (('opengl', "Couldn't find matching GLX visual"),
+                                 ('vulkan', "Vulkan is not supported: Installed Vulkan doesn't implement the VK_KHR_surface extension")):
+            with self.subTest(backend=backend), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                driver = qa.Driver(root, '26.3', root, 'a'*40, None, {'RAS_GRAPHICS_BACKEND': backend})
+                driver.case = driver.game = root
+                driver.deadline = time.monotonic() + 1000
+                driver.process = SimpleNamespace(poll=lambda: None)
+                (root / 'gradle-client.log').write_text(failure)
+                with mock.patch.object(qa.time, 'sleep') as sleep:
+                    with self.assertRaisesRegex(qa.QaError, 'renderer creation failed'):
+                        driver.wait_ready('ALLOCATION', seconds=1000)
+                    sleep.assert_not_called()
+
+    def test_ignores_harmless_audio_auth_and_other_backend_diagnostics(self):
+        self.assertIsNone(qa.renderer_failure('Failed to open OpenAL device\nFailed to fetch user properties\nInvalidCredentialsException: Status: 401', 'vulkan'))
+        self.assertIsNone(qa.renderer_failure('Failed to create backend OpenGL', 'vulkan'))
+
+    def test_parks_pointer_before_native_frames_without_changing_keyboard_focus(self):
+        root = Path('/unused-unit-test')
+        driver = qa.Driver(root, '1.21.1', root, 'a'*40, None)
+        driver.window_id = 'unit-test-window'
+        ready = {'state': 'ALLOCATION', 'actual_gui_scale': 4,
+                 'buttons': [{'x': 0, 'y': 0, 'width': 20, 'height': 20, 'focused': True}]}
+        original = copy.deepcopy(ready)
+        with mock.patch.object(driver, 'find_window'), mock.patch.object(driver, 'capture') as capture, \
+                mock.patch.object(qa, 'checked') as checked, mock.patch.object(qa.time, 'sleep'):
+            driver.stable_capture('unit-test-only', ready)
+        self.assertEqual(checked.call_args.args[0], ['xdotool', 'mousemove', '--sync', '--window', 'unit-test-window', '1278', '1'])
+        self.assertEqual(capture.call_count, 2)
+        self.assertEqual(ready, original)
+
+    def test_world_capture_does_not_move_grabbed_pointer(self):
+        root = Path('/unused-unit-test')
+        driver = qa.Driver(root, '1.21.1', root, 'a'*40, None)
+        with mock.patch.object(driver, 'capture'), mock.patch.object(qa, 'checked') as checked, mock.patch.object(qa.time, 'sleep'):
+            driver.stable_capture('unit-test-only', {'state': 'WORLD'})
+        checked.assert_not_called()
+
+    def test_native_capture_omits_pointer_and_disposable_options_disable_tutorial(self):
+        source = (Path(__file__).resolve().parents[2] / 'scripts/client-qa/run.py').read_text()
+        self.assertIn('"-draw_mouse", "0"', source)
+        self.assertIn('tutorialStep:none', source)
+        self.assertNotIn('MESA_GL_VERSION_OVERRIDE=', source)
 
 if __name__=='__main__': unittest.main()

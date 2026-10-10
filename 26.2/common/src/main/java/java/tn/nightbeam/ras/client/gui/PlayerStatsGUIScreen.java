@@ -85,14 +85,14 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         AttributeData data = AttributeManager.getAttributeData(id);
         if (data == null) return "Waiting for attribute configuration";
         if (locked(id)) return "Locked";
-        if (value(id) >= data.maxLevel) return "Maximum reached: " + RasGuiStyle.number(data.maxLevel);
+        if (value(id) >= data.maxLevel) return "Maximum reached: " + RasGuiStyle.preciseNumber(data.maxLevel);
         if (variables().SparePoints < 1) return "No available points";
         var preview = AttributeAllocationPreview.calculate(value(id), data.initValue,
                 variables().attributePoints.getOrDefault("attribute_" + id, 0.0D), data.baseIncrement,
                 data.maxLevel, variables().SparePoints, variables().modifier);
         if (preview.points() == 0) return "No points can be allocated";
-        return "Next value: " + RasGuiStyle.number(preview.value()) + " · " + preview.points()
-                + (preview.points() == 1 ? " point" : " points") + " (max: " + RasGuiStyle.number(data.maxLevel) + ")";
+        return "Next value: " + RasGuiStyle.preciseNumber(preview.value()) + " · " + preview.points()
+                + (preview.points() == 1 ? " point" : " points") + " (max: " + RasGuiStyle.preciseNumber(data.maxLevel) + ")";
     }
     private RasGuiButton navigationButton(int x, int y, int width, String symbol, String label,
             net.minecraft.client.gui.components.Button.OnPress action) {
@@ -208,7 +208,8 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         for (AttributePlusButton button : plusButtons) {
             if (button.isHoveredOrFocused()) {
-                RasGuiStyle.tooltip(graphics, font, List.of(attributeName(button.attributeId),
+                RasGuiStyle.tooltip(graphics, font, List.of(attributeName(button.attributeId) + ": "
+                        + RasGuiStyle.preciseNumber(value(button.attributeId)),
                         allocationText(button.attributeId)), button.isFocused() ? button.getX() : mouseX,
                         button.isFocused() ? button.getY() : mouseY, width);
                 return;
@@ -219,7 +220,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
             if (layout.contains(mouseX, mouseY, layout.bodyX(), layout.rowY(row), layout.bodyWidth() - 26, 28)) {
                 int id = id(visible.get(row));
                 List<String> lines = new ArrayList<>();
-                lines.add(attributeName(id) + ": " + RasGuiStyle.number(value(id)));
+                lines.add(attributeName(id) + ": " + RasGuiStyle.preciseNumber(value(id)));
                 String tip = ReturnAttributeTipGenericProcedure.execute(id);
                 if (tip != null && !tip.isBlank()) lines.add(tip);
                 lines.add(allocationText(id));

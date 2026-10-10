@@ -120,7 +120,7 @@ Configuration key:
 gui_shadow_color
 ```
 
-Cream underlay drawn **behind** book-style stats GUI text for contrast. This is not a HUD toggle and not a boolean shadow switch.
+In the 4.3.0 native-pixel menu, the cream underlay is drawn **behind headers** for contrast. Rows and controls use unshadowed foreground text. This is not a HUD toggle and not a boolean shadow switch.
 
 **Default Value:**
 
@@ -136,7 +136,7 @@ Cream underlay drawn **behind** book-style stats GUI text for contrast. This is 
 "gui_shadow_color": "#00000000"
 ```
 
-Vanilla drop-shadow on the foreground GUI string stays enabled. The HUD XP bar label also uses vanilla drop-shadow and has no separate key; hide HUD text with `display_vp_overlay` / `hudEnabled` instead.
+The 4.3.0 native-pixel GUI does not draw a vanilla drop-shadow on foreground strings. Older book-GUI versions used a separate vanilla shadow. The HUD XP bar label also uses vanilla drop-shadow and has no separate key; hide HUD text with `display_vp_overlay` / `hudEnabled` instead.
 
 On dedicated servers the value is synced to clients on join.
 

@@ -10,6 +10,10 @@ VP is RAS's custom XP currency. VP is earned from mob kills and accumulates towa
 
 Press the **K** key (configurable in `config/ras/display/overlay.json`). This opens the Player Stats GUI where you allocate attribute points.
 
+### Why does a small attribute upgrade look unchanged in the row?
+
+Rows keep compact two-decimal values. In 4.3.0, hover a row or hover/focus its **+** button for higher-precision current and next values. For example, Agility can go from `0.1` to `0.1025` while both compact row values show `0.1`. The preview uses the synced effective increment and does not allocate points.
+
 ### Do I need to install the mod on both client and server?
 
 Yes — the mod must be installed on both the server and all clients. Clients need the mod for the GUI screens, HUD overlay, and network protocol.
@@ -118,13 +122,13 @@ Admin commands already require **OP level 4**. Use `/op <player>` in the console
 
 ### I use NeoForge but CurseForge says the file requires Forge. Which jar is correct?
 
-Use the file whose name contains `-neoforge-` and your Minecraft version, and install **NeoForge** (not Minecraft Forge). Forge exists for RAS only on **1.20.1**. On CurseForge, open the **NeoForge** loader tab. jauml is required on NeoForge too — download the matching jauml NeoForge jar. See [Installation](installation.md#which-jar-to-download).
+Use the file whose name contains `-neoforge-` and your Minecraft version, and install **NeoForge** (not Minecraft Forge). Forge exists for RAS only on **1.20.1**. On CurseForge, open the **NeoForge** loader tab. NeoForge **1.21.1** also requires matching jauml. NeoForge **26.1.2, 26.2 and 26.3** do not require jauml. See [Installation](installation.md#which-jar-to-download).
 
 ### Can I turn off the text shadow on the HUD / stats menu?
 
 There is no `text_shadow` boolean.
 
-- **Stats / book GUI:** `gui_shadow_color` in `config/ras/stats_display.json` is the cream underlay (default `#80F3E1B5`). Set it to `#00000000` to hide that underlay. Vanilla drop-shadow on the foreground text stays on.
+- **Stats / book GUI:** `gui_shadow_color` in `config/ras/stats_display.json` is the cream underlay (default `#80F3E1B5`). Set it to `#00000000` to hide that underlay. The 4.3.0 native-pixel menu draws foreground text without vanilla drop-shadow and uses that underlay for headers.
 - **HUD XP label:** vanilla drop-shadow is hardcoded on. Spare-points and keybind hint text have no drop-shadow. You can hide HUD pieces with `display_*_overlay` / `hudEnabled` in [Client Configuration](configuration/client.md).
 
 ## Troubleshooting

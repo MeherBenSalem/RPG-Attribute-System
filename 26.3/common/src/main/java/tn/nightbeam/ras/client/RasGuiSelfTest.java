@@ -180,6 +180,7 @@ public final class RasGuiSelfTest {
             }
             try {
                 Path directory = client.gameDirectory.toPath();
+                RasClientGameplayQa.tick(client);
                 Path stop = directory.resolve("ras-client-qa-stop.txt");
                 if (Files.isRegularFile(stop) && Files.readString(stop).trim().equals(RUN_ID + " " + SOURCE_SHA)) {
                     if (!initialMenuSeen) { fail(client, "Stop requested before allocation readiness"); return; }
@@ -261,6 +262,12 @@ public final class RasGuiSelfTest {
                 ready.addProperty("level", vars.Level);
                 ready.addProperty("spare_points", vars.SparePoints);
                 ready.addProperty("next_level_xp", vars.nextevelXp);
+                ready.add("player_variables", RasClientGameplayQa.snapshot(vars));
+                var movement = client.player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+                if (movement != null) {
+                    ready.addProperty("movement_speed_base", movement.getBaseValue());
+                    ready.addProperty("movement_speed_value", movement.getValue());
+                }
                 ready.addProperty("screen_class", screen == null ? "none" : screen.getClass().getName());
                 com.google.gson.JsonArray ids = new com.google.gson.JsonArray();
                 tn.nightbeam.ras.util.AttributeManager.getAttributeIds().forEach(ids::add);

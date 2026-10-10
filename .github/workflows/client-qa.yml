@@ -69,7 +69,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     env:
-      RAS_GRAPHICS_BACKEND: opengl
+      RAS_GRAPHICS_BACKEND: vulkan
+      SDL_VIDEO_DRIVER: x11
     steps:
       - uses: actions/checkout@v4
         with:
@@ -83,10 +84,10 @@ jobs:
         with:
           name: generated-disposable-demo-fixture
           path: ${{ runner.temp }}/ras-disposable-fixture
-      - name: Prepare real software-rendered X11 client
+      - name: Prepare real lavapipe Vulkan X11 client
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb xauth mesa-utils libgl1-mesa-dri libglx-mesa0 libxrandr2 libxinerama1 libxcursor1 libxi6 libasound2t64 ffmpeg xdotool python3-pil
+          sudo apt-get install -y xvfb xauth mesa-utils libgl1-mesa-dri libglx-mesa0 mesa-vulkan-drivers libvulkan1 vulkan-tools libxrandr2 libxinerama1 libxcursor1 libxi6 libasound2t64 ffmpeg xdotool python3-pil
       - name: Quick-play a verified generated world and exercise scales 2 through 4
         run: |
           xvfb-run -a -s '-screen 0 1280x960x24 +extension GLX -nolisten tcp' \

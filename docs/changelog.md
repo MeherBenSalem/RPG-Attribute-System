@@ -5,6 +5,7 @@
 - Optional cached server-side entity/tag VP rules, base overrides and difficulty/effective-armor weighting; generated defaults remain disabled.
 - Admin `/ras reload mob_xp` with last-good reload protection and validation diagnostics.
 - Readable native-pixel stats/allocation/combat UI with larger labeled controls, responsive paging, complete tooltips and configurable totals.
+- Precise current/next-value tooltips reveal small upgrades while rows keep compact values.
 - Fresh attribute3 summary label corrected to Attack Speed; imported configuration stays intact.
 - Configuration studio development export, shared runtime/preview fixtures, and a five-workspace loader CI matrix.
 - Reject nonfinite XP input and overflowing awards/player totals.

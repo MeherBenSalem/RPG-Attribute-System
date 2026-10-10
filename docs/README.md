@@ -16,11 +16,11 @@ A comprehensive Minecraft RPG attribute and progression system that adds player 
 | **26.2** | ✅ | — | ✅ | 25 |
 | **26.3** | ✅ | — | ✅ | 25 |
 
-**Required dependency:** [jauml](https://www.nightbeam.cloud/) (bundled with the mod)
+**Dependencies:** Fabric API for every Fabric build; separate jauml for both loaders on 1.20.1 and 1.21.1. Calendar-version builds do not require jauml. See [Installation](installation.md).
 
 ## Quick Start
 
-1. Install the mod and jauml in your `mods/` folder
+1. Install the RAS JAR and the dependencies for your Minecraft version and loader in `mods/`
 2. Launch the game — config files generate automatically in `config/ras/`
 3. Press **K** to open the Stats GUI and allocate attribute points
 
@@ -42,6 +42,7 @@ A comprehensive Minecraft RPG attribute and progression system that adds player 
 | [Main Config Reference](configuration/main-config.md) | `settings.json` and attribute meta — every key explained |
 | [Additional Config Files](configuration/additional-config-files.md) | Per-attribute, respec, templates, locks, rewards, display |
 | [Client Configuration](configuration/client.md) | HUD overlay, display toggles, keybinds |
+| [Configuration Studio](../tools/config-studio/README.md) | Local-only editor, previews, safe imports and ZIP exports |
 | [Per-mob VP Rules](configuration/mob-xp.md) | Optional entity/tag rules, difficulty/armor weighting, reload |
 | [Gameplay Configuration](configuration/gameplay.md) | XP system, levelling, locks, respec, templates |
 | [Visuals Configuration](configuration/visuals.md) | GUI colours, stat display, icons |
