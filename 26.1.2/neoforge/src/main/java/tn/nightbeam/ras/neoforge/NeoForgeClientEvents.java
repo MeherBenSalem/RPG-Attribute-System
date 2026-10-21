@@ -7,11 +7,14 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import tn.nightbeam.ras.RpgAttributeSystemMod;
 import tn.nightbeam.ras.client.LevelOverlayRenderer;
+import tn.nightbeam.ras.client.LevelUpBanner;
 import tn.nightbeam.ras.client.gui.PlayerAttributesViewerGUIScreen;
 import tn.nightbeam.ras.client.gui.PlayerStatsGUIScreen;
 import tn.nightbeam.ras.init.RpgAttributeSystemModKeyMappings;
@@ -22,6 +25,16 @@ public class NeoForgeClientEvents {
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND);
+    }
+
+    @SubscribeEvent
+    public static void registerGuiLayers(RegisterGuiLayersEvent event) {
+        // One registered layer per overlay: RenderGuiLayerEvent fires once per vanilla layer, every frame.
+        event.registerAbove(VanillaGuiLayers.HOTBAR,
+                Identifier.fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "level_overlay"),
+                (graphics, deltaTracker) -> LevelOverlayRenderer.render(graphics, deltaTracker.getGameTimeDeltaTicks()));
+        event.registerAboveAll(Identifier.fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "level_up_banner"),
+                (graphics, deltaTracker) -> LevelUpBanner.render(graphics));
     }
 
     @SubscribeEvent
@@ -37,18 +50,13 @@ public class NeoForgeClientEvents {
         public static void onClientTick(ClientTickEvent.Post event) {
             net.minecraft.client.Minecraft client = net.minecraft.client.Minecraft.getInstance();
             tn.nightbeam.ras.client.RasGuiSelfTest.onClientTick(client);
+            LevelUpBanner.tick(client);
             if (client.screen != null) {
                 return;
             }
             while (RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND.consumeClick()) {
                 ClientPacketDistributor.sendToServer(new NeoForgeNetworking.OpenStatsPayload());
             }
-        }
-
-        @SubscribeEvent
-        public static void onRenderGuiLayer(RenderGuiLayerEvent.Post event) {
-            // Render level overlay on HUD
-            LevelOverlayRenderer.render(event.getGuiGraphics(), event.getPartialTick().getGameTimeDeltaTicks());
         }
 
         @SubscribeEvent

@@ -12,7 +12,9 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import tn.nightbeam.ras.RpgAttributeSystemMod;
 import tn.nightbeam.ras.config.AttributeData;
 import tn.nightbeam.ras.config.StatsDisplayConfig;
+import tn.nightbeam.ras.network.AttributeAllocationPacket;
 import tn.nightbeam.ras.network.ItemsLockSyncPacket;
+import tn.nightbeam.ras.network.StatPreviewSyncPacket;
 import tn.nightbeam.ras.network.StatsDisplaySyncPacket;
 import tn.nightbeam.ras.network.PlayerVariables;
 import tn.nightbeam.ras.platform.Services;
@@ -39,6 +41,10 @@ public class NeoForgeNetworking {
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "menu_update");
         public static final Identifier OPEN_STATS_ID = Identifier
             .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "open_stats");
+        public static final Identifier ALLOCATE_ID = Identifier
+            .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "allocate_attributes");
+        public static final Identifier STAT_PREVIEW_ID = Identifier
+            .fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "stat_preview");
 
     @SubscribeEvent
     public static void register(RegisterPayloadHandlersEvent event) {
@@ -50,6 +56,7 @@ public class NeoForgeNetworking {
         registrar.playToClient(SyncItemsLockPayload.TYPE, SyncItemsLockPayload.CODEC, NeoForgeNetworking::handleSyncItemsLock);
         registrar.playToClient(SyncStatsDisplayPayload.TYPE, SyncStatsDisplayPayload.CODEC,
                 NeoForgeNetworking::handleSyncStatsDisplay);
+        registrar.playToClient(StatPreviewPayload.TYPE, StatPreviewPayload.CODEC, NeoForgeNetworking::handleStatPreview);
 
         registrar.playBidirectional(MenuUpdatePayload.TYPE, MenuUpdatePayload.CODEC,
             NeoForgeNetworking::handleMenuUpdateClient,
@@ -59,6 +66,7 @@ public class NeoForgeNetworking {
         registrar.playToServer(ButtonActionPayload.TYPE, ButtonActionPayload.CODEC,
                 NeoForgeNetworking::handleButtonAction);
         registrar.playToServer(OpenStatsPayload.TYPE, OpenStatsPayload.CODEC, NeoForgeNetworking::handleOpenStats);
+        registrar.playToServer(AllocatePayload.TYPE, AllocatePayload.CODEC, NeoForgeNetworking::handleAllocate);
     }
 
     // ==================== Payload Records ====================
@@ -221,6 +229,32 @@ public class NeoForgeNetworking {
         }
     }
 
+    public record AllocatePayload(AttributeAllocationPacket packet) implements CustomPacketPayload {
+        public static final CustomPacketPayload.Type<AllocatePayload> TYPE = new CustomPacketPayload.Type<>(
+                ALLOCATE_ID);
+        public static final StreamCodec<FriendlyByteBuf, AllocatePayload> CODEC = StreamCodec.of(
+                (buf, payload) -> payload.packet.encode(buf),
+                buf -> new AllocatePayload(AttributeAllocationPacket.decode(buf)));
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
+    public record StatPreviewPayload(StatPreviewSyncPacket packet) implements CustomPacketPayload {
+        public static final CustomPacketPayload.Type<StatPreviewPayload> TYPE = new CustomPacketPayload.Type<>(
+                STAT_PREVIEW_ID);
+        public static final StreamCodec<FriendlyByteBuf, StatPreviewPayload> CODEC = StreamCodec.of(
+                (buf, payload) -> payload.packet.encode(buf),
+                buf -> new StatPreviewPayload(StatPreviewSyncPacket.decode(buf)));
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+    }
+
     // ==================== Handlers ====================
 
     private static void handleSyncVars(SyncVarsPayload payload, IPayloadContext context) {
@@ -281,6 +315,18 @@ public class NeoForgeNetworking {
                 accessor.updateMenuState(payload.elementType, payload.name, payload.elementState);
             }
         });
+    }
+
+    private static void handleAllocate(AllocatePayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player() instanceof ServerPlayer serverPlayer) {
+                AttributeAllocationPacket.handle(serverPlayer, payload.packet);
+            }
+        });
+    }
+
+    private static void handleStatPreview(StatPreviewPayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> StatPreviewSyncPacket.handle(payload.packet));
     }
 
     private static void handleOpenStats(OpenStatsPayload payload, IPayloadContext context) {
