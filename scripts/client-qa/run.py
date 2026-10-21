@@ -660,11 +660,17 @@ class Driver:
                 raise QaError("Actual X11 frame is missing, blank, or has wrong dimensions")
             if verify and ready and ready["state"] != "WORLD":
                 panel, scale = ready["panel"], ready["actual_gui_scale"]
-                # These samples prove the live panel was rasterized. They do not replace human text/layout review.
-                for dy, expected in ((6, (99,58,77)), (30, (241,232,204))):
-                    pixel = image.getpixel((round((panel['x']+5)*scale), round((panel['y']+dy)*scale)))
-                    if any(abs(actual-wanted) > 12 for actual,wanted in zip(pixel,expected)):
-                        raise QaError(f"Expected real panel pixels absent in {name}: {pixel} vs {expected}")
+                # These samples prove the live menu chrome was rasterized: the dark backdrop over the world and
+                # the header title in RasTheme.HEADER. They do not replace human text/layout review.
+                backdrop = image.getpixel((round((panel['x']+5)*scale), round((panel['y']+3)*scale)))
+                if max(backdrop) > 40:
+                    raise QaError(f"Expected dark menu backdrop absent in {name}: {backdrop}")
+                left, top = round((panel['x']+26)*scale), round(panel['y']*scale)
+                title = sum(1 for px in range(left, min(WIDTH, left+round(120*scale)))
+                            for py in range(top, min(HEIGHT, top+round(32*scale)))
+                            if all(abs(actual-wanted) <= 12 for actual, wanted in zip(image.getpixel((px, py)), (232,223,200))))
+                if title < 10*scale*scale:
+                    raise QaError(f"Expected menu header title pixels absent in {name}: {title}")
         if ready:
             (self.case / f"{name}.json").write_text(json.dumps(ready, indent=2)+"\n")
             if self.mc == '26.3': self.last_capture_snapshot = after_snapshot
