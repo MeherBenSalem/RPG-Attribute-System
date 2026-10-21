@@ -561,13 +561,15 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (super.mouseClicked(mouseX, mouseY, button)) return true;
+        // Rows first: the container screen claims every click, so it would never fall through to them.
         List<RasStatsModel.AttributeRow> rows = rows();
         int index = attributeRowAt(mouseX, mouseY, rows.size());
-        if (index < 0) return false;
-        select(index, rows.size());
-        if (button == 1) adjust(-step());
-        return true;
+        if (index >= 0 && !isOverStep(mouseX, mouseY)) {
+            select(index, rows.size());
+            if (button == 1) adjust(-step());
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
