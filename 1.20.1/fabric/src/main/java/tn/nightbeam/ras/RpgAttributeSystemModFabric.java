@@ -62,5 +62,13 @@ public class RpgAttributeSystemModFabric implements ModInitializer {
                         tn.nightbeam.ras.network.OpenStatsMenuPacket.handle(player);
                     });
                 });
+
+        net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.registerGlobalReceiver(
+                tn.nightbeam.ras.platform.FabricPlatformHelper.ALLOCATE_ATTRIBUTES_PACKET_ID,
+                (server, player, handler, buf, responseSender) -> {
+                    tn.nightbeam.ras.network.AttributeAllocationPacket packet = tn.nightbeam.ras.network.AttributeAllocationPacket
+                            .decode(buf);
+                    server.execute(() -> tn.nightbeam.ras.network.AttributeAllocationPacket.handle(player, packet));
+                });
     }
 }

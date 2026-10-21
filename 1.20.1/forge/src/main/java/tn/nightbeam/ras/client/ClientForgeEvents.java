@@ -16,6 +16,7 @@ public class ClientForgeEvents {
         if (event.phase == TickEvent.Phase.END) {
             Minecraft client = Minecraft.getInstance();
             RasGuiSelfTest.onClientTick(client);
+            LevelUpBanner.tick(client);
             if (client.screen != null) {
                 return;
             }

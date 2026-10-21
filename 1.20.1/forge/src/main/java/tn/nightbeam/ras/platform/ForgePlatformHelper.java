@@ -90,4 +90,14 @@ public class ForgePlatformHelper implements IPlatformHelper {
         RpgAttributeSystemModForge.PACKET_HANDLER.sendToServer(
                 new tn.nightbeam.ras.network.GenericButtonActionPacket(buttonID, x, y, z));
     }
+
+    @Override
+    public void sendAttributeAllocation(tn.nightbeam.ras.network.AttributeAllocationPacket packet) {
+        RpgAttributeSystemModForge.PACKET_HANDLER.sendToServer(packet);
+    }
+
+    @Override
+    public void syncStatPreview(ServerPlayer player, tn.nightbeam.ras.network.StatPreviewSyncPacket packet) {
+        RpgAttributeSystemModForge.PACKET_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
 }

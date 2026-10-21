@@ -22,6 +22,10 @@ public class FabricPlatformHelper implements IPlatformHelper {
     public static final ResourceLocation SYNC_PACKET_ID = new ResourceLocation("rpg_attribute_system", "sync_vars");
     public static final ResourceLocation BUTTON_ACTION_PACKET_ID = new ResourceLocation("rpg_attribute_system",
             "button_action");
+    public static final ResourceLocation ALLOCATE_ATTRIBUTES_PACKET_ID = new ResourceLocation("rpg_attribute_system",
+            "allocate_attributes");
+    public static final ResourceLocation STAT_PREVIEW_PACKET_ID = new ResourceLocation("rpg_attribute_system",
+            "stat_preview");
 
     @Override
     public String getPlatformName() {
@@ -129,5 +133,19 @@ public class FabricPlatformHelper implements IPlatformHelper {
                 buttonID, x, y, z);
         tn.nightbeam.ras.network.GenericButtonActionPacket.encode(packet, buf);
         net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(BUTTON_ACTION_PACKET_ID, buf);
+    }
+
+    @Override
+    public void sendAttributeAllocation(tn.nightbeam.ras.network.AttributeAllocationPacket packet) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        packet.encode(buf);
+        net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(ALLOCATE_ATTRIBUTES_PACKET_ID, buf);
+    }
+
+    @Override
+    public void syncStatPreview(ServerPlayer player, tn.nightbeam.ras.network.StatPreviewSyncPacket packet) {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        packet.encode(buf);
+        ServerPlayNetworking.send(player, STAT_PREVIEW_PACKET_ID, buf);
     }
 }

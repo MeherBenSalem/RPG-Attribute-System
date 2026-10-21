@@ -34,7 +34,7 @@ public class ReturnSectionDisplayGenericProcedure {
                 + new java.text.DecimalFormat("##.##").format(finalValue * modifier);
     }
 
-    private static Attribute resolveAttribute(String namespace, String attrName) {
+    public static Attribute resolveAttribute(String namespace, String attrName) {
         if (namespace == null || namespace.isBlank() || attrName == null || attrName.isBlank()) {
             return null;
         }
