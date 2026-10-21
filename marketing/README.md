@@ -28,9 +28,9 @@ Image links in the description point at `raw.githubusercontent.com/.../main/mark
 | `images/header-*.png`, `images/divider.png` | 1400 wide, transparent | Section headings for the description |
 | `images/screenshots/*.jpg` | 1920×1080 (two-column 1440×810) | Gallery uploads |
 | `images/gifs/level-up-banner.gif` | 800 wide, 4.8 s | Banner animation |
-| `images/gifs/level-up-flow.gif` | 800 wide | Open, stage and confirm animation |
+| `images/gifs/level-up-flow.gif` | 800 wide, 4.9 s | Open, stage and confirm animation |
 
-The screenshots are unedited captures of the 1.21.1 Fabric client: 1920×1080 at GUI scale 3, software rendering, a creative world in a cherry grove at sunset, netherite gear, and default RAS configuration. `two-column.jpg` is the same client in a 1440×810 window, which gives the two-column layout. The GIFs were recorded with `-Dras.uiTimeScale=0.125`, which slows every RAS animation eightfold, then played back eight times faster, so they show the real animation curves smoothly despite software rendering.
+The screenshots are unedited captures of the 1.21.1 Fabric client: 1920×1080 at GUI scale 3, software rendering, a creative world in a cherry grove at sunset, netherite gear, and default RAS configuration. `two-column.jpg` is the same client in a 1440×810 window, which gives the two-column layout. The GIFs were recorded with `-Dras.uiTimeScale` (0.125 for the banner, 0.0625 for the flow), which slows every RAS animation uniformly, then played back at the matching speed-up, so they show the real animation curves smoothly despite software rendering.
 
 ## Regenerating the artwork
 
