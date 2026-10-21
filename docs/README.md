@@ -1,6 +1,6 @@
 # RPG Attribute System (RAS)
 
-> **Version:** 4.3.0 | **Mod ID:** `rpg_attribute_system`
+> **Version:** 5.0.0 | **Mod ID:** `rpg_attribute_system`
 > **Author:** Meher / [NightBeam](https://www.nightbeam.cloud/)
 > **License:** Apache-2.0
 
@@ -18,7 +18,7 @@ A comprehensive Minecraft RPG attribute and progression system that adds player 
 
 **Dependencies:** Fabric API for every Fabric build; separate jauml for both loaders on 1.20.1 and 1.21.1. Calendar-version builds do not require jauml. See [Installation](installation.md).
 
-The [4.3.0 verification record](verification/4.3.0.md) documents exact-commit loader builds, native-client evidence, release gates, and coverage limits.
+The [5.0.0 verification record](verification/5.0.0.md) and the [4.3.0 record](verification/4.3.0.md) document loader builds, client evidence, release gates, and coverage limits.
 
 ## Quick Start
 
