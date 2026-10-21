@@ -19,8 +19,16 @@ MATRIX = [('1.20.1','fabric',17),('1.20.1','forge',17),('1.21.1','fabric',21),('
           ('26.3','fabric',25),('26.3','neoforge',25)]
 RUNTIME_DEPENDENCIES = {'minecraft','java','fabricloader','forge','neoforge'}
 MOD_ALIASES = {'fabric':'fabric-api','fabric-api':'fabric-api','jauml':'jauml'}
-FEATURE_CLASSES = ['tn/nightbeam/ras/config/MobXpRules.class','tn/nightbeam/ras/config/MobXpConfig.class',
-                   'tn/nightbeam/ras/client/gui/PixelRpgBookLayout.class']
+FEATURE_CLASSES = ['tn/nightbeam/ras/config/MobXpRules.class','tn/nightbeam/ras/config/MobXpConfig.class']
+# Each release line proves its own UI generation shipped: 4.x the book menu, 5.x the Level Up screen.
+UI_FEATURE_CLASSES = {4: ['tn/nightbeam/ras/client/gui/PixelRpgBookLayout.class'],
+                      5: ['tn/nightbeam/ras/client/gui/SoulsLayout.class',
+                          'tn/nightbeam/ras/procedures/CommitAttributeAllocationProcedure.class',
+                          'tn/nightbeam/ras/procedures/StatPreviewService.class']}
+
+
+def feature_classes(version):
+    return FEATURE_CLASSES + UI_FEATURE_CLASSES[5 if int(version.split('.')[0]) >= 5 else 4]
 
 
 def manifest_attributes(text):
@@ -126,7 +134,7 @@ def verify_jar(path,version,commit,minecraft,loader,java):
                       'Implementation-Title':loader,'Implementation-Version':version}
             for key,value in expected.items():
                 if attributes.get(key)!=value: raise ValueError(f'{path.name}: {key} must be {value}')
-            for name in FEATURE_CLASSES:
+            for name in feature_classes(version):
                 binary=jar.read(name)
                 if len(binary)<8 or binary[:4]!=b'\xca\xfe\xba\xbe' or struct.unpack('>H',binary[6:8])[0]!=java+44:
                     raise ValueError(f'{path.name}: missing/wrong Java{java} feature class {name}')

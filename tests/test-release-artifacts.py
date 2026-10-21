@@ -561,6 +561,16 @@ class ReleaseArtifactsTests(unittest.TestCase):
                         self.assert_rejected()
                         self.reset(mc, loader)
 
+    def test_feature_classes_follow_release_line(self):
+        four, five = VERIFIER.feature_classes("4.3.0"), VERIFIER.feature_classes("5.0.0")
+        self.assertEqual(tuple(four), FEATURE_CLASSES)
+        self.assertNotIn("tn/nightbeam/ras/client/gui/PixelRpgBookLayout.class", five)
+        for name in ("tn/nightbeam/ras/config/MobXpRules.class", "tn/nightbeam/ras/config/MobXpConfig.class",
+                     "tn/nightbeam/ras/client/gui/SoulsLayout.class",
+                     "tn/nightbeam/ras/procedures/CommitAttributeAllocationProcedure.class",
+                     "tn/nightbeam/ras/procedures/StatPreviewService.class"):
+            self.assertIn(name, five)
+
     def test_extra_runtime_mod_dependency_is_rejected(self):
         for mc, loader in TARGETS:
             with self.subTest(mc=mc, loader=loader):
