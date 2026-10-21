@@ -93,7 +93,10 @@ final class RasMenuChrome {
         RasTheme.fill(graphics, iconX + 1, iconY + 1, iconX + 17, iconY + 17, RasMotion.alpha(0x60000000, alpha));
         if (alpha > 0.6) graphics.item(new ItemStack(RpgAttributeSystemModItems.TOME_OF_ASCENSION.get()), iconX + 1, iconY + 1);
         int titleY = top + (layout.headerHeight() - RasTheme.Face.TITLE.height()) / 2;
-        RasTheme.text(graphics, RasTheme.Face.TITLE, title, iconX + 26, titleY, RasMotion.alpha(RasTheme.HEADER, alpha));
+        // Narrow headers are full of tabs, and the selected tab already names the page.
+        if (layout.mode() != SoulsLayout.Mode.NARROW) {
+            RasTheme.text(graphics, RasTheme.Face.TITLE, title, iconX + 26, titleY, RasMotion.alpha(RasTheme.HEADER, alpha));
+        }
     }
 
     /** Header tabs, right-aligned before the close control; {@code selected} is the active tab index. */
