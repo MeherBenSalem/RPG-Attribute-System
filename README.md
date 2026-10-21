@@ -28,6 +28,11 @@ in `docs/listing-notes.md`.
 
 ## Features
 
+- Soulslike Level Up screen: stage points, preview every attribute, server-measured
+  stat and total as `current → after`, then confirm in one server-validated request
+  ([guide](docs/guides/level-up-screen.md))
+- Status and Records pages, a cinematic level-up banner, and a matching HUD, with
+  bundled OFL serif fonts and animations you can turn off
 - Configurable RPG leveling and attribute allocation
 - Shared common gameplay logic with loader-specific entry points
 - Server-side config generation and sync

@@ -108,19 +108,20 @@ class GameplayEvidenceTests(unittest.TestCase):
     def test_seed_preview_wait_rejects_real_reset_before_widget_refresh(self):
         ready = {'state': 'ALLOCATION', 'player_variables': {
             'attributes': {'attribute_5': .1}, 'attribute_points': {'attribute_5': 0}, 'spare_points': 6},
-            'buttons': [{'label': 'Allocate Agility. Next value: 0.105 · 1 point (max: 500)', 'active': True}]}
+            'buttons': [{'label': 'Raise Agility. Next value: 0.105 (max: 500)', 'active': True}]}
         self.assertFalse(qa.seeded_agility_preview_ready(ready))
-        ready['buttons'][0]['label'] = 'Allocate Agility. Next value: 0.1025 · 1 point (max: 500)'
+        ready['buttons'][0]['label'] = 'Raise Agility. Next value: 0.1025 (max: 500)'
         self.assertTrue(qa.seeded_agility_preview_ready(ready))
-        for label in ('Allocate Agility. Next value: 0.1 · 1 point',
-                      'Allocate Agility. Next value: 0.10256 · 1 point'):
+        for label in ('Raise Agility. Next value: 0.1 (max: 500)',
+                      'Raise Agility. Next value: 0.10256 (max: 500)',
+                      'Allocate Agility. Next value: 0.1025 · 1 point (max: 500)'):
             broken = copy.deepcopy(ready); broken['buttons'][0]['label'] = label
             self.assertFalse(qa.seeded_agility_preview_ready(broken))
 
     def test_seed_preview_requires_active_unique_control_and_actual_reset_values(self):
         ready = {'state': 'ALLOCATION', 'player_variables': {
             'attributes': {'attribute_5': .1}, 'attribute_points': {'attribute_5': 0}, 'spare_points': 6},
-            'buttons': [{'label': 'Allocate Agility. Next value: 0.1025 · 1 point (max: 500)', 'active': True}]}
+            'buttons': [{'label': 'Raise Agility. Next value: 0.1025 (max: 500)', 'active': True}]}
         for field, value in (('attributes', {'attribute_5': .1025}), ('attribute_points', {'attribute_5': 1}), ('spare_points', 5)):
             broken = copy.deepcopy(ready); broken['player_variables'][field] = value
             self.assertFalse(qa.seeded_agility_preview_ready(broken))

@@ -24,7 +24,7 @@ The [4.3.0 verification record](verification/4.3.0.md) documents exact-commit lo
 
 1. Install the RAS JAR and the dependencies for your Minecraft version and loader in `mods/`
 2. Launch the game — config files generate automatically in `config/ras/`
-3. Press **K** to open the Stats GUI and allocate attribute points
+3. Press **K** to open the Level Up screen, stage attribute points, and press **Enter** to confirm
 
 ## Documentation
 
@@ -35,6 +35,7 @@ The [4.3.0 verification record](verification/4.3.0.md) documents exact-commit lo
 | [Installation](installation.md) | Singleplayer, dedicated server, and modpack setup |
 | [Getting Started](getting-started.md) | First-launch walkthrough and key concepts |
 | [Features](features.md) | Complete feature catalog |
+| [Level Up Screen](guides/level-up-screen.md) | Staging, previews, Confirm, pages, controls and layout |
 
 ### Configuration
 
@@ -43,7 +44,7 @@ The [4.3.0 verification record](verification/4.3.0.md) documents exact-commit lo
 | [Configuration Overview](configuration/overview.md) | Config system, file locations, server authority |
 | [Main Config Reference](configuration/main-config.md) | `settings.json` and attribute meta — every key explained |
 | [Additional Config Files](configuration/additional-config-files.md) | Per-attribute, respec, templates, locks, rewards, display |
-| [Client Configuration](configuration/client.md) | HUD overlay, display toggles, keybinds |
+| [Client Configuration](configuration/client.md) | HUD overlay, menu fonts/animations (`ui.json`), keybinds |
 | [Configuration Studio](../tools/config-studio/README.md) | Local-only editor, previews, safe imports and ZIP exports |
 | [Per-mob VP Rules](configuration/mob-xp.md) | Optional entity/tag rules, difficulty/armor weighting, reload |
 | [Gameplay Configuration](configuration/gameplay.md) | XP system, levelling, locks, respec, templates |

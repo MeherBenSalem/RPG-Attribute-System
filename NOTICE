@@ -2,3 +2,10 @@ RPG Attribute System
 Copyright 2026 Meher
 
 This product is licensed under the Apache License, Version 2.0.
+
+Bundled fonts (assets/rpg_attribute_system/font/), subset and instanced from the
+Google Fonts releases and licensed under the SIL Open Font License 1.1:
+- EB Garamond, Copyright 2017 The EB Garamond Project Authors
+  (https://github.com/octaviopardo/EBGaramond12)
+- Cinzel, Copyright 2020 The Cinzel Project Authors (https://github.com/NDISCOVER/Cinzel)
+The full license texts ship next to the fonts in font/licenses/.

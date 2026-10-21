@@ -3,7 +3,11 @@
 Paste-ready text for CurseForge / Modrinth. Do **not** treat this file as a
 published store listing. It matches current code.
 
-## Changelog blurb (short)
+## 5.0.0 changelog blurb (short)
+
+New soulslike Level Up screen: stage points, preview every attribute, server-measured stat and total as current → after, then confirm your build in one server-validated request. Adds Status and Records pages, a cinematic level-up banner, a matching HUD, and bundled serif fonts. Everything can be turned off in `config/ras/display/ui.json`. Install 5.0.0 on both server and client. The full listing and artwork are in [`marketing/`](../marketing/README.md).
+
+## Changelog blurb (short, 4.2.x)
 
 Admin `/ras` commands now require OP level 4. Attribute commands accept IDs 1–15. Icons for extra attributes reuse `att_1`–`att_10` when `icon_path` is empty. Docs: how to restrict commands to ops, which jar to download (NeoForge vs Forge), and how to hide the GUI text underlay.
 

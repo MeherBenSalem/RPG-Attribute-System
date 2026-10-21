@@ -27,6 +27,16 @@ Client settings control how RAS information appears on screen. They have no effe
 | `x_offset` | `display/overlay.json` | `0` | Integer | General X offset for the level overlay |
 | `y_offset` | `display/overlay.json` | `0` | Integer | General Y offset for the level overlay |
 | `anchor` | `display/overlay.json` | `"TL"` | `TL`, `TR`, `BL`, `BR` | Screen corner anchor for the overlay |
+| `font` | `display/ui.json` | `"serif"` | `serif`, `minecraft` | Menu, HUD and banner typeface |
+| `animations` | `display/ui.json` | `true` | Boolean | All RAS menu, banner and HUD motion |
+| `animation_speed` | `display/ui.json` | `1.0` | 0.25–4 | Speed of RAS animations |
+| `ambient_particles` | `display/ui.json` | `true` | Boolean | Golden motes behind the menu |
+| `background_blur` | `display/ui.json` | `true` | Boolean | Blur the world behind the menu (1.21.1+) |
+| `menu_sounds` | `display/ui.json` | `true` | Boolean | Navigation, staging and confirm sounds |
+| `hud_style` | `display/ui.json` | `"soulslike"` | `soulslike`, `classic` | HUD overlay style |
+| `hud_scale` | `display/ui.json` | `1.0` | 0.5–2 | Soulslike HUD scale (`hudScale` applies to the classic style) |
+| `level_up_banner` | `display/ui.json` | `true` | Boolean | Level-up banner |
+| `level_up_sound` | `display/ui.json` | `true` | Boolean | Level-up banner sound |
 
 There is no HUD `text_shadow` key. The XP bar label uses vanilla drop-shadow; spare-points and keybind hint text do not. Book-menu underlay colour is `gui_shadow_color` in `stats_display.json` (see [Visuals](visuals.md#gui-text-underlay-gui_shadow_color)).
 
@@ -331,6 +341,43 @@ Additional offset controls used by the legacy level overlay renderer. These func
 "x_offset": 0,
 "y_offset": 0
 ```
+
+---
+
+## Menu and HUD Presentation (`ui.json`)
+
+**File:** `config/ras/display/ui.json`
+**Side:** Client only (each player can choose their own)
+**Restart required:** Restart the game after editing; RAS reads config files once and caches them.
+
+5.0.0 creates this file with every key on first launch. Missing keys use the defaults below, and in strict config mode an existing file is never rewritten.
+
+```json
+{
+  "font": "serif",
+  "animations": true,
+  "animation_speed": 1.0,
+  "ambient_particles": true,
+  "background_blur": true,
+  "menu_sounds": true,
+  "hud_style": "soulslike",
+  "hud_scale": 1.0,
+  "level_up_banner": true,
+  "level_up_sound": true
+}
+```
+
+- **`font`**: `serif` uses the bundled EB Garamond (body) and Cinzel (titles) fonts. RAS ships each font rasterized at GUI scales 2, 3 and 4 and picks the one matching your scale, so glyphs stay one texel per pixel. `minecraft` uses the vanilla pixel font. Characters missing from the bundled fonts fall back to the vanilla font.
+- **`animations`**: set `false` to remove the entrance choreography, gliding selection, hover easing, value pulses, Confirm sweep, banner motion and motes. Everything then appears in its final state.
+- **`animation_speed`**: values above 1 speed animations up and values below 1 slow them down.
+- **`ambient_particles`**: the slow golden motes drawn behind the menu (also off when `animations` is `false`).
+- **`background_blur`**: blurs the world behind RAS menus using Minecraft's own menu blur strength from Accessibility settings. Not available on 1.20.1.
+- **`menu_sounds`**: soft clicks for selection and staging, a denial tone when a point cannot be staged, and a chime on Confirm.
+- **`hud_style`**: `soulslike` draws a slim level line, gold experience bar, unspent points and a key hint. `classic` keeps the pixel-art bar from earlier versions. The `overlay.json` anchor, offsets and JEI/REI/EMI avoidance apply to both styles.
+- **`hud_scale`**: scale of the soulslike HUD. `hudScale` in `overlay.json` continues to scale the classic HUD.
+- **`level_up_banner`** / **`level_up_sound`**: the gold banner shown when your RAS level rises, and its bell.
+
+Which stats appear on the Level Up and Status pages is still configured on the server with `config/ras/display/attribute_N.json` (`enable`, `display_name`, `attribute_namespace`, `attribute_name`, `display_modifer`). Totals come from `stats_display.json`. See the [Level Up screen guide](../guides/level-up-screen.md).
 
 ---
 
