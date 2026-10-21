@@ -29,6 +29,7 @@ public class ConfigInitializer {
         createAttributesDisplayConfig();
         createDisplaySettings();
         createOverlayConfig();
+        createUiConfig();
 
     }
 
@@ -830,6 +831,44 @@ public class ConfigInitializer {
         }
         if (!Services.CONFIG.arrayKeyExists(dir, file, "anchor")) {
             Services.CONFIG.setStringValue(dir, file, "anchor", "TL");
+        }
+    }
+
+    private static void createUiConfig() {
+        String dir = "ras/display";
+        String file = "ui";
+        if (!shouldPopulateConfig(dir, file)) {
+            return;
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "font")) {
+            Services.CONFIG.setStringValue(dir, file, "font", "serif");
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "animations")) {
+            Services.CONFIG.setBooleanValue(dir, file, "animations", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "animation_speed")) {
+            Services.CONFIG.setNumberValue(dir, file, "animation_speed", 1.0);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "ambient_particles")) {
+            Services.CONFIG.setBooleanValue(dir, file, "ambient_particles", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "background_blur")) {
+            Services.CONFIG.setBooleanValue(dir, file, "background_blur", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "menu_sounds")) {
+            Services.CONFIG.setBooleanValue(dir, file, "menu_sounds", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "hud_style")) {
+            Services.CONFIG.setStringValue(dir, file, "hud_style", "soulslike");
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "hud_scale")) {
+            Services.CONFIG.setNumberValue(dir, file, "hud_scale", 1.0);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "level_up_banner")) {
+            Services.CONFIG.setBooleanValue(dir, file, "level_up_banner", true);
+        }
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "level_up_sound")) {
+            Services.CONFIG.setBooleanValue(dir, file, "level_up_sound", true);
         }
     }
 

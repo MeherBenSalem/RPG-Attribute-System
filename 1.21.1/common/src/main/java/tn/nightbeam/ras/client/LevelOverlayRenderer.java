@@ -44,38 +44,20 @@ public class LevelOverlayRenderer {
                 GlStateManager.DestFactor.ZERO);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
-        int xOffset = readOffset("hudXOffset", "x_offset");
-        int yOffset = readOffset("hudYOffset", "y_offset");
-        float scale = readScale();
-        String anchor = Services.CONFIG.getStringValue("ras/display", "overlay", "anchor");
-        if (anchor == null || anchor.isBlank())
-            anchor = "TL";
-
         boolean showXp = DisplayXpOverlayProcedure.execute();
         boolean showPoints = YouHavePointsProcedure.execute(entity);
         boolean showKeybind = DisplayLogicKeybindOverlayProcedure.execute();
         String keyText = showKeybind ? PressToGetKeyBindNameProcedure.execute() : "";
+        if (tn.nightbeam.ras.client.gui.RasUiSettings.soulslikeHud()) {
+            SoulslikeHud.render(graphics, mc, entity, w, h, showXp, showPoints, showKeybind);
+            restoreState();
+            return;
+        }
+        float scale = readScale();
         int hudWidth = Math.max(BAR_WIDTH, showKeybind ? BAR_WIDTH + 11 + mc.font.width(keyText) : 0);
         int hudHeight = BAR_Y + BAR_HEIGHT;
-        int scaledWidth = Math.round(hudWidth * scale);
-        int scaledHeight = Math.round(hudHeight * scale);
-        int finalX = anchor.contains("R") ? w - scaledWidth - MARGIN - xOffset : MARGIN + xOffset;
-        int finalY = anchor.contains("B") ? h - scaledHeight - MARGIN - yOffset : MARGIN + yOffset;
-
-        Rect hudRect = new Rect(finalX, finalY, scaledWidth, scaledHeight);
-        if (Services.CONFIG.getBooleanValue("ras/display", "overlay", "avoidJEIOverlap")) {
-            Rect panel = findIngredientPanelBounds(mc, w, h);
-            if (panel != null && hudRect.intersects(panel)) {
-                finalX = panel.x - scaledWidth - MARGIN;
-                hudRect = new Rect(finalX, finalY, scaledWidth, scaledHeight);
-                if (hudRect.x < MARGIN) {
-                    finalX = MARGIN;
-                    finalY = panel.y + panel.height + MARGIN;
-                }
-            }
-        }
-        finalX = clamp(finalX, MARGIN, Math.max(MARGIN, w - scaledWidth - MARGIN));
-        finalY = clamp(finalY, MARGIN, Math.max(MARGIN, h - scaledHeight - MARGIN));
+        int[] position = place(mc, w, h, Math.round(hudWidth * scale), Math.round(hudHeight * scale));
+        int finalX = position[0], finalY = position[1];
 
         int drawX = Math.round(finalX / scale);
         int drawY = Math.round(finalY / scale);
@@ -112,11 +94,47 @@ public class LevelOverlayRenderer {
         }
 
         graphics.pose().popPose();
+        restoreState();
+    }
+
+    private static void restoreState() {
         RenderSystem.depthMask(true);
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
         RenderSystem.setShaderColor(1, 1, 1, 1);
+    }
+
+    /** Anchored, offset and clamped HUD origin that steps around JEI/REI/EMI ingredient panels. */
+    static int[] place(Minecraft mc, int w, int h, int scaledWidth, int scaledHeight) {
+        int xOffset = readOffset("hudXOffset", "x_offset");
+        int yOffset = readOffset("hudYOffset", "y_offset");
+        String anchor = Services.CONFIG.getStringValue("ras/display", "overlay", "anchor");
+        if (anchor == null || anchor.isBlank())
+            anchor = "TL";
+        int finalX = anchor.contains("R") ? w - scaledWidth - MARGIN - xOffset : MARGIN + xOffset;
+        int finalY = anchor.contains("B") ? h - scaledHeight - MARGIN - yOffset : MARGIN + yOffset;
+
+        Rect hudRect = new Rect(finalX, finalY, scaledWidth, scaledHeight);
+        if (Services.CONFIG.getBooleanValue("ras/display", "overlay", "avoidJEIOverlap")) {
+            Rect panel = findIngredientPanelBounds(mc, w, h);
+            if (panel != null && hudRect.intersects(panel)) {
+                finalX = panel.x - scaledWidth - MARGIN;
+                hudRect = new Rect(finalX, finalY, scaledWidth, scaledHeight);
+                if (hudRect.x < MARGIN) {
+                    finalX = MARGIN;
+                    finalY = panel.y + panel.height + MARGIN;
+                }
+            }
+        }
+        finalX = clamp(finalX, MARGIN, Math.max(MARGIN, w - scaledWidth - MARGIN));
+        finalY = clamp(finalY, MARGIN, Math.max(MARGIN, h - scaledHeight - MARGIN));
+        return new int[] { finalX, finalY };
+    }
+
+    static boolean anchoredRight() {
+        String anchor = Services.CONFIG.getStringValue("ras/display", "overlay", "anchor");
+        return anchor != null && anchor.contains("R");
     }
 
     private static int readOffset(String key, String legacyKey) {

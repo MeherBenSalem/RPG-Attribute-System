@@ -117,7 +117,7 @@ for root in ['1.20.1','1.21.1','26.1.2','26.2','26.3']:
         for name in ['platform/IConfigService.java','config/ConfigInitializer.java','config/ConfigValidator.java',
                      'config/MobXpRules.java','config/MobXpRuleStore.java','config/MobXpConfig.java',
                      'procedures/GameplayRulesProcedure.java','procedures/LevelingService.java','util/AttributeScaling.java',
-                     'config/AttributeData.java','procedures/AddPointsAttributeGenericProcedure.java','procedures/DisplayLogicAttributeGenericProcedure.java',
+                     'config/AttributeData.java','procedures/AddPointsAttributeGenericProcedure.java','procedures/CommitAttributeAllocationProcedure.java','procedures/DisplayLogicAttributeGenericProcedure.java',
                      'network/GenericButtonActionPacket.java']:
             files.append(str(package/name))
         files.extend([str(repo/'tests/GameplayRegressionTest.java'),str(repo/'tests/support/tn/nightbeam/ras/platform/TestConfigService.java')])

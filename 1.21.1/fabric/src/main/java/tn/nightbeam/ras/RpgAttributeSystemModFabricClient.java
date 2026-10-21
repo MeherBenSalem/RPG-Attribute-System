@@ -66,6 +66,9 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
                     });
                 });
 
+        ClientPlayNetworking.registerGlobalReceiver(FabricStatPreviewPayload.TYPE,
+                (payload, context) -> context.client().execute(() -> StatPreviewSyncPacket.handle(payload.packet())));
+
         KeyBindingHelper.registerKeyBinding(RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND);
 
         net.minecraft.client.gui.screens.MenuScreens.register(
@@ -77,6 +80,7 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             RasGuiSelfTest.onClientTick(client);
+            tn.nightbeam.ras.client.LevelUpBanner.tick(client);
             if (client.screen != null) {
                 return;
             }
@@ -87,6 +91,7 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
 
         HudRenderCallback.EVENT.register((graphics, tickCounter) -> {
             LevelOverlayRenderer.render(graphics, tickCounter.getGameTimeDeltaTicks());
+            tn.nightbeam.ras.client.LevelUpBanner.render(graphics);
         });
 
         tn.nightbeam.ras.events.FabricClientRpgAttributeSystemModEvents.register();

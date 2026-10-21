@@ -22,6 +22,7 @@ public final class GameplayRegressionTest {
             testKillAndSharing(directory);
             testMigrationDeathAndFiniteAmounts();
             testServerAllocationGuard(args[0]);
+            testAtomicCommit();
             System.out.println("PASS GameplayRegressionTest: " + checks + " assertions (actual config/gameplay source, test doubles)");
         } finally {
             try (var paths=Files.walk(directory)) { for(Path p:paths.sorted(Comparator.reverseOrder()).toList()) Files.delete(p); }
@@ -187,6 +188,58 @@ public final class GameplayRegressionTest {
         vars.attributes.put("attribute_1",20.0);double spare=vars.SparePoints;
         AddPointsAttributeGenericProcedure.execute(world,player,1);
         eq(spare,vars.SparePoints,"at-cap allocation cannot spend points");
+        tn.nightbeam.ras.util.AttributeManager.DATA.clear();
+    }
+
+    /** Level Up Confirm: every request is validated before anything is spent, then applied with one sync. */
+    private static void testAtomicCommit() {
+        ServerLevel world=new ServerLevel("minecraft:overworld");
+        ServerPlayer player=new ServerPlayer(world,0);
+        PlayerVariables vars=vars(player);vars.SparePoints=5;vars.modifier=7;
+        vars.attributes.put("attribute_1",10.0);vars.attributes.put("attribute_2",0.0);
+        Services.CONFIG.setNumberValue("ras/attributes","attribute_1","init_val_attribute",10);
+        Services.CONFIG.setNumberValue("ras/attributes","attribute_1","max_level",20);
+        Services.CONFIG.setNumberValue("ras/attributes","attribute_1","base_value_per_point",0.5);
+        Services.CONFIG.setStringArray("ras/attributes","attribute_1","cmd_to_exc",List.of(""));
+        Services.CONFIG.setStringValue("ras/attributes","attribute_1","on_level_event","say allocation");
+        Services.CONFIG.setNumberValue("ras/attributes","attribute_2","init_val_attribute",0);
+        Services.CONFIG.setNumberValue("ras/attributes","attribute_2","max_level",1);
+        Services.CONFIG.setNumberValue("ras/attributes","attribute_2","base_value_per_point",0.25);
+        Services.CONFIG.setStringArray("ras/attributes","attribute_2","cmd_to_exc",List.of(""));
+        Services.CONFIG.setStringValue("ras/attributes","attribute_2","on_level_event","");
+        tn.nightbeam.ras.util.AttributeManager.updateCache(1,allocationData(false));
+        tn.nightbeam.ras.util.AttributeManager.updateCache(2,allocationData(false));
+        tn.nightbeam.ras.util.AttributeManager.updateCache(3,allocationData(true));
+        int sync=Services.PLATFORM.syncCount,commands=ProcedureCommandHelper.calls;
+        List<Map<Integer,Integer>> rejected=new ArrayList<>(List.of(Map.of(),Map.of(1,4,2,2),Map.of(1,1,99,1),Map.of(1,1,3,1),
+                Map.of(1,0),Map.of(1,-2),Map.of(1,CommitAttributeAllocationProcedure.MAX_POINTS_PER_ATTRIBUTE+1)));
+        Map<Integer,Integer> oversized=new HashMap<>();
+        for(int id=1;id<=CommitAttributeAllocationProcedure.MAX_ENTRIES+1;id++) oversized.put(id,1);
+        rejected.add(oversized);
+        Map<Integer,Integer> nullPoints=new HashMap<>();nullPoints.put(1,null);rejected.add(nullPoints);
+        for(Map<Integer,Integer> request:rejected) {
+            check(CommitAttributeAllocationProcedure.execute(world,player,request)==-1,"invalid commit rejected: "+request.size());
+        }
+        check(CommitAttributeAllocationProcedure.execute(world,player,null)==-1,"null commit rejected");
+        check(CommitAttributeAllocationProcedure.execute(null,player,Map.of(1,1))==-1,"commit without world rejected");
+        world.client=true;
+        check(CommitAttributeAllocationProcedure.execute(world,player,Map.of(1,1))==-1,"client-side commit rejected");
+        world.client=false;
+        eq(5,vars.SparePoints,"rejected commits spend nothing");
+        check(vars.attributePoints.isEmpty() && Services.PLATFORM.syncCount==sync && ProcedureCommandHelper.calls==commands,
+                "rejected commits mutate, command and sync nothing");
+        check(CommitAttributeAllocationProcedure.execute(world,player,Map.of(2,3,1,2))==5,"valid commit spends every requested point");
+        eq(0,vars.SparePoints,"commit spends exact points regardless of the allocation modifier");
+        eq(2,vars.attributePoints.get("attribute_1"),"commit invests attribute 1");
+        eq(11,vars.attributes.get("attribute_1"),"commit final value attribute 1");
+        eq(3,vars.attributePoints.get("attribute_2"),"commit invests attribute 2");
+        eq(0.75,vars.attributes.get("attribute_2"),"commit final value attribute 2");
+        check(Services.PLATFORM.syncCount==sync+1,"one sync per commit");
+        check(ProcedureCommandHelper.calls==commands+2,"per-point level events still run");
+        vars.SparePoints=10;
+        check(CommitAttributeAllocationProcedure.execute(world,player,Map.of(2,3))==1,"cap stops a commit at the server's last point");
+        eq(9,vars.SparePoints,"capped commit keeps unspent points");
+        eq(1.0,vars.attributes.get("attribute_2"),"capped commit reaches cap");
         tn.nightbeam.ras.util.AttributeManager.DATA.clear();
     }
 

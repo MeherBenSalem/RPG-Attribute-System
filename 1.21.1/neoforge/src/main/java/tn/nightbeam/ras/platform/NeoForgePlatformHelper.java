@@ -106,4 +106,14 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
         PacketDistributor.sendToServer(
                 new NeoForgeNetworking.ButtonActionPayload(buttonID, x, y, z));
     }
+
+    @Override
+    public void sendAttributeAllocation(tn.nightbeam.ras.network.AttributeAllocationPacket packet) {
+        PacketDistributor.sendToServer(new NeoForgeNetworking.AllocatePayload(packet));
+    }
+
+    @Override
+    public void syncStatPreview(ServerPlayer player, tn.nightbeam.ras.network.StatPreviewSyncPacket packet) {
+        PacketDistributor.sendToPlayer(player, new NeoForgeNetworking.StatPreviewPayload(packet));
+    }
 }
