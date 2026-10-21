@@ -50,7 +50,7 @@ Total experience earned, points invested and available, points invested per attr
 | --- | --- |
 | 600 wide or more | Three columns |
 | 400–599 wide | Two columns; Totals move under Base Stats |
-| Under 400 wide | One column |
+| Under 400 wide | One column; the header shows the page tabs without a title |
 | Under 300 tall | Compact header and a one-line summary |
 
 At 1920×1080 that means three columns at GUI scale 2 or 3 and two columns at GUI scale 4. Long lists scroll with the mouse wheel. The selected attribute always stays in view.
