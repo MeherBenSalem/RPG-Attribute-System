@@ -1248,3 +1248,49 @@ test('an HTTP 400 CurseForge receipt is retried only on explicit request and onl
       await assert.rejects(main(argv),/Rejected-receipt retry requires|mutually exclusive|Isolation requires/);
   });
 });
+
+function provenFixture(t, {proven=true}={}) {
+  const fx=fixture(t);fakeCredentials(t);
+  const uploads=fx.files.map(entry=>({platform:'modrinth',file:entry.file_name,sha256:entry.sha256,status:'verified',id:mrRecord(entry).id,provider_status:'listed'}));
+  if (proven) uploads.push({platform:'curseforge',file:fx.files[0].file_name,sha256:fx.files[0].sha256,status:'verified',id:cfRecord(fx.files[0]).id,provider_status:4});
+  fs.writeFileSync(fx.paths.state,JSON.stringify({schema_version:1,source_commit:COMMIT,version:VERSION,publicly_verified:false,uploads},null,2)+'\n');
+  return {...fx,continueArgs:()=>[...fx.argv('curseforge'),'--continue-past-pending-curseforge']};
+}
+
+test('after one verified CurseForge file, remaining uploads continue past review and are reconciled later', async t=>{
+  await t.test('every remaining target is posted once and journaled as submitted with its file ID', async t=>{
+    const fx=provenFixture(t);const store=fakeStore(t,fx,{curseforge:[cfRecord(fx.files[0])],pendingIndex:true});
+    await assert.rejects(main(fx.continueArgs()),/pending/);
+    assert.equal(store.posts.length,9);assert.equal(new Set(store.posts.map(post=>post.file)).size,9);
+    assert.ok(!store.posts.some(post=>post.file===fx.files[0].file_name));
+    const rows=fx.state().uploads.filter(row=>row.platform==='curseforge');
+    assert.equal(rows.length,10);
+    assert.ok(rows.slice(1).every(row=>row.status==='submitted'&&Number.isSafeInteger(row.id)));
+    await t.test('a rerun while reviews are pending reposts nothing', async ()=>{
+      const before=store.posts.length;await assert.rejects(main(fx.continueArgs()),/pending/);
+      assert.equal(store.posts.length,before);
+    });
+    await t.test('once listed, a rerun verifies every target without another POST', async ()=>{
+      const before=store.posts.length;
+      for (const entry of fx.files.slice(1)) store.curseforge.push(cfRecord(entry));
+      const state=await main(fx.continueArgs());
+      assert.equal(store.posts.length,before);assert.equal(state.publicly_verified,true);
+      assert.ok(state.uploads.filter(row=>row.platform==='curseforge').every(row=>['verified','verified-existing'].includes(row.status)));
+    });
+  });
+  await t.test('without a verified CurseForge file the first unlisted upload still halts the run', async t=>{
+    const fx=provenFixture(t,{proven:false});const store=fakeStore(t,fx,{pendingIndex:true});
+    await assert.rejects(main(fx.continueArgs()),/awaits indexing\/review/);assert.equal(store.posts.length,1);
+  });
+  await t.test('a verified receipt whose file is missing from the inventory still blocks every write', async t=>{
+    const fx=provenFixture(t);const store=fakeStore(t,fx,{pendingIndex:true});
+    await assert.rejects(main(fx.continueArgs()),/reconcile/);assert.equal(store.posts.length,0);
+  });
+  await t.test('the flag is refused outside CurseForge-only live publication', async t=>{
+    const fx=provenFixture(t);fakeStore(t,fx);
+    for(const argv of [[...fx.argv('curseforge'),'--continue-past-pending-curseforge','--dry-run'],
+      [...fx.argv('curseforge'),'--continue-past-pending-curseforge','--preflight-only'],
+      [...fx.argv('both'),'--continue-past-pending-curseforge']])
+      await assert.rejects(main(argv),/Continuing past pending CurseForge review requires|mutually exclusive/);
+  });
+});

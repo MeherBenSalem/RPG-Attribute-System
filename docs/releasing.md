@@ -153,6 +153,12 @@ workflow on main completes CurseForge without moving the tag or rebuilding:
   recorded as `rejected`, with that evidence, and then uploaded once. Every other
   uncertain receipt still blocks.
 
+`--continue-past-pending-curseforge` lets one run upload the remaining files once
+at least one CurseForge file of the release is verified, which proves the
+descriptor. Uploads that are not listed yet keep their `submitted` receipt and file
+ID. They are never posted again and are verified by a later run. Without the flag,
+the publisher still stops after each upload until CurseForge lists it.
+
 Dispatch it from main with `helper_commit` set to the dispatch SHA and
 `receipt_run_id` set to the latest attempted journal (first `39739461491`). Run it
 with `dry_run: true` first, check `publisher-preflight.json`
