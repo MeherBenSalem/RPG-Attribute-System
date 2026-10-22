@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "repository": "MeherBenSalem/RPG-Attribute-System",
+  "repository_id": 896773299,
+  "owner_id": 74470806,
+  "source_commit": "c8e06b8412c7e4ee6c7985411c14a73f032549af",
+  "release_version": "5.0.0",
+  "tag": "v5.0.0",
+  "source_run_id": 39739461491,
+  "source_artifacts": [
+    {
+      "id": 12408568216,
+      "name": "ras-release-c8e06b8412c7e4ee6c7985411c14a73f032549af-1.20.1",
+      "digest": "sha256:224246ae949428363dc83c0a1c6f94d1d7d80cacde195a51c31a386ae8d33968"
+    },
+    {
+      "id": 12408079991,
+      "name": "ras-release-c8e06b8412c7e4ee6c7985411c14a73f032549af-1.21.1",
+      "digest": "sha256:7f0244787eb8ff1a03c6a398eda49e3dce0020b66a1a6f20c010cf483830d27f"
+    },
+    {
+      "id": 12408407971,
+      "name": "ras-release-c8e06b8412c7e4ee6c7985411c14a73f032549af-26.1.2",
+      "digest": "sha256:1e4714d02a510c40f752a754d3ec902c39602658af78d5d7293a17c5621033a8"
+    },
+    {
+      "id": 12408811545,
+      "name": "ras-release-c8e06b8412c7e4ee6c7985411c14a73f032549af-26.2",
+      "digest": "sha256:887cd4ed22537c31058c2c04e5d5f954de23882f7b67c9bbe3b3ac49bb67272e"
+    },
+    {
+      "id": 12408278488,
+      "name": "ras-release-c8e06b8412c7e4ee6c7985411c14a73f032549af-26.3",
+      "digest": "sha256:523c0fb8a191f5409caebd4aa1240f271db013f68253604a8be168d42d25a7ef"
+    }
+  ],
+  "source_provenance": {
+    "id": 12408364008,
+    "name": "release-provenance-c8e06b8412c7e4ee6c7985411c14a73f032549af",
+    "digest": "sha256:5bcf6049f032d8fbe08f3582942879a282e25f81c778a8920639ef5c2a59faf6"
+  },
+  "original_manifest_sha256": "e02b1cff843642d3ee26181bdb43cfacf51f19df27dab306b53cdb211ac249d2",
+  "minimum_receipt_run_id": 39739461491,
+  "known_receipts": [
+    {
+      "run_id": 39739461491,
+      "id": 12408364008,
+      "name": "release-provenance-c8e06b8412c7e4ee6c7985411c14a73f032549af",
+      "digest": "sha256:5bcf6049f032d8fbe08f3582942879a282e25f81c778a8920639ef5c2a59faf6"
+    }
+  ]
+}

@@ -62,7 +62,7 @@ The workflow uses existing `MODRINTH_TOKEN`, `CURSEFORGE_TOKEN`, and
 `CURSEFORGE_API_KEY` repository secrets. The RAS project identities are checked;
 `MODRINTH_ID` and `CURSEFORGE_ID` variables, when set, must match them.
 
-Changelog text comes from `RPG-Attribute-System-{version}-PatchNotes.md`. That
+Changelog text comes from `patchnotes/{version}.md`. That
 file must exist and describe the reviewed release; there is no fallback.
 
 ### Legacy local commands

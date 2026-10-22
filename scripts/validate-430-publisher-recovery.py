@@ -173,7 +173,7 @@ def validate(helper_commit, receipt_run_id, current_run_id, lock):
     sources = [validate_artifact(artifacts, source, expected, lock) for expected in lock['source_artifacts']]
     source_provenance = validate_artifact(artifacts, source, lock['source_provenance'], lock)
     old = history('/actions/workflows/publish.yml/runs?head_sha=' + lock['source_commit'] + '&per_page=100')
-    helpers = history('/actions/workflows/recover-430-publication.yml/runs?per_page=100')
+    helpers = history('/actions/workflows/' + Path(HELPER_WORKFLOW).name + '/runs?per_page=100')
     runs = old + helpers
     jobs = {str(run['id']): original.read_jobs(run['id']) for run in runs if str(run['id']) != current_run_id}
     latest_receipt(runs, jobs, current_run_id, receipt_run_id)

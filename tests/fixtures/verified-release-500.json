@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "mod_id": "rpg_attribute_system",
+  "release_version": "5.0.0",
+  "source_commit": "c8e06b8412c7e4ee6c7985411c14a73f032549af",
+  "complete_inventory": true,
+  "artifact_count": 10,
+  "files": [
+    {
+      "file_name": "rpg_attribute_system-fabric-1.20.1-5.0.0.jar",
+      "loader": "fabric",
+      "minecraft": "1.20.1",
+      "java": 17,
+      "version": "5.0.0",
+      "source_commit": "c8e06b8412c7e4ee6c7985411c14a73f032549af",
+      "size_bytes": 3636801,
+      "sha256": "6fcdca6ac5299f91114aa365ddf03f651c078bca20a39bb6577ba2da9f9ccdb9",
+      "sha512": "0a4c3608828e7c9243520fdcbb8b342fa8032bf46d87d6d9b9a5cd33e3b24c83f12d913307a5f4d8bdffe6069642f1539f8fe145540e9cb09754cfe59d30a84a",
+      "sha1": "7aeeef09a24228d9d56fa3148cc2e44a7ee51b11",
+      "required_mod_ids": [
+        "fabric-api",
+        "jauml"
+      ],
+      "mod_metadata_path": "fabric.mod.json",
+      "path": "fabric/build/libs/rpg_attribute_system-fabric-1.20.1-5.0.0.jar"
+    },
+    {
+      "file_name": "rpg_attribute_system-forge-1.20.1-5.0.0.jar",
+      "loader": "forge",
+      "minecraft": "1.20.1",
+      "java": 17,
+      "version": "5.0.0",
+      "source_commit": "c8e06b8412c7e4ee6c7985411c14a73f032549af",
+      "size_bytes": 3672264,
+      "sha256": "a3d188a1c637f5f86d49da0f06d4e90b3cfde15546e61cf1d7215dcc383acb4f",
+      "sha512": "d4524261bd321bb4b176703b8bfb9848a77d1e9b2ee27b7fe3d1436fdf4749bbace9353cc6873f0c8ad7542f68e8dd8b019f64a3dbeaf7c16e17c5e3143d7fea",
+      "sha1": "89c07f0b340654cacd6be13f8d176589306d95cb",
+      "required_mod_ids": [
+        "jauml"
+      ],
+      "mod_metadata_path": "META-INF/mods.toml",
+      "path": "forge/build/libs/rpg_attribute_system-forge-1.20.1-5.0.0.jar"
+    },
+    {
+      "file_name": "rpg_attribute_system-fabric-1.21.1-5.0.0.jar",
+      "loader": "fabric",
+      "minecraft": "1.21.1",
+      "java": 21,
+      "version": "5.0.0",
+      "source_commit": "c8e06b8412c7e4ee6c7985411c14a73f032549af",
+      "size_bytes": 3669983,
+      "sha256": "88ad63d2e6c127c8f0c9e7175c6301ded42d3d5dea7744b1751c656805ce4b23",
+      "sha512": "fc05e303a6e153ffb10e4d1ded3cf192cb0dc5ea47e66ab1bdf6a99acd128cf6b981cc99528acae6ad9496835b4b5166b9a083390724ab2a764abde1132601cd",
+      "sha1": "dc356b625718e7c5761c0a26d1c7cd3efd129e51",
+      "required_mod_ids": [
+        "fabric-api",
+        "jauml"
+      ],
+      "mod_metadata_path": "fabric.mod.json",
+      "path": "fabric/build/libs/rpg_attribute_system-fabric-1.21.1-5.0.0.jar"
+    },
+    {
+      "file_name": "rpg_attribute_system-neoforge-1.21.1-5.0.0.jar",
+      "loader": "neoforge",
+      "minecraft": "1.21.1",
+      "java": 21,
+      "version": "5.0.0",
+      "source_commit": "c8e06b8412c7e4ee6c7985411c14a73f032549af",
+      "size_bytes": 3672855,
+      "sha256": "182dba397f3296f826e39e3043f1d1ac974610fc4eafb9a745c64ef9792c211f",
+      "sha512": "6898cb201d6a13702c25cd1d848afabbeb676df6bb0eefd5eea851fb4cb4288a68499eb4ed3047d0beb0588906fea2c1fb396a80caa3c968eed19c0dbca7f527",
+      "sha1": "4c31761a1042499ca7b30b322c72f3062b0efc1b",
+      "required_mod_ids": [
+        "jauml"
+      ],
+      "mod_metadata_path": "META-INF/neoforge.mods.toml",
+      "path": "neoforge/build/libs/rpg_attribute_system-neoforge-1.21.1-5.0.0.jar"
+    },
+    {
+      "file_name": "rpg_attribute_system-fabric-26.1.2-5.0.0.jar",
+      "loader": "fabric",
+      "minecraft": "26.1.2",
+      "java": 25,
+      "version": "5.0.0",
+      "source_commit": "c8e06b8412c7e4ee6c7985411c14a73f032549af",
+      "size_bytes": 3653712,
+      "sha256": "d22d15b1dfce7c6633d89ae352bf1205cfa653d4057750313ba97c7c671b1387",
+      "sha512": "d73968a18bdae1e51044b2b1479d7f566de119e887cee8f11d4a84dc14ac420c46641c4c9ced53863bc9ef56519243a0e27889f303ca88077f96912a73fcc5cb",
+      "sha1": "4a2e7c337bb7a2bf9f0e6f6239f80ddab6d221af",
+      "required_mod_ids": [
+        "fabric-api"
+      ],
+      "mod_metadata_path": "fabric.mod.json",
+      "path": "fabric/build/libs/rpg_attribute_system-fabric-26.1.2-5.0.0.jar"
+    },
+    {
+      "file_name": "rpg_attribute_system-neoforge-26.1.2-5.0.0.jar",
+      "loader": "neoforge",
+      "minecraft": "26.1.2",
+      "java": 25,
+      "version": "5.0.0",
+      "source_commit": "c8e06b8412c7e4ee6c7985411c14a73f032549af",
+      "size_bytes": 3658277,
+      "sha256": "53b263acf791c7e1c2a610ca99682ae557134e053e318c8b25cd7e1f92bb7ee7",
+      "sha512": "ba6c3e92c1891f533efbf014218caebda1dfc6dfdec0a1c88836577547d504b1f5fdd81279448cc05d2b40b2589b0282a173dbab8609b9dbbcaec4d82d0b904d",
+      "sha1": "34eecc2a327d6b49844f1c9a2a4130f66ea1f3fd",
+      "required_mod_ids": [],
+      "mod_metadata_path": "META-INF/neoforge.mods.toml",
+      "path": "neoforge/build/libs/rpg_attribute_system-neoforge-26.1.2-5.0.0.jar"
+    },
+    {
+      "file_name": "rpg_attribute_system-fabric-26.2-5.0.0.jar",
+      "loader": "fabric",
+      "minecraft": "26.2",
+      "java": 25,
+      "version": "5.0.0",
+      "source_commit": "c8e06b8412c7e4ee6c7985411c14a73f032549af",
+      "size_bytes": 3653979,
+      "sha256": "9d1f4968d67d6626e610a273f14c4611a32cf079f5163ef4fa4f04b1ad3c7dc8",
+      "sha512": "600bef27fcea3c50dc6caaaffbb09e6f34525afe74625553443dff0249c36a792b4ea7ec88b31e33f7e07940dbc12564ecf2bf7a03add9d9ece0f839769bf801",
+      "sha1": "da9048106aa103778be53d003dd0bdb7b1f807c3",
+      "required_mod_ids": [
+        "fabric-api"
+      ],
+      "mod_metadata_path": "fabric.mod.json",
+      "path": "fabric/build/libs/rpg_attribute_system-fabric-26.2-5.0.0.jar"
+    },
+    {
+      "file_name": "rpg_attribute_system-neoforge-26.2-5.0.0.jar",
+      "loader": "neoforge",
+      "minecraft": "26.2",
+      "java": 25,
+      "version": "5.0.0",
+      "source_commit": "c8e06b8412c7e4ee6c7985411c14a73f032549af",
+      "size_bytes": 3658586,
+      "sha256": "03294b7bdd2b00a85cac4605bafb1197aa65cdb42cca9587709d20a64dd0d971",
+      "sha512": "1cd47ab1252bb20c030bf745d2a4b9f6ceafdf6278f35f918e5b6bd7c4e4f90f507f93c900491309262be92882f779dfd1015e64fdee9dd048e103a34fdcc2a4",
+      "sha1": "6257b140973374208c59c79b2ce78f821e6fd0d3",
+      "required_mod_ids": [],
+      "mod_metadata_path": "META-INF/neoforge.mods.toml",
+      "path": "neoforge/build/libs/rpg_attribute_system-neoforge-26.2-5.0.0.jar"
+    },
+    {
+      "file_name": "rpg_attribute_system-fabric-26.3-5.0.0.jar",
+      "loader": "fabric",
+      "minecraft": "26.3",
+      "java": 25,
+      "version": "5.0.0",
+      "source_commit": "c8e06b8412c7e4ee6c7985411c14a73f032549af",
+      "size_bytes": 3675333,
+      "sha256": "a78ad9dbc670ce431eb48efb364e395c7512c68cba0a9d4338ff23d03a5304e8",
+      "sha512": "d8f04a7c71545d545b02edb21423e74f591caada02bdb9010a7f7e0056ad2a5b6245b74142979f11de2d74a8dc7ea2732af50b3c1a72366cf2db95bce10f45cd",
+      "sha1": "582a268048832811a887cb342a12111292b366a0",
+      "required_mod_ids": [
+        "fabric-api"
+      ],
+      "mod_metadata_path": "fabric.mod.json",
+      "path": "fabric/build/libs/rpg_attribute_system-fabric-26.3-5.0.0.jar"
+    },
+    {
+      "file_name": "rpg_attribute_system-neoforge-26.3-5.0.0.jar",
+      "loader": "neoforge",
+      "minecraft": "26.3",
+      "java": 25,
+      "version": "5.0.0",
+      "source_commit": "c8e06b8412c7e4ee6c7985411c14a73f032549af",
+      "size_bytes": 3677151,
+      "sha256": "c346a917aa3b05c35c7dc7d6daba0093e97e62c49d718e9d4c1260adb720f0d7",
+      "sha512": "6eb10a629de69e364225922bf01103a91cd06f0e1178d057ab6800752be0a6ae3461bcf237cf6edd1b91521537a59a0f4d872e4983ad2e9de175af76bd8e15ea",
+      "sha1": "1311e9965b0be335b7e5a3ea7ee8e82c060b80c4",
+      "required_mod_ids": [],
+      "mod_metadata_path": "META-INF/neoforge.mods.toml",
+      "path": "neoforge/build/libs/rpg_attribute_system-neoforge-26.3-5.0.0.jar"
+    }
+  ]
+}

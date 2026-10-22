@@ -63,13 +63,23 @@ export function curseForgeDescriptor(entry, version, changelog, ids, dependencyM
   if (!Number.isInteger(loaderId) || !Number.isInteger(gameId) || !Number.isInteger(ids.client) || !Number.isInteger(ids.server)) {
     throw new Error('Incomplete exact CurseForge game/loader metadata');
   }
+  const projects = entry.required_mod_ids.map(id => {
+    const slug = dependencyMap[id]?.curseforge_slug, projectID = dependencyMap[id]?.curseforge_id;
+    if (!slug || !curseForgeId(projectID)) throw new Error('Missing verified CurseForge dependency mapping: ' + id);
+    // The Upload API rejects a string projectID (HTTP 400, errorCode 1002) despite its documented example.
+    return {slug, projectID, type: 'requiredDependency'};
+  });
   return {changelog, changelogType: 'markdown', displayName: `${version} · ${entry.loader} · ${entry.minecraft}`,
     gameVersions: [gameId, loaderId, ids.client, ids.server], releaseType: 'release',
-    relations: {projects: entry.required_mod_ids.map(id => {
-      const slug = dependencyMap[id]?.curseforge_slug;
-      if (!slug) throw new Error('Missing verified CurseForge dependency mapping: ' + id);
-      return {slug, projectID: String(dependencyMap[id].curseforge_id), type: 'requiredDependency'};
-    })}};
+    ...(projects.length ? {relations: {projects}} : {})};
+}
+
+/** An uncertain CurseForge receipt whose POST got a synchronous HTTP 400 JSON answer without a file ID. */
+export function rejectedByCurseForge(row) {
+  const diagnostic=row?.request_diagnostic;
+  return row?.platform==='curseforge' && row.status==='uncertain' && !Object.hasOwn(row,'id')
+    && diagnostic?.stage==='http-status' && diagnostic.method==='POST' && diagnostic.http_status===400
+    && diagnostic.response_json_type==='object' && diagnostic.response_id_type==='absent';
 }
 
 export function matchingModrinth(existing, entry, descriptor) {
@@ -173,6 +183,8 @@ async function requestJson(url, options = {}, uploadIdValidator = null) {
     facts.response_id_type=Object.hasOwn(payload,'id')?valueType(payload.id):'absent';
     facts.response_has_error=Object.hasOwn(payload,'error');
     facts.response_has_message=Object.hasOwn(payload,'message');
+    // CurseForge's numeric validation code is a fixed fact, unlike its message text.
+    if (Number.isSafeInteger(payload.errorCode)) facts.response_error_code=payload.errorCode;
   }
   if (!response.ok) throw requestFailure('http-status',facts);
   if (uploadIdValidator && !uploadIdValidator(payload?.id)) throw requestFailure('upload-id',facts);
@@ -242,6 +254,7 @@ export async function main(argv=process.argv.slice(2)) {
     else if (argv[i]==='--preflight-only') args.preflightOnly=true;
     else if (argv[i]==='--require-public-modrinth') args.requirePublicModrinth=true;
     else if (argv[i]==='--isolate-never-attempted-curseforge') args.isolateNeverAttemptedCurseForge=true;
+    else if (argv[i]==='--retry-rejected-curseforge') args.retryRejectedCurseForge=true;
     else if (['--manifest','--directory','--dependencies','--changelog','--state','--platforms'].includes(argv[i])) args[argv[i].slice(2)]=argv[++i];
     else throw new Error('Unknown argument: '+argv[i]);
   }
@@ -253,6 +266,9 @@ export async function main(argv=process.argv.slice(2)) {
     throw new Error('Public Modrinth recovery guard requires credentialed Modrinth preflight');
   if (args.isolateNeverAttemptedCurseForge && (args.dryRun || platforms==='modrinth' || (!args.preflightOnly && platforms!=='curseforge')))
     throw new Error('Isolation requires credentialed read-only preflight or CurseForge-only live publication');
+  if (args.retryRejectedCurseForge && (args.dryRun || args.isolateNeverAttemptedCurseForge || platforms==='modrinth'
+      || (!args.preflightOnly && platforms!=='curseforge')))
+    throw new Error('Rejected-receipt retry requires credentialed read-only preflight or CurseForge-only live publication');
   const manifest=JSON.parse(fs.readFileSync(args.manifest,'utf8'));
   const entries=validatePlan(manifest,args.directory);
   const dependencies=JSON.parse(fs.readFileSync(args.dependencies,'utf8'));
@@ -265,7 +281,7 @@ export async function main(argv=process.argv.slice(2)) {
     : {schema_version:1,source_commit:manifest.source_commit,version,uploads:[]};
   if (state.schema_version!==1 || state.source_commit!==manifest.source_commit || state.version!==version || !Array.isArray(state.uploads))
     throw new Error('Invalid publication journal/source/version; reconcile before retry');
-  const statuses=new Set(['dry-run','dry-run-metadata-IDs-placeholder','in-flight','uncertain','submitted','pending-publication','verified','verified-existing']);
+  const statuses=new Set(['dry-run','dry-run-metadata-IDs-placeholder','in-flight','uncertain','rejected','submitted','pending-publication','verified','verified-existing']);
   const seen=new Set();
   for (const row of state.uploads) {
     const entry=entries.find(entry=>entry.file_name===row.file);
@@ -290,7 +306,7 @@ export async function main(argv=process.argv.slice(2)) {
   };
   const requireResolved=(platform,entry)=>{
     const row=prior(platform,entry);
-    if (row && !row.status.startsWith('dry-run'))
+    if (row && !row.status.startsWith('dry-run') && row.status!=='rejected')
       throw new Error('Prior upload is pending/submitted or missing from inventory; reconcile before retry: '+entry.file_name);
   };
   let isolation=null;
@@ -347,10 +363,22 @@ export async function main(argv=process.argv.slice(2)) {
       :await curseForgeIds(process.env.CURSEFORGE_TOKEN,process.env.CURSEFORGE_API_KEY,entries,requestJson,evidence=>{cfCatalogEvidence=evidence;});
     for (const entry of entries) matchingCurseForge(cfInventory,entry,curseForgeDescriptor(entry,version,changelog,cfIds,dependencies),dependencies);
   }
+  // A synchronous HTTP 400 validation answer with no file ID is the provider refusing that exact request.
+  // Retry such a receipt only on explicit request, and only while the complete live inventory has no copy.
+  let rejectedRetry=null;
+  if (args.retryRejectedCurseForge) {
+    rejectedRetry=entries.filter(entry=>rejectedByCurseForge(prior('curseforge',entry))).map(entry=>{
+      if (matchingCurseForge(cfInventory,entry,curseForgeDescriptor(entry,version,changelog,cfIds,dependencies),dependencies))
+        throw new Error('HTTP 400 receipt has a matching CurseForge file; reconcile instead of retrying: '+entry.file_name);
+      return entry;
+    });
+    if (!rejectedRetry.length) throw new Error('No CurseForge receipt was rejected with HTTP 400; nothing to retry');
+  }
   if (args.preflightOnly) {
     console.log(`Read-only preflight verified release ${version}: ${entries.length} artifacts; no journal changes or store writes`);
     return {preflight_verified:true,source_commit:manifest.source_commit,version,platforms,curseforge_ids:cfIds,curseforge_catalog:cfCatalogEvidence,
       publication_scope:isolation?'never-attempted-curseforge':'full',curseforge_isolation:isolation,
+      curseforge_rejected_retry:rejectedRetry&&rejectedRetry.map(entry=>entry.file_name),
       curseforge_inventory:platforms==='modrinth'?null:curseForgeAudit(cfInventory,entries,version,changelog,cfIds,dependencies,state,journalBytes,isolation)};
   }
   if (platforms!=='curseforge') {
@@ -384,6 +412,11 @@ export async function main(argv=process.argv.slice(2)) {
   if (platforms!=='modrinth') {
     let existing=cfInventory;
     const ids=cfIds;
+    for (const entry of rejectedRetry||[]) {
+      const row=prior('curseforge',entry);
+      record('curseforge',entry,'rejected',{request_diagnostic:row.request_diagnostic,
+        rejection_evidence:{http_status:400,response_id_type:'absent',remote_match:null,inventory_count:existing.length,observed_at:new Date().toISOString()}});
+    }
     for (const entry of entries) {
       // Frozen entries are skipped before even the existing-file reconciliation
       // branch. Isolation cannot change their status/ID/diagnostic or POST them.

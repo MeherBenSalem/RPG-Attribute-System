@@ -114,7 +114,7 @@ is still evidence of an unresolved attempt even when a read-only audit succeeds.
 
 Future upload failures retain bounded `request_diagnostic` facts on an uncertain
 row: fixed phase/error enums, HTTP status when received, allowlisted content
-type, response size, JSON/ID type and known error/message-field presence. Raw
+type, response size, JSON/ID type, known error/message-field presence and a numeric provider `errorCode`. Raw
 body text, error messages/stacks, unknown keys, headers, credentials and request
 arguments are never retained. These diagnostic facts cannot reconstruct earlier
 discarded exceptions, prove acceptance or non-transmission, clear a receipt, or
@@ -122,10 +122,41 @@ authorize another POST. The no-blind-retry guard is unchanged. Synthetic Node
 Request validation can fail before transport, but that category is not historical
 proof of the cause of any real uncertain submission.
 
+CurseForge relations send `projectID` as a JSON integer. The Upload API answers a
+string `projectID` with HTTP 400 (errorCode 1002, "Expected Integer but got String"),
+although its documented example quotes the value. That rejected every CurseForge upload
+for 4.3.0 and 5.0.0. Files without required dependencies send no `relations` object.
+
 The upload protocol remains the documented `X-Api-Token` plus multipart
 `metadata`/`file` request and top-level numeric response `id`; see the
 [official Upload API](https://support.curseforge.com/support/solutions/articles/9000197321-curseforge-upload-api)
 and [Core file inventory API](https://docs.curseforge.com/rest-api/#get-mod-files).
+
+## RAS 5.0.0 CurseForge recovery
+
+The `v5.0.0` Publish run (`39739461491`) published all ten files to Modrinth. Its
+first CurseForge POST (`fabric-1.20.1`) got HTTP 400, because that publisher sent
+relation `projectID` values as strings. The publisher now sends integers, but the
+tag still points at the old code, so the reviewed **Recover RAS 5.0.0 publication**
+workflow on main completes CurseForge without moving the tag or rebuilding:
+
+- `scripts/release-500-recovery-lock.json` pins the tag, source commit `c8e06b8`,
+  the source run, the five JAR artifact digests, the provenance artifact and the
+  original manifest digest. `scripts/validate-500-publisher-recovery.py` reuses
+  the 4.3.0 provenance checks with that lock.
+- The JARs are re-verified against the original manifest. Modrinth is checked
+  read-only, and its ten verified receipts must be public.
+- `--retry-rejected-curseforge` is the only new permission. It applies only to a
+  CurseForge receipt that is `uncertain`, has no file ID, and whose diagnostic is a
+  POST answered with an HTTP 400 JSON object without an ID. It applies only while the
+  complete live CurseForge inventory has no copy of that file. The receipt is first
+  recorded as `rejected`, with that evidence, and then uploaded once. Every other
+  uncertain receipt still blocks.
+
+Dispatch it from main with `helper_commit` set to the dispatch SHA and
+`receipt_run_id` set to the latest attempted journal (first `39739461491`). Run it
+with `dry_run: true` first, check `publisher-preflight.json`
+(`curseforge_rejected_retry`), then run it with `dry_run: false`.
 
 ## Explicit isolation of never-attempted CurseForge targets
 
