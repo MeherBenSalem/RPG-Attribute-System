@@ -24,6 +24,11 @@ on:
         required: true
         default: true
         type: boolean
+      continue_past_pending_curseforge:
+        description: Once one 5.0.0 CurseForge file is verified, upload the rest without waiting for each review
+        required: true
+        default: true
+        type: boolean
 permissions:
   contents: read
   actions: read
@@ -145,9 +150,11 @@ jobs:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
           RETRY_REJECTED_CURSEFORGE: ${{ inputs.retry_rejected_curseforge }}
+          CONTINUE_PAST_PENDING_CURSEFORGE: ${{ inputs.continue_past_pending_curseforge }}
         run: |
           args=()
           if [ "$RETRY_REJECTED_CURSEFORGE" = true ]; then args+=(--retry-rejected-curseforge); fi
+          if [ "$CONTINUE_PAST_PENDING_CURSEFORGE" = true ]; then args+=(--continue-past-pending-curseforge); fi
           node scripts/publish-verified-release.mjs --manifest verified-release.json --directory release-jars --dependencies original-release-source/scripts/release-dependencies.json --changelog original-release-source/RPG-Attribute-System-5.0.0-PatchNotes.md --state publication-receipts.json --platforms curseforge "${args[@]}"
       - uses: actions/upload-artifact@v4
         if: always()

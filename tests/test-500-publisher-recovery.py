@@ -170,6 +170,9 @@ class Recovery500Tests(unittest.TestCase):
         self.assertEqual(live['if'], '${{ inputs.dry_run == false }}')
         self.assertNotIn('MODRINTH_TOKEN', live['env']); self.assertIn('--platforms curseforge', live['run'])
         self.assertIn('--retry-rejected-curseforge', live['run'])
+        self.assertIn('--continue-past-pending-curseforge', live['run'])
+        self.assertEqual(live['env']['CONTINUE_PAST_PENDING_CURSEFORGE'], '${{ inputs.continue_past_pending_curseforge }}')
+        self.assertIs(inputs['continue_past_pending_curseforge']['default'], True)
         self.assertIn('RPG-Attribute-System-5.0.0-PatchNotes.md', live['run'])
         downloads = [row for row in steps if row.get('uses') == 'actions/download-artifact@v4']
         self.assertEqual({int(value) for value in downloads[0]['with']['artifact-ids'].split(',')}, {row['id'] for row in LOCK['source_artifacts']})

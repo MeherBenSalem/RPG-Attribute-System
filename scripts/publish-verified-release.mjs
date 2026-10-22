@@ -255,6 +255,7 @@ export async function main(argv=process.argv.slice(2)) {
     else if (argv[i]==='--require-public-modrinth') args.requirePublicModrinth=true;
     else if (argv[i]==='--isolate-never-attempted-curseforge') args.isolateNeverAttemptedCurseForge=true;
     else if (argv[i]==='--retry-rejected-curseforge') args.retryRejectedCurseForge=true;
+    else if (argv[i]==='--continue-past-pending-curseforge') args.continuePastPendingCurseForge=true;
     else if (['--manifest','--directory','--dependencies','--changelog','--state','--platforms'].includes(argv[i])) args[argv[i].slice(2)]=argv[++i];
     else throw new Error('Unknown argument: '+argv[i]);
   }
@@ -269,6 +270,8 @@ export async function main(argv=process.argv.slice(2)) {
   if (args.retryRejectedCurseForge && (args.dryRun || args.isolateNeverAttemptedCurseForge || platforms==='modrinth'
       || (!args.preflightOnly && platforms!=='curseforge')))
     throw new Error('Rejected-receipt retry requires credentialed read-only preflight or CurseForge-only live publication');
+  if (args.continuePastPendingCurseForge && (args.dryRun || args.preflightOnly || args.isolateNeverAttemptedCurseForge || platforms!=='curseforge'))
+    throw new Error('Continuing past pending CurseForge review requires CurseForge-only live publication');
   const manifest=JSON.parse(fs.readFileSync(args.manifest,'utf8'));
   const entries=validatePlan(manifest,args.directory);
   const dependencies=JSON.parse(fs.readFileSync(args.dependencies,'utf8'));
@@ -303,6 +306,13 @@ export async function main(argv=process.argv.slice(2)) {
     const value={platform,file:entry.file_name,sha256:entry.sha256,status,...extra};
     if (row) Object.assign(row,value); else state.uploads.push(value);
     save();
+  };
+  // Once one file of this release is verified on CurseForge, its metadata is proven, so later uploads need not
+  // wait for each review. Files still under review keep their submitted receipt and file ID and are never reposted.
+  const curseForgeProven=()=>state.uploads.some(row=>row.platform==='curseforge'&&['verified','verified-existing'].includes(row.status)&&curseForgeId(row.id));
+  const awaitingCurseForgeReview=entry=>{
+    const row=prior('curseforge',entry);
+    return ['submitted','pending-publication'].includes(row?.status) && curseForgeId(row.id);
   };
   const requireResolved=(platform,entry)=>{
     const row=prior(platform,entry);
@@ -425,6 +435,7 @@ export async function main(argv=process.argv.slice(2)) {
       const duplicate=matchingCurseForge(existing,entry,descriptor,dependencies);
       if (duplicate) {const remote=existing.find(item=>item.id===duplicate);record('curseforge',entry,isPubliclyReleased('curseforge',remote)?'verified-existing':'pending-publication',{id:duplicate,provider_status:remote?.fileStatus});continue;}
       if (args.dryRun) {record('curseforge',entry,'dry-run-metadata-IDs-placeholder',{descriptor});continue;}
+      if (args.continuePastPendingCurseForge && awaitingCurseForgeReview(entry) && curseForgeProven()) continue;
       requireResolved('curseforge',entry);
       validatePlan(manifest,args.directory);
       const form=new FormData();form.append('metadata',JSON.stringify(descriptor));
@@ -441,8 +452,10 @@ export async function main(argv=process.argv.slice(2)) {
       }
       record('curseforge',entry,'submitted',{id:created.id});
       existing=await curseForgeFiles(projectCf,process.env.CURSEFORGE_API_KEY);
-      if (matchingCurseForge(existing,entry,descriptor,dependencies)!==created.id)
+      if (matchingCurseForge(existing,entry,descriptor,dependencies)!==created.id) {
+        if (args.continuePastPendingCurseForge && curseForgeProven()) continue;
         throw new Error('CurseForge upload awaits indexing/review; reconcile before retry');
+      }
       const remote=existing.find(item=>item.id===created.id);
       record('curseforge',entry,isPubliclyReleased('curseforge',remote)?'verified':'pending-publication',{id:created.id,provider_status:remote?.fileStatus});
     }
