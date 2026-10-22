@@ -210,7 +210,7 @@ jobs:
         run: |
           args=()
           if [ "$DRY_RUN" = true ]; then args+=(--dry-run); fi
-          node scripts/publish-verified-release.mjs --manifest verified-release.json --directory release-jars --dependencies scripts/release-dependencies.json --changelog "RPG-Attribute-System-$RELEASE_VERSION-PatchNotes.md" --state publication-receipts.json --platforms "$PLATFORMS" "${args[@]}"
+          node scripts/publish-verified-release.mjs --manifest verified-release.json --directory release-jars --dependencies scripts/release-dependencies.json --changelog "patchnotes/$RELEASE_VERSION.md" --state publication-receipts.json --platforms "$PLATFORMS" "${args[@]}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

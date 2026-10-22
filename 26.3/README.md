@@ -24,5 +24,5 @@ Artifacts are written to:
 
 ## Release docs
 
-See `../PATCH_NOTES.md`, the version-specific patch notes in the repository
+See `../patchnotes/`, the version-specific patch notes in the repository
 root, and `../docs/` for release notes and user documentation.

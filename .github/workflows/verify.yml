@@ -150,7 +150,7 @@ jobs:
           test "$(git rev-parse HEAD)" = "$SOURCE_COMMIT"
           version="$(cat VERSION)"
           python3 scripts/verify-release-artifacts.py --directory release-jars --version "$version" --commit "$SOURCE_COMMIT" --output verified-release.json
-          node scripts/publish-verified-release.mjs --manifest verified-release.json --directory release-jars --dependencies scripts/release-dependencies.json --changelog "RPG-Attribute-System-$version-PatchNotes.md" --state release-dry-run.json --platforms both --dry-run
+          node scripts/publish-verified-release.mjs --manifest verified-release.json --directory release-jars --dependencies scripts/release-dependencies.json --changelog "patchnotes/$version.md" --state release-dry-run.json --platforms both --dry-run
       - uses: actions/upload-artifact@v4
         with:
           name: verified-release-dry-run-${{ github.event.pull_request.head.sha || github.sha }}

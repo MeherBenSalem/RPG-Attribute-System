@@ -1,5 +1,17 @@
 # RPG Attribute System — Patch Notes
 
+Release notes for each version, newest first. The publish workflow uploads `patchnotes/<version>.md` as each store file's changelog.
+
+- [5.0.0](5.0.0.md)
+- [4.3.0](4.3.0.md)
+- [4.2.6](4.2.6.md)
+- [4.2.5](4.2.5.md)
+- [4.2.4](4.2.4.md)
+- [4.2.3](4.2.3.md)
+- [4.2.2](4.2.2.md)
+
+The combined history below predates the per-version files.
+
 ## 4.3.0 (development)
 
 - Optional cached server-side entity/tag VP rules, base overrides and difficulty/effective-armor weighting; generated defaults remain disabled.

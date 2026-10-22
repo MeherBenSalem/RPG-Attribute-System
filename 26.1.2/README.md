@@ -23,5 +23,5 @@ Artifacts are written to:
 
 ## Release docs
 
-See `../PATCH_NOTES.md`, `../RPG-Attribute-System-4.2.1-PatchNotes.md`, and
+See `../patchnotes/`, and
 `../docs/` for release notes and user documentation.

@@ -8,7 +8,7 @@ Listing copy and artwork for CurseForge and Modrinth. Nothing here ships in the 
 | --- | --- |
 | [`curseforge/description.md`](curseforge/description.md) | Full project description (Markdown; also works on Modrinth) |
 | [`curseforge/summary.txt`](curseforge/summary.txt) | Short project summary (234 characters) |
-| [`../RPG-Attribute-System-5.0.0-PatchNotes.md`](../RPG-Attribute-System-5.0.0-PatchNotes.md) | File changelog used by the publish workflow |
+| [`../patchnotes/5.0.0.md`](../patchnotes/5.0.0.md) | File changelog used by the publish workflow |
 
 Image links in the description point at `raw.githubusercontent.com/.../main/marketing/images/...`, so they work once this folder is on `main`. To host on CurseForge instead, upload the images to the project gallery and replace each URL.
 

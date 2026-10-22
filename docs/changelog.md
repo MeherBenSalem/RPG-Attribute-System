@@ -10,7 +10,7 @@
 - NeoForge HUD overlay is drawn once per frame as a registered GUI layer.
 - Clients and servers must both run 5.0.0. Configuration, player data and the API are unchanged.
 
-See the [release notes](../RPG-Attribute-System-5.0.0-PatchNotes.md) and the [Level Up screen guide](guides/level-up-screen.md).
+See the [release notes](../patchnotes/5.0.0.md) and the [Level Up screen guide](guides/level-up-screen.md).
 
 ## 4.3.0
 
@@ -22,7 +22,7 @@ See the [release notes](../RPG-Attribute-System-5.0.0-PatchNotes.md) and the [Le
 - Standalone local-only configuration-studio export for the 4.3.0 contract, actual Java/export/preview parity checks, and a five-workspace loader CI matrix.
 - Reject nonfinite XP input and overflowing awards/player totals.
 
-See the [release notes](../RPG-Attribute-System-4.3.0-PatchNotes.md) and [commit-bound verification record](verification/4.3.0.md) for compatibility, exact evidence, and runtime/visual coverage limits.
+See the [release notes](../patchnotes/4.3.0.md) and [commit-bound verification record](verification/4.3.0.md) for compatibility, exact evidence, and runtime/visual coverage limits.
 
 ## 4.2.6
 
