@@ -132,6 +132,32 @@ The upload protocol remains the documented `X-Api-Token` plus multipart
 [official Upload API](https://support.curseforge.com/support/solutions/articles/9000197321-curseforge-upload-api)
 and [Core file inventory API](https://docs.curseforge.com/rest-api/#get-mod-files).
 
+## RAS 5.0.0 CurseForge recovery
+
+The `v5.0.0` Publish run (`39739461491`) published all ten files to Modrinth. Its
+first CurseForge POST (`fabric-1.20.1`) got HTTP 400, because that publisher sent
+relation `projectID` values as strings. The publisher now sends integers, but the
+tag still points at the old code, so the reviewed **Recover RAS 5.0.0 publication**
+workflow on main completes CurseForge without moving the tag or rebuilding:
+
+- `scripts/release-500-recovery-lock.json` pins the tag, source commit `c8e06b8`,
+  the source run, the five JAR artifact digests, the provenance artifact and the
+  original manifest digest. `scripts/validate-500-publisher-recovery.py` reuses
+  the 4.3.0 provenance checks with that lock.
+- The JARs are re-verified against the original manifest. Modrinth is checked
+  read-only, and its ten verified receipts must be public.
+- `--retry-rejected-curseforge` is the only new permission. It applies only to a
+  CurseForge receipt that is `uncertain`, has no file ID, and whose diagnostic is a
+  POST answered with an HTTP 400 JSON object without an ID. It applies only while the
+  complete live CurseForge inventory has no copy of that file. The receipt is first
+  recorded as `rejected`, with that evidence, and then uploaded once. Every other
+  uncertain receipt still blocks.
+
+Dispatch it from main with `helper_commit` set to the dispatch SHA and
+`receipt_run_id` set to the latest attempted journal (first `39739461491`). Run it
+with `dry_run: true` first, check `publisher-preflight.json`
+(`curseforge_rejected_retry`), then run it with `dry_run: false`.
+
 ## Explicit isolation of never-attempted CurseForge targets
 
 The recovery workflow's `isolate_never_attempted_curseforge` boolean defaults to

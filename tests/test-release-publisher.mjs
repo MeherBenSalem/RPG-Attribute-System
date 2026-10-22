@@ -1190,3 +1190,61 @@ test('recovery preflight requires every preserved Modrinth ID freshly exact and 
     assert.equal(fs.readFileSync(fx.paths.state, 'utf8'), bytes);
   });
 });
+
+function rejectedFixture(t, diagnostic = {schema_version:1,stage:'http-status',method:'POST',http_status:400,
+    response_content_type:'application/json',response_bytes:308,response_json_type:'object',response_id_type:'absent',
+    response_has_error:false,response_has_message:false,error_type:'Error',transport_code:null,transmission_outcome:'unknown'}) {
+  const fx=fixture(t);fakeCredentials(t);
+  const state={schema_version:1,source_commit:COMMIT,version:VERSION,publicly_verified:false,
+    uploads:[...fx.files.map(entry=>({platform:'modrinth',file:entry.file_name,sha256:entry.sha256,status:'verified',id:mrRecord(entry).id,provider_status:'listed'})),
+      {platform:'curseforge',file:fx.files[0].file_name,sha256:fx.files[0].sha256,status:'uncertain',...(diagnostic===null?{}:{request_diagnostic:diagnostic})}]};
+  fs.writeFileSync(fx.paths.state,JSON.stringify(state,null,2)+'\n');
+  return {...fx,retryArgs:(preflight=false)=>[...fx.argv('curseforge'),'--retry-rejected-curseforge',...(preflight?['--preflight-only']:[])]};
+}
+
+test('an HTTP 400 CurseForge receipt is retried only on explicit request and only without a remote copy', async t=>{
+  await t.test('read-only preflight lists the rejected target and leaves the journal unchanged', async t=>{
+    const fx=rejectedFixture(t);const store=fakeStore(t,fx);const before=fs.readFileSync(fx.paths.state);
+    const result=await main(fx.retryArgs(true));
+    assert.deepEqual(result.curseforge_rejected_retry,[fx.files[0].file_name]);
+    assert.equal(store.posts.length,0);assert.ok(before.equals(fs.readFileSync(fx.paths.state)));
+  });
+  await t.test('live recovery records the rejection evidence, then publishes all ten CurseForge targets once', async t=>{
+    const fx=rejectedFixture(t);const store=fakeStore(t,fx);
+    const state=await main(fx.retryArgs());
+    assert.equal(store.posts.length,10);assert.ok(store.posts.every(post=>post.platform==='curseforge'));
+    assert.equal(new Set(store.posts.map(post=>post.file)).size,10);
+    const row=state.uploads.find(upload=>upload.platform==='curseforge'&&upload.file===fx.files[0].file_name);
+    assert.equal(row.status,'verified');assert.equal(row.rejection_evidence.http_status,400);
+    assert.equal(row.rejection_evidence.remote_match,null);assert.equal(row.request_diagnostic.http_status,400);
+    assert.equal(state.uploads.filter(upload=>upload.platform==='curseforge').length,10);
+    assert.ok(state.uploads.filter(upload=>upload.platform==='modrinth').every(upload=>upload.status==='verified'));
+  });
+  await t.test('without the flag the HTTP 400 receipt still blocks every write', async t=>{
+    const fx=rejectedFixture(t);const store=fakeStore(t,fx);
+    await assert.rejects(main(fx.argv('curseforge')),/reconcile/);assert.equal(store.posts.length,0);
+  });
+  await t.test('receipts that are not a synchronous HTTP 400 are never retried', async t=>{
+    for(const diagnostic of [
+      {schema_version:1,stage:'fetch',method:'POST',error_type:'TimeoutError',transport_code:null,transmission_outcome:'unknown'},
+      {schema_version:1,stage:'http-status',method:'POST',http_status:502,response_json_type:'invalid',transmission_outcome:'unknown'},
+      {schema_version:1,stage:'http-status',method:'POST',http_status:400,response_json_type:'invalid',transmission_outcome:'unknown'},
+      {schema_version:1,stage:'upload-id',method:'POST',http_status:200,response_json_type:'object',response_id_type:'string',transmission_outcome:'unknown'},
+      null]) await t.test(JSON.stringify(diagnostic), async t=>{
+      const fx=rejectedFixture(t,diagnostic);const store=fakeStore(t,fx);const before=fs.readFileSync(fx.paths.state);
+      await assert.rejects(main(fx.retryArgs()),/No CurseForge receipt was rejected with HTTP 400/);
+      assert.equal(store.posts.length,0);assert.ok(before.equals(fs.readFileSync(fx.paths.state)));
+    });
+  });
+  await t.test('an HTTP 400 receipt whose file exists remotely is reconciled, not retried', async t=>{
+    const fx=rejectedFixture(t);const store=fakeStore(t,fx,{curseforge:[cfRecord(fx.files[0])]});
+    await assert.rejects(main(fx.retryArgs()),/matching CurseForge file/);assert.equal(store.posts.length,0);
+  });
+  await t.test('the retry flag is refused outside credentialed CurseForge-only recovery', async t=>{
+    const fx=rejectedFixture(t);fakeStore(t,fx);
+    for(const argv of [[...fx.argv('curseforge'),'--retry-rejected-curseforge','--dry-run'],
+      [...fx.argv('both'),'--retry-rejected-curseforge'],[...fx.argv('modrinth'),'--retry-rejected-curseforge','--preflight-only'],
+      [...fx.argv('curseforge'),'--retry-rejected-curseforge','--isolate-never-attempted-curseforge']])
+      await assert.rejects(main(argv),/Rejected-receipt retry requires|mutually exclusive|Isolation requires/);
+  });
+});
