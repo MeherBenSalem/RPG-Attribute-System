@@ -115,4 +115,15 @@ public class FabricPlatformHelper implements IPlatformHelper {
         net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(
                 new FabricButtonActionPayload(buttonID, x, y, z));
     }
+
+    @Override
+    public void sendAttributeAllocation(AttributeAllocationPacket packet) {
+        net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(
+                new FabricAttributeAllocationPayload(packet));
+    }
+
+    @Override
+    public void syncStatPreview(ServerPlayer player, StatPreviewSyncPacket packet) {
+        ServerPlayNetworking.send(player, new FabricStatPreviewPayload(packet));
+    }
 }

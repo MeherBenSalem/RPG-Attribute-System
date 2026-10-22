@@ -93,4 +93,15 @@ public interface IPlatformHelper {
      * @param z        The z coordinate.
      */
     void sendButtonAction(int buttonID, int x, int y, int z);
+
+    /**
+     * Sends a staged Level Up allocation to the server, which validates and applies it atomically.
+     */
+    void sendAttributeAllocation(tn.nightbeam.ras.network.AttributeAllocationPacket packet);
+
+    /**
+     * Sends server-measured display stats and per-point preview slopes to the client.
+     */
+    void syncStatPreview(net.minecraft.server.level.ServerPlayer player,
+            tn.nightbeam.ras.network.StatPreviewSyncPacket packet);
 }

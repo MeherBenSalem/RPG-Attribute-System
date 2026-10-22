@@ -1,0 +1,19 @@
+{
+  "providers": [
+    {
+      "type": "ttf",
+      "file": "rpg_attribute_system:ras_display.ttf",
+      "shift": [
+        0.0,
+        0.614
+      ],
+      "size": 12.806,
+      "oversample": 2.0,
+      "skip": ""
+    },
+    {
+      "type": "reference",
+      "id": "minecraft:default"
+    }
+  ]
+}

@@ -71,7 +71,7 @@ def validate_ready(data, *, run_id, sha, mc, scale, launched_ms, expected_state=
             raise QaError(f"Expected actual player variable missing: {field}")
     if not isinstance(data.get("sequence"), int) or data["sequence"] <= since:
         raise QaError("Readiness has not advanced after the action")
-    states = {"ALLOCATION", "COMBAT", "OVERVIEW_ATTRIBUTES", "OVERVIEW_TOTALS", "WORLD"}
+    states = {"ALLOCATION", "STATUS", "RECORDS", "COMBAT", "OVERVIEW", "WORLD"}
     if data.get("state") not in states or (expected_state and data["state"] != expected_state):
         raise QaError("Expected real screen state has not appeared")
     buttons = data.get("buttons")
@@ -192,9 +192,9 @@ def seeded_agility_preview_ready(data):
     if not isinstance(buttons, list):
         return False
     agility = [button for button in buttons if isinstance(button, dict)
-               and isinstance(button.get("label"), str) and button["label"].startswith("Allocate Agility.")]
+               and isinstance(button.get("label"), str) and button["label"].startswith("Raise Agility.")]
     return len(agility) == 1 and agility[0].get("active") is True \
-        and agility[0]["label"].startswith("Allocate Agility. Next value: 0.1025 · ")
+        and agility[0]["label"].startswith("Raise Agility. Next value: 0.1025 (max: ")
 
 
 def snapshots_equal(actual, expected):
@@ -660,11 +660,18 @@ class Driver:
                 raise QaError("Actual X11 frame is missing, blank, or has wrong dimensions")
             if verify and ready and ready["state"] != "WORLD":
                 panel, scale = ready["panel"], ready["actual_gui_scale"]
-                # These samples prove the live panel was rasterized. They do not replace human text/layout review.
-                for dy, expected in ((6, (99,58,77)), (30, (241,232,204))):
-                    pixel = image.getpixel((round((panel['x']+5)*scale), round((panel['y']+dy)*scale)))
-                    if any(abs(actual-wanted) > 12 for actual,wanted in zip(pixel,expected)):
-                        raise QaError(f"Expected real panel pixels absent in {name}: {pixel} vs {expected}")
+                # These samples prove the live menu chrome was rasterized: the dark backdrop over the world and
+                # header text in RasTheme.HEADER (the page title, or the selected tab on narrow screens).
+                # They do not replace human text/layout review.
+                backdrop = image.getpixel((round((panel['x']+5)*scale), round((panel['y']+3)*scale)))
+                if max(backdrop) > 40:
+                    raise QaError(f"Expected dark menu backdrop absent in {name}: {backdrop}")
+                left, top = round(panel['x']*scale), round(panel['y']*scale)
+                header = sum(1 for px in range(left, min(WIDTH, left+round(panel['width']*scale)))
+                             for py in range(top, min(HEIGHT, top+round(32*scale)))
+                             if all(abs(actual-wanted) <= 12 for actual, wanted in zip(image.getpixel((px, py)), (232,223,200))))
+                if header < 10*scale*scale:
+                    raise QaError(f"Expected menu header text pixels absent in {name}: {header}")
         if ready:
             (self.case / f"{name}.json").write_text(json.dumps(ready, indent=2)+"\n")
             if self.mc == '26.3': self.last_capture_snapshot = after_snapshot
@@ -842,10 +849,9 @@ class Driver:
         # The normal renderWidget refresh follows packet sync. Do not accept a
         # prior-world 0.105 label merely because the reset variables already arrived.
         seeded = self.wait_ready("ALLOCATION", since=seeded["sequence"], predicate=seeded_agility_preview_ready)
-        buttons = [button for button in seeded["buttons"] if button["label"].startswith("Allocate Agility.")]
+        buttons = [button for button in seeded["buttons"] if button["label"].startswith("Raise Agility.")]
         if len(buttons) != 1:
-            raise QaError("Exactly one actual Agility allocation control is required")
-        label = buttons[0]["label"]
+            raise QaError("Exactly one actual Agility raise control is required")
         if not seeded_agility_preview_ready(seeded):
             raise QaError("Actual Agility preview must retain its 0.1 to 0.1025 precision")
         button, scale = buttons[0], seeded["actual_gui_scale"]
@@ -856,9 +862,18 @@ class Driver:
         time.sleep(.5)
         self.capture("10-agility-precise-preview", seeded)
         seeded = self.wait_ready("ALLOCATION", since=seeded["sequence"], predicate=seeded_agility_preview_ready)
-        label = next(button["label"] for button in seeded["buttons"] if button["label"].startswith("Allocate Agility."))
+        label = next(button["label"] for button in seeded["buttons"] if button["label"].startswith("Raise Agility."))
         self.click(seeded, label)
-        allocated = self.wait_ready("ALLOCATION", since=seeded["sequence"],
+        # Raising only stages the point; nothing may change on the server before Confirm.
+        staged = self.wait_ready("ALLOCATION", since=seeded["sequence"],
+            predicate=lambda data: any(button.get("label") == "Confirm allocation of 1 point" and button.get("active") is True
+                                       for button in data.get("buttons", []))
+                and isinstance(data.get("player_variables"), dict)
+                and numeric_close(data["player_variables"].get("spare_points"), 6)
+                and numeric_close(data["player_variables"].get("attribute_points", {}).get("attribute_5"), 0))
+        self.stable_capture("10b-agility-staged", staged)
+        self.click(staged, "Confirm allocation of 1 point")
+        allocated = self.wait_ready("ALLOCATION", since=staged["sequence"],
             predicate=lambda data: isinstance(data.get("player_variables"), dict)
                 and numeric_close(data["player_variables"].get("spare_points"), 5)
                 and numeric_close(data["player_variables"].get("attribute_points", {}).get("attribute_5"), 1)
@@ -1033,48 +1048,29 @@ class Driver:
         try:
             ready = self.wait_ready("ALLOCATION", seconds=1000)
             self.stable_capture("01-allocation", ready)
-            previous_focus = self.key("Tab")
-            focused = self.wait_ready("ALLOCATION", since=ready["sequence"],
-                predicate=lambda data: bool(current := {button["label"] for button in data["buttons"] if button.get("focused") is True})
-                                       and current != previous_focus)
-            self.stable_capture("02-keyboard-focus", focused)
-            if any(button["label"] == "Next attribute page" and button.get("active") is True for button in focused["buttons"]):
-                self.click(focused, "Next attribute page")
-                paged = self.wait_ready("ALLOCATION", since=focused["sequence"], page=1)
-                self.stable_capture("02b-allocation-next-page", paged)
-                self.click(paged, "Previous attribute page")
-                focused = self.wait_ready("ALLOCATION", since=paged["sequence"], page=0)
-            self.click(focused, "View actual combat statistics")
-            combat = self.wait_ready("COMBAT", since=focused["sequence"])
-            self.stable_capture("03-combat", combat)
-            combat = self.exercise_page_pair(combat, "Next combat-stat page", "Previous combat-stat page", "03b-combat")
-            self.click(combat, "View player statistics and configured totals")
-            overview = self.wait_ready("OVERVIEW_ATTRIBUTES", since=combat["sequence"])
-            self.stable_capture("04-overview-attributes", overview)
-            overview = self.exercise_page_pair(overview, "Next statistics page", "Previous statistics page", "04b-overview-attributes")
-            self.click(overview, "View all configured totals")
-            totals = self.wait_ready("OVERVIEW_TOTALS", since=overview["sequence"])
-            self.stable_capture("05-overview-totals", totals)
-            totals = self.exercise_page_pair(totals, "Next statistics page", "Previous statistics page", "05b-overview-totals")
-            self.click(totals, "Return to previous screen", width=52)
-            returned = self.wait_ready("COMBAT", since=totals["sequence"])
-            self.stable_capture("06-back-to-combat", returned)
-            self.click(returned, "View and allocate attributes")
-            allocation = self.wait_ready("ALLOCATION", since=returned["sequence"])
-            self.stable_capture("07-back-to-allocation", allocation)
+            # Pages switch with the keyboard (Tab) and with the real header tabs (mouse).
+            self.key("Tab")
+            status = self.wait_ready("STATUS", since=ready["sequence"])
+            self.stable_capture("02-status-page", status)
+            self.click(status, "Records page")
+            records = self.wait_ready("RECORDS", since=status["sequence"])
+            self.stable_capture("03-records-page", records)
+            self.click(records, "Level Up page")
+            allocation = self.wait_ready("ALLOCATION", since=records["sequence"])
+            self.stable_capture("04-back-to-level-up", allocation)
             self.key("Escape")
             world = self.wait_ready("WORLD", since=allocation["sequence"])
-            self.stable_capture("08-escape-to-real-world", world)
+            self.stable_capture("05-escape-to-real-world", world)
             self.key("k")
             reopened = self.wait_ready("ALLOCATION", since=world["sequence"])
-            self.stable_capture("09-keybind-reopened", reopened)
+            self.stable_capture("06-keybind-reopened", reopened)
             self.exercise_gameplay(reopened)
             self.stop()
             (self.case / "driver-result.json").write_text(json.dumps({"status":"PASS", "run_id":self.run_id,
                 "source_sha":self.sha,"mc":self.mc,"loader":"fabric","gui_scale":scale, **self.fixture_evidence_context,
                 "paging_exercised":self.paging_exercised,
-                "human_pixel_review":"required","coverage":["allocation","keyboard_focus","combat","overview_attributes",
-                "overview_totals","available_page_next_back","back","escape","keybind_reopen", "real_ui_allocation",
+                "human_pixel_review":"required","coverage":["allocation","keyboard_page_switch","status","records",
+                "mouse_page_switch","escape","keybind_reopen", "real_ui_staged_confirm",
                 "entity_rule_precedence", "builtin_entity_tag", "difficulty_weighting", "armor_weighting",
                 "invalid_reload_last_good_rules", "legacy_disabled_reward"]},indent=2)+"\n")
         except Exception:

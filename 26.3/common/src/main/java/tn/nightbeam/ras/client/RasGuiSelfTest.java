@@ -3,7 +3,7 @@ package tn.nightbeam.ras.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import tn.nightbeam.ras.client.gui.PixelRpgBookLayout;
+import tn.nightbeam.ras.client.gui.SoulsLayout;
 import net.minecraft.server.level.ServerPlayer;
 import tn.nightbeam.ras.Constants;
 import tn.nightbeam.ras.client.gui.PlayerStatsGUIScreen;
@@ -86,7 +86,8 @@ public final class RasGuiSelfTest {
         boolean menuOpen = client.gui.screen() instanceof PlayerStatsGUIScreen;
         int ink = readColorConstant("INK");
         boolean expectArgb = Boolean.getBoolean("ras.expectArgb");
-        boolean colorOk = (ink & 0xFFFFFF) == 0x342730 && (!expectArgb || (ink >>> 24) == 0xFF);
+        boolean colorOk = (ink & 0xFFFFFF) == (tn.nightbeam.ras.client.gui.RasTheme.TEXT & 0xFFFFFF)
+                && (!expectArgb || (ink >>> 24) == 0xFF);
         Screen screen = client.gui.screen();
         boolean layoutOk = menuOpen && inspectLayout(client, screen);
         boolean widgetsOk = menuOpen && inspectWidgets(screen);
@@ -115,13 +116,12 @@ public final class RasGuiSelfTest {
         try {
             Field field = PlayerStatsGUIScreen.class.getDeclaredField("layout");
             field.setAccessible(true);
-            PixelRpgBookLayout layout = (PixelRpgBookLayout) field.get(screen);
+            SoulsLayout layout = (SoulsLayout) field.get(screen);
             int width = client.getWindow().getGuiScaledWidth();
             int height = client.getWindow().getGuiScaledHeight();
-            return layout.scale() == 1.0F && layout.rowsPerPage() >= 1
-                    && layout.left() >= 0 && layout.top() >= 0
-                    && layout.left() + layout.panelWidth() <= width
-                    && layout.top() + layout.panelHeight() <= height;
+            return layout.attributeRows() >= 1 && layout.width() == width && layout.height() == height
+                    && layout.contentLeft() >= 0 && layout.contentRight() <= width
+                    && layout.confirmY() + SoulsLayout.CONTROL_SIZE <= height;
         } catch (ReflectiveOperationException e) {
             Constants.LOG.error("[RAS GUI self-test] Could not inspect native layout", e);
             return false;
@@ -133,12 +133,12 @@ public final class RasGuiSelfTest {
         for (var child : screen.children()) {
             if (child instanceof Button button) {
                 buttons++;
-                if (button.getWidth() < PixelRpgBookLayout.CONTROL_SIZE
-                        || button.getHeight() < PixelRpgBookLayout.CONTROL_SIZE
+                if (button.getWidth() < SoulsLayout.CONTROL_SIZE
+                        || button.getHeight() < SoulsLayout.CONTROL_SIZE
                         || button.getMessage().getString().isBlank()) return false;
             }
         }
-        return buttons >= 5; // Combat, statistics, close, and both allocation-modifier controls.
+        return buttons >= 6; // Close, three page tabs, Confirm and Reset; plus row steppers when configured.
     }
 
     private static int readColorConstant(String name) {
@@ -239,11 +239,7 @@ public final class RasGuiSelfTest {
                 }
                 String state = state(screen);
                 int actualPage = -1;
-                if (!state.equals("WORLD") && !state.equals("OTHER")) {
-                    Field page = screen.getClass().getDeclaredField("currentPage");
-                    page.setAccessible(true);
-                    actualPage = page.getInt(screen);
-                }
+                if (screen instanceof PlayerStatsGUIScreen) actualPage = page(screen);
                 String stateKey = state + ":" + actualPage;
                 if (!stateKey.equals(lastState)) { lastState = stateKey; stableTicks = 0; }
                 if (++stableTicks < 12) return;
@@ -278,15 +274,14 @@ public final class RasGuiSelfTest {
                 if (screen != null) {
                     Field field = screen.getClass().getDeclaredField("layout");
                     field.setAccessible(true);
-                    PixelRpgBookLayout layout = (PixelRpgBookLayout) field.get(screen);
+                    SoulsLayout layout = (SoulsLayout) field.get(screen);
                     com.google.gson.JsonObject panel = new com.google.gson.JsonObject();
-                    panel.addProperty("x", layout.left()); panel.addProperty("y", layout.top());
-                    panel.addProperty("width", layout.panelWidth()); panel.addProperty("height", layout.panelHeight());
-                    panel.addProperty("native_scale", layout.scale()); panel.addProperty("rows", layout.rowsPerPage());
+                    panel.addProperty("x", layout.contentLeft()); panel.addProperty("y", 0);
+                    panel.addProperty("width", layout.contentWidth()); panel.addProperty("height", layout.height());
+                    panel.addProperty("native_scale", 1.0F); panel.addProperty("rows", layout.attributeRows());
+                    panel.addProperty("mode", layout.mode().name());
                     ready.add("panel", panel);
-                    Field page = screen.getClass().getDeclaredField("currentPage");
-                    page.setAccessible(true);
-                    ready.addProperty("page", page.getInt(screen));
+                    ready.addProperty("page", screen instanceof PlayerStatsGUIScreen ? page(screen) : 0);
                     for (var child : screen.children()) {
                         if (child instanceof Button button) {
                             if (button.getWidth() < 20 || button.getHeight() < 20
@@ -319,14 +314,18 @@ public final class RasGuiSelfTest {
         }
         private static String state(Screen screen) throws ReflectiveOperationException {
             if (screen == null) return "WORLD";
-            if (screen instanceof PlayerStatsGUIScreen) return "ALLOCATION";
-            if (screen instanceof tn.nightbeam.ras.client.gui.PlayerAttributesViewerGUIScreen) return "COMBAT";
-            if (screen instanceof tn.nightbeam.ras.client.gui.PlayerStatsOverviewScreen) {
-                Field totals = screen.getClass().getDeclaredField("totalsView");
-                totals.setAccessible(true);
-                return totals.getBoolean(screen) ? "OVERVIEW_TOTALS" : "OVERVIEW_ATTRIBUTES";
+            if (screen instanceof PlayerStatsGUIScreen) {
+                return switch (page(screen)) { case 1 -> "STATUS"; case 2 -> "RECORDS"; default -> "ALLOCATION"; };
             }
+            if (screen instanceof tn.nightbeam.ras.client.gui.PlayerAttributesViewerGUIScreen) return "COMBAT";
+            if (screen instanceof tn.nightbeam.ras.client.gui.PlayerStatsOverviewScreen) return "OVERVIEW";
             return "OTHER";
+        }
+        /** The Level Up screen's page tab: 0 Level Up, 1 Status, 2 Records. */
+        private static int page(Screen screen) throws ReflectiveOperationException {
+            Field tab = PlayerStatsGUIScreen.class.getDeclaredField("tab");
+            tab.setAccessible(true);
+            return ((Enum<?>) tab.get(screen)).ordinal();
         }
         private static com.google.gson.JsonObject identity(Minecraft client, String status) throws Exception {
             com.google.gson.JsonObject object = new com.google.gson.JsonObject();

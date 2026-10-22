@@ -1,5 +1,17 @@
 # Changelog
 
+## 5.0.0 — The Ascendant Update
+
+- Soulslike Level Up screen: stage points with live `current → after` previews for every attribute, measured stat and configured total, then confirm once. Status and Records pages, keyboard-first controls, and a responsive one- to three-column layout.
+- Atomic `allocate_attributes` request: the server validates every attribute and the total cost before spending anything, then applies points with the existing per-point rules.
+- Server-measured `stat_preview` stream: displayed stats include equipment, effects and other mods' modifiers, and previews use the real modifier formula. Non-synced stats such as attack damage are now correct.
+- Bundled OFL serif fonts rasterized per GUI scale, eased animations, ambient motes, a cinematic level-up banner, and a matching soulslike HUD (the classic HUD remains available).
+- New client settings in `config/ras/display/ui.json`; see [Client Configuration](configuration/client.md#menu-and-hud-presentation-uijson).
+- NeoForge HUD overlay is drawn once per frame as a registered GUI layer.
+- Clients and servers must both run 5.0.0. Configuration, player data and the API are unchanged.
+
+See the [release notes](../RPG-Attribute-System-5.0.0-PatchNotes.md) and the [Level Up screen guide](guides/level-up-screen.md).
+
 ## 4.3.0
 
 - Optional cached server-side entity/tag VP rules, base overrides and difficulty/effective-armor weighting; generated defaults remain disabled.

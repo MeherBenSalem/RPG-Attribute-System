@@ -66,6 +66,16 @@ public class PlayerAttributesViewerGUIMenu extends AbstractContainerMenu impleme
         }
     }
 
+    private final tn.nightbeam.ras.procedures.StatPreviewService.MenuStream statPreview =
+            new tn.nightbeam.ras.procedures.StatPreviewService.MenuStream();
+
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
+        // Server-only: keeps the screen's measured stats and Level Up previews current while open.
+        if (!world.isClientSide()) statPreview.tick(entity);
+    }
+
     @Override
     public boolean stillValid(Player player) {
         if (this.bound) {

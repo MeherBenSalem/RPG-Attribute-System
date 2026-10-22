@@ -1,0 +1,1 @@
+Soulslike leveling: stage attribute points, preview every server-measured stat as current → after, and confirm your build in one press. Cinematic level ups, Status and Records pages, and a fully configurable RPG progression system.

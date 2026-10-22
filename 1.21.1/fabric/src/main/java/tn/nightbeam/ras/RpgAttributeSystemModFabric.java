@@ -75,12 +75,15 @@ public class RpgAttributeSystemModFabric implements ModInitializer {
         PayloadTypeRegistry.playC2S().register(FabricMenuStateUpdatePayload.TYPE, FabricMenuStateUpdatePayload.CODEC);
         PayloadTypeRegistry.playC2S().register(FabricButtonActionPayload.TYPE, FabricButtonActionPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(FabricOpenStatsMenuPayload.TYPE, FabricOpenStatsMenuPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(FabricAttributeAllocationPayload.TYPE,
+                FabricAttributeAllocationPayload.CODEC);
 
         PayloadTypeRegistry.playS2C().register(FabricMenuStateUpdatePayload.TYPE, FabricMenuStateUpdatePayload.CODEC);
         PayloadTypeRegistry.playS2C().register(FabricSyncVarsPayload.TYPE, FabricSyncVarsPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(FabricSyncConfigPayload.TYPE, FabricSyncConfigPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(FabricSyncItemsLockPayload.TYPE, FabricSyncItemsLockPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(FabricSyncStatsDisplayPayload.TYPE, FabricSyncStatsDisplayPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(FabricStatPreviewPayload.TYPE, FabricStatPreviewPayload.CODEC);
 
         // Server Network Receivers
         ServerPlayNetworking.registerGlobalReceiver(FabricMenuStateUpdatePayload.TYPE,
@@ -104,6 +107,11 @@ public class RpgAttributeSystemModFabric implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(FabricOpenStatsMenuPayload.TYPE,
                 (payload, context) -> {
                     context.server().execute(() -> OpenStatsMenuPacket.handle(context.player()));
+                });
+
+        ServerPlayNetworking.registerGlobalReceiver(FabricAttributeAllocationPayload.TYPE,
+                (payload, context) -> {
+                    context.server().execute(() -> AttributeAllocationPacket.handle(context.player(), payload.packet()));
                 });
     }
 }

@@ -57,20 +57,29 @@ Grant items, effects, or execute commands when players reach specific levels. Su
 
 See [Additional Config Files](configuration/additional-config-files.md#level-up-rewards) for reward settings.
 
+## Level Up Screen
+
+Press **K** to open a soulslike Level Up screen:
+
+- **Level Up:** stage points with **←/→** or the chevrons, then **Confirm**. Every attribute, server-measured stat and configured total previews `current → after`. The server validates the whole request before spending any point, so Confirm applies all of it or none.
+- **Status:** your live character model, measured stats (equipment and effects included) and attribute values.
+- **Records:** experience earned, points invested, per-attribute bonuses and configured totals.
+
+Controls are keyboard first (**↑/↓**, **←/→**, **Shift** ×5, **Enter**, **Tab**, **Esc**), and the layout adapts from three columns down to one. Text uses bundled serif fonts rasterized for your GUI scale, or the vanilla pixel font.
+
+**Controls:** `config/ras/display/attribute_N.json` (which stats appear), `config/ras/stats_display.json` (totals), `config/ras/display/ui.json` (fonts, animations, sounds)
+
+See the [Level Up screen guide](guides/level-up-screen.md).
+
+## Level-Up Banner
+
+When your RAS level rises, a cinematic gold banner announces the new level and the points you gained. It can be turned off, or silenced, in `ui.json`.
+
 ## HUD Overlay
 
-A configurable HUD overlay showing XP progress, unspent attribute points, and a keybind hint (press K). Supports corner anchoring (TL/TR/BL/BR), pixel offsets, scaling, and automatic JEI/REI/EMI panel avoidance.
+A configurable HUD overlay showing your level, experience progress, unspent attribute points, and a keybind hint. The default soulslike style matches the Level Up screen; `"hud_style": "classic"` restores the pixel-art bar. Both styles support corner anchoring (TL/TR/BL/BR), pixel offsets, scaling, and automatic JEI/REI/EMI panel avoidance.
 
-**Controls:** `config/ras/display/overlay.json`, `config/ras/settings.json` (display toggles)
-
-## Stats GUI
-
-Two interactive screens:
-
-- **Player Stats GUI** (K key): Allocate attribute points with +/- buttons, view XP progress, track modifier
-- **Combat Stats Viewer**: See computed totals for each vanilla attribute, formatted with configurable colors
-
-**Controls:** `config/ras/display/attribute_N.json`, `config/ras/stats_display.json`
+**Controls:** `config/ras/display/overlay.json`, `config/ras/display/ui.json`, `config/ras/settings.json` (display toggles)
 
 ## Multiplayer
 

@@ -112,6 +112,32 @@ public class RpgAttributeSystemModForge {
                     });
                     context.setPacketHandled(true);
                 });
+        addNetworkMessage(tn.nightbeam.ras.network.AttributeAllocationPacket.class,
+                tn.nightbeam.ras.network.AttributeAllocationPacket::encode,
+                tn.nightbeam.ras.network.AttributeAllocationPacket::decode,
+                (message, contextSupplier) -> {
+                    NetworkEvent.Context context = contextSupplier.get();
+                    context.enqueueWork(() -> {
+                        // Client-to-server only: a Level Up confirmation from the sending player.
+                        if (context.getDirection().getReceptionSide().isServer() && context.getSender() != null) {
+                            tn.nightbeam.ras.network.AttributeAllocationPacket.handle(context.getSender(), message);
+                        }
+                    });
+                    context.setPacketHandled(true);
+                });
+        addNetworkMessage(tn.nightbeam.ras.network.StatPreviewSyncPacket.class,
+                tn.nightbeam.ras.network.StatPreviewSyncPacket::encode,
+                tn.nightbeam.ras.network.StatPreviewSyncPacket::decode,
+                (message, contextSupplier) -> {
+                    NetworkEvent.Context context = contextSupplier.get();
+                    context.enqueueWork(() -> {
+                        // Server-to-client only: measured stats for the local player's RAS menus.
+                        if (!context.getDirection().getReceptionSide().isServer()) {
+                            tn.nightbeam.ras.network.StatPreviewSyncPacket.handle(message);
+                        }
+                    });
+                    context.setPacketHandled(true);
+                });
     }
 
     private static final String PROTOCOL_VERSION = "1";

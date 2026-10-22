@@ -68,6 +68,9 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
                     });
                 });
 
+        ClientPlayNetworking.registerGlobalReceiver(FabricStatPreviewPayload.TYPE,
+                (payload, context) -> context.client().execute(() -> StatPreviewSyncPacket.handle(payload.packet())));
+
         KeyMappingHelper.registerKeyMapping(RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND);
 
         net.minecraft.client.gui.screens.MenuScreens.register(
@@ -79,6 +82,7 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             RasGuiSelfTest.onClientTick(client);
+            tn.nightbeam.ras.client.LevelUpBanner.tick(client);
             if (client.screen != null) {
                 return;
             }
@@ -91,6 +95,10 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
             VanillaHudElements.HOTBAR,
             Identifier.fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "xp_overlay"),
             (graphics, deltaTracker) -> LevelOverlayRenderer.render(graphics, deltaTracker.getGameTimeDeltaTicks()));
+        // Registered last so the level-up banner draws once per frame, on top of every other HUD element.
+        HudElementRegistry.addLast(
+            Identifier.fromNamespaceAndPath(RpgAttributeSystemMod.MOD_ID, "level_up_banner"),
+            (graphics, deltaTracker) -> tn.nightbeam.ras.client.LevelUpBanner.render(graphics));
 
         tn.nightbeam.ras.events.FabricClientRpgAttributeSystemModEvents.register();
     }

@@ -78,6 +78,8 @@ public class RpgAttributeSystemModFabric implements ModInitializer {
         PayloadTypeRegistry.serverboundPlay().register(FabricMenuStateUpdatePayload.TYPE, FabricMenuStateUpdatePayload.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(FabricButtonActionPayload.TYPE, FabricButtonActionPayload.CODEC);
         PayloadTypeRegistry.serverboundPlay().register(FabricOpenStatsMenuPayload.TYPE, FabricOpenStatsMenuPayload.CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(FabricAttributeAllocationPayload.TYPE,
+                FabricAttributeAllocationPayload.CODEC);
 
         PayloadTypeRegistry.clientboundPlay().register(FabricMenuStateUpdatePayload.TYPE, FabricMenuStateUpdatePayload.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(FabricSyncVarsPayload.TYPE, FabricSyncVarsPayload.CODEC);
@@ -85,6 +87,7 @@ public class RpgAttributeSystemModFabric implements ModInitializer {
         PayloadTypeRegistry.clientboundPlay().register(FabricSyncItemsLockPayload.TYPE, FabricSyncItemsLockPayload.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(FabricSyncStatsDisplayPayload.TYPE,
                 FabricSyncStatsDisplayPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(FabricStatPreviewPayload.TYPE, FabricStatPreviewPayload.CODEC);
 
         // Server Network Receivers
         ServerPlayNetworking.registerGlobalReceiver(FabricMenuStateUpdatePayload.TYPE,
@@ -108,6 +111,11 @@ public class RpgAttributeSystemModFabric implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(FabricOpenStatsMenuPayload.TYPE,
                 (payload, context) -> {
                     context.server().execute(() -> OpenStatsMenuPacket.handle(context.player()));
+                });
+
+        ServerPlayNetworking.registerGlobalReceiver(FabricAttributeAllocationPayload.TYPE,
+                (payload, context) -> {
+                    context.server().execute(() -> AttributeAllocationPacket.handle(context.player(), payload.packet()));
                 });
     }
 }
