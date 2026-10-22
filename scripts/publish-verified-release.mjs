@@ -63,13 +63,15 @@ export function curseForgeDescriptor(entry, version, changelog, ids, dependencyM
   if (!Number.isInteger(loaderId) || !Number.isInteger(gameId) || !Number.isInteger(ids.client) || !Number.isInteger(ids.server)) {
     throw new Error('Incomplete exact CurseForge game/loader metadata');
   }
+  const projects = entry.required_mod_ids.map(id => {
+    const slug = dependencyMap[id]?.curseforge_slug, projectID = dependencyMap[id]?.curseforge_id;
+    if (!slug || !curseForgeId(projectID)) throw new Error('Missing verified CurseForge dependency mapping: ' + id);
+    // The Upload API rejects a string projectID (HTTP 400, errorCode 1002) despite its documented example.
+    return {slug, projectID, type: 'requiredDependency'};
+  });
   return {changelog, changelogType: 'markdown', displayName: `${version} · ${entry.loader} · ${entry.minecraft}`,
     gameVersions: [gameId, loaderId, ids.client, ids.server], releaseType: 'release',
-    relations: {projects: entry.required_mod_ids.map(id => {
-      const slug = dependencyMap[id]?.curseforge_slug;
-      if (!slug) throw new Error('Missing verified CurseForge dependency mapping: ' + id);
-      return {slug, projectID: String(dependencyMap[id].curseforge_id), type: 'requiredDependency'};
-    })}};
+    ...(projects.length ? {relations: {projects}} : {})};
 }
 
 export function matchingModrinth(existing, entry, descriptor) {
@@ -173,6 +175,8 @@ async function requestJson(url, options = {}, uploadIdValidator = null) {
     facts.response_id_type=Object.hasOwn(payload,'id')?valueType(payload.id):'absent';
     facts.response_has_error=Object.hasOwn(payload,'error');
     facts.response_has_message=Object.hasOwn(payload,'message');
+    // CurseForge's numeric validation code is a fixed fact, unlike its message text.
+    if (Number.isSafeInteger(payload.errorCode)) facts.response_error_code=payload.errorCode;
   }
   if (!response.ok) throw requestFailure('http-status',facts);
   if (uploadIdValidator && !uploadIdValidator(payload?.id)) throw requestFailure('upload-id',facts);

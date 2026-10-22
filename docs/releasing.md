@@ -114,13 +114,18 @@ is still evidence of an unresolved attempt even when a read-only audit succeeds.
 
 Future upload failures retain bounded `request_diagnostic` facts on an uncertain
 row: fixed phase/error enums, HTTP status when received, allowlisted content
-type, response size, JSON/ID type and known error/message-field presence. Raw
+type, response size, JSON/ID type, known error/message-field presence and a numeric provider `errorCode`. Raw
 body text, error messages/stacks, unknown keys, headers, credentials and request
 arguments are never retained. These diagnostic facts cannot reconstruct earlier
 discarded exceptions, prove acceptance or non-transmission, clear a receipt, or
 authorize another POST. The no-blind-retry guard is unchanged. Synthetic Node
 Request validation can fail before transport, but that category is not historical
 proof of the cause of any real uncertain submission.
+
+CurseForge relations send `projectID` as a JSON integer. The Upload API answers a
+string `projectID` with HTTP 400 (errorCode 1002, "Expected Integer but got String"),
+although its documented example quotes the value. That rejected every CurseForge upload
+for 4.3.0 and 5.0.0. Files without required dependencies send no `relations` object.
 
 The upload protocol remains the documented `X-Api-Token` plus multipart
 `metadata`/`file` request and top-level numeric response `id`; see the

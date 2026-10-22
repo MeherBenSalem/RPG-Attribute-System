@@ -262,7 +262,12 @@ test('descriptors declare the exact required dependency set for all ten source t
       const required = TARGETS[index][2];
       const mr = mrDescriptor(entry), cf = cfDescriptor(entry);
       assert.deepEqual(mr.dependencies, required.map(id => ({project_id: DEPENDENCIES[id].modrinth, version_id: null, file_name: null, dependency_type: 'required'})));
-      assert.deepEqual(cf.relations.projects, required.map(id => ({slug: DEPENDENCIES[id].curseforge_slug, projectID: String(DEPENDENCIES[id].curseforge_id), type: 'requiredDependency'})));
+      if (required.length) {
+        assert.deepEqual(cf.relations.projects, required.map(id => ({slug: DEPENDENCIES[id].curseforge_slug, projectID: DEPENDENCIES[id].curseforge_id, type: 'requiredDependency'})));
+        for (const project of cf.relations.projects) assert.equal(typeof project.projectID, 'number', 'CurseForge rejects a string projectID');
+      } else {
+        assert.equal(Object.hasOwn(cf, 'relations'), false, 'Files without dependencies send no relations');
+      }
       assert.deepEqual(mr.game_versions, [entry.minecraft]);
       assert.deepEqual(mr.loaders, [entry.loader]);
       assert.equal(mr.version_number, `${VERSION}+${entry.loader}-${entry.minecraft}`);
@@ -1035,6 +1040,7 @@ test('future uncertain upload diagnostics retain only bounded phase, HTTP and re
     'fetch':{stage:'fetch',type:'TypeError',code:'ECONNRESET',fail:()=>{const error=new TypeError(secret);error.cause={code:'ECONNRESET',message:secret};throw error;}},
     'timeout':{stage:'fetch',type:'TimeoutError',fail:()=>{throw new DOMException(secret,'TimeoutError');}},
     'HTTP JSON':{stage:'http-status',status:403,jsonType:'object',fail:()=>jsonResponse({error:secret,message:secret,token:secret},403)},
+    'HTTP validation code':{stage:'http-status',status:400,jsonType:'object',errorCode:1002,fail:()=>jsonResponse({errorCode:1002,errorMessage:secret},400)},
     'HTTP HTML':{stage:'http-status',status:502,jsonType:'invalid',fail:()=>new Response('<html>'+secret+'</html>',{status:502,headers:{'content-type':'text/html; reflected='+secret}})},
     'invalid JSON':{stage:'response-json',type:'SyntaxError',status:200,jsonType:'invalid',fail:()=>new Response('{'+secret,{headers:{'content-type':'application/json'}})},
     'wrong ID':{stage:'upload-id',status:200,jsonType:'object',idType:'string',fail:()=>jsonResponse({id:secret,message:secret})},
@@ -1051,6 +1057,7 @@ test('future uncertain upload diagnostics retain only bounded phase, HTTP and re
     assert.equal(diagnostic.error_type,expected.type??'Error');assert.equal(diagnostic.transport_code,expected.code??null);
     assert.equal(diagnostic.http_status,expected.status);assert.equal(diagnostic.response_json_type,expected.jsonType);
     if(expected.idType) assert.equal(diagnostic.response_id_type,expected.idType);
+    assert.equal(diagnostic.response_error_code,expected.errorCode);
     assert.ok(!message.includes(secret));assert.ok(!JSON.stringify(fx.state()).includes(secret));
     assert.ok(!Object.hasOwn(diagnostic,'message'));assert.ok(!Object.hasOwn(diagnostic,'body'));
     await assert.rejects(main(fx.argv(platform)),/reconcile/);assert.equal(posts,1);
