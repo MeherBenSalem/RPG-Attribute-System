@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.0.1
+
+- Attribute bonuses from `base set` commands are applied as RAS-owned attribute modifiers instead of overwriting the base value, so other mods, scripts and datapacks that write base values (common for attack damage, armor and armor toughness in large packs) no longer erase them. Values are unchanged in an unmodded game, and existing characters are converted once on login without double counting.
+- Config files are never rebuilt from defaults because RAS could not read them. ANSI and UTF-8 BOM files and trailing commas are read; a file that still cannot be read is left untouched and reported with its line and column.
+- Attribute files 1–8 follow `strict_config_mode`; `init_val_starting_level` and an empty `totals` list are kept; `/ras lock`/`unlock` no longer write back a stale copy; saves go through a temporary file.
+
+See the [release notes](../patchnotes/5.0.1.md) and [verification record](verification/5.0.1.md).
+
 ## 5.0.0 — The Ascendant Update
 
 - Soulslike Level Up screen: stage points with live `current → after` previews for every attribute, measured stat and configured total, then confirm once. Status and Records pages, keyboard-first controls, and a responsive one- to three-column layout.

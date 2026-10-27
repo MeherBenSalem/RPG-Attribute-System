@@ -32,6 +32,7 @@ Retain the originating Publish run's binaries and latest `release-provenance-<co
 - `receipt_run_id`: the latest prior Publish run containing the upload journal; defaults to `source_run_id`
 - `platforms`: the requested recovery destination(s)
 - `dry_run: false`: only when authorized to complete the publication
+- `continue_past_pending_curseforge: true`: with `platforms: curseforge`, upload the remaining CurseForge files once one file of the release is verified, instead of stopping after each upload until CurseForge lists it. Files still in review keep their submitted receipt and file ID and are verified by a later recovery run; nothing is posted twice.
 
 The recovery guard checks repository, source SHA, workflow path/event, completed run state, successful real build jobs and immutable nonexpired artifact digests before downloading. It examines all prior job attempts with bounded, complete pagination and requires the latest attempted publication receipt. Missing/unavailable receipts fail closed. Bare live job reruns or standalone restarts, including dry-runs after an earlier Publish invocation, cannot erase the journal; use an explicit recovery run. One fixed publication concurrency group serializes branch dry-runs and tag releases. Rebuilding different bytes under the same release filename is rejected, even when the code version is unchanged.
 

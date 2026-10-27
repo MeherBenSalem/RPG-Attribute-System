@@ -53,7 +53,7 @@ When upgrading:
 
 ### Config Files Are Never Deleted
 
-RAS never deletes or regenerates config files. If a config file is completely missing, it is recreated with defaults. If the file exists but a key is missing, only that key is added.
+RAS never deletes or regenerates config files. If a config file is completely missing or blank, it is recreated with defaults. If the file exists but a key is missing, that key is added only when `strict_config_mode` is `false`. A file RAS cannot read is never overwritten; the log says which line to fix.
 
 ## Player Data Migration
 

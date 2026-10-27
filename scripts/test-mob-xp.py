@@ -26,7 +26,7 @@ for root in ['1.20.1', '1.21.1', '26.1.2', '26.2', '26.3']:
     test = repo / root / 'common/src/test/java/tn/nightbeam/ras/config/MobXpRulesTest.java'
     with tempfile.TemporaryDirectory(prefix='ras-xp-') as output:
         subprocess.run([args.javac, '--release', '17', '-cp', args.gson_jar, '-d', output,
-                        str(package / 'MobXpRules.java'), str(package / 'MobXpRuleStore.java'), str(test)], check=True)
+                        str(package / 'MobXpRules.java'), str(package / 'MobXpRuleStore.java'), str(package / 'ConfigFiles.java'), str(test)], check=True)
         subprocess.run([args.java, '-cp', output + os.pathsep + args.gson_jar,
                         'tn.nightbeam.ras.config.MobXpRulesTest',
                         str(repo / 'tests/fixtures/mob-xp-contract.json')], check=True)

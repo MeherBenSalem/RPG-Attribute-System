@@ -9,9 +9,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -32,6 +37,81 @@ public final class ProcedureCommandHelper {
 
     public static void executeReward(Entity entity, String command) {
         executeAsEntity(entity, command, true);
+    }
+
+    /**
+     * Runs one of an attribute's {@code cmd_to_exc} commands. A {@code base set} on a known attribute becomes a
+     * RAS-owned modifier of (value - entity default) instead of overwriting the shared base value, so mods,
+     * scripts and datapacks that write base values no longer erase RAS bonuses. Other commands run unchanged.
+     *
+     * @param resetBase put the base value back to the entity default first; set once per player to undo the
+     *                  base value that RAS 5.0.0 and earlier wrote
+     */
+    public static void applyAttributeCommand(Entity entity, String command, int attributeId, int commandIndex,
+            boolean resetBase) {
+        if (entity == null || command == null || command.isBlank() || entity.level().isClientSide()
+                || !(entity.level() instanceof ServerLevel)) {
+            return;
+        }
+        if (!applyBaseSetAsModifier(entity, normalizeForSelfTarget(entity, command), attributeId, commandIndex,
+                resetBase)) {
+            executeAsEntity(entity, command);
+        }
+    }
+
+    private static boolean applyBaseSetAsModifier(Entity entity, String command, int attributeId, int commandIndex,
+            boolean resetBase) {
+        if (!(entity instanceof LivingEntity living)) {
+            return false;
+        }
+        Matcher matcher = ATTRIBUTE_BASE_SET.matcher(command.trim());
+        if (!matcher.matches()) {
+            return false;
+        }
+        Identifier location = parseAttributeLocation(matcher.group(1));
+        Holder<Attribute> holder = location == null ? null : resolveAttributeHolder(location);
+        if (holder == null || !living.getAttributes().hasAttribute(holder)) {
+            return false;
+        }
+        AttributeInstance instance = living.getAttribute(holder);
+        if (instance == null) {
+            return false;
+        }
+        double value;
+        try {
+            value = Double.parseDouble(matcher.group(2));
+        } catch (NumberFormatException ignored) {
+            return false;
+        }
+
+        double defaultBase = defaultBaseValue(living, holder);
+        if (resetBase) {
+            instance.setBaseValue(defaultBase);
+        }
+        Identifier modifierId = Identifier.fromNamespaceAndPath("rpg_attribute_system",
+                "attribute_" + attributeId + "_command_" + commandIndex);
+        double amount = value - defaultBase;
+        AttributeModifier current = instance.getModifier(modifierId);
+        if (current != null && current.amount() == amount
+                && current.operation() == AttributeModifier.Operation.ADD_VALUE) {
+            return true;
+        }
+        if (current != null) {
+            instance.removeModifier(modifierId);
+        }
+        if (amount != 0) {
+            instance.addPermanentModifier(new AttributeModifier(modifierId, amount,
+                    AttributeModifier.Operation.ADD_VALUE));
+        }
+        return true;
+    }
+
+    private static double defaultBaseValue(LivingEntity living, Holder<Attribute> attribute) {
+        @SuppressWarnings("unchecked")
+        AttributeSupplier supplier = DefaultAttributes
+                .getSupplier((EntityType<? extends LivingEntity>) living.getType());
+        return supplier != null && supplier.hasAttribute(attribute) ? supplier.getBaseValue(attribute)
+                : attribute.value().getDefaultValue();
     }
 
     private static void executeAsEntity(Entity entity, String command, boolean preferDirectGive) {

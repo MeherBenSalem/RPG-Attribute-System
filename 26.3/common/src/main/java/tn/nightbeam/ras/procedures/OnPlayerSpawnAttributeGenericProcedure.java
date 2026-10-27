@@ -49,28 +49,9 @@ public class OnPlayerSpawnAttributeGenericProcedure {
             }
 
             finalCommand = finalCommand.replace("@p", "@s");
-            removeOldRasModifier(entity, finalCommand, attributeId, commandIndex++);
-            ProcedureCommandHelper.executeAsEntity(entity, finalCommand);
+            ProcedureCommandHelper.applyAttributeCommand(entity, finalCommand, attributeId, commandIndex++,
+                    !vars.attributeModifiersMigrated);
         }
-    }
-
-    private static void removeOldRasModifier(Entity entity, String command, int attributeId, int commandIndex) {
-        String attributeName = parseAttributeName(command);
-        if (attributeName == null) {
-            return;
-        }
-        java.util.UUID modifierId = java.util.UUID.nameUUIDFromBytes(
-                ("rpg_attribute_system:attribute_" + attributeId + ":command_" + commandIndex)
-                        .getBytes(java.nio.charset.StandardCharsets.UTF_8));
-        String removeCommand = "attribute @s " + attributeName + " modifier remove " + modifierId;
-        ProcedureCommandHelper.executeAsEntity(entity, removeCommand);
-    }
-
-    private static String parseAttributeName(String command) {
-        java.util.regex.Matcher matcher = java.util.regex.Pattern
-                .compile("^/?attribute\\s+\\S+\\s+([^\\s]+)\\s+", java.util.regex.Pattern.CASE_INSENSITIVE)
-                .matcher(command.trim());
-        return matcher.find() ? matcher.group(1) : null;
     }
 
 }

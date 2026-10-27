@@ -42,6 +42,7 @@ public class OnPlayerSpawnProcedure {
             }
             OnPlayerSpawnAttributeGenericProcedure.execute(entity, i);
         }
+        vars.attributeModifiersMigrated = true;
 
         // Single final sync — avoids double-sync that occurred when initializeMissingAttributes also synced
         Services.PLATFORM.syncPlayerVariables(vars, entity);
