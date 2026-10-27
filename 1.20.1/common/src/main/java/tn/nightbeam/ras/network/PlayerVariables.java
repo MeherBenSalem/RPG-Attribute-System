@@ -18,6 +18,8 @@ public class PlayerVariables {
     public double totalXp = -1.0;
     public double pointsGrantedThroughLevel = -1.0;
     public long lastRespecEpochMs = 0L;
+    /** True once this player's RAS bonuses are attribute modifiers rather than overwritten base values. */
+    public boolean attributeModifiersMigrated = false;
 
     // Dynamic Attribute Map
     public java.util.Map<String, Double> attributes = new java.util.LinkedHashMap<>();
@@ -40,6 +42,7 @@ public class PlayerVariables {
         nbt.putDouble("totalXp", totalXp);
         nbt.putDouble("pointsGrantedThroughLevel", pointsGrantedThroughLevel);
         nbt.putLong("lastRespecEpochMs", lastRespecEpochMs);
+        nbt.putBoolean("attributeModifiersMigrated", attributeModifiersMigrated);
 
         // Write Dynamic Attributes
         CompoundTag attributesTag = new CompoundTag();
@@ -78,6 +81,7 @@ public class PlayerVariables {
                     ? nbt.getDouble("pointsGrantedThroughLevel")
                     : -1.0;
             lastRespecEpochMs = nbt.contains("lastRespecEpochMs") ? nbt.getLong("lastRespecEpochMs") : 0L;
+            attributeModifiersMigrated = nbt.getBoolean("attributeModifiersMigrated");
 
             attributes.clear();
             attributePoints.clear();

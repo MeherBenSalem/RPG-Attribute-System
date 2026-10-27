@@ -38,6 +38,7 @@ public class OnPlayerSpawnProcedure {
 
             OnPlayerSpawnAttributeGenericProcedure.execute(player, i);
         }
+        vars.attributeModifiersMigrated = true;
         Services.PLATFORM.syncPlayerVariables(vars, player);
     }
 

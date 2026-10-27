@@ -2,7 +2,6 @@ package tn.nightbeam.ras.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import tn.nightbeam.ras.Constants;
 import tn.nightbeam.ras.platform.Services;
 import tn.nightbeam.ras.util.AttributeManager;
@@ -65,7 +64,7 @@ public final class TemplateConfig {
             return Collections.emptyMap();
         }
         try {
-            JsonObject root = JsonParser.parseString(Files.readString(path)).getAsJsonObject();
+            JsonObject root = ConfigFiles.readObject(path);
             Map<String, Map<String, Double>> loaded = new LinkedHashMap<>();
             for (Map.Entry<String, JsonElement> entry : root.entrySet()) {
                 if ("enabled".equals(entry.getKey()) || "permission-required".equals(entry.getKey())) {

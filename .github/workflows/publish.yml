@@ -30,6 +30,11 @@ on:
         description: Latest prior Publish run containing the upload journal (defaults to source_run_id)
         required: false
         type: string
+      continue_past_pending_curseforge:
+        description: CurseForge recovery only - upload the remaining files while verified earlier ones await review
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -207,9 +212,11 @@ jobs:
           PLATFORMS: ${{ needs.resolve.outputs.platforms }}
           RELEASE_VERSION: ${{ needs.resolve.outputs.version }}
           DRY_RUN: ${{ needs.resolve.outputs.dry_run }}
+          CONTINUE_PAST_PENDING_CURSEFORGE: ${{ inputs.continue_past_pending_curseforge }}
         run: |
           args=()
           if [ "$DRY_RUN" = true ]; then args+=(--dry-run); fi
+          if [ "$CONTINUE_PAST_PENDING_CURSEFORGE" = true ]; then args+=(--continue-past-pending-curseforge); fi
           node scripts/publish-verified-release.mjs --manifest verified-release.json --directory release-jars --dependencies scripts/release-dependencies.json --changelog "patchnotes/$RELEASE_VERSION.md" --state publication-receipts.json --platforms "$PLATFORMS" "${args[@]}"
       - uses: actions/upload-artifact@v4
         if: always()

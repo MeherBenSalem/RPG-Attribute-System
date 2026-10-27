@@ -3,7 +3,6 @@ package tn.nightbeam.ras.config;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import tn.nightbeam.ras.Constants;
 import tn.nightbeam.ras.platform.Services;
 
@@ -35,7 +34,17 @@ public class ConfigInitializer {
 
     private static boolean shouldPopulateConfig(String dir, String file) {
         boolean created = Services.CONFIG.createConfigFile(dir, file);
-        return created || !isStrictConfigMode();
+        return created || !isStrictConfigMode() || isEmptyConfig(dir, file);
+    }
+
+    /** A file with no settings at all (blank or {}) is filled in like a new one, e.g. after a crash mid-write. */
+    private static boolean isEmptyConfig(String dir, String file) {
+        Path path = Services.CONFIG.getConfigDirectory().resolve(dir).resolve(file + ".json");
+        try {
+            return ConfigFiles.readObject(path).size() == 0;
+        } catch (Exception unreadable) {
+            return false;
+        }
     }
 
     private static boolean isStrictConfigMode() {
@@ -45,12 +54,7 @@ public class ConfigInitializer {
         }
 
         try {
-            JsonElement root = JsonParser.parseString(Files.readString(settingsPath));
-            if (!root.isJsonObject()) {
-                Constants.LOG.warn("RAS config warning: ras/settings.json must be a JSON object; strict config mode is enabled.");
-                return true;
-            }
-            JsonObject settings = root.getAsJsonObject();
+            JsonObject settings = ConfigFiles.readObject(settingsPath);
             if (!settings.has("strict_config_mode")) {
                 return true;
             }
@@ -127,15 +131,10 @@ public class ConfigInitializer {
 
         JsonObject config;
         try {
-            JsonElement root = JsonParser.parseString(Files.readString(path));
-            if (!root.isJsonObject()) {
-                Constants.LOG.warn("RAS config warning: {} must contain a JSON object.", path.getFileName());
-                return;
-            }
-            config = root.getAsJsonObject();
+            config = ConfigFiles.readObject(path);
         } catch (Exception e) {
-            Constants.LOG.warn("RAS config warning: failed to parse {}; it will be skipped by readers that cannot parse it.",
-                    path.getFileName(), e);
+            Constants.LOG.warn("RAS config warning: failed to parse {}: {}. Fix the file; RAS will not overwrite it.",
+                    path.getFileName(), e.getMessage());
             return;
         }
 
@@ -370,7 +369,7 @@ public class ConfigInitializer {
         if (!Services.CONFIG.arrayKeyExists(dir, file, "gui_shadow_color")) {
             Services.CONFIG.setStringValue(dir, file, "gui_shadow_color", "#80F3E1B5");
         }
-        if (Services.CONFIG.getArrayAsList(dir, file, "totals").isEmpty()) {
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "totals")) {
             Services.CONFIG.addStringToArray(dir, file, "totals",
                     "[label]Total Health Bonus[labelEnd][ids]1[idsEnd][mode]bonus[modeEnd]");
             Services.CONFIG.addStringToArray(dir, file, "totals",
@@ -390,7 +389,7 @@ public class ConfigInitializer {
             return;
         }
 
-        if (!Services.CONFIG.arrayKeyExists(dir, file, "count")) {
+        if (!Services.CONFIG.arrayKeyExists(dir, file, "init_val_starting_level")) {
             Services.CONFIG.setNumberValue(dir, file, "init_val_starting_level", 1);
         }
     }
@@ -403,7 +402,10 @@ public class ConfigInitializer {
         for (int i = 1; i <= 8; i++) {
             String file = "attribute_" + i;
 
-            Services.CONFIG.createConfigFile(dir, file);
+            // Strict config mode applies here too: an existing attribute file is never given keys back.
+            if (!shouldPopulateConfig(dir, file)) {
+                continue;
+            }
 
             if (!Services.CONFIG.arrayKeyExists(dir, file, "display_name")) {
                 Services.CONFIG.setStringValue(dir, file, "display_name", getDefaultDisplayName(i));
@@ -887,11 +889,7 @@ public class ConfigInitializer {
 
     private static void migrateLegacyAttributeCommandsInFile(Path path) {
         try {
-            JsonElement root = JsonParser.parseString(Files.readString(path));
-            if (!root.isJsonObject()) {
-                return;
-            }
-            JsonObject config = root.getAsJsonObject();
+            JsonObject config = ConfigFiles.readObject(path);
             if (!config.has("cmd_to_exc") || !config.get("cmd_to_exc").isJsonArray()) {
                 return;
             }
@@ -912,7 +910,7 @@ public class ConfigInitializer {
             }
             if (changed) {
                 config.add("cmd_to_exc", migratedArray);
-                Files.writeString(path, new com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(config));
+                ConfigFiles.writeText(path, new com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(config));
                 Constants.LOG.info("RAS migrated legacy attribute commands in {}", path.getFileName());
             }
         } catch (Exception e) {
@@ -947,11 +945,7 @@ public class ConfigInitializer {
 
     private static void migrateLegacyDisplayAttributeNameInFile(Path path) {
         try {
-            JsonElement root = JsonParser.parseString(Files.readString(path));
-            if (!root.isJsonObject()) {
-                return;
-            }
-            JsonObject config = root.getAsJsonObject();
+            JsonObject config = ConfigFiles.readObject(path);
             if (!config.has("attribute_name") || !config.get("attribute_name").isJsonPrimitive()) {
                 return;
             }
@@ -959,7 +953,7 @@ public class ConfigInitializer {
             String migrated = migrateLegacyDisplayAttributeName(original);
             if (!migrated.equals(original)) {
                 config.addProperty("attribute_name", migrated);
-                Files.writeString(path, new com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(config));
+                ConfigFiles.writeText(path, new com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(config));
                 Constants.LOG.info("RAS migrated legacy display attribute name in {}", path.getFileName());
             }
         } catch (Exception e) {

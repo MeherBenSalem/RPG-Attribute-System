@@ -3,7 +3,6 @@ package tn.nightbeam.ras.config;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import tn.nightbeam.ras.Constants;
 import tn.nightbeam.ras.platform.Services;
 
@@ -135,7 +134,7 @@ public final class ConfigValidator {
     private void validateMobXp() {
         Path path = MobXpConfig.path();
         try {
-            MobXpRules.ParseResult result = MobXpRules.parse(Files.readString(path));
+            MobXpRules.ParseResult result = MobXpRules.parse(ConfigFiles.readText(path));
             for (String diagnostic : result.diagnostics()) error(diagnostic);
         } catch (java.nio.file.NoSuchFileException missing) {
             // The extension is optional; a genuinely absent file keeps legacy behavior.
@@ -175,12 +174,7 @@ public final class ConfigValidator {
             return null;
         }
         try {
-            JsonElement root = JsonParser.parseString(Files.readString(path));
-            if (!root.isJsonObject()) {
-                error(path.getFileName() + " must contain a JSON object.");
-                return null;
-            }
-            return root.getAsJsonObject();
+            return ConfigFiles.readObject(path);
         } catch (Exception e) {
             error("Failed to parse " + path.getFileName() + ": " + e.getMessage());
             return null;

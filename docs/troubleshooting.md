@@ -140,9 +140,21 @@ See the [server authority table](../configuration/overview.md#server-authority) 
 
 ### Invalid JSON
 
-**Symptom:** The server starts but attributes are missing or broken. Log shows `[RPGAS] Failed to parse...`
+**Symptom:** The server starts but attributes are missing or broken. Log shows `RAS could not read config file ...` or `[RPGAS] Failed to parse...`
 
-**Fix:** A config file has invalid JSON. Use a JSON validator to find the syntax error. Common issues: trailing commas, unquoted keys, missing closing braces.
+**Fix:** A config file has invalid JSON. The log gives the line and column. Common issues: unquoted keys, missing commas or quotes, missing closing braces. RAS never overwrites a file it cannot read, so your other edits are still in it; the file's settings are ignored until it is fixed. Trailing commas, ANSI-encoded files and UTF-8 files with a BOM are accepted.
+
+### Attribute points do not change damage or armor
+
+**Symptom:** Attack Power, Protection or Toughness points show in the menu, but you deal or take the same damage.
+
+**Check:**
+- Open the **Status** page (**K**, then **Tab**). It shows the server's live values. If Armor and Attack Damage rise with your points, RAS applied them.
+- Toughness only strengthens armor against big hits. With no armor it has no effect, as in vanilla.
+- Fall, fire, drowning, magic and other armor-piercing damage ignores armor and toughness.
+- Mods that replace the damage or armor formula decide how these values are used.
+
+Before 5.0.1, another mod or script that wrote the base value of these attributes replaced RAS's bonus. 5.0.1 applies bonuses as attribute modifiers, which other mods do not overwrite.
 
 ### Validation Mode "fail" Aborts Startup
 

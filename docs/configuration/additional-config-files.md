@@ -71,6 +71,8 @@ With `init_val_attribute: 20`, `[param(1.0)]`, and 80 points invested, the calcu
 /attribute @s minecraft:max_health base set 100.0
 ```
 
+RAS does not run a `base set` command literally. It leaves the base value at the entity's default and adds its own attribute modifier for the difference (here `+80` on the default 20 health), so the total is the same. Other mods, scripts and datapacks that write the base value therefore cannot erase RAS bonuses. `/attribute @s minecraft:max_health get` shows the total; `base get` shows the default. Commands of any other form run as written.
+
 **Examples:**
 
 ```json

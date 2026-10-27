@@ -32,7 +32,7 @@ public final class MobXpRuleStore {
 
     public synchronized ReloadResult reload(Path path) {
         try {
-            MobXpRules.ParseResult loaded = MobXpRules.parse(Files.readString(path));
+            MobXpRules.ParseResult loaded = MobXpRules.parse(ConfigFiles.readText(path));
             current = loaded.rules();
             return new ReloadResult(true, loaded.diagnostics());
         } catch (java.nio.file.NoSuchFileException missing) {

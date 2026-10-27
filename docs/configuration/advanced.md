@@ -62,6 +62,8 @@ When `false`, RAS adds any missing keys to existing files, ensuring all default 
 | Learning/exploring settings | `false` | Ensures all available keys appear |
 | Modpack distribution | `true` | Pack creator's config is preserved exactly |
 
+This applies to every RAS config file, including `attributes/attribute_1.json` to `attribute_8.json` (from 5.0.1). In both modes, a file RAS cannot read is left untouched and reported in the log, and a blank file is filled with defaults like a missing one.
+
 > [!IMPORTANT]
 > With `strict_config_mode: true`, if you delete a key from an existing config file, RAS will **not** add it back. The feature controlled by that key uses its hard-coded default. To restore a missing key, delete the entire config file — it will be regenerated with all defaults on next startup.
 

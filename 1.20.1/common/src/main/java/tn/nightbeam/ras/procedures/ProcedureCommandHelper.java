@@ -1,5 +1,7 @@
 package tn.nightbeam.ras.procedures;
 
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,9 +12,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -33,6 +40,82 @@ public final class ProcedureCommandHelper {
 
     public static void executeReward(Entity entity, String command) {
         executeAsEntity(entity, command, true);
+    }
+
+    /**
+     * Runs one of an attribute's {@code cmd_to_exc} commands. A {@code base set} on a known attribute becomes a
+     * RAS-owned modifier of (value - entity default) instead of overwriting the shared base value, so mods,
+     * scripts and datapacks that write base values no longer erase RAS bonuses. Other commands run unchanged.
+     *
+     * @param resetBase put the base value back to the entity default first; set once per player to undo the
+     *                  base value that RAS 5.0.0 and earlier wrote
+     */
+    public static void applyAttributeCommand(Entity entity, String command, int attributeId, int commandIndex,
+            boolean resetBase) {
+        if (entity == null || command == null || command.isBlank() || entity.level().isClientSide()
+                || entity.getServer() == null) {
+            return;
+        }
+        if (!applyBaseSetAsModifier(entity, normalizeForSelfTarget(entity, command), attributeId, commandIndex,
+                resetBase)) {
+            executeAsEntity(entity, command);
+        }
+    }
+
+    private static boolean applyBaseSetAsModifier(Entity entity, String command, int attributeId, int commandIndex,
+            boolean resetBase) {
+        if (!(entity instanceof LivingEntity living)) {
+            return false;
+        }
+        Matcher matcher = ATTRIBUTE_BASE_SET.matcher(command.trim());
+        if (!matcher.matches()) {
+            return false;
+        }
+        ResourceLocation location = parseAttributeLocation(matcher.group(1));
+        Attribute attribute = location == null ? null : resolveAttribute(location);
+        if (attribute == null || !living.getAttributes().hasAttribute(attribute)) {
+            return false;
+        }
+        AttributeInstance instance = living.getAttribute(attribute);
+        if (instance == null) {
+            return false;
+        }
+        double value;
+        try {
+            value = Double.parseDouble(matcher.group(2));
+        } catch (NumberFormatException ignored) {
+            return false;
+        }
+
+        double defaultBase = defaultBaseValue(living, attribute);
+        if (resetBase) {
+            instance.setBaseValue(defaultBase);
+        }
+        // Same ID older versions removed through a command, so any stale RAS modifier is replaced.
+        UUID modifierId = UUID.nameUUIDFromBytes(("rpg_attribute_system:attribute_" + attributeId + ":command_"
+                + commandIndex).getBytes(StandardCharsets.UTF_8));
+        double amount = value - defaultBase;
+        AttributeModifier current = instance.getModifier(modifierId);
+        if (current != null && current.getAmount() == amount
+                && current.getOperation() == AttributeModifier.Operation.ADDITION) {
+            return true;
+        }
+        if (current != null) {
+            instance.removeModifier(modifierId);
+        }
+        if (amount != 0) {
+            instance.addPermanentModifier(new AttributeModifier(modifierId, "RPG Attribute System attribute_"
+                    + attributeId, amount, AttributeModifier.Operation.ADDITION));
+        }
+        return true;
+    }
+
+    private static double defaultBaseValue(LivingEntity living, Attribute attribute) {
+        @SuppressWarnings("unchecked")
+        AttributeSupplier supplier = DefaultAttributes
+                .getSupplier((EntityType<? extends LivingEntity>) living.getType());
+        return supplier != null && supplier.hasAttribute(attribute) ? supplier.getBaseValue(attribute)
+                : attribute.getDefaultValue();
     }
 
     private static void executeAsEntity(Entity entity, String command, boolean preferDirectGive) {
