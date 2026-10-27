@@ -22,6 +22,8 @@ The publisher rechecks every binary against the generated manifest immediately b
 
 A non-dry Publish invocation requires the exact `v<version>` release tag. The workflow builds each version with its correct JDK 17/21/25. It validates all ten artifacts before any store write, then preflights both selected providers' catalogs, descriptors, existing-file identities and hashes.
 
+To tag without pushing a tag yourself, run the **Tag release** workflow from main with `version` set to `VERSION`. It checks that every version root agrees, that Verify passed on the exact main commit and that the tag does not exist yet, then creates `v<version>` at that commit. A tag pushed with the workflow token does not start Publish, so dispatch **Publish** on the new tag with `dry_run: false`.
+
 Upload receipts are atomically saved **before** a POST. Timeout, lost/invalid response, missing ID and pending indexing remain unresolved journal entries. They must be reconciled by identity/hash/metadata; the publisher never blindly retries them. Matching submitted files awaiting public listing/approval are retained without replacement or duplicate upload.
 
 Public success requires Modrinth `listed` + `release`, or CurseForge `isAvailable: true` + Approved/Released, in addition to matching bytes and metadata. Submitted/pending review is not a completed public release.

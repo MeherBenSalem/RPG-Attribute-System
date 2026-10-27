@@ -1,0 +1,52 @@
+# Creates the v<VERSION> release tag on main for callers that cannot push tags themselves.
+# A tag pushed with GITHUB_TOKEN does not start other workflows: dispatch Publish on the new tag afterwards.
+name: Tag release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version (must equal VERSION on main)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: ras-release-tag
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require main
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: |
+          echo 'Release tags are only created from main.'
+          exit 1
+      - uses: actions/checkout@v4
+      - name: Check version, CI and tag, then create the tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_VERSION: ${{ inputs.version }}
+        run: |
+          version=$(tr -d '[:space:]' < VERSION)
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || [ "$version" != "$REQUESTED_VERSION" ]; then
+            echo "Requested version must equal VERSION ($version)"; exit 1
+          fi
+          for root in 1.20.1 1.21.1 26.1.2 26.2 26.3; do
+            grep -qx "version=$version" "$root/gradle.properties" || { echo "$root disagrees with VERSION"; exit 1; }
+          done
+          verified=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/verify.yml/runs?head_sha=$GITHUB_SHA&status=success&per_page=1" --jq '.total_count')
+          if [ "$verified" -lt 1 ]; then
+            echo "Verify has not passed on $GITHUB_SHA yet"; exit 1
+          fi
+          if git ls-remote --exit-code --tags origin "refs/tags/v$version" > /dev/null; then
+            echo "Tag v$version already exists"; exit 1
+          fi
+          git tag "v$version" "$GITHUB_SHA"
+          git push origin "refs/tags/v$version"
+          echo "Created v$version at $GITHUB_SHA. Dispatch Publish on the tag to release it."
