@@ -48,12 +48,19 @@ final class RasMenuChrome {
             tooltipMouseY = mouseY;
             mouseStillSince = now;
         }
-        return now - mouseStillSince >= 0.3;
+        return now - mouseStillSince >= RasUiSettings.values().tooltipDelay();
     }
     void closed() { lastClosedAt = RasMotion.seconds(); }
     void contentChanged() { contentChangedAt = RasMotion.seconds(); }
 
     private static double speed() { return RasUiSettings.animationSpeed(); }
+
+    /** The configured page tab labels, in page order. */
+    static String[] tabLabels() {
+        return new String[] { RasTexts.get("tab.level_up"), RasTexts.get("tab.status"), RasTexts.get("tab.records") };
+    }
+    /** A footer prompt: the configured key text and its action, e.g. {@code key.confirm} and {@code key.confirm.action}. */
+    static String[] key(String id) { return new String[] { RasTexts.get("key." + id), RasTexts.get("key." + id + ".action") }; }
 
     /** Backdrop opacity: fades in on first open, continuous across RAS screen switches. */
     double open() {
@@ -72,13 +79,13 @@ final class RasMenuChrome {
     int slide(int column) { return (int) Math.round((1 - reveal(column)) * 10); }
 
     void backdrop(GuiGraphics graphics, int width, int height) {
-        double open = open();
+        double open = open() * RasUiSettings.values().menuBackgroundOpacity();
         RasTheme.fill(graphics, 0, 0, width, height, RasMotion.alpha(0xA00A0908, open));
         RasTheme.vgradient(graphics, 0, 0, width, height / 3, RasMotion.alpha(0x90000000, open), 0x00000000);
         RasTheme.vgradient(graphics, 0, height * 2 / 3, width, height, 0x00000000, RasMotion.alpha(0xB0000000, open));
         RasTheme.hgradient(graphics, 0, 0, width / 2, height, RasMotion.alpha(0x60000000, open), 0x00000000);
         RasTheme.hgradient(graphics, width * 3 / 4, 0, width, height, 0x00000000, RasMotion.alpha(0x50000000, open));
-        if (RasUiSettings.ambientParticles()) motes.render(graphics, width, height, dt, open);
+        if (RasUiSettings.ambientParticles()) motes.render(graphics, width, height, dt, open());
     }
 
     void header(GuiGraphics graphics, SoulsLayout layout, String title) {
@@ -87,15 +94,15 @@ final class RasMenuChrome {
         RasTheme.vgradient(graphics, 0, 0, layout.width(), layout.headerHeight(),
                 RasMotion.alpha(0xC0000000, alpha), RasMotion.alpha(0x50000000, alpha));
         RasTheme.line(graphics, layout.contentLeft(), layout.headerHeight() - 1, layout.contentWidth(),
-                RasMotion.alpha(0x90C9AE6E, alpha));
+                RasMotion.alpha(RasTheme.accent(0x90C9AE6E), alpha));
         int iconX = layout.contentLeft(), iconY = top + (layout.headerHeight() - 18) / 2;
-        RasTheme.frame(graphics, iconX, iconY, 18, 18, RasMotion.alpha(0x80D8CFB8, alpha));
+        RasTheme.frame(graphics, iconX, iconY, 18, 18, RasMotion.alpha(RasTheme.ink(0x80D8CFB8), alpha));
         RasTheme.fill(graphics, iconX + 1, iconY + 1, iconX + 17, iconY + 17, RasMotion.alpha(0x60000000, alpha));
         if (alpha > 0.6) graphics.renderItem(new ItemStack(RpgAttributeSystemModItems.TOME_OF_ASCENSION.get()), iconX + 1, iconY + 1);
-        int titleY = top + (layout.headerHeight() - RasTheme.Face.TITLE.height()) / 2;
+        int titleY = RasTheme.Face.TITLE.centerY(top, layout.headerHeight());
         // Narrow headers are full of tabs, and the selected tab already names the page.
         if (layout.mode() != SoulsLayout.Mode.NARROW) {
-            RasTheme.text(graphics, RasTheme.Face.TITLE, title, iconX + 26, titleY, RasMotion.alpha(RasTheme.HEADER, alpha));
+            RasTheme.text(graphics, RasTheme.Face.TITLE, title, iconX + 26, titleY, RasMotion.alpha(RasTheme.ink(RasTheme.HEADER), alpha));
         }
     }
 
@@ -134,18 +141,19 @@ final class RasMenuChrome {
         int w = (int) Math.round(underlineWidth.update(dt, 16 * speed()));
         int y = selected.getY() + selected.getHeight() - 3;
         double alpha = reveal(0);
-        RasTheme.band(graphics, x - 4, y - 1, w + 8, 3, RasMotion.alpha(0x40D4B06A, alpha), 0.3, 0.3);
-        RasTheme.band(graphics, x, y, w, 1, RasMotion.alpha(RasTheme.GOLD, alpha), 0.12, 0.12);
+        RasTheme.band(graphics, x - 4, y - 1, w + 8, 3, RasMotion.alpha(RasTheme.accent(0x40D4B06A), alpha), 0.3, 0.3);
+        RasTheme.band(graphics, x, y, w, 1, RasMotion.alpha(RasTheme.accent(RasTheme.GOLD), alpha), 0.12, 0.12);
     }
 
     /** Hint on the left, keyboard prompts on the right; prompts that do not fit are dropped from the end. */
     void footer(GuiGraphics graphics, SoulsLayout layout, String hint, int hintColor, List<String[]> keys) {
         double alpha = reveal(0);
         int y = layout.hintY();
-        RasTheme.line(graphics, layout.contentLeft(), layout.footerRuleY(), layout.contentWidth(), RasMotion.alpha(0x30D8CFB8, alpha));
+        RasTheme.line(graphics, layout.contentLeft(), layout.footerRuleY(), layout.contentWidth(), RasMotion.alpha(RasTheme.ink(0x30D8CFB8), alpha));
         int right = layout.contentRight();
         int available = layout.contentWidth() - Math.min(layout.contentWidth() / 2, RasTheme.width(RasTheme.Face.SERIF, hint) + 12);
         int used = 0, count = 0;
+        keys = keys.stream().filter(key -> !key[0].isBlank() || !key[1].isBlank()).toList();
         for (String[] key : keys) {
             int needed = RasTheme.keycapWidth(key[0], key[1]) + (count == 0 ? 0 : 10);
             if (used + needed > available) break;
@@ -190,9 +198,9 @@ final class RasMenuChrome {
                 double fade = Math.sin(Math.PI * RasMotion.clamp01(age[i] / life[i]));
                 double strength = alpha * fade * (0.35 + 0.45 * size[i]);
                 int px = (int) Math.round(x[i]), py = (int) Math.round(y[i]);
-                RasTheme.fill(graphics, px - 1, py - 1, px + 2, py + 2, RasMotion.alpha(0x30F2CF7A, strength));
+                RasTheme.fill(graphics, px - 1, py - 1, px + 2, py + 2, RasMotion.alpha(RasTheme.accent(0x30F2CF7A), strength));
                 int core = size[i] > 0.7 ? 2 : 1;
-                RasTheme.fill(graphics, px, py, px + core, py + core, RasMotion.alpha(0xD0F6DE9C, strength));
+                RasTheme.fill(graphics, px, py, px + core, py + core, RasMotion.alpha(RasTheme.accent(0xD0F6DE9C), strength));
             }
         }
     }

@@ -67,19 +67,19 @@ Press **K** to open a soulslike Level Up screen:
 
 Controls are keyboard first (**↑/↓**, **←/→**, **Shift** ×5, **Enter**, **Tab**, **Esc**), and the layout adapts from three columns down to one. Text uses bundled serif fonts rasterized for your GUI scale, or the vanilla pixel font.
 
-**Controls:** `config/ras/display/attribute_N.json` (which stats appear), `config/ras/stats_display.json` (totals), `config/ras/display/ui.json` (fonts, animations, sounds)
+**Controls:** `config/ras/display/attribute_N.json` (which stats appear), `config/ras/stats_display.json` (totals), `config/ras/display/ui.json` (fonts, colors, animations, sounds), `config/ras/display/texts.json` (every menu text)
 
 See the [Level Up screen guide](guides/level-up-screen.md).
 
 ## Level-Up Banner
 
-When your RAS level rises, a cinematic gold banner announces the new level and the points you gained. It can be turned off, or silenced, in `ui.json`.
+When your RAS level rises, a cinematic gold banner announces the new level and the points you gained. Its position, duration, background, detail line, volume and colors are set in `ui.json`, and its texts in `texts.json`; it can also be turned off or silenced.
 
 ## HUD Overlay
 
-A configurable HUD overlay showing your level, experience progress, unspent attribute points, and a keybind hint. The default soulslike style matches the Level Up screen; `"hud_style": "classic"` restores the pixel-art bar. Both styles support corner anchoring (TL/TR/BL/BR), pixel offsets, scaling, and automatic JEI/REI/EMI panel avoidance.
+A configurable HUD overlay showing your level, experience progress, unspent attribute points, and a keybind hint. The default soulslike style matches the Level Up screen; `"hud_style": "classic"` restores the pixel-art bar. Both styles support corner anchoring (TL/TR/BL/BR), pixel offsets, scaling, and automatic JEI/REI/EMI panel avoidance. The soulslike HUD's width, background, level line, experience numbers, texts and colors are configurable, and it can fade while nothing changes.
 
-**Controls:** `config/ras/display/overlay.json`, `config/ras/display/ui.json`, `config/ras/settings.json` (display toggles)
+**Controls:** `config/ras/display/overlay.json`, `config/ras/display/ui.json`, `config/ras/display/texts.json`, `config/ras/settings.json` (display toggles)
 
 ## Multiplayer
 

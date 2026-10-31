@@ -88,7 +88,8 @@ public class LevelOverlayRenderer {
             graphics.drawString(mc.font, keyText, drawX + BAR_WIDTH + 11, drawY + BAR_Y + 2, -1, false);
         }
         if (showXp) {
-            String xpText = CurrentXpToLevelProcedure.execute(entity) + " XP";
+            String xpText = tn.nightbeam.ras.client.gui.RasTexts.format("hud.classic_experience",
+                    "experience", CurrentXpToLevelProcedure.execute(entity));
             graphics.drawString(mc.font, xpText, drawX + BAR_WIDTH / 2 - mc.font.width(xpText) / 2,
                     drawY + BAR_Y + 2, 0xF2F2D8, true);
         }

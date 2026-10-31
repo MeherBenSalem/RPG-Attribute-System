@@ -56,7 +56,8 @@ final class RasStatsModel {
     }
 
     static String experience(PlayerVariables vars) {
-        return vars.nextevelXp <= 0 ? "Max level" : RasGuiStyle.number(vars.currentXpTLevel) + " / " + RasGuiStyle.number(vars.nextevelXp);
+        return vars.nextevelXp <= 0 ? RasTexts.get("summary.max_level") : RasTexts.format("summary.experience_value",
+                "current", RasGuiStyle.number(vars.currentXpTLevel), "next", RasGuiStyle.number(vars.nextevelXp));
     }
 
     static double experienceRatio(PlayerVariables vars) {
@@ -70,10 +71,9 @@ final class RasStatsModel {
             String label = label(entry.label(), "Stat " + entry.sectionId());
             double current = entry.displayValue(), after = entry.displayPreview(pending);
             List<String> tooltip = new ArrayList<>();
-            tooltip.add(label + ": " + RasGuiStyle.preciseNumber(current));
-            if (Double.compare(current, after) != 0) tooltip.add("After confirming: " + RasGuiStyle.preciseNumber(after));
-            tooltip.add(entry.measured() ? "Measured on the server, including equipment and effects"
-                    : "This stat's attribute is not available on this server");
+            tooltip.add(RasTexts.format("tooltip.value", "name", label, "value", RasGuiStyle.preciseNumber(current)));
+            if (Double.compare(current, after) != 0) tooltip.add(RasTexts.format("tooltip.after_confirming", "value", RasGuiStyle.preciseNumber(after)));
+            tooltip.add(RasTexts.get(entry.measured() ? "tooltip.measured" : "tooltip.unavailable"));
             lines.add(new RasStatList.Line(label, current, after, highlight > 0 && entry.affectedBy(highlight), tooltip));
         }
         return lines;
@@ -97,8 +97,8 @@ final class RasStatsModel {
                 tooltip.add(row.name());
             }
             String label = label(total.label(), "Total");
-            tooltip.add(0, label + ": " + RasGuiStyle.preciseNumber(current));
-            tooltip.add(1, bonus ? "Bonus above initial values" : "Current attribute values");
+            tooltip.add(0, RasTexts.format("tooltip.value", "name", label, "value", RasGuiStyle.preciseNumber(current)));
+            tooltip.add(1, RasTexts.get(bonus ? "tooltip.total_bonus" : "tooltip.total_current"));
             lines.add(new RasStatList.Line(label, current, after, affected, tooltip));
         }
         return lines;

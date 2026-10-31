@@ -31,9 +31,10 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     private static final double NOTICE_SECONDS = 3.2;
 
     enum Tab {
-        LEVEL_UP("Level Up"), STATUS("Status"), RECORDS("Records");
-        final String label;
-        Tab(String label) { this.label = label; }
+        LEVEL_UP("tab.level_up"), STATUS("tab.status"), RECORDS("tab.records");
+        final String key;
+        Tab(String key) { this.key = key; }
+        String label() { return RasTexts.get(key); }
     }
 
     private final Player entity;
@@ -65,7 +66,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     private double confirmedAt = -10;
     private double discardArmedAt = -10;
     private String notice = "";
-    private int noticeColor = RasTheme.TEXT;
+    private int noticeColor = RasTheme.ink(RasTheme.TEXT);
     private double noticeAt = -10;
     private boolean menuStateUpdateActive;
 
@@ -114,7 +115,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         keepSelectionVisible(rows.size());
 
         addRenderableWidget(chrome.close(layout, "Close attributes", this::closeContainerSafely));
-        String[] labels = java.util.Arrays.stream(Tab.values()).map(target -> target.label).toArray(String[]::new);
+        String[] labels = java.util.Arrays.stream(Tab.values()).map(Tab::label).toArray(String[]::new);
         for (RasGuiButton button : chrome.tabs(layout, labels, tab.ordinal(), index -> switchTab(Tab.values()[index]))) {
             tabs.add(button);
             addRenderableWidget(button);
@@ -131,10 +132,10 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
             steps.add(minus); steps.add(plus);
             addRenderableWidget(minus); addRenderableWidget(plus);
         }
-        confirm = addRenderableWidget(new RasGuiButton(layout.confirmX(), layout.confirmY(), layout.confirmWidth(), "Confirm",
+        confirm = addRenderableWidget(new RasGuiButton(layout.confirmX(), layout.confirmY(), layout.confirmWidth(), RasTexts.get("button.confirm"),
                 Component.literal("Confirm allocation"), RasGuiButton.Style.FRAME, button -> confirm())
                 .visibility(() -> chrome.reveal(0)));
-        reset = addRenderableWidget(new RasGuiButton(layout.resetX(), layout.confirmY(), SoulsLayout.RESET_WIDTH, "Reset",
+        reset = addRenderableWidget(new RasGuiButton(layout.resetX(), layout.confirmY(), SoulsLayout.RESET_WIDTH, RasTexts.get("button.reset"),
                 Component.literal("Reset staged points"), RasGuiButton.Style.FRAME, button -> resetPending())
                 .visibility(() -> chrome.reveal(0)));
         updateControlStates(rows);
@@ -165,13 +166,14 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
     }
 
     private String allocationText(RasStatsModel.AttributeRow row, int spareAfter) {
-        if (row.locked()) return "Locked";
+        if (row.locked()) return RasTexts.get("attribute.locked");
         double max = row.data().maxLevel;
         int staged = staged(row.id());
-        if (PendingAllocation.valueAfter(row.model(), staged) >= max) return "Maximum reached: " + RasGuiStyle.preciseNumber(max);
-        if (spareAfter < 1) return staged > 0 ? "All available points are staged" : "No available points";
-        return "Next value: " + RasGuiStyle.preciseNumber(PendingAllocation.valueAfter(row.model(), staged + 1))
-                + " (max: " + RasGuiStyle.preciseNumber(max) + ")";
+        if (PendingAllocation.valueAfter(row.model(), staged) >= max) return RasTexts.format("allocation.maximum", "max", RasGuiStyle.preciseNumber(max));
+        if (spareAfter < 1) return RasTexts.get(staged > 0 ? "allocation.all_staged" : "allocation.no_points");
+        return RasTexts.format("allocation.next",
+                "value", RasGuiStyle.preciseNumber(PendingAllocation.valueAfter(row.model(), staged + 1)),
+                "max", RasGuiStyle.preciseNumber(max));
     }
 
     // ---------------------------------------------------------------- actions
@@ -224,7 +226,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
             discardArmedAt = -10;
             RasTheme.click(delta > 0 ? 1.65F : 1.2F);
         } else if (delta > 0) {
-            notice(allocationText(row, pending.spareAfter(variables().SparePoints)), RasTheme.DIM);
+            notice(allocationText(row, pending.spareAfter(variables().SparePoints)), RasTheme.ink(RasTheme.DIM));
             RasTheme.sound(SoundEvents.NOTE_BLOCK_BASS, 0.7F, 0.25F);
         }
         updateControlStates(rows);
@@ -249,7 +251,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         pending.clear();
         discardArmedAt = -10;
         RasTheme.click(1.0F);
-        notice("Staged points returned", RasTheme.DIM);
+        notice(RasTexts.get("notice.reset"), RasTheme.ink(RasTheme.DIM));
         updateControlStates(rows());
     }
 
@@ -266,10 +268,10 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         if (confirming()) {
             if (invested != inFlightInvested) {
                 inFlight = Map.of();
-                notice("Attributes strengthened", RasTheme.GOLD);
+                notice(RasTexts.get("notice.confirmed"), RasTheme.accent(RasTheme.GOLD));
             } else if (RasMotion.seconds() - inFlightAt > IN_FLIGHT_TIMEOUT) {
                 inFlight = Map.of();
-                notice("The server did not apply the allocation", RasTheme.RED);
+                notice(RasTexts.get("notice.refused"), RasTheme.decrease(RasTheme.RED));
             }
         }
         double signature = vars.SparePoints * 31 + invested * 17 + rows.size();
@@ -313,7 +315,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-        chrome.header(graphics, layout, tab.label);
+        chrome.header(graphics, layout, tab.label());
         switch (tab) {
             case LEVEL_UP -> renderLevelUp(graphics, mouseX, mouseY);
             case STATUS -> status.render(graphics, layout, chrome, entity, mouseX, mouseY);
@@ -324,31 +326,31 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
 
     private String footerHint() {
         double now = RasMotion.seconds();
-        if (now - discardArmedAt < DISCARD_WINDOW) return "Unconfirmed points will be discarded. Press Esc again to leave";
-        if (confirming()) return "Confirming…";
+        if (now - discardArmedAt < DISCARD_WINDOW) return RasTexts.get("hint.discard");
+        if (confirming()) return RasTexts.get("hint.confirming");
         if (now - noticeAt < NOTICE_SECONDS) return notice;
         return switch (tab) {
-            case LEVEL_UP -> pending.isEmpty() ? "Choose an attribute to level up" : "Confirm to commit your staged points";
-            case STATUS -> "Values measured on the server, including equipment and effects";
-            case RECORDS -> "Your progression so far";
+            case LEVEL_UP -> RasTexts.get(pending.isEmpty() ? "hint.level_up" : "hint.level_up_staged");
+            case STATUS -> RasTexts.get("hint.status");
+            case RECORDS -> RasTexts.get("hint.records");
         };
     }
     private int footerColor() {
         double now = RasMotion.seconds();
-        if (now - discardArmedAt < DISCARD_WINDOW) return RasTheme.GOLD;
+        if (now - discardArmedAt < DISCARD_WINDOW) return RasTheme.accent(RasTheme.GOLD);
         if (!confirming() && now - noticeAt < NOTICE_SECONDS) return noticeColor;
-        return RasTheme.TEXT;
+        return RasTheme.ink(RasTheme.TEXT);
     }
     private List<String[]> footerKeys() {
         List<String[]> keys = new ArrayList<>();
         if (tab == Tab.LEVEL_UP) {
-            keys.add(new String[] { "↑↓", "Select" });
-            keys.add(new String[] { "←→", "Adjust" });
-            keys.add(new String[] { "Enter", "Confirm" });
-            keys.add(new String[] { "Shift", "×5" });
+            keys.add(RasMenuChrome.key("select"));
+            keys.add(RasMenuChrome.key("adjust"));
+            keys.add(RasMenuChrome.key("confirm"));
+            keys.add(RasMenuChrome.key("step"));
         }
-        keys.add(new String[] { "Tab", "Page" });
-        keys.add(new String[] { "Esc", "Back" });
+        keys.add(RasMenuChrome.key("page"));
+        keys.add(RasMenuChrome.key("back"));
         return keys;
     }
 
@@ -363,15 +365,15 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         int highlight = current == null ? 0 : current.id();
 
         RasPages.summary(graphics, layout, lx, lw, vars, stagedTotal(), xpFill, dt, a0, s0);
-        RasTheme.section(graphics, lx, layout.attributesHeaderY() + s0, lw, "Attribute Points", a0);
+        RasTheme.section(graphics, lx, layout.attributesHeaderY() + s0, lw, RasTexts.get("section.attribute_points"), a0);
         int visible = Math.min(layout.attributeRows(), Math.max(0, rows.size() - attributeScroll));
         if (rows.isEmpty()) {
-            RasTheme.text(graphics, RasTheme.Face.SERIF, "Waiting for attribute configuration", lx + 10,
-                    layout.attributesTop() + 6 + s0, RasMotion.alpha(RasTheme.FAINT, a0));
+            RasTheme.text(graphics, RasTheme.Face.SERIF, RasTexts.get("attribute.waiting"), lx + 10,
+                    layout.attributesTop() + 6 + s0, RasMotion.alpha(RasTheme.ink(RasTheme.FAINT), a0));
         }
         if (visible > 0) {
             RasTheme.vline(graphics, lx, layout.attributesTop() - 2, layout.attributeRowY(visible) + 2,
-                    RasMotion.alpha(0x50D8CFB8, a0));
+                    RasMotion.alpha(RasTheme.ink(0x50D8CFB8), a0));
             renderSelection(graphics, lx, lw, visible, dt, a0, s0);
         }
         while (rowHover.size() < rows.size()) rowHover.add(new RasMotion.Smooth(0));
@@ -383,15 +385,15 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
             int top = layout.attributesTop() + s0, height = layout.attributeRows() * SoulsLayout.ATTRIBUTE_ROW;
             int thumb = Math.max(10, height * layout.attributeRows() / rows.size());
             int offset = (height - thumb) * attributeScroll / Math.max(1, rows.size() - layout.attributeRows());
-            RasTheme.fill(graphics, lx + lw + 3, top, lx + lw + 4, top + height, RasMotion.alpha(0x30D8CFB8, a0));
-            RasTheme.fill(graphics, lx + lw + 3, top + offset, lx + lw + 4, top + offset + thumb, RasMotion.alpha(0xB0D4B06A, a0));
+            RasTheme.fill(graphics, lx + lw + 3, top, lx + lw + 4, top + height, RasMotion.alpha(RasTheme.ink(0x30D8CFB8), a0));
+            RasTheme.fill(graphics, lx + lw + 3, top + offset, lx + lw + 4, top + offset + thumb, RasMotion.alpha(RasTheme.accent(0xB0D4B06A), a0));
         }
 
         List<RasStatList.Line> statLines = RasStatsModel.stats(this::staged, highlight);
         List<RasStatList.Line> totalLines = RasStatsModel.totals(rows, this::staged, highlight);
         if (layout.hasMiddle()) {
             int mx = layout.middleX(), mw = layout.middleWidth();
-            RasTheme.section(graphics, mx, layout.contentTop() + s1, mw, "Base Stats", a1);
+            RasTheme.section(graphics, mx, layout.contentTop() + s1, mw, RasTexts.get("section.base_stats"), a1);
             int top = layout.statsTop() + s1;
             if (statLines.isEmpty()) RasPages.waiting(graphics, mx, top, a1);
             int statRows = layout.statRows(layout.statsTop());
@@ -399,14 +401,14 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
             int used = baseStats.render(graphics, mx, top, mw, statRows, statLines, true, a1, mouseX, mouseY, dt);
             if (!layout.hasRight() && !totalLines.isEmpty()) {
                 int ty = top + Math.max(used, 16) + 8;
-                RasTheme.section(graphics, mx, ty, mw, "Totals", a1);
+                RasTheme.section(graphics, mx, ty, mw, RasTexts.get("section.totals"), a1);
                 totals.render(graphics, mx, ty + SoulsLayout.SECTION_HEADER, mw,
                         Math.max(1, layout.statRows(ty + SoulsLayout.SECTION_HEADER - s1)), totalLines, true, a1, mouseX, mouseY, dt);
             }
         }
         if (layout.hasRight()) {
             int rx = layout.rightX(), rw = layout.rightWidth();
-            RasTheme.section(graphics, rx, layout.contentTop() + s2, rw, "Totals", a2);
+            RasTheme.section(graphics, rx, layout.contentTop() + s2, rw, RasTexts.get("section.totals"), a2);
             int top = layout.statsTop() + s2;
             int used = totals.render(graphics, rx, top, rw, Math.min(totalLines.size(), Math.max(1, layout.statRows(layout.statsTop()) / 2)),
                     totalLines, true, a2, mouseX, mouseY, dt);
@@ -420,10 +422,10 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         selectionY.target(layout.attributeRowY(row));
         if (!RasUiSettings.animations()) selectionY.snap(selectionY.target());
         int y = (int) Math.round(selectionY.update(dt, 22 * RasUiSettings.animationSpeed())) + slide;
-        RasTheme.band(graphics, lx + 1, y, lw - 1, SoulsLayout.ATTRIBUTE_ROW, RasMotion.alpha(RasTheme.SELECTED, alpha), 0.02, 0.55);
-        RasTheme.band(graphics, lx + 1, y, lw - 1, 1, RasMotion.alpha(0x50F0DCA8, alpha), 0.02, 0.6);
-        RasTheme.band(graphics, lx + 1, y + SoulsLayout.ATTRIBUTE_ROW - 1, lw - 1, 1, RasMotion.alpha(0x30F0DCA8, alpha), 0.02, 0.6);
-        RasTheme.fill(graphics, lx, y + 2, lx + 2, y + SoulsLayout.ATTRIBUTE_ROW - 2, RasMotion.alpha(RasTheme.GOLD, alpha));
+        RasTheme.band(graphics, lx + 1, y, lw - 1, SoulsLayout.ATTRIBUTE_ROW, RasMotion.alpha(RasTheme.accent(RasTheme.SELECTED), alpha), 0.02, 0.55);
+        RasTheme.band(graphics, lx + 1, y, lw - 1, 1, RasMotion.alpha(RasTheme.accent(0x50F0DCA8), alpha), 0.02, 0.6);
+        RasTheme.band(graphics, lx + 1, y + SoulsLayout.ATTRIBUTE_ROW - 1, lw - 1, 1, RasMotion.alpha(RasTheme.accent(0x30F0DCA8), alpha), 0.02, 0.6);
+        RasTheme.fill(graphics, lx, y + 2, lx + 2, y + SoulsLayout.ATTRIBUTE_ROW - 2, RasMotion.alpha(RasTheme.accent(RasTheme.GOLD), alpha));
     }
 
     private void renderAttributeRow(GuiGraphics graphics, RasStatsModel.AttributeRow row, int index, int visibleRow,
@@ -437,30 +439,30 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         double h = hover.update(dt, 16 * RasUiSettings.animationSpeed());
         RasTheme.band(graphics, lx + 1, rowY + 1, lw - 1, SoulsLayout.ATTRIBUTE_ROW - 2,
                 RasMotion.alpha(RasMotion.mix(RasTheme.BAND, RasTheme.BAND_HOVER, h), alpha), 0.03, 0.45);
-        int textY = rowY + (SoulsLayout.ATTRIBUTE_ROW - RasTheme.Face.SERIF.height()) / 2;
+        int textY = RasTheme.Face.SERIF.centerY(rowY, SoulsLayout.ATTRIBUTE_ROW);
         boolean locked = row.locked();
-        int labelColor = locked ? RasTheme.FAINT : index == selected ? RasTheme.HEADER : RasTheme.TEXT;
+        int labelColor = locked ? RasTheme.ink(RasTheme.FAINT) : index == selected ? RasTheme.ink(RasTheme.HEADER) : RasTheme.ink(RasTheme.TEXT);
         RasTheme.text(graphics, RasTheme.Face.SERIF, RasTheme.fit(RasTheme.Face.SERIF, row.name(), layout.labelWidth()),
                 layout.labelX(), textY, RasMotion.alpha(labelColor, alpha));
         if (locked) {
-            RasTheme.textRight(graphics, RasTheme.Face.SERIF, "Locked", layout.plusX() + SoulsLayout.CONTROL_SIZE - 6, textY,
-                    RasMotion.alpha(RasTheme.FAINT, alpha));
+            RasTheme.textRight(graphics, RasTheme.Face.SERIF, RasTexts.get("attribute.locked"), layout.plusX() + SoulsLayout.CONTROL_SIZE - 6, textY,
+                    RasMotion.alpha(RasTheme.ink(RasTheme.FAINT), alpha));
             return;
         }
         int staged = staged(row.id());
         double after = PendingAllocation.valueAfter(row.model(), staged);
         String[] values = RasGuiNumbers.pair(row.current(), after);
-        RasTheme.textRight(graphics, RasTheme.Face.SERIF, values[0], layout.currentRightX(), textY, RasMotion.alpha(RasTheme.TEXT, alpha));
+        RasTheme.textRight(graphics, RasTheme.Face.SERIF, values[0], layout.currentRightX(), textY, RasMotion.alpha(RasTheme.ink(RasTheme.TEXT), alpha));
         RasTheme.textCenter(graphics, RasTheme.Face.SERIF, "→", layout.arrowCenterX(), textY,
-                RasMotion.alpha(staged > 0 ? RasTheme.TEXT : RasTheme.FAINT, alpha));
+                RasMotion.alpha(staged > 0 ? RasTheme.ink(RasTheme.TEXT) : RasTheme.ink(RasTheme.FAINT), alpha));
         Double changed = changedAt.get(row.id());
         double flash = changed == null || !RasUiSettings.animations() ? 0 : 1 - RasMotion.progress(now, changed, 0, 0.45);
         int center = layout.afterCenterX();
         if (flash > 0) {
             RasTheme.band(graphics, center - 18, rowY + 3, 36, SoulsLayout.ATTRIBUTE_ROW - 6,
-                    RasMotion.alpha(0x6079A2FF, alpha * flash), 0.35, 0.35);
+                    RasMotion.alpha(RasTheme.increase(0x6079A2FF), alpha * flash), 0.35, 0.35);
         }
-        int color = staged > 0 ? RasMotion.mix(RasTheme.BLUE, 0xFFE6EEFF, flash * 0.6) : RasTheme.TEXT;
+        int color = staged > 0 ? RasMotion.mix(RasTheme.increase(RasTheme.BLUE), RasTheme.increase(0xFFE6EEFF), flash * 0.6) : RasTheme.ink(RasTheme.TEXT);
         String text = RasTheme.fit(RasTheme.Face.SERIF, values[1], SoulsLayout.AFTER_WIDTH + 8);
         RasTheme.textCenter(graphics, RasTheme.Face.SERIF, text, center, textY - (int) Math.round(flash * 1.5), RasMotion.alpha(color, alpha));
     }
@@ -473,8 +475,8 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         int y = top + (int) Math.round(height * RasMotion.easeInOutSine(t)) - 6;
         double fade = Math.sin(Math.PI * t);
         RasTheme.scissor(graphics, lx, top, lx + lw, top + height);
-        RasTheme.band(graphics, lx, y, lw, 12, RasMotion.alpha(0x50F6DE9C, fade), 0.1, 0.5);
-        RasTheme.band(graphics, lx, y + 5, lw, 2, RasMotion.alpha(0xB0FFF2C8, fade), 0.1, 0.5);
+        RasTheme.band(graphics, lx, y, lw, 12, RasMotion.alpha(RasTheme.accent(0x50F6DE9C), fade), 0.1, 0.5);
+        RasTheme.band(graphics, lx, y + 5, lw, 2, RasMotion.alpha(RasTheme.accent(0xB0FFF2C8), fade), 0.1, 0.5);
         RasTheme.endScissor(graphics);
     }
 
@@ -483,26 +485,27 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
             double alpha) {
         int bottom = layout.pageBottom();
         if (bottom - y < 64) return;
-        RasTheme.line(graphics, x, y - 6, width, RasMotion.alpha(0x40D8CFB8, alpha));
+        RasTheme.line(graphics, x, y - 6, width, RasMotion.alpha(RasTheme.ink(0x40D8CFB8), alpha));
         RasTheme.fill(graphics, x + 2, y + 2, x + 26, y + 26, RasMotion.alpha(0x50000000, alpha));
-        RasTheme.frame(graphics, x + 2, y + 2, 24, 24, RasMotion.alpha(0x70D8CFB8, alpha));
+        RasTheme.frame(graphics, x + 2, y + 2, 24, 24, RasMotion.alpha(RasTheme.ink(0x70D8CFB8), alpha));
         RasTheme.icon(graphics, RasGuiStyle.icon(row.id()), x + 4, y + 4, 20, alpha);
         RasTheme.text(graphics, RasTheme.Face.DISPLAY, RasTheme.fit(RasTheme.Face.DISPLAY, row.name(), width - 34), x + 32, y + 4,
-                RasMotion.alpha(RasTheme.HEADER, alpha));
-        String invested = RasGuiStyle.number(row.invested()) + (row.invested() == 1 ? " point invested" : " points invested");
+                RasMotion.alpha(RasTheme.ink(RasTheme.HEADER), alpha));
+        String invested = RasTexts.format(row.invested() == 1 ? "attribute.invested_one" : "attribute.invested",
+                "points", RasGuiStyle.number(row.invested()));
         RasTheme.text(graphics, RasTheme.Face.SERIF, RasTheme.fit(RasTheme.Face.SERIF, invested, width - 34), x + 32, y + 15,
-                RasMotion.alpha(RasTheme.DIM, alpha));
+                RasMotion.alpha(RasTheme.ink(RasTheme.DIM), alpha));
         int statsHeight = 36;
         int ty = y + 34;
         int lines = Math.max(0, Math.min(5, (bottom - statsHeight - ty) / 11));
         for (String line : RasPages.wrap(RasTheme.Face.SERIF, row.tip(), width - 8, lines)) {
-            RasTheme.text(graphics, RasTheme.Face.SERIF, line, x + 4, ty, RasMotion.alpha(RasTheme.DIM, alpha));
+            RasTheme.text(graphics, RasTheme.Face.SERIF, line, x + 4, ty, RasMotion.alpha(RasTheme.ink(RasTheme.DIM), alpha));
             ty += 11;
         }
         int sy = Math.min(bottom - statsHeight, ty + 6);
         double increment = row.data().baseIncrement;
-        RasPages.row(graphics, x + 2, sy, width - 2, "Per point", (increment >= 0 ? "+" : "") + RasGuiStyle.preciseNumber(increment), null, 0, alpha);
-        RasPages.row(graphics, x + 2, sy + 12, width - 2, "Limit", RasGuiStyle.number(row.data().maxLevel), null, 0, alpha);
+        RasPages.row(graphics, x + 2, sy, width - 2, RasTexts.get("attribute.per_point"), (increment >= 0 ? "+" : "") + RasGuiStyle.preciseNumber(increment), null, 0, alpha);
+        RasPages.row(graphics, x + 2, sy + 12, width - 2, RasTexts.get("attribute.limit"), RasGuiStyle.number(row.data().maxLevel), null, 0, alpha);
         double span = row.data().maxLevel - row.data().initValue;
         boolean bounded = span > 0 && Double.isFinite(span);
         double ratio = bounded ? RasMotion.clamp01((row.current() - row.data().initValue) / span) : 0;
@@ -511,10 +514,10 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
         if (!RasUiSettings.animations()) capFill.snap(ratio);
         double shown = capFill.update(dt, 8 * RasUiSettings.animationSpeed());
         int barX = x + 4, barY = sy + 28, barW = width - 10;
-        RasTheme.fill(graphics, barX, barY, barX + barW, barY + 2, RasMotion.alpha(0x40D8CFB8, alpha));
+        RasTheme.fill(graphics, barX, barY, barX + barW, barY + 2, RasMotion.alpha(RasTheme.ink(0x40D8CFB8), alpha));
         int fill = (int) Math.round(barW * shown), stagedFill = (int) Math.round(barW * after);
-        if (stagedFill > fill) RasTheme.fill(graphics, barX + fill, barY, barX + stagedFill, barY + 2, RasMotion.alpha(0xC079A2FF, alpha));
-        if (fill > 0) RasTheme.hgradient(graphics, barX, barY, barX + fill, barY + 2, RasMotion.alpha(0xFF8C7444, alpha), RasMotion.alpha(0xFFF0D58C, alpha));
+        if (stagedFill > fill) RasTheme.fill(graphics, barX + fill, barY, barX + stagedFill, barY + 2, RasMotion.alpha(RasTheme.increase(0xC079A2FF), alpha));
+        if (fill > 0) RasTheme.hgradient(graphics, barX, barY, barX + fill, barY + 2, RasMotion.alpha(RasTheme.accent(0xFF8C7444), alpha), RasMotion.alpha(RasTheme.accent(0xFFF0D58C), alpha));
     }
 
     private void renderCustomTooltip(GuiGraphics graphics, int mouseX, int mouseY, List<RasStatsModel.AttributeRow> rows) {
@@ -526,7 +529,7 @@ public class PlayerStatsGUIScreen extends AbstractContainerScreen<PlayerStatsGUI
             if (index >= 0 && !isOverStep(mouseX, mouseY)) {
                 var row = rows.get(index);
                 List<String> tip = new ArrayList<>();
-                tip.add(row.name() + ": " + RasGuiStyle.preciseNumber(row.current()));
+                tip.add(RasTexts.format("tooltip.value", "name", row.name(), "value", RasGuiStyle.preciseNumber(row.current())));
                 if (!row.tip().isBlank()) tip.add(row.tip());
                 tip.add(allocationText(row, pending.spareAfter(variables().SparePoints)));
                 lines = tip;

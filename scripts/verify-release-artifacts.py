@@ -27,8 +27,15 @@ UI_FEATURE_CLASSES = {4: ['tn/nightbeam/ras/client/gui/PixelRpgBookLayout.class'
                           'tn/nightbeam/ras/procedures/StatPreviewService.class']}
 
 
+# 5.1 adds the configurable menu/HUD/banner texts and the measured level-up banner layout.
+UI_FEATURE_CLASSES_5_1 = ['tn/nightbeam/ras/client/gui/RasTexts.class',
+                          'tn/nightbeam/ras/client/gui/BannerLayout.class']
+
+
 def feature_classes(version):
-    return FEATURE_CLASSES + UI_FEATURE_CLASSES[5 if int(version.split('.')[0]) >= 5 else 4]
+    line = tuple(int(part) for part in version.split('.')[:2])
+    classes = FEATURE_CLASSES + UI_FEATURE_CLASSES[5 if line[0] >= 5 else 4]
+    return classes + UI_FEATURE_CLASSES_5_1 if line >= (5, 1) else classes
 
 
 def manifest_attributes(text):

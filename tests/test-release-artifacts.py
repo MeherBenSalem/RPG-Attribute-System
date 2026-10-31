@@ -570,6 +570,12 @@ class ReleaseArtifactsTests(unittest.TestCase):
                      "tn/nightbeam/ras/procedures/CommitAttributeAllocationProcedure.class",
                      "tn/nightbeam/ras/procedures/StatPreviewService.class"):
             self.assertIn(name, five)
+        five_one = VERIFIER.feature_classes("5.1.0")
+        for name in ("tn/nightbeam/ras/client/gui/RasTexts.class", "tn/nightbeam/ras/client/gui/BannerLayout.class"):
+            self.assertNotIn(name, five)
+            self.assertNotIn(name, VERIFIER.feature_classes("5.0.1"))
+            self.assertIn(name, five_one)
+        self.assertTrue(set(five).issubset(five_one))
 
     def test_extra_runtime_mod_dependency_is_rejected(self):
         for mc, loader in TARGETS:

@@ -29,7 +29,7 @@ public class ConfigInitializer {
         createDisplaySettings();
         createOverlayConfig();
         createUiConfig();
-
+        createTextsConfig();
     }
 
     private static boolean shouldPopulateConfig(String dir, String file) {
@@ -837,40 +837,56 @@ public class ConfigInitializer {
     }
 
     private static void createUiConfig() {
-        String dir = "ras/display";
-        String file = "ui";
-        if (!shouldPopulateConfig(dir, file)) {
+        populateDefaults("ras/display", "ui", UiConfigDefaults.UI);
+    }
+
+    private static void createTextsConfig() {
+        populateDefaults("ras/display", "texts", UiConfigDefaults.TEXTS);
+    }
+
+    /**
+     * Adds every missing default in one write, under the same strict-mode rules as the other files: a new or empty
+     * file is filled, and an existing one only when strict mode is off. These client files are read by the menus
+     * themselves, never through the config service cache. Text is written without HTML escaping so apostrophes and
+     * symbols stay readable.
+     */
+    private static void populateDefaults(String dir, String file, java.util.Map<String, ?> defaults) {
+        Path path = Services.CONFIG.getConfigDirectory().resolve(dir).resolve(file + ".json");
+        boolean fresh = !Files.exists(path);
+        if (!fresh && isStrictConfigMode() && !isEmptyConfig(dir, file)) {
             return;
         }
-        if (!Services.CONFIG.arrayKeyExists(dir, file, "font")) {
-            Services.CONFIG.setStringValue(dir, file, "font", "serif");
+        JsonObject json;
+        try {
+            json = fresh ? new JsonObject() : ConfigFiles.readObject(path);
+        } catch (Exception unreadable) {
+            Constants.LOG.warn("RAS config warning: {} could not be read and was left unchanged: {}", path,
+                    unreadable.getMessage());
+            return;
         }
-        if (!Services.CONFIG.arrayKeyExists(dir, file, "animations")) {
-            Services.CONFIG.setBooleanValue(dir, file, "animations", true);
+        boolean changed = fresh;
+        for (java.util.Map.Entry<String, ?> entry : defaults.entrySet()) {
+            if (json.has(entry.getKey())) {
+                continue;
+            }
+            Object value = entry.getValue();
+            if (value instanceof Boolean flag) {
+                json.addProperty(entry.getKey(), flag);
+            } else if (value instanceof Number number) {
+                json.addProperty(entry.getKey(), number);
+            } else {
+                json.addProperty(entry.getKey(), String.valueOf(value));
+            }
+            changed = true;
         }
-        if (!Services.CONFIG.arrayKeyExists(dir, file, "animation_speed")) {
-            Services.CONFIG.setNumberValue(dir, file, "animation_speed", 1.0);
+        if (!changed) {
+            return;
         }
-        if (!Services.CONFIG.arrayKeyExists(dir, file, "ambient_particles")) {
-            Services.CONFIG.setBooleanValue(dir, file, "ambient_particles", true);
-        }
-        if (!Services.CONFIG.arrayKeyExists(dir, file, "background_blur")) {
-            Services.CONFIG.setBooleanValue(dir, file, "background_blur", true);
-        }
-        if (!Services.CONFIG.arrayKeyExists(dir, file, "menu_sounds")) {
-            Services.CONFIG.setBooleanValue(dir, file, "menu_sounds", true);
-        }
-        if (!Services.CONFIG.arrayKeyExists(dir, file, "hud_style")) {
-            Services.CONFIG.setStringValue(dir, file, "hud_style", "soulslike");
-        }
-        if (!Services.CONFIG.arrayKeyExists(dir, file, "hud_scale")) {
-            Services.CONFIG.setNumberValue(dir, file, "hud_scale", 1.0);
-        }
-        if (!Services.CONFIG.arrayKeyExists(dir, file, "level_up_banner")) {
-            Services.CONFIG.setBooleanValue(dir, file, "level_up_banner", true);
-        }
-        if (!Services.CONFIG.arrayKeyExists(dir, file, "level_up_sound")) {
-            Services.CONFIG.setBooleanValue(dir, file, "level_up_sound", true);
+        try {
+            ConfigFiles.writeText(path, new com.google.gson.GsonBuilder().setPrettyPrinting().disableHtmlEscaping()
+                    .create().toJson(json));
+        } catch (IOException e) {
+            Constants.LOG.warn("RAS config warning: failed to write {}", path, e);
         }
     }
 

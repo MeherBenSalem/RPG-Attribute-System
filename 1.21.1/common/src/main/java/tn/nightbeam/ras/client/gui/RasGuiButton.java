@@ -50,42 +50,42 @@ public class RasGuiButton extends Button {
         if (alpha <= 0.02) return;
         boolean muted = unavailable || !active;
         int x = getX(), y = getY(), w = width, ht = height;
-        int textY = y + (ht - RasTheme.Face.SERIF.height()) / 2;
+        int textY = RasTheme.Face.SERIF.centerY(y, ht);
         switch (style) {
             case FRAME -> {
-                RasTheme.band(graphics, x, y, w, ht, RasMotion.alpha(RasMotion.mix(0x30000000, 0x40D7C9A0, h), alpha), 0.06, 0.06);
-                int border = RasMotion.mix(0x70D8CFB8, 0xFFE8DFC8, h);
+                RasTheme.band(graphics, x, y, w, ht, RasMotion.alpha(RasMotion.mix(0x30000000, RasTheme.accent(0x40D7C9A0), h), alpha), 0.06, 0.06);
+                int border = RasMotion.mix(RasTheme.ink(0x70D8CFB8), RasTheme.ink(0xFFE8DFC8), h);
                 if (emphasis && !muted) {
                     double pulse = RasUiSettings.animations() ? (Math.sin(RasMotion.seconds() * 3.2) + 1) / 2 : 1;
-                    border = RasMotion.mix(border, RasTheme.GOLD, 0.45 + pulse * 0.4);
+                    border = RasMotion.mix(border, RasTheme.accent(RasTheme.GOLD), 0.45 + pulse * 0.4);
                 }
                 RasTheme.frame(graphics, x, y, w, ht, RasMotion.alpha(border, alpha));
-                if (isFocused()) RasTheme.frame(graphics, x + 2, y + 2, w - 4, ht - 4, RasMotion.alpha(0x80D4B06A, alpha));
+                if (isFocused()) RasTheme.frame(graphics, x + 2, y + 2, w - 4, ht - 4, RasMotion.alpha(RasTheme.accent(0x80D4B06A), alpha));
                 String text = RasTheme.fit(RasTheme.Face.SERIF, symbol, w - 6);
                 RasTheme.textCenter(graphics, RasTheme.Face.SERIF, text, x + w / 2, textY,
-                        RasMotion.alpha(muted ? RasTheme.FAINT : RasMotion.mix(RasTheme.TEXT, RasTheme.HEADER, h), alpha));
+                        RasMotion.alpha(muted ? RasTheme.ink(RasTheme.FAINT) : RasMotion.mix(RasTheme.ink(RasTheme.TEXT), RasTheme.ink(RasTheme.HEADER), h), alpha));
             }
             case TAB -> {
-                int color = selected ? RasTheme.HEADER : RasMotion.mix(RasTheme.DIM, RasTheme.TEXT, h);
+                int color = selected ? RasTheme.ink(RasTheme.HEADER) : RasMotion.mix(RasTheme.ink(RasTheme.DIM), RasTheme.ink(RasTheme.TEXT), h);
                 String text = RasTheme.fit(RasTheme.Face.DISPLAY, symbol, w - 4);
                 RasTheme.textCenter(graphics, RasTheme.Face.DISPLAY, text, x + w / 2,
-                        y + (ht - RasTheme.Face.DISPLAY.height()) / 2, RasMotion.alpha(color, alpha));
+                        RasTheme.Face.DISPLAY.centerY(y, ht), RasMotion.alpha(color, alpha));
                 if (!selected && h > 0.01) {
-                    RasTheme.line(graphics, x + 4, y + ht - 3, w - 8, RasMotion.alpha(0x60D8CFB8, alpha * h));
+                    RasTheme.line(graphics, x + 4, y + ht - 3, w - 8, RasMotion.alpha(RasTheme.ink(0x60D8CFB8), alpha * h));
                 }
-                if (isFocused() && !selected) RasTheme.frame(graphics, x, y, w, ht, RasMotion.alpha(0x60D4B06A, alpha));
+                if (isFocused() && !selected) RasTheme.frame(graphics, x, y, w, ht, RasMotion.alpha(RasTheme.accent(0x60D4B06A), alpha));
             }
             case LEFT, RIGHT -> {
                 double shown = Math.max(selected ? 1 : 0, h);
                 if (shown <= 0.02) return;
-                int color = muted ? RasTheme.FAINT : RasMotion.mix(RasTheme.TEXT, RasTheme.GOLD, h);
+                int color = muted ? RasTheme.ink(RasTheme.FAINT) : RasMotion.mix(RasTheme.ink(RasTheme.TEXT), RasTheme.accent(RasTheme.GOLD), h);
                 RasTheme.chevron(graphics, x + w / 2, y + ht / 2, style == Style.RIGHT, RasMotion.alpha(color, alpha * shown));
-                if (isFocused()) RasTheme.frame(graphics, x + 3, y + 3, w - 6, ht - 6, RasMotion.alpha(0x80D4B06A, alpha));
+                if (isFocused()) RasTheme.frame(graphics, x + 3, y + 3, w - 6, ht - 6, RasMotion.alpha(RasTheme.accent(0x80D4B06A), alpha));
             }
             case GLYPH -> {
-                if (h > 0.01) RasTheme.frame(graphics, x + 2, y + 2, w - 4, ht - 4, RasMotion.alpha(0x70D8CFB8, alpha * h));
+                if (h > 0.01) RasTheme.frame(graphics, x + 2, y + 2, w - 4, ht - 4, RasMotion.alpha(RasTheme.ink(0x70D8CFB8), alpha * h));
                 RasTheme.textCenter(graphics, RasTheme.Face.SERIF, symbol, x + w / 2, textY,
-                        RasMotion.alpha(RasMotion.mix(RasTheme.DIM, RasTheme.HEADER, h), alpha));
+                        RasMotion.alpha(RasMotion.mix(RasTheme.ink(RasTheme.DIM), RasTheme.ink(RasTheme.HEADER), h), alpha));
             }
         }
     }

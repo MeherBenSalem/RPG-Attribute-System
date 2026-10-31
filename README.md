@@ -33,6 +33,9 @@ in `docs/listing-notes.md`.
   ([guide](docs/guides/level-up-screen.md))
 - Status and Records pages, a cinematic level-up banner, and a matching HUD, with
   bundled OFL serif fonts and animations you can turn off
+- Customizable interface: colors, banner and HUD layout, and every menu, HUD and
+  banner text, applied live from `config/ras/display/ui.json` and `texts.json`
+  ([client configuration](docs/configuration/client.md#menu-and-hud-presentation-uijson))
 - Configurable RPG leveling and attribute allocation
 - Shared common gameplay logic with loader-specific entry points
 - Server-side config generation and sync
