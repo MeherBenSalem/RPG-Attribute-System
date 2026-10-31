@@ -87,7 +87,7 @@ jobs:
         run: |
           python3 scripts/test-config-studio.py --gson-jar "$RUNNER_TEMP/gson.jar"
           python3 scripts/test-gameplay-regressions.py --gson-jar "$RUNNER_TEMP/gson.jar"
-          python3 scripts/test-ui-layout.py
+          python3 scripts/test-ui-layout.py --gson-jar "$RUNNER_TEMP/gson.jar"
           python3 -B tests/test-release-artifacts.py
           python3 -B tests/test-release-recovery.py
           python3 -B tests/test-release-credentials.py

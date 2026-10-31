@@ -105,7 +105,9 @@ final class RasClientGameplayQa {
                                 throw new IllegalStateException("Normal UI allocation packet did not produce exactly one server-authoritative Agility point");
                             }
                             var movement = player.getAttribute(Attributes.MOVEMENT_SPEED);
-                            if (movement == null || !close(movement.getBaseValue(), agility.initValue + agility.baseIncrement)
+                            // Since 5.0.1 the bonus is a RAS modifier: the base keeps the player default, which is
+                            // the fixture's initial Agility, and the effective value includes the point.
+                            if (movement == null || !close(movement.getBaseValue(), agility.initValue)
                                     || !close(movement.getValue(), agility.initValue + agility.baseIncrement)) {
                                 throw new IllegalStateException("Normal allocation did not apply the real Minecraft movement-speed attribute");
                             }

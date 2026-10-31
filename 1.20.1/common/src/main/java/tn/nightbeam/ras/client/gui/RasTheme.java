@@ -27,13 +27,35 @@ public final class RasTheme {
     public static final int BAND_HOVER = 0x30FFFFFF;
     public static final int SELECTED = 0x5AD7C9A0;
 
+    /**
+     * Text faces. Minecraft puts the baseline of every bundled TrueType face about 7 pixels below the draw y,
+     * whatever its size, so large faces rise above the draw y instead of filling a box below it. {@code inkTop}
+     * and {@code inkBottom} are where capital letters and digits are actually drawn, relative to the draw y,
+     * measured from rendered frames at GUI scales 2, 3 and 4. The vanilla font draws capitals in the top 7 of its
+     * 8 pixel rows. Center text by this ink, not by {@link #height()}.
+     */
     public enum Face {
-        SERIF("serif", 9, 1), DISPLAY("display", 8, 1), TITLE("title", 11, 1), BANNER("banner", 22, 3);
+        SERIF("serif", 9, 1, 0.5, 7.5), DISPLAY("display", 8, 1, 1.0, 7.5), TITLE("title", 11, 1, -3.5, 7.0),
+        BANNER("banner", 22, 3, -14.0, 7.0);
         final String id;
         final int height;
         final int pixelScale;
-        Face(String id, int height, int pixelScale) { this.id = id; this.height = height; this.pixelScale = pixelScale; }
+        final double serifInkTop;
+        final double serifInkBottom;
+        Face(String id, int height, int pixelScale, double serifInkTop, double serifInkBottom) {
+            this.id = id; this.height = height; this.pixelScale = pixelScale;
+            this.serifInkTop = serifInkTop; this.serifInkBottom = serifInkBottom;
+        }
+        /** Line height for stacking lines. */
         public int height() { return RasUiSettings.serifFont() ? height : 8 * pixelScale; }
+        /** Top of capital letters, relative to the draw y; negative when the face rises above it. */
+        public double inkTop() { return RasUiSettings.serifFont() ? serifInkTop : 0; }
+        /** Baseline (bottom of capital letters), relative to the draw y. */
+        public double inkBottom() { return RasUiSettings.serifFont() ? serifInkBottom : 7 * pixelScale; }
+        /** Draw y that centers capital letters in {@code [top, top + boxHeight)}; an odd spare pixel goes below. */
+        public int centerY(int top, int boxHeight) {
+            return top + (int) Math.ceil((boxHeight - inkTop() - inkBottom()) / 2.0 - 0.5);
+        }
     }
 
     // 1.20.1 rasterizes ttf providers with stb_truetype (size spans ascent to descent, baseline at the ascent), so
@@ -48,6 +70,15 @@ public final class RasTheme {
     }
 
     private RasTheme() { }
+
+    /** An accent-family color (gold rules, highlights, focus) in the chosen {@code accent_color}. */
+    public static int accent(int argb) { return RasPalette.shift(argb, RasPalette.ACCENT, RasUiSettings.values().accentColor()); }
+    /** A text-family color (labels, values, dividers) in the chosen {@code text_color}. */
+    public static int ink(int argb) { return RasPalette.shift(argb, RasPalette.TEXT, RasUiSettings.values().textColor()); }
+    /** An increase-family color (values after staged points) in the chosen {@code increase_color}. */
+    public static int increase(int argb) { return RasPalette.shift(argb, RasPalette.INCREASE, RasUiSettings.values().increaseColor()); }
+    /** A decrease-family color (points being spent, refusals) in the chosen {@code decrease_color}. */
+    public static int decrease(int argb) { return RasPalette.shift(argb, RasPalette.DECREASE, RasUiSettings.values().decreaseColor()); }
 
     private static Font font() { return Minecraft.getInstance().font; }
 
@@ -171,17 +202,17 @@ public final class RasTheme {
 
     /** Section title with a diamond ornament and a fading rule beneath it. */
     public static void section(GuiGraphics graphics, int x, int y, int width, String title, double alpha) {
-        diamond(graphics, x + 3, y + 4, 2, RasMotion.alpha(GOLD, alpha));
-        text(graphics, Face.DISPLAY, fit(Face.DISPLAY, title, width - 14), x + 10, y, RasMotion.alpha(HEADER, alpha));
-        line(graphics, x, y + 12, width, RasMotion.alpha(LINE, alpha));
+        diamond(graphics, x + 3, y + 4, 2, RasMotion.alpha(accent(GOLD), alpha));
+        text(graphics, Face.DISPLAY, fit(Face.DISPLAY, title, width - 14), x + 10, y, RasMotion.alpha(ink(HEADER), alpha));
+        line(graphics, x, y + 12, width, RasMotion.alpha(ink(LINE), alpha));
     }
     /** A keyboard prompt such as [Enter] Confirm; returns the drawn width. */
     public static int keycap(GuiGraphics graphics, int x, int y, String key, String action, double alpha) {
         int keyWidth = width(Face.SERIF, key) + 6;
-        frame(graphics, x, y - 1, keyWidth, 11, RasMotion.alpha(0x90D8CFB8, alpha));
+        frame(graphics, x, y - 1, keyWidth, 11, RasMotion.alpha(ink(0x90D8CFB8), alpha));
         fill(graphics, x + 1, y, x + keyWidth - 1, y + 9, RasMotion.alpha(0x30000000, alpha));
-        text(graphics, Face.SERIF, key, x + 3, y, RasMotion.alpha(TEXT, alpha));
-        text(graphics, Face.SERIF, action, x + keyWidth + 3, y, RasMotion.alpha(DIM, alpha));
+        text(graphics, Face.SERIF, key, x + 3, y, RasMotion.alpha(ink(TEXT), alpha));
+        text(graphics, Face.SERIF, action, x + keyWidth + 3, y, RasMotion.alpha(ink(DIM), alpha));
         return keyWidth + 3 + width(Face.SERIF, action);
     }
     public static int keycapWidth(String key, String action) {
@@ -199,7 +230,9 @@ public final class RasTheme {
     public static void click(float pitch) { sound(net.minecraft.sounds.SoundEvents.UI_BUTTON_CLICK, pitch, 0.18F); }
     public static void sound(Holder<SoundEvent> event, float pitch, float volume) { sound(event.value(), pitch, volume); }
     public static void sound(SoundEvent event, float pitch, float volume) {
-        if (!RasUiSettings.menuSounds()) return;
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, pitch, volume));
+        RasUiSettings.Values settings = RasUiSettings.values();
+        if (!settings.menuSounds() || settings.menuSoundVolume() <= 0) return;
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, pitch,
+                (float) (volume * settings.menuSoundVolume())));
     }
 }

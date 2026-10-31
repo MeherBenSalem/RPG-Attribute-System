@@ -234,7 +234,7 @@ def validate_gameplay(data, *, run_id, sha, request_id, action, not_before_ms):
                 or not numeric_close(data["after"]["attributes"].get("attribute_5"), .1025) \
                 or not numeric_close(data["after"]["attribute_points"].get("attribute_5"), 1) \
                 or not numeric_close(data["after"].get("spare_points"), 5) \
-                or not numeric_close(data.get("server_movement_speed_base"), .1025) \
+                or not numeric_close(data.get("server_movement_speed_base"), .1) \
                 or not numeric_close(data.get("server_movement_speed_value"), .1025):
             raise QaError("Actual server-authoritative Agility allocation was not verified")
     if action in {"kill-entity", "kill-tag", "invalid-reload", "kill-legacy"}:
@@ -836,7 +836,7 @@ class Driver:
                 (self.case / ("gameplay-" + action + ".json")).write_text(json.dumps(result, indent=2) + "\n")
                 synchronized = self.wait_ready(ready["state"], since=ready["sequence"],
                     predicate=lambda data: snapshots_equal(data.get("player_variables"), result["after"])
-                        and (action != "verify-allocation" or (numeric_close(data.get("movement_speed_base"), .1025)
+                        and (action != "verify-allocation" or (numeric_close(data.get("movement_speed_base"), .1)
                              and numeric_close(data.get("movement_speed_value"), .1025))))
                 return synchronized
             if self.process.poll() is not None:

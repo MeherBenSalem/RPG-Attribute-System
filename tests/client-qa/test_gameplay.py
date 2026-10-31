@@ -79,11 +79,12 @@ class GameplayEvidenceTests(unittest.TestCase):
 
     def test_real_ui_allocation_requires_server_point_value_and_spare_count(self):
         data = copy.deepcopy(self.data)
-        data.update(action='verify-allocation', normal_ui_packet_allocation_verified=True, expected_agility=.1025, server_movement_speed_base=.1025, server_movement_speed_value=.1025)
+        # Since 5.0.1 the point is a RAS modifier: the base keeps the player default and the value includes it.
+        data.update(action='verify-allocation', normal_ui_packet_allocation_verified=True, expected_agility=.1025, server_movement_speed_base=.1, server_movement_speed_value=.1025)
         self.validate(data, 'verify-allocation')
-        for field in ('server_movement_speed_base', 'server_movement_speed_value'):
+        for field, wrong in (('server_movement_speed_base', .1025), ('server_movement_speed_value', .1)):
             broken = copy.deepcopy(data)
-            broken[field] = .1
+            broken[field] = wrong
             with self.assertRaises(qa.QaError):
                 self.validate(broken, 'verify-allocation')
         for field, value in [('spare_points', 6), ('attributes', {'attribute_5': .1}), ('attribute_points', {'attribute_5': 0})]:

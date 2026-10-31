@@ -114,7 +114,7 @@ for root in ['1.20.1','1.21.1','26.1.2','26.2','26.3']:
         temp=Path(tmp);files=[]
         for name,source in stubs.items():
             path=temp/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(source);files.append(str(path))
-        for name in ['platform/IConfigService.java','config/ConfigFiles.java','config/ConfigInitializer.java','config/ConfigValidator.java',
+        for name in ['platform/IConfigService.java','config/ConfigFiles.java','config/ConfigInitializer.java','config/UiConfigDefaults.java','config/ConfigValidator.java',
                      'config/MobXpRules.java','config/MobXpRuleStore.java','config/MobXpConfig.java',
                      'procedures/GameplayRulesProcedure.java','procedures/LevelingService.java','util/AttributeScaling.java',
                      'config/AttributeData.java','procedures/AddPointsAttributeGenericProcedure.java','procedures/CommitAttributeAllocationProcedure.java','procedures/DisplayLogicAttributeGenericProcedure.java',
@@ -137,7 +137,7 @@ public java.nio.file.Path getConfigDirectory(){return directory;}}}'''
         for name,source in store_stubs.items():
             path=temp/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(source);files.append(str(path))
         for name in ['platform/IConfigService.java','platform/JsonConfigService.java','config/ConfigFiles.java',
-                     'config/ConfigInitializer.java','config/MobXpRules.java','config/MobXpRuleStore.java','config/MobXpConfig.java']:
+                     'config/ConfigInitializer.java','config/UiConfigDefaults.java','config/MobXpRules.java','config/MobXpRuleStore.java','config/MobXpConfig.java']:
             files.append(str(package/name))
         files.append(str(repo/'tests/ConfigPreservationTest.java'))
         classes=temp/'classes';classes.mkdir()

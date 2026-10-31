@@ -57,7 +57,9 @@ At 1920×1080 that means three columns at GUI scale 2 or 3 and two columns at GU
 
 ## Customizing
 
-- Fonts, animations, motes, blur, sounds, HUD style and banner: `config/ras/display/ui.json`. See [Client Configuration](../configuration/client.md#menu-and-hud-presentation-uijson).
+- Fonts, colors, animations, motes, blur, sounds, tooltip delay, HUD style and banner: `config/ras/display/ui.json`. See [Client Configuration](../configuration/client.md#menu-and-hud-presentation-uijson).
+- Every page, button, hint, key prompt, tooltip, HUD and banner text: `config/ras/display/texts.json`. See [Menu, HUD and Banner Texts](../configuration/client.md#menu-hud-and-banner-texts-textsjson).
+- Both files apply while the game runs; no restart is needed.
 - Which stats appear and their labels: `config/ras/display/attribute_N.json`. See [Visuals Configuration](../configuration/visuals.md).
 - Totals: `config/ras/stats_display.json`.
 - Attribute names, descriptions (`tip_to_display`), icons (`icon_path`), caps and per-point values: `config/ras/attributes/attribute_N.json`. Attributes 1–8 use bundled painted icons unless you set a custom `icon_path`.

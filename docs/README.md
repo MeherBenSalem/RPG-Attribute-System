@@ -44,7 +44,7 @@ The [5.0.0 verification record](verification/5.0.0.md) and the [4.3.0 record](ve
 | [Configuration Overview](configuration/overview.md) | Config system, file locations, server authority |
 | [Main Config Reference](configuration/main-config.md) | `settings.json` and attribute meta — every key explained |
 | [Additional Config Files](configuration/additional-config-files.md) | Per-attribute, respec, templates, locks, rewards, display |
-| [Client Configuration](configuration/client.md) | HUD overlay, menu fonts/animations (`ui.json`), keybinds |
+| [Client Configuration](configuration/client.md) | HUD overlay, menu fonts/colors/animations (`ui.json`), menu texts (`texts.json`), keybinds |
 | [Configuration Studio](../tools/config-studio/README.md) | Local-only editor, previews, safe imports and ZIP exports |
 | [Per-mob VP Rules](configuration/mob-xp.md) | Optional entity/tag rules, difficulty/armor weighting, reload |
 | [Gameplay Configuration](configuration/gameplay.md) | XP system, levelling, locks, respec, templates |

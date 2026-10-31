@@ -62,7 +62,7 @@ final class RasStatList {
         int currentRight = arrowCenter - 8;
         int hoveredIndex = hovered(mouseX, mouseY);
 
-        RasTheme.vline(graphics, x, top - 2, top + visible * SoulsLayout.STAT_ROW + 2, RasMotion.alpha(0x50D8CFB8, alpha));
+        RasTheme.vline(graphics, x, top - 2, top + visible * SoulsLayout.STAT_ROW + 2, RasMotion.alpha(RasTheme.ink(0x50D8CFB8), alpha));
         for (int row = 0; row < visible; row++) {
             int index = scroll + row;
             Line line = lines.get(index);
@@ -72,22 +72,22 @@ final class RasStatList {
             if (!RasUiSettings.animations()) smooth.snap(smooth.target());
             double h = smooth.update(dt, 16 * RasUiSettings.animationSpeed());
             int band = RasMotion.mix(RasTheme.BAND, RasTheme.BAND_HOVER, h);
-            if (line.highlight()) band = RasMotion.mix(band, 0x38D4B06A, 0.8);
+            if (line.highlight()) band = RasMotion.mix(band, RasTheme.accent(0x38D4B06A), 0.8);
             RasTheme.band(graphics, x + 2, y + 1, width - 2, SoulsLayout.STAT_ROW - 2, RasMotion.alpha(band, alpha), 0.05, 0.4);
-            if (line.highlight()) RasTheme.diamond(graphics, x + 5, y + 8, 1, RasMotion.alpha(RasTheme.GOLD, alpha));
-            int textY = y + (SoulsLayout.STAT_ROW - RasTheme.Face.SERIF.height()) / 2;
+            if (line.highlight()) RasTheme.diamond(graphics, x + 5, y + 8, 1, RasMotion.alpha(RasTheme.accent(RasTheme.GOLD), alpha));
+            int textY = RasTheme.Face.SERIF.centerY(y, SoulsLayout.STAT_ROW);
             boolean changed = Double.compare(line.current(), line.after()) != 0 && Double.isFinite(line.after());
             int labelRight = (arrows ? currentRight - RasTheme.width(RasTheme.Face.SERIF, values[row][0]) : afterRight - valueWidth) - 6;
             RasTheme.text(graphics, RasTheme.Face.SERIF, RasTheme.fit(RasTheme.Face.SERIF, line.label(), labelRight - x - 10),
-                    x + 10, textY, RasMotion.alpha(RasTheme.TEXT, alpha));
+                    x + 10, textY, RasMotion.alpha(RasTheme.ink(RasTheme.TEXT), alpha));
             if (arrows) {
-                RasTheme.textRight(graphics, RasTheme.Face.SERIF, values[row][0], currentRight, textY, RasMotion.alpha(RasTheme.TEXT, alpha));
+                RasTheme.textRight(graphics, RasTheme.Face.SERIF, values[row][0], currentRight, textY, RasMotion.alpha(RasTheme.ink(RasTheme.TEXT), alpha));
                 RasTheme.textCenter(graphics, RasTheme.Face.SERIF, "→", arrowCenter, textY,
-                        RasMotion.alpha(changed ? RasTheme.TEXT : RasTheme.FAINT, alpha));
-                int color = !changed ? RasTheme.TEXT : line.after() > line.current() ? RasTheme.BLUE : RasTheme.RED;
+                        RasMotion.alpha(changed ? RasTheme.ink(RasTheme.TEXT) : RasTheme.ink(RasTheme.FAINT), alpha));
+                int color = !changed ? RasTheme.ink(RasTheme.TEXT) : line.after() > line.current() ? RasTheme.increase(RasTheme.BLUE) : RasTheme.decrease(RasTheme.RED);
                 RasTheme.textRight(graphics, RasTheme.Face.SERIF, values[row][1], afterRight, textY, RasMotion.alpha(color, alpha));
             } else {
-                RasTheme.textRight(graphics, RasTheme.Face.SERIF, values[row][0], afterRight, textY, RasMotion.alpha(RasTheme.TEXT, alpha));
+                RasTheme.textRight(graphics, RasTheme.Face.SERIF, values[row][0], afterRight, textY, RasMotion.alpha(RasTheme.ink(RasTheme.TEXT), alpha));
             }
         }
         if (lines.size() > lastRows) scrollbar(graphics, x + width - 1, top, visible * SoulsLayout.STAT_ROW, alpha);
@@ -98,7 +98,7 @@ final class RasStatList {
         int total = Math.max(1, lastCount);
         int thumb = Math.max(8, height * lastRows / total);
         int offset = (height - thumb) * scroll / Math.max(1, total - lastRows);
-        RasTheme.fill(graphics, x, top, x + 1, top + height, RasMotion.alpha(0x30D8CFB8, alpha));
-        RasTheme.fill(graphics, x, top + offset, x + 1, top + offset + thumb, RasMotion.alpha(0xB0D4B06A, alpha));
+        RasTheme.fill(graphics, x, top, x + 1, top + height, RasMotion.alpha(RasTheme.ink(0x30D8CFB8), alpha));
+        RasTheme.fill(graphics, x, top + offset, x + 1, top + offset + thumb, RasMotion.alpha(RasTheme.accent(0xB0D4B06A), alpha));
     }
 }

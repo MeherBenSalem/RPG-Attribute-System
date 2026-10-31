@@ -1,5 +1,15 @@
 # Changelog
 
+## 5.1.0
+
+- Level-up banner title centered between its gold lines; it used to sit high and touch the upper line. Menu header titles and row, button and tab text are centered by their actual glyphs.
+- New `config/ras/display/texts.json`: every menu, HUD and banner text can be reworded or translated, with placeholders, `§` color codes, and empty texts to hide optional parts.
+- New `ui.json` options: accent, text, increase and decrease colors; banner position, duration, background, detail line and volume; HUD width, background, level and experience lines, idle fade; menu background opacity, sound volume and tooltip delay.
+- `ui.json` and `texts.json` apply while the game runs. Invalid values fall back to their defaults and numbers are clamped.
+- Client-side only: 5.0.x and 5.1.0 clients and servers can join each other.
+
+See the [release notes](../patchnotes/5.1.0.md), [Client Configuration](configuration/client.md#menu-and-hud-presentation-uijson) and [verification record](verification/5.1.0.md).
+
 ## 5.0.1
 
 - Attribute bonuses from `base set` commands are applied as RAS-owned attribute modifiers instead of overwriting the base value, so other mods, scripts and datapacks that write base values (common for attack damage, armor and armor toughness in large packs) no longer erase them. Values are unchanged in an unmodded game, and existing characters are converted once on login without double counting.

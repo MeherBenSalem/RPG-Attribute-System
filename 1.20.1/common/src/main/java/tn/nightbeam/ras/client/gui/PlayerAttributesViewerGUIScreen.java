@@ -16,7 +16,6 @@ import java.util.List;
 /** Server-opened Status page: actual combat values measured on the server, including equipment and effects. */
 public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<PlayerAttributesViewerGUIMenu>
         implements tn.nightbeam.ras.init.ScreenAccessor {
-    private static final String[] TABS = { "Level Up", "Status", "Records" };
     private final Player entity;
     private final int x, y, z;
     private final SoulsLayout layout = new SoulsLayout();
@@ -47,7 +46,7 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
         ScreenMousePosition.restore();
         tabs.clear();
         addRenderableWidget(chrome.close(layout, "Close combat statistics", this::closeContainerSafely));
-        for (RasGuiButton button : chrome.tabs(layout, TABS, 1, this::openTab)) { tabs.add(button); addRenderableWidget(button); }
+        for (RasGuiButton button : chrome.tabs(layout, RasMenuChrome.tabLabels(), 1, this::openTab)) { tabs.add(button); addRenderableWidget(button); }
     }
 
     private void openTab(int index) {
@@ -69,10 +68,10 @@ public class PlayerAttributesViewerGUIScreen extends AbstractContainerScreen<Pla
         chrome.backdrop(graphics, width, height);
     }
     @Override protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-        chrome.header(graphics, layout, "Status");
+        chrome.header(graphics, layout, RasTexts.get("tab.status"));
         status.render(graphics, layout, chrome, entity, mouseX, mouseY);
-        chrome.footer(graphics, layout, "Values measured on the server, including equipment and effects", RasTheme.TEXT,
-                List.of(new String[] { "Tab", "Page" }, new String[] { "Esc", "Back" }));
+        chrome.footer(graphics, layout, RasTexts.get("hint.status"), RasTheme.ink(RasTheme.TEXT),
+                List.of(RasMenuChrome.key("page"), RasMenuChrome.key("back")));
     }
     @Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) { }
     @Override public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {

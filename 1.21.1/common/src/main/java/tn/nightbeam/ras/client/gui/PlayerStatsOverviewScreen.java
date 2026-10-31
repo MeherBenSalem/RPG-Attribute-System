@@ -9,7 +9,6 @@ import java.util.List;
 
 /** Read-only Records page: progression totals, per-attribute investment and bonuses, configured totals. */
 public class PlayerStatsOverviewScreen extends Screen {
-    private static final String[] TABS = { "Level Up", "Status", "Records" };
     private final Screen parent;
     private final SoulsLayout layout = new SoulsLayout();
     private final RasMenuChrome chrome = new RasMenuChrome();
@@ -23,7 +22,7 @@ public class PlayerStatsOverviewScreen extends Screen {
         layout.update(width, height);
         tabs.clear();
         addRenderableWidget(chrome.close(layout, "Return to previous screen", this::returnToParent));
-        for (RasGuiButton button : chrome.tabs(layout, TABS, 2, index -> { if (index != 2) returnToParent(); })) {
+        for (RasGuiButton button : chrome.tabs(layout, RasMenuChrome.tabLabels(), 2, index -> { if (index != 2) returnToParent(); })) {
             tabs.add(button);
             addRenderableWidget(button);
         }
@@ -32,9 +31,9 @@ public class PlayerStatsOverviewScreen extends Screen {
     @Override public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         chrome.frame();
         chrome.backdrop(graphics, width, height);
-        chrome.header(graphics, layout, "Records");
+        chrome.header(graphics, layout, RasTexts.get("tab.records"));
         if (minecraft != null && minecraft.player != null) records.render(graphics, layout, chrome, minecraft.player, mouseX, mouseY);
-        chrome.footer(graphics, layout, "Your progression so far", RasTheme.TEXT, List.<String[]>of(new String[] { "Esc", "Back" }));
+        chrome.footer(graphics, layout, RasTexts.get("hint.records"), RasTheme.ink(RasTheme.TEXT), List.<String[]>of(RasMenuChrome.key("back")));
         super.render(graphics, mouseX, mouseY, partialTick);
         for (RasGuiButton button : tabs) if (button.selected()) chrome.tabUnderline(graphics, button);
         if (minecraft != null && minecraft.player != null) {
