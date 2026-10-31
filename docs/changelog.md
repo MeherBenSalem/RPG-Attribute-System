@@ -8,7 +8,7 @@
 - `ui.json` and `texts.json` apply while the game runs. Invalid values fall back to their defaults and numbers are clamped.
 - Client-side only: 5.0.x and 5.1.0 clients and servers can join each other.
 
-See the [release notes](../patchnotes/5.1.0.md) and [Client Configuration](configuration/client.md#menu-and-hud-presentation-uijson).
+See the [release notes](../patchnotes/5.1.0.md), [Client Configuration](configuration/client.md#menu-and-hud-presentation-uijson) and [verification record](verification/5.1.0.md).
 
 ## 5.0.1
 
