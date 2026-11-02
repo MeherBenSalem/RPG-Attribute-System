@@ -1,0 +1,13 @@
+# Normalize line endings; keep Windows scripts CRLF and binaries untouched.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+gradlew text eol=lf
+*.jar binary
+*.png binary
+*.gif binary
+*.jpg binary
+*.ogg binary
+*.nbt binary
+*.zip binary
