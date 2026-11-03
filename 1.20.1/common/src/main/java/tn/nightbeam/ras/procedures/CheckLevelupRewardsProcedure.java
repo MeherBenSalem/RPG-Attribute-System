@@ -37,8 +37,7 @@ public class CheckLevelupRewardsProcedure {
                     }
                     if (requiredLevel == lvl) {
                         String command = iterator.substring(iterator.indexOf("[levelEnd]") + 10);
-                        executeCommand(target, command);
-                        break; // one reward per level
+                        executeCommand(target, command); // every reward listed for this level
                     }
                 } else {
                     LOGGER.error("Please check the levelup_rewards config file syntax");

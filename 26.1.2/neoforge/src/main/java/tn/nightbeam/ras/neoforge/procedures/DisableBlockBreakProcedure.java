@@ -32,7 +32,7 @@ public class DisableBlockBreakProcedure {
         String iterrator = "";
         if (Services.CONFIG.getBooleanValue("ras", "items_lock", "enabled")) {
             if (entity instanceof Player) {
-                List<String> itemsList = Services.CONFIG.getStringArray("ras", "items_lock", "items_list");
+                List<String> itemsList = tn.nightbeam.ras.util.ItemLockEntries.itemsList();
                 for (String iterator : itemsList) {
                     iterrator = iterator;
                     if ((iterrator.substring((int) (iterrator.indexOf("[item]") + 6),

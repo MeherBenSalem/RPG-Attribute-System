@@ -33,7 +33,7 @@ public class FabricRpgAttributeSystemModEvents {
             String heldItemKey = BuiltInRegistries.ITEM.getKey(itemStack.getItem()).toString();
             String iterrator = "";
 
-            for (String iterator : Services.CONFIG.getArrayAsList("ras", "items_lock", "items_list")) {
+            for (String iterator : tn.nightbeam.ras.util.ItemLockEntries.itemsList()) {
                 iterrator = iterator;
                 // Parse Logic: "[item]...[itemEnd]"
                 String itemKey = iterrator.substring((int) (iterrator.indexOf("[item]") + 6),
@@ -92,7 +92,7 @@ public class FabricRpgAttributeSystemModEvents {
             // Block specific check from config list (treating block as item key)
             String blockKey = BuiltInRegistries.BLOCK.getKey(blockstate.getBlock()).toString();
             // Reuse the list iteration for block keys basically
-            for (String iterator : Services.CONFIG.getArrayAsList("ras", "items_lock", "items_list")) {
+            for (String iterator : tn.nightbeam.ras.util.ItemLockEntries.itemsList()) {
                 String itemKey = iterator.substring((int) (iterator.indexOf("[item]") + 6),
                         (int) iterator.indexOf("[itemEnd]"));
 

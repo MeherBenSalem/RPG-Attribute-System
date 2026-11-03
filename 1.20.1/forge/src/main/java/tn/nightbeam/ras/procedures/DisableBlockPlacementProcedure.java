@@ -38,7 +38,7 @@ public class DisableBlockPlacementProcedure {
 		String iterrator = "";
 		if (JaumlConfigLib.getBooleanValue("ras", "items_lock", "enabled")) {
 			if (entity instanceof Player) {
-				for (String iterator : JaumlConfigLib.getArrayAsList("ras", "items_lock", "items_list")) {
+				for (String iterator : tn.nightbeam.ras.util.ItemLockEntries.itemsList()) {
 					iterrator = iterator;
 					if ((iterrator.substring((int) (iterrator.indexOf("[item]") + 6),
 							(int) iterrator.indexOf("[itemEnd]")))

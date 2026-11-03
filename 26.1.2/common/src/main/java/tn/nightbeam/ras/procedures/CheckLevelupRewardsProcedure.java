@@ -16,26 +16,40 @@ public class CheckLevelupRewardsProcedure {
     public static void execute(LevelAccessor world, Entity target) {
         if (target == null)
             return;
+        int level = (int) Services.PLATFORM.getPlayerVariables(target).Level;
+        execute(world, target, level - 1, level);
+    }
+
+    /**
+     * Grants the rewards for every level from {@code fromLevel + 1} to {@code toLevel}, so a jump of several levels
+     * at once (a large XP gain, a command, a tome) misses none of them, and every reward listed for a level is given,
+     * not only the first.
+     */
+    public static void execute(LevelAccessor world, Entity target, int fromLevel, int toLevel) {
+        if (target == null)
+            return;
 
         if (Services.CONFIG.getBooleanValue("ras", "levelup_rewards", "enabled")) {
             if (!world.isClientSide()) {
-                for (String iterator : Services.CONFIG.getArrayAsList("ras", "levelup_rewards", "rewards")) {
-                    if (iterator.contains("[level]") && iterator.contains("[levelEnd]")) {
-                        double requiredLevel = 0;
-                        try {
-                            requiredLevel = Double.parseDouble(iterator
-                                    .substring(iterator.indexOf("[level]") + 7, iterator.indexOf("[levelEnd]")).trim());
-                        } catch (Exception e) {
+                java.util.List<String> rewards = Services.CONFIG.getArrayAsList("ras", "levelup_rewards", "rewards");
+                for (int level = fromLevel + 1; level <= toLevel; level++) {
+                    for (String iterator : rewards) {
+                        if (iterator.contains("[level]") && iterator.contains("[levelEnd]")
+                                && iterator.indexOf("[level]") < iterator.indexOf("[levelEnd]")) {
+                            double requiredLevel;
+                            try {
+                                requiredLevel = Double.parseDouble(iterator
+                                        .substring(iterator.indexOf("[level]") + 7, iterator.indexOf("[levelEnd]")).trim());
+                            } catch (Exception e) {
+                                continue;
+                            }
+                            if (requiredLevel == level) {
+                                String command = iterator.substring(iterator.indexOf("[levelEnd]") + 10);
+                                executeCommand(target, command);
+                            }
+                        } else {
+                            LOGGER.error("Please check the levelup_rewards config file syntax: {}", iterator);
                         }
-
-                        PlayerVariables vars = Services.PLATFORM.getPlayerVariables(target);
-                        if (vars.Level == requiredLevel) {
-                            String command = iterator.substring(iterator.indexOf("[levelEnd]") + 10);
-                            executeCommand(target, command);
-                            break;
-                        }
-                    } else {
-                        LOGGER.error("Please check the random rewards config file syntax");
                     }
                 }
 

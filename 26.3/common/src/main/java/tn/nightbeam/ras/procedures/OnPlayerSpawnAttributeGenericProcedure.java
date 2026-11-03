@@ -33,7 +33,11 @@ public class OnPlayerSpawnAttributeGenericProcedure {
             java.util.regex.Pattern paramPattern = java.util.regex.Pattern.compile("\\[param\\(([^\\)]*)\\)\\]");
             java.util.regex.Matcher matcher = paramPattern.matcher(stringCommand);
 
-            String valueString = String.format(java.util.Locale.US, "%.4f", finalCalculatedValue);
+            // Each command scales by its own [param(x)]; one without a param uses the attribute's rate. Before, every
+            // command got the first command's value, so e.g. a second armor command reused the health numbers.
+            double commandValue = AttributeScaling.finalValue(initValue, pointsInvested,
+                    AttributeScaling.resolveValuePerPoint(stringCommand, valuePerPoint));
+            String valueString = String.format(java.util.Locale.US, "%.4f", commandValue);
             if (valueString.contains(".")) {
                 valueString = valueString.replaceAll("0*$", "").replaceAll("\\.$", "");
             }

@@ -74,7 +74,7 @@ public class FabricRpgAttributeSystemModEvents {
             return false;
         }
         String itemKey = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
-        for (String entry : Services.CONFIG.getArrayAsList("ras", "items_lock", "items_list")) {
+        for (String entry : tn.nightbeam.ras.util.ItemLockEntries.itemsList()) {
             if (itemKey.equals(parseStringBetween(entry, "[item]", "[itemEnd]"))
                     && !playerMeetsRequirement(player, entry)) {
                 return true;
@@ -89,7 +89,7 @@ public class FabricRpgAttributeSystemModEvents {
         }
         String blockKey = BuiltInRegistries.BLOCK.getKey(blockstate.getBlock()).toString();
         String heldItemKey = BuiltInRegistries.ITEM.getKey(player.getMainHandItem().getItem()).toString();
-        for (String entry : Services.CONFIG.getArrayAsList("ras", "items_lock", "items_list")) {
+        for (String entry : tn.nightbeam.ras.util.ItemLockEntries.itemsList()) {
             String configuredKey = parseStringBetween(entry, "[item]", "[itemEnd]");
             if ((configuredKey.equals(blockKey) || configuredKey.equals(heldItemKey))
                     && !playerMeetsRequirement(player, entry)) {

@@ -41,7 +41,7 @@ public class EntityChangesEquipementProcedure {
 		if (JaumlConfigLib.getBooleanValue("ras", "items_lock", "enabled")) {
 			if (entity instanceof Player) {
 				attribute = JaumlConfigLib.getArrayLength("ras", "items_lock", "items_list");
-				for (String iterator : JaumlConfigLib.getArrayAsList("ras", "items_lock", "items_list")) {
+				for (String iterator : tn.nightbeam.ras.util.ItemLockEntries.itemsList()) {
 					itterator = iterator;
 					if ((itterator.substring((int) (itterator.indexOf("[item]") + 6),
 							(int) itterator.indexOf("[itemEnd]")))

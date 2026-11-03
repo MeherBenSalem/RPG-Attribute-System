@@ -39,7 +39,7 @@ public class ItemUseLockProcedure {
 		double level = 0;
 		String iterrator = "";
 		if (JaumlConfigLib.getBooleanValue("ras", "items_lock", "enabled")) {
-			for (String iterator : JaumlConfigLib.getArrayAsList("ras", "items_lock", "items_list")) {
+			for (String iterator : tn.nightbeam.ras.util.ItemLockEntries.itemsList()) {
 				iterrator = iterator;
 				if ((iterrator.substring((int) (iterrator.indexOf("[item]") + 6), (int) iterrator.indexOf("[itemEnd]")))
 						.equals(ForgeRegistries.ITEMS

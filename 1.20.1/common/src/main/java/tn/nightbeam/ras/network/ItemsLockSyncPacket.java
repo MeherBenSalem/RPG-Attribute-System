@@ -33,7 +33,7 @@ public class ItemsLockSyncPacket {
         return new ItemsLockSyncPacket(
                 Services.CONFIG.getBooleanValue("ras", "items_lock", "enabled"),
                 Services.CONFIG.getBooleanValue("ras", "items_lock", "show_tooltip"),
-                Services.CONFIG.getArrayAsList("ras", "items_lock", "items_list"));
+                tn.nightbeam.ras.util.ItemLockEntries.itemsList());
     }
 
     public static void encode(ItemsLockSyncPacket message, FriendlyByteBuf buffer) {

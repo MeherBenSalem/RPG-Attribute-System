@@ -112,7 +112,7 @@ public class NeoForgeEvents {
                     .toString();
             String iterrator = "";
 
-            for (String iterator : Services.CONFIG.getArrayAsList("ras", "items_lock", "items_list")) {
+            for (String iterator : tn.nightbeam.ras.util.ItemLockEntries.itemsList()) {
                 iterrator = iterator;
                 // Parse Logic: "[item]...[itemEnd]"
                 String itemKey = iterrator.substring((int) (iterrator.indexOf("[item]") + 6),
@@ -170,7 +170,7 @@ public class NeoForgeEvents {
         if (Services.CONFIG.getBooleanValue("ras", "items_lock", "enabled")) {
             String blockKey = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(blockstate.getBlock())
                     .toString();
-            for (String iterator : Services.CONFIG.getArrayAsList("ras", "items_lock", "items_list")) {
+            for (String iterator : tn.nightbeam.ras.util.ItemLockEntries.itemsList()) {
                 String itemKey = iterator.substring((int) (iterator.indexOf("[item]") + 6),
                         (int) iterator.indexOf("[itemEnd]"));
 
