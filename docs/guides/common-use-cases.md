@@ -77,16 +77,16 @@ Full progression experience with item/block gating, shared XP, and an extended l
   "enabled": true,
   "show_tooltip": true,
   "items_list": [
-    "[item]minecraft:diamond_sword[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-    "[item]minecraft:diamond_pickaxe[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-    "[item]minecraft:diamond_axe[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-    "[item]minecraft:diamond_shovel[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-    "[item]minecraft:diamond_hoe[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-    "[item]minecraft:netherite_sword[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]",
-    "[item]minecraft:netherite_pickaxe[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]",
-    "[item]minecraft:netherite_axe[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]",
-    "[item]minecraft:netherite_shovel[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]",
-    "[item]minecraft:netherite_hoe[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]"
+    "[item]minecraft:diamond_sword[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+    "[item]minecraft:diamond_pickaxe[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+    "[item]minecraft:diamond_axe[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+    "[item]minecraft:diamond_shovel[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+    "[item]minecraft:diamond_hoe[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+    "[item]minecraft:netherite_sword[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]",
+    "[item]minecraft:netherite_pickaxe[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]",
+    "[item]minecraft:netherite_axe[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]",
+    "[item]minecraft:netherite_shovel[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]",
+    "[item]minecraft:netherite_hoe[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]"
   ]
 }
 ```
@@ -104,7 +104,7 @@ Full progression experience with item/block gating, shared XP, and an extended l
 }
 ```
 
-**What to expect:** Players unlock diamond tools at Attack Power 12, netherite at 30. Diamond ore locked until level 12. XP shares with nearby party members (50% pool, 24 block radius). Gold stats UI. 500-level cap with the default XP curve.
+**What to expect:** Players unlock diamond tools at Attack Power 3, netherite at 8. Diamond ore locked until level 12. XP shares with nearby party members (50% pool, 24 block radius). Gold stats UI. 500-level cap with the default XP curve.
 
 ---
 

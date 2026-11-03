@@ -73,15 +73,15 @@ Gentle introduction to RPG progression with no item or block gating. Players lev
 
 ## RPG Mode
 
-Full progression experience with item and block gating, shared XP, and extended level cap. Players unlock diamond at Attack Power 12, netherite at 30.
+Full progression experience with item and block gating, shared XP, and extended level cap. Players unlock diamond at Attack Power 3, netherite at 8.
 
 **Best for:** Dedicated RPG servers, modpacks with progression focus.
 
 **Key changes:**
 - 500 level cap
 - Shared XP (50% pool, 24 block radius)
-- Diamond tools locked until Attack Power 12
-- Netherite tools locked until Attack Power 30
+- Diamond tools locked until Attack Power 3
+- Netherite tools locked until Attack Power 8
 - Diamond ore locked until level 12
 - Ancient debris locked until level 30
 - Gold stats UI
@@ -117,16 +117,16 @@ Full progression experience with item and block gating, shared XP, and extended 
   "enabled": true,
   "show_tooltip": true,
   "items_list": [
-    "[item]minecraft:diamond_sword[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-    "[item]minecraft:diamond_pickaxe[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-    "[item]minecraft:diamond_axe[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-    "[item]minecraft:diamond_shovel[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-    "[item]minecraft:diamond_hoe[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-    "[item]minecraft:netherite_sword[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]",
-    "[item]minecraft:netherite_pickaxe[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]",
-    "[item]minecraft:netherite_axe[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]",
-    "[item]minecraft:netherite_shovel[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]",
-    "[item]minecraft:netherite_hoe[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]"
+    "[item]minecraft:diamond_sword[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+    "[item]minecraft:diamond_pickaxe[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+    "[item]minecraft:diamond_axe[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+    "[item]minecraft:diamond_shovel[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+    "[item]minecraft:diamond_hoe[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+    "[item]minecraft:netherite_sword[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]",
+    "[item]minecraft:netherite_pickaxe[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]",
+    "[item]minecraft:netherite_axe[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]",
+    "[item]minecraft:netherite_shovel[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]",
+    "[item]minecraft:netherite_hoe[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]"
   ]
 }
 ```

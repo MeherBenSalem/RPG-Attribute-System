@@ -35,7 +35,7 @@ See [Customization Guide](guides/customization.md#templates-system) for template
 
 ## Item Locking
 
-Prevent players from using items until they reach a required attribute level. Configure per-item: diamond tools require Attack Power 12, netherite requires Attack Power 30 by default. Locked items show a colored tooltip (`green` if met, `red` if not).
+Prevent players from using items until they reach a required attribute level. Configure per-item: diamond tools require Attack Power 3, netherite requires Attack Power 8 by default. Locked items show a colored tooltip (`green` if met, `red` if not).
 
 **Controls:** `config/ras/items_lock.json`
 

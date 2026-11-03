@@ -191,16 +191,16 @@ export const DEFAULTS={
     "enabled": true,
     "show_tooltip": true,
     "items_list": [
-      "[item]minecraft:diamond_sword[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-      "[item]minecraft:diamond_pickaxe[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-      "[item]minecraft:diamond_axe[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-      "[item]minecraft:diamond_shovel[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-      "[item]minecraft:diamond_hoe[itemEnd][attribute]2[attributeEnd][level]12[levelEnd]",
-      "[item]minecraft:netherite_sword[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]",
-      "[item]minecraft:netherite_pickaxe[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]",
-      "[item]minecraft:netherite_axe[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]",
-      "[item]minecraft:netherite_shovel[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]",
-      "[item]minecraft:netherite_hoe[itemEnd][attribute]2[attributeEnd][level]30[levelEnd]"
+      "[item]minecraft:diamond_sword[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+      "[item]minecraft:diamond_pickaxe[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+      "[item]minecraft:diamond_axe[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+      "[item]minecraft:diamond_shovel[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+      "[item]minecraft:diamond_hoe[itemEnd][attribute]2[attributeEnd][level]3[levelEnd]",
+      "[item]minecraft:netherite_sword[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]",
+      "[item]minecraft:netherite_pickaxe[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]",
+      "[item]minecraft:netherite_axe[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]",
+      "[item]minecraft:netherite_shovel[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]",
+      "[item]minecraft:netherite_hoe[itemEnd][attribute]2[attributeEnd][level]8[levelEnd]"
     ]
   },
   "config/ras/blocks_lock.json": {

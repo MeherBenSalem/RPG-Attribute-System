@@ -102,7 +102,7 @@ import net.minecraft.server.level.ServerPlayer;import tn.nightbeam.ras.api.Respe
 public class RespecService {public static void tryRespec(ServerPlayer player,RespecOptions options){}}''',
  'tn/nightbeam/ras/procedures/CheckLevelupRewardsProcedure.java':'''package tn.nightbeam.ras.procedures;
 import net.minecraft.world.level.Level;import net.minecraft.world.entity.Entity;
-public class CheckLevelupRewardsProcedure {public static void execute(Level level,Entity entity){}}''',
+public class CheckLevelupRewardsProcedure {public static void execute(Level level,Entity entity){}public static void execute(Level level,Entity entity,int fromLevel,int toLevel){}}''',
  'tn/nightbeam/ras/procedures/OnPlayerSpawnProcedure.java':'''package tn.nightbeam.ras.procedures;
 import net.minecraft.world.entity.Entity;public class OnPlayerSpawnProcedure {public static void resetAttributesToInitial(Entity e){}public static void execute(Entity e){}}''',
 }
