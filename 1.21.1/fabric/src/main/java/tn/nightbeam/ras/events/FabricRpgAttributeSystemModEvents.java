@@ -179,6 +179,7 @@ public class FabricRpgAttributeSystemModEvents {
 
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killedEntity) -> {
             GameplayRulesProcedure.handleEntityKill(world, entity, killedEntity);
+            GameplayRulesProcedure.handleVanillaKillXp(world, entity, killedEntity);
         });
 
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {

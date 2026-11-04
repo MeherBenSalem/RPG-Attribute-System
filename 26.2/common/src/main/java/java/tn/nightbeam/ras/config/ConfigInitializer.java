@@ -445,6 +445,10 @@ public class ConfigInitializer {
                 Services.CONFIG.setBooleanValue(dir, file, "lock", i >= 9);
             }
 
+            if (!Services.CONFIG.arrayKeyExists(dir, file, "enabled")) {
+                Services.CONFIG.setBooleanValue(dir, file, "enabled", true);
+            }
+
             if (!Services.CONFIG.arrayKeyExists(dir, file, "icon_path")) {
                 int iconId = ((i - 1) % 10) + 1;
                 String defaultIcon = "screens/att_" + iconId + ".png";

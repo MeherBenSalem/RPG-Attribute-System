@@ -51,6 +51,13 @@ The mod only **generates** attributes 1–8. IDs 9–15 exist only if you create
 - `/ras unlock <id>` (OP 4) writes `"lock": false` on the **server** file and syncs it to everyone. It is not a per-player unlock.
 - `/ras unlock` / `/ras lock` / `/ras add attributes` accept IDs **1–15**.
 
+### How do I remove an attribute completely?
+
+Set `"enabled": false` in its `config/ras/attributes/attribute_N.json` (5.1.2+). The attribute disappears: it isn't
+sent to players, isn't shown in any menu, can't take points and its commands never run. `"lock": true` is different:
+it keeps the row visible but greyed out. Deleting the file doesn't work, because missing default attributes are
+recreated. Points already spent keep their effect, so turn attributes off before players start, or reset their stats.
+
 See [Additional Config Files](configuration/additional-config-files.md#per-attribute-configs).
 
 ### Why does attribute 11+ look locked or show a broken icon?
@@ -84,7 +91,7 @@ When `shared_xp_enabled` is `true`, a percentage of kill VP is shared among near
 
 ### What's the difference between VP and vanilla XP?
 
-VP is RAS's internal XP currency (stored in player NBT). Vanilla XP is Minecraft's experience system (the green bar). When `use_vanilla_xp` is `true`, vanilla XP orbs are converted to VP. When `false`, mob kills grant VP directly with no vanilla XP involved.
+VP is RAS's internal XP currency (stored in player NBT). Vanilla XP is Minecraft's experience system (the green bar). When `use_vanilla_xp` is `true`, a kill pays VP equal to the vanilla XP the mob drops (on every loader since 5.1.2; Fabric paid nothing before). XP from other sources, such as mining, smelting or other mods, is not converted. When `false`, mob kills grant VP directly with no vanilla XP involved.
 
 ## Items & Blocks
 

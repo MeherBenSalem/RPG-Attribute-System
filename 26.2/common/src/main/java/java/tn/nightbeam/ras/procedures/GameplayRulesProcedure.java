@@ -36,6 +36,30 @@ public class GameplayRulesProcedure {
         grantSharedXp(world, owner, xp);
     }
 
+    /**
+     * use_vanilla_xp on Fabric: a kill pays the XP the mob drops, as Forge and NeoForge do with
+     * LivingExperienceDropEvent. Fabric had no such hook, so with use_vanilla_xp on, kills paid no VP at all.
+     */
+    public static void handleVanillaKillXp(LevelAccessor world, Entity killer, Entity killed) {
+        if (world == null || world.isClientSide() || !(world instanceof ServerLevel level)
+                || !(killed instanceof LivingEntity living)
+                || !Services.CONFIG.getBooleanValue("ras", "settings", "use_vanilla_xp")) {
+            return;
+        }
+        ServerPlayer owner = resolveXpOwner(world, killer);
+        if (owner == null || !living.shouldDropExperience()) {
+            return;
+        }
+        int xp = living.getExperienceReward(level, killer);
+        if (xp <= 0) {
+            return;
+        }
+        LevelingService.addXp(owner, xp);
+        if (Services.CONFIG.getBooleanValue("ras", "settings", "show_vp_inaction_bar")) {
+            owner.displayClientMessage(Component.literal("\u00A7a+" + xp + " VP"), true);
+        }
+    }
+
     public static boolean shouldCancelBlockBreak(BlockState state, Player player) {
         return getRequiredBlockLevel(state, player) > getPlayerLevel(player);
     }

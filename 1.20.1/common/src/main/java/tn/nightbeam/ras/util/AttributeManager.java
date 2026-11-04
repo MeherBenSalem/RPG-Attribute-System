@@ -17,6 +17,7 @@ public class AttributeManager {
         CACHE.clear();
         ATTRIBUTE_IDS.clear();
         scanAttributes(); // Populates ATTRIBUTE_IDS based on files (Server only has files)
+        java.util.List<String> disabled = new java.util.ArrayList<>();
 
         for (String idStr : ATTRIBUTE_IDS) {
             int id = extractNumber(idStr);
@@ -24,6 +25,12 @@ public class AttributeManager {
                 continue;
 
             String filename = "attribute_" + id;
+            // "enabled": false removes the attribute everywhere: not synced to clients, never shown or applied.
+            if (Services.CONFIG.arrayKeyExists("ras/attributes", filename, "enabled")
+                    && !Services.CONFIG.getBooleanValue("ras/attributes", filename, "enabled")) {
+                disabled.add(idStr);
+                continue;
+            }
             double configPerPoint = Services.CONFIG.getNumberValue("ras/attributes", filename, "base_value_per_point");
             java.util.List<String> commands = Services.CONFIG.getArrayAsList("ras/attributes", filename, "cmd_to_exc");
             double baseInc = AttributeScaling.resolveValuePerPointFromCommands(commands, configPerPoint);
@@ -40,6 +47,7 @@ public class AttributeManager {
                     maxLvl, locked, icon, displayName, initValue, tip, minLevelToUnlock);
             CACHE.put(id, data);
         }
+        ATTRIBUTE_IDS.removeAll(disabled);
     }
 
     // Called by Client when receiving packet
