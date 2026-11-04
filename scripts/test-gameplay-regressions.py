@@ -42,7 +42,7 @@ public class Registries { public static final Object ENTITY_TYPE=new Object(); }
 public class BuiltInRegistries {public static final Registry ENTITY_TYPE=new Registry();public static final Registry BLOCK=new Registry();
 public static class Registry {public Object getKey(Object object){return object.toString();}}}''',
 'net/minecraft/network/chat/Component.java':'''package net.minecraft.network.chat;
-public record Component(String value){public static Component translatable(String key,Object... args){return new Component(key);}}''',
+public record Component(String value){public static Component translatable(String key,Object... args){return new Component(key);}public static Component literal(String text){return new Component(text);}}''',
 'net/minecraft/world/level/LevelAccessor.java':'''package net.minecraft.world.level;
 public interface LevelAccessor {boolean isClientSide();}''',
 'net/minecraft/world/level/Level.java':'''package net.minecraft.world.level;
@@ -67,11 +67,11 @@ import net.minecraft.world.level.Level;
 public class LivingEntity extends Entity {private final float health;private final double armor;
 public LivingEntity(Level level,String id,float health,double armor){super(level,id);this.health=health;this.armor=armor;}
 public AttributesView getAttributes(){return new AttributesView();}public static class AttributesView{public boolean hasAttribute(Object attr){return false;}}
-public float getMaxHealth(){return health;}public int getArmorValue(){return (int)armor;}public net.minecraft.world.entity.ai.attributes.AttributeInstance getAttribute(Object attr){return new net.minecraft.world.entity.ai.attributes.AttributeInstance(armor);}}''',
+public boolean shouldDropExperience(){return true;}public int getExperienceReward(){return 5;}public final int getExperienceReward(net.minecraft.server.level.ServerLevel level,Entity killer){return 5;}public float getMaxHealth(){return health;}public int getArmorValue(){return (int)armor;}public net.minecraft.world.entity.ai.attributes.AttributeInstance getAttribute(Object attr){return new net.minecraft.world.entity.ai.attributes.AttributeInstance(armor);}}''',
 'net/minecraft/world/entity/player/Player.java':'''package net.minecraft.world.entity.player;
 import net.minecraft.world.entity.LivingEntity;import net.minecraft.world.level.Level;import net.minecraft.network.chat.Component;
 public class Player extends LivingEntity {public double position;public Player(Level level,double position){super(level,"minecraft:player",20,0);this.position=position;}
-public double distanceToSqr(Player p){return Math.pow(position-p.position,2);}public void displayClientMessage(Component c,boolean action){}public void sendSystemMessage(Component c){}}''',
+public double distanceToSqr(Player p){return Math.pow(position-p.position,2);}public void displayClientMessage(Component c,boolean action){}public void sendSystemMessage(Component c){}public void sendOverlayMessage(Component c){}}''',
 'net/minecraft/server/level/ServerLevel.java':'''package net.minecraft.server.level;
 import java.util.*;import net.minecraft.world.level.Level;import net.minecraft.world.entity.player.Player;
 public class ServerLevel extends Level {public final List<ServerPlayer> players=new ArrayList<>();public ServerLevel(String id){super(id);}

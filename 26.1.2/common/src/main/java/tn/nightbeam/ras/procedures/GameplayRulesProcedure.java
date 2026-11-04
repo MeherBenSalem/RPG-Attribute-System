@@ -56,7 +56,7 @@ public class GameplayRulesProcedure {
         }
         LevelingService.addXp(owner, xp);
         if (Services.CONFIG.getBooleanValue("ras", "settings", "show_vp_inaction_bar")) {
-            owner.displayClientMessage(Component.literal("\u00A7a+" + xp + " VP"), true);
+            owner.sendOverlayMessage(Component.literal("\u00A7a+" + xp + " VP"));
         }
     }
 
