@@ -10,7 +10,7 @@ Listing copy and artwork for CurseForge and Modrinth. Nothing here ships in the 
 | [`curseforge/summary.txt`](curseforge/summary.txt) | Short project summary (234 characters) |
 | [`../patchnotes/5.0.0.md`](../patchnotes/5.0.0.md) | File changelog used by the publish workflow |
 
-The description always ends with the **Follow NightBeam Studio** badge block (YouTube, Instagram, website, X, Facebook, Discord) and the documentation badge, and links to the website docs at <https://nightbeam.dev/docs/remnants-rpg-stats>. The very last thing is the NightBeam Pro / Forge banner (`images/pro-forge-banner.png`, linking to <https://nightbeam.dev/forge>; source and render command in `source/pro-forge-banner.html`). Keep all three when rewriting the copy.
+Right after the opening description comes one row of matching badges (Documentation in gold, then Discord, YouTube, Instagram, X, Facebook and the website: dark single-segment shields.io badges with brand-coloured logos), and the description links to the website docs at <https://nightbeam.dev/docs/remnants-rpg-stats>. The very last thing is the NightBeam Pro / Forge banner (`images/pro-forge-banner.png`, linking to <https://nightbeam.dev/forge>; source and render command in `source/pro-forge-banner.html`). Keep all three when rewriting the copy.
 
 Image links in the description point at `raw.githubusercontent.com/.../main/marketing/images/...`, so they work once this folder is on `main`. To host on CurseForge instead, upload the images to the project gallery and replace each URL.
 
