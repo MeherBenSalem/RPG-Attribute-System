@@ -157,5 +157,5 @@ In 1.20.1, `VanillaDropRatesProcedure.java` used two VP paths: boss entities (ra
 ## See Also
 
 - [Changelog](changelog.md) — Version release history
-- [Compatibility](../compatibility.md) — Version matrix and platform support
+- [Compatibility](compatibility.md) — Version matrix and platform support
 - [Installation](installation.md) — Installation and updating

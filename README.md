@@ -25,7 +25,7 @@ and 26.3 builds do not require jauml. See [Installation](docs/installation.md).
 
 Player-facing docs live in `docs/` and are published with screenshots at
 <https://nightbeam.dev/docs/remnants-rpg-stats> (synced by the website's
-`scripts/sync-remnants-docs.mjs`). Paste-ready CurseForge/Modrinth answers are
+`scripts/sync-repo-docs.mjs remnants`). Paste-ready CurseForge/Modrinth answers are
 in `docs/listing-notes.md`.
 
 ## Features

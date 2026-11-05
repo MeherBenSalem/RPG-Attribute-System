@@ -120,7 +120,7 @@
 - The JSON syntax in the file is invalid — check the server log for parse errors
 - You're editing the server config but testing on a client that hasn't re-joined
 
-See the [server authority table](../configuration/overview.md#server-authority) for which configs sync when.
+See the [server authority table](configuration/overview.md#server-authority) for which configs sync when.
 
 ---
 
@@ -171,7 +171,7 @@ Before 5.0.1, another mod or script that wrote the base value of these attribute
 **Symptom:** A player gets "no permission" when using `/ras respec` or `/ras template apply`.
 
 **Fix:** Either:
-- Grant the matching permission node (see [Permissions Reference](../permissions/permissions-reference.md))
+- Grant the matching permission node (see [Permissions Reference](permissions/permissions-reference.md))
 - Set `permission-required` to `false` in `config/ras/respec.json` or `config/ras/templates.json`
 
 ### Admin commands not working
@@ -215,5 +215,5 @@ Use these scenarios to verify RAS is working correctly:
 ## See Also
 
 - [Installation](installation.md) — Setup instructions
-- [Configuration Overview](../configuration/overview.md) — Config validation and server authority
-- [FAQ](../faq.md) — Frequently asked questions
+- [Configuration Overview](configuration/overview.md) — Config validation and server authority
+- [FAQ](faq.md) — Frequently asked questions

@@ -216,4 +216,4 @@ None. Additive release — all existing respec and template API behavior is unch
 ## See Also
 
 - [Migration](migration.md) — Version upgrade instructions
-- [Compatibility](../compatibility.md) — Version matrix and platform support
+- [Compatibility](compatibility.md) — Version matrix and platform support

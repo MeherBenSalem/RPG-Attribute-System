@@ -130,6 +130,6 @@ No known incompatibilities with other mods. RAS operates through vanilla Minecra
 
 ## See Also
 
-- [Getting Started](../getting-started.md) — First-launch walkthrough
-- [Configuration Overview](../configuration/overview.md) — Config file locations and server authority
-- [Troubleshooting](../troubleshooting.md) — Common issues and solutions
+- [Getting Started](getting-started.md) — First-launch walkthrough
+- [Configuration Overview](configuration/overview.md) — Config file locations and server authority
+- [Troubleshooting](troubleshooting.md) — Common issues and solutions
