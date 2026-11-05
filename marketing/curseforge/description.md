@@ -140,3 +140,5 @@ On our website: **[Documentation](https://nightbeam.dev/docs/remnants-rpg-stats)
 ---
 
 RPG Attribute System is licensed under Apache-2.0. The bundled EB Garamond and Cinzel fonts are licensed under the SIL Open Font License 1.1. RAS is an independent project and is not affiliated with any game it takes inspiration from.
+
+[![NightBeam Pro: describe a mob, get a 3D model with NightBeam Forge. $2.50 first month, then $5/month](https://raw.githubusercontent.com/MeherBenSalem/RPG-Attribute-System/main/marketing/images/pro-forge-banner.png)](https://nightbeam.dev/forge)
