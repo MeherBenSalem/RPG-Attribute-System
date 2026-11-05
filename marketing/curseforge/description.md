@@ -1,12 +1,14 @@
 ![RPG Attribute System 5.0: The Ascendant Update](https://raw.githubusercontent.com/MeherBenSalem/RPG-Attribute-System/main/marketing/images/banner.png)
 
+**[Docs](https://nightbeam.dev/docs/remnants-rpg-stats) · [Discord](https://discord.gg/TJc3CxR4jK) · [The modpack](https://www.curseforge.com/minecraft/modpacks/remnants-ashen-legacy) · [Support NightBeam](https://nightbeam.dev/support) · [NightBeam Pro](https://nightbeam.dev/memberships) · [All projects](https://nightbeam.dev/projects)**
+
+> **Play it in [Remnants: Ashen Legacy](https://www.curseforge.com/minecraft/modpacks/remnants-ashen-legacy)**, NightBeam's story-driven soulslike RPG modpack. It builds RPG Stats, Skills & Progression into one rule set with the rest of the Remnants series.
+
 ## Soulslike leveling for Minecraft
 
 Earn levels from combat, **stage** your attribute points, watch every stat change **before** it happens, and **confirm** your build with one press. Every number on screen comes from the server, so your armor, weapon, potion effects and other mods are already counted.
 
 **5.0 "The Ascendant Update"** is available for **Fabric, Forge and NeoForge** on **1.20.1, 1.21.1, 26.1.2, 26.2 and 26.3**.
-
-[![Documentation](https://img.shields.io/badge/Documentation-f1c36b?style=for-the-badge&logo=readthedocs&logoColor=0a0a0b)](https://nightbeam.dev/docs/remnants-rpg-stats) [![Discord](https://img.shields.io/badge/Discord-18181b?style=for-the-badge&logo=discord&logoColor=5865F2)](https://discord.gg/TJc3CxR4jK) [![YouTube](https://img.shields.io/badge/YouTube-18181b?style=for-the-badge&logo=youtube&logoColor=FF0000)](https://www.youtube.com/@nightbeamstudio) [![Instagram](https://img.shields.io/badge/Instagram-18181b?style=for-the-badge&logo=instagram&logoColor=E4405F)](https://www.instagram.com/nightbeamstudio/) [![X](https://img.shields.io/badge/X-18181b?style=for-the-badge&logo=x&logoColor=ffffff)](https://x.com/NightBeamLLC) [![Facebook](https://img.shields.io/badge/Facebook-18181b?style=for-the-badge&logo=facebook&logoColor=1877F2)](https://www.facebook.com/profile.php?id=61574823331471) [![Website](https://img.shields.io/badge/Website-18181b?style=for-the-badge&logo=googlechrome&logoColor=f1c36b)](https://nightbeam.dev/)
 
 **New:** the full documentation, with screenshots, every config file, commands, permissions and the API, now lives at **[nightbeam.dev/docs/remnants-rpg-stats](https://nightbeam.dev/docs/remnants-rpg-stats)**.
 
@@ -28,12 +30,12 @@ Press **K**. Your attributes sit on the left, the stats they drive in the middle
 
 ![Numbers you can trust](https://raw.githubusercontent.com/MeherBenSalem/RPG-Attribute-System/main/marketing/images/card-measured.png)
 
-Most stat menus only show what your client can guess. RAS asks the server instead:
+Most stat menus show just what your client can guess. RAS asks the server instead:
 
 - Base Stats are **measured on the server** from your live attributes, including equipment modifiers, effects and attribute modifiers added by other mods.
 - Previews use Minecraft's real modifier formula and attribute limits. If your armor already pushes a stat to its cap, the preview stops at the cap too.
 - Stats the client never receives, such as attack damage, are finally shown correctly.
-- The server measures only while a RAS menu is open, twice a second, and sends an update only when something changed.
+- The server measures while a RAS menu is open, twice a second, and sends an update just when something changed.
 
 ![All or nothing](https://raw.githubusercontent.com/MeherBenSalem/RPG-Attribute-System/main/marketing/images/card-server.png)
 
@@ -80,7 +82,7 @@ The progression system under the new screen:
 - **Level-up rewards**: items, effects or commands at fixed levels or by chance.
 - **Tome of Ascension**: an item that grants levels.
 - **Shared XP** for nearby players, fully server-authoritative multiplayer, and a **public API** for other mods.
-- **Configuration studio**: a standalone, local-only web editor for RAS configuration, with previews, validation and safe exports.
+- **Configuration studio**: a standalone, local web editor for RAS configuration, with previews, validation and safe exports.
 
 ![Downloads & Compatibility](https://raw.githubusercontent.com/MeherBenSalem/RPG-Attribute-System/main/marketing/images/header-compatibility.png)
 
@@ -90,7 +92,7 @@ The progression system under the new screen:
 | 1.21.1 | Fabric, NeoForge | Fabric API (Fabric), jauml (both loaders) |
 | 26.1.2 · 26.2 · 26.3 | Fabric, NeoForge | Fabric API (Fabric) |
 
-- Download the file whose name matches your loader: `-fabric-`, `-forge-` (1.20.1 only) or `-neoforge-`.
+- Download the file whose name matches your loader: `-fabric-`, `-forge-` (1.20.1) or `-neoforge-`.
 - Install RAS on **both the server and every client**, at the same version. 5.0.0 adds new network messages.
 - Updating from 4.x keeps your configuration and player data. New client settings are added in `ui.json`.
 - RAS is a mod. It does not work as a Paper, Spigot or Folia plugin.
@@ -107,7 +109,7 @@ The stats are measured on the server, so other mods' attribute modifiers are inc
 They can't spend points differently. The server validates the whole request and applies it with its own rules. Your screen updates when the server confirms.
 
 **Is it heavy?**
-Measurements run only while a RAS menu is open, twice a second, and are sent only when they change. The HUD and banner draw once per frame.
+Measurements run while a RAS menu is open, twice a second, and are sent just when they change. The HUD and banner draw once per frame.
 
 **Where are the docs?**
 On our website: **[Documentation](https://nightbeam.dev/docs/remnants-rpg-stats)** · [Level Up screen guide](https://nightbeam.dev/docs/remnants-rpg-stats/guides/level-up-screen) · [Configuration](https://nightbeam.dev/docs/remnants-rpg-stats/configuration/main-config) · [Commands](https://nightbeam.dev/docs/remnants-rpg-stats/commands/command-reference) · [API](https://nightbeam.dev/docs/remnants-rpg-stats/api/overview) · [Issues](https://github.com/MeherBenSalem/RPG-Attribute-System/issues)
@@ -128,4 +130,14 @@ On our website: **[Documentation](https://nightbeam.dev/docs/remnants-rpg-stats)
 
 RPG Attribute System is licensed under Apache-2.0. The bundled EB Garamond and Cinzel fonts are licensed under the SIL Open Font License 1.1. RAS is an independent project and is not affiliated with any game it takes inspiration from.
 
-[![NightBeam Pro: describe a mob, get a 3D model with NightBeam Forge. $2.50 first month, then $5/month](https://raw.githubusercontent.com/MeherBenSalem/RPG-Attribute-System/main/marketing/images/pro-forge-banner.png)](https://nightbeam.dev/forge)
+---
+
+### More from NightBeam Studio
+
+- **[Remnants: Ashen Legacy](https://www.curseforge.com/minecraft/modpacks/remnants-ashen-legacy)**: the story-driven soulslike RPG modpack built on NightBeam's mods
+- **[Premium server plugins](https://nightbeam.dev/store)**: anti-cheat, ranked PvP, SMP setups and more on BuiltByBit
+- **[NightBeam Pro](https://nightbeam.dev/memberships)**: the model library and NightBeam Forge credits, from $5 a month
+- **[Discord](https://discord.gg/TJc3CxR4jK)**: support, bug reports, suggestions and early looks
+- **[Support NightBeam](https://nightbeam.dev/support)**: help keep every mod free
+
+**Follow:** [YouTube](https://www.youtube.com/@nightbeamstudio) · [Instagram](https://www.instagram.com/nightbeamstudio/) · [X](https://x.com/NightBeamLLC) · [Facebook](https://www.facebook.com/profile.php?id=61574823331471) · [Source and issues](https://github.com/MeherBenSalem/RPG-Attribute-System)
