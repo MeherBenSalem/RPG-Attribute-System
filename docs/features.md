@@ -61,6 +61,9 @@ See [Additional Config Files](configuration/additional-config-files.md#level-up-
 
 Press **K** to open a soulslike Level Up screen:
 
+![Opening the Level Up screen, staging points and confirming them](../marketing/images/gifs/level-up-flow.gif)
+
+
 - **Level Up:** stage points with **←/→** or the chevrons, then **Confirm**. Every attribute, server-measured stat and configured total previews `current → after`. The server validates the whole request before spending any point, so Confirm applies all of it or none.
 - **Status:** your live character model, measured stats (equipment and effects included) and attribute values.
 - **Records:** experience earned, points invested, per-attribute bonuses and configured totals.
@@ -75,9 +78,13 @@ See the [Level Up screen guide](guides/level-up-screen.md).
 
 When your RAS level rises, a cinematic gold banner announces the new level and the points you gained. Its position, duration, background, detail line, volume and colors are set in `ui.json`, and its texts in `texts.json`; it can also be turned off or silenced.
 
+![The level-up banner announcing a new level and the points gained](../marketing/images/gifs/level-up-banner.gif)
+
 ## HUD Overlay
 
 A configurable HUD overlay showing your level, experience progress, unspent attribute points, and a keybind hint. The default soulslike style matches the Level Up screen; `"hud_style": "classic"` restores the pixel-art bar. Both styles support corner anchoring (TL/TR/BL/BR), pixel offsets, scaling, and automatic JEI/REI/EMI panel avoidance. The soulslike HUD's width, background, level line, experience numbers, texts and colors are configurable, and it can fade while nothing changes.
+
+![The soulslike HUD: level, experience and unspent points in the corner of the screen](../marketing/images/screenshots/hud-gameplay.jpg)
 
 **Controls:** `config/ras/display/overlay.json`, `config/ras/display/ui.json`, `config/ras/display/texts.json`, `config/ras/settings.json` (display toggles)
 

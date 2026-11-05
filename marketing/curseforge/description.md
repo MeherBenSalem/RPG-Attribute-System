@@ -6,6 +6,10 @@ Earn levels from combat, **stage** your attribute points, watch every stat chang
 
 **5.0 "The Ascendant Update"** is available for **Fabric, Forge and NeoForge** on **1.20.1, 1.21.1, 26.1.2, 26.2 and 26.3**.
 
+[![Documentation](https://img.shields.io/badge/Documentation-nightbeam.dev-f1c36b?style=for-the-badge&logo=readthedocs&logoColor=black)](https://nightbeam.dev/docs/remnants-rpg-stats)
+
+**New:** the full documentation, with screenshots, every config file, commands, permissions and the API, now lives at **[nightbeam.dev/docs/remnants-rpg-stats](https://nightbeam.dev/docs/remnants-rpg-stats)**.
+
 ![divider](https://raw.githubusercontent.com/MeherBenSalem/RPG-Attribute-System/main/marketing/images/divider.png)
 
 ![The Level Up Screen](https://raw.githubusercontent.com/MeherBenSalem/RPG-Attribute-System/main/marketing/images/header-level-up.png)
@@ -106,7 +110,7 @@ They can't spend points differently. The server validates the whole request and 
 Measurements run only while a RAS menu is open, twice a second, and are sent only when they change. The HUD and banner draw once per frame.
 
 **Where are the docs?**
-[Documentation](https://github.com/MeherBenSalem/RPG-Attribute-System/tree/main/docs) · [Level Up screen guide](https://github.com/MeherBenSalem/RPG-Attribute-System/blob/main/docs/guides/level-up-screen.md) · [Commands](https://github.com/MeherBenSalem/RPG-Attribute-System/blob/main/docs/commands/command-reference.md) · [Issues](https://github.com/MeherBenSalem/RPG-Attribute-System/issues)
+On our website: **[Documentation](https://nightbeam.dev/docs/remnants-rpg-stats)** · [Level Up screen guide](https://nightbeam.dev/docs/remnants-rpg-stats/guides/level-up-screen) · [Configuration](https://nightbeam.dev/docs/remnants-rpg-stats/configuration/main-config) · [Commands](https://nightbeam.dev/docs/remnants-rpg-stats/commands/command-reference) · [API](https://nightbeam.dev/docs/remnants-rpg-stats/api/overview) · [Issues](https://github.com/MeherBenSalem/RPG-Attribute-System/issues)
 
 ![Gallery](https://raw.githubusercontent.com/MeherBenSalem/RPG-Attribute-System/main/marketing/images/header-gallery.png)
 
@@ -119,6 +123,19 @@ Measurements run only while a RAS menu is open, twice a second, and are sent onl
 ![Level-up banner in game](https://raw.githubusercontent.com/MeherBenSalem/RPG-Attribute-System/main/marketing/images/screenshots/level-up-banner.jpg)
 
 ![Soulslike HUD](https://raw.githubusercontent.com/MeherBenSalem/RPG-Attribute-System/main/marketing/images/screenshots/hud-gameplay.jpg)
+
+![divider](https://raw.githubusercontent.com/MeherBenSalem/RPG-Attribute-System/main/marketing/images/divider.png)
+
+## Follow NightBeam Studio
+
+[![YouTube](https://img.shields.io/badge/YouTube-NightBeam%20Studio-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@nightbeamstudio)
+[![Instagram](https://img.shields.io/badge/Instagram-%40nightbeamstudio-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/nightbeamstudio/)
+[![Website](https://img.shields.io/badge/Website-nightbeam.dev-f1c36b?style=for-the-badge&logo=googlechrome&logoColor=black)](https://nightbeam.dev/)
+[![X](https://img.shields.io/badge/X-%40NightBeamLLC-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/NightBeamLLC)
+[![Facebook](https://img.shields.io/badge/Facebook-NightBeam%20Studio-1877F2?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/profile.php?id=61574823331471)
+[![Discord](https://img.shields.io/badge/Discord-Join%20the%20server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/TJc3CxR4jK)
+
+[![Documentation](https://img.shields.io/badge/Documentation-nightbeam.dev-f1c36b?style=for-the-badge&logo=readthedocs&logoColor=black)](https://nightbeam.dev/docs/remnants-rpg-stats)
 
 ---
 

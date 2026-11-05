@@ -23,7 +23,9 @@ mod, not a Paper/Folia plugin. Fabric API is required for every Fabric build.
 jauml is also required for both loaders on 1.20.1 and 1.21.1; the 26.1.2, 26.2
 and 26.3 builds do not require jauml. See [Installation](docs/installation.md).
 
-Player-facing docs live in `docs/`. Paste-ready CurseForge/Modrinth answers are
+Player-facing docs live in `docs/` and are published with screenshots at
+<https://nightbeam.dev/docs/remnants-rpg-stats> (synced by the website's
+`scripts/sync-remnants-docs.mjs`). Paste-ready CurseForge/Modrinth answers are
 in `docs/listing-notes.md`.
 
 ## Features

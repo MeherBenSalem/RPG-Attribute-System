@@ -2,7 +2,11 @@
 
 Press **K** (rebindable under Controls → "Memory Of The Past") to open the Level Up screen. It has three pages: **Level Up**, **Status** and **Records**. Switch between them with **Tab** or by clicking a page name in the header.
 
+![Opening the screen, staging points with the chevrons and confirming](../../marketing/images/gifs/level-up-flow.gif)
+
 ## Level Up
+
+![The Level Up page with four points staged on Vitality: Health previews 27 → 31](../../marketing/images/screenshots/level-up.jpg)
 
 | Column | Shows |
 | --- | --- |
@@ -40,9 +44,13 @@ If a display section names an attribute that does not exist on the server, its r
 
 Your live character model, the measured Base Stats, and the current value of every attribute. Hover a row for exact values.
 
+![The Status page: live character model, measured base stats and attribute values](../../marketing/images/screenshots/status.jpg)
+
 ## Records
 
 Total experience earned, points invested and available, points invested per attribute, the bonus each attribute gives above its initial value, and your configured totals.
+
+![The Records page: experience earned, points invested and per-attribute bonuses](../../marketing/images/screenshots/records.jpg)
 
 ## Layout
 
@@ -53,7 +61,11 @@ Total experience earned, points invested and available, points invested per attr
 | Under 400 wide | One column; the header shows the page tabs without a title |
 | Under 300 tall | Compact header and a one-line summary |
 
-At 1920×1080 that means three columns at GUI scale 2 or 3 and two columns at GUI scale 4. Long lists scroll with the mouse wheel. The selected attribute always stays in view.
+At 1920×1080 that means three columns at GUI scale 2 or 3 and two columns at GUI scale 4.
+
+![The two-column layout in a smaller window: Totals move under Base Stats](../../marketing/images/screenshots/two-column.jpg)
+
+Long lists scroll with the mouse wheel. The selected attribute always stays in view.
 
 ## Customizing
 

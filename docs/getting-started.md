@@ -32,9 +32,14 @@ The mod ships with 8 pre-configured attributes:
 4. Click the **+** buttons next to attributes to spend your points
 5. Each point improves the linked vanilla stat
 
+![The Level Up screen: staged points preview every stat as current → after before you confirm](../marketing/images/screenshots/level-up.jpg)
+
 ## The HUD Overlay
 
 By default, a HUD overlay shows:
+
+![The soulslike HUD in the top-left corner: level 23, nine unspent points and the K keybind hint](../marketing/images/screenshots/hud-gameplay.jpg)
+
 
 - An XP progress bar toward your next level
 - An indicator when you have unspent attribute points
