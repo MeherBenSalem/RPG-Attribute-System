@@ -1,6 +1,7 @@
 {
   "key.memory_of_the_past.next_value": "Next value is : ",
   "key.categories.ras": "Memory Of The Past",
+  "key.category.rpg_attribute_system.ras": "Memory Of The Past",
   "gui.rpg_attribute_system.player_stats_gui.label_available_points": "Available Points:",
   "gui.rpg_attribute_system.player_stats_gui.label_level": "Level",
   "gui.rpg_attribute_system.player_stats_gui.label_attribute_title": "Attributes",

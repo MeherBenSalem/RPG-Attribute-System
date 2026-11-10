@@ -71,6 +71,9 @@ public class RpgAttributeSystemModFabricClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(FabricStatPreviewPayload.TYPE,
                 (payload, context) -> context.client().execute(() -> StatPreviewSyncPacket.handle(payload.packet())));
 
+        // Fabric API registers key mappings only; the category must be added to vanilla's sort order or the
+        // RAS section is missing from Options > Controls.
+        net.minecraft.client.KeyMapping.Category.register(RpgAttributeSystemModKeyMappings.CATEGORY.id());
         KeyMappingHelper.registerKeyMapping(RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND);
 
         net.minecraft.client.gui.screens.MenuScreens.register(

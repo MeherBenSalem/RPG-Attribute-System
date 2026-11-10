@@ -2,6 +2,8 @@
 
 Release notes for each version, newest first. The publish workflow uploads `patchnotes/<version>.md` as each store file's changelog.
 
+- [5.1.3](5.1.3.md)
+- [5.1.2](5.1.2.md)
 - [5.1.1](5.1.1.md)
 - [5.1.0](5.1.0.md)
 - [5.0.1](5.0.1.md)

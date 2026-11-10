@@ -24,6 +24,7 @@ public class NeoForgeClientEvents {
 
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        event.registerCategory(RpgAttributeSystemModKeyMappings.CATEGORY);
         event.register(RpgAttributeSystemModKeyMappings.OPEN_STATS_MENU_KEYBIND);
     }
 
