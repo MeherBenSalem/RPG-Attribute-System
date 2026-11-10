@@ -74,6 +74,17 @@ tasks.register('rasGuiLayoutTest', JavaExec) {
 }
 tasks.named('check') { dependsOn 'rasGuiLayoutTest' }
 
+tasks.register('keyCategoryTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'tn.nightbeam.ras.init.KeyCategoryRegistrationTest'
+    args file('src/main/resources/assets/rpg_attribute_system/lang/en_us.json').absolutePath,
+            file('src/main/java/java/tn/nightbeam/ras/init/RpgAttributeSystemModKeyMappings.java').absolutePath,
+            rootProject.file('fabric/src/main/java/java/tn/nightbeam/ras/RpgAttributeSystemModFabricClient.java').absolutePath,
+            rootProject.file('neoforge/src/main/java/java/tn/nightbeam/ras/neoforge/NeoForgeClientEvents.java').absolutePath
+}
+tasks.named('check') { dependsOn 'keyCategoryTest' }
+
 // Minecraft exposes Gson to production compilation but not the test runtime.
 dependencies { testImplementation 'com.google.code.gson:gson:2.11.0' }
 // These regression classes have plain-Java main entry points executed by check.
