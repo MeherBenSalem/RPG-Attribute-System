@@ -38,6 +38,29 @@ Automatic HUD overlap avoidance via reflection. When any of these mods are insta
 
 Consumes the RAS public API via reflection for player-based mob scaling. Integration is on the RPG Mob Leveling System side — RAS exposes the data through `RasApi.getLevel()` and `RasApi.getCombatSnapshot()`.
 
+### Attributes from other mods (mana, spell power, …)
+
+An attribute file can raise any attribute another mod registers. Use its full registry id in a `cmd_to_exc` line of the form `/attribute @s <namespace:path> base set [param(X)]`. RAS turns that line into its own additive modifier of `value − player default`, so the other mod's own bonuses stay intact. The modifier is re-applied on login, respawn, dimension change, respec and every point spent.
+
+- **Ids must be exact.** Ars Nouveau's max mana is `ars_nouveau:ars_nouveau.perk.max_mana` (also `…perk.mana_regen`, `…perk.spell_damage`). A guessed id such as `ars_nouveau:max_mana` changes nothing, and the server log shows `RAS failed to apply attribute base set directly`. Check the id in game with `/attribute @s <id> get`.
+- **Every line in one file shares that file's `init_val_attribute`.** A line's value is `init_val_attribute + points × X`. Give a mana attribute its own file with `"init_val_attribute": 0.0`. If it shares a file with a health line that starts at `20`, mana starts at +20, and a health line in a file starting at `0` drops health below 20.
+- **Max, not current.** Raising max mana does not refill current mana. The bar grows as Ars Nouveau's normal regeneration fills it.
+- Not every magic mod has mana. Wizards (RPG Series) / Spell Engine spells use cooldowns, exhaustion and runes. Scale its spell power attributes (`spell_power:arcane`, `spell_power:fire`, `spell_power:frost`, …) instead.
+
+```json
+{
+  "display_name": "Mana",
+  "init_val_attribute": 0.0,
+  "base_value_per_point": 5.0,
+  "max_level": 100.0,
+  "cmd_to_exc": [
+    "/attribute @s ars_nouveau:ars_nouveau.perk.max_mana base set [param(5.0)]"
+  ]
+}
+```
+
+With that file, each point adds 5 max mana, and the cap of 100 is reached after 20 points (`max_level` limits the value, not the points). Keep the file's other keys, such as `icon_path`, as generated.
+
 ### Mods Without Direct Integration
 
 RAS does **not** directly integrate with:
