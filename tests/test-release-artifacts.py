@@ -54,10 +54,10 @@ METADATA = {
                "fabricloader": ">=0.14", "neoforge": "[21.1.229,)",
                "loaderVersion": "[4,)"},
     "26.2": {"java": "25", "minecraft": "[26.2, 26.3)",
-             "fabricloader": ">=0.19.3", "neoforge": "[26.2.0.1-beta,)",
+             "fabricloader": ">=0.20.1", "neoforge": "[26.2.0.93,)",
              "loaderVersion": "[4,)"},
     "26.3": {"java": "25", "minecraft": "[26.3, 26.4)",
-             "fabricloader": ">=0.19.5", "neoforge": "[26.3.0.16-beta,)",
+             "fabricloader": ">=0.20.1", "neoforge": "[26.3.0.100,)",
              "loaderVersion": "[4,)"},
 }
 
