@@ -22,9 +22,6 @@ jobs:
           - workspace: '1.21.1'
             java: '21'
             second_loader: neoforge
-          - workspace: '26.1.2'
-            java: '25'
-            second_loader: neoforge
           - workspace: '26.2'
             java: '25'
             second_loader: neoforge
@@ -91,9 +88,8 @@ jobs:
           python3 -B tests/test-release-artifacts.py
           python3 -B tests/test-release-recovery.py
           python3 -B tests/test-release-credentials.py
-          python3 -B tests/test-curseforge-catalog-diagnostic.py
-          python3 -B tests/test-430-publisher-recovery.py
           node --test tests/test-release-publisher.mjs tests/test-curseforge-release-catalog.mjs
+          node --test scripts/same_day_guard.test.mjs
 
   config-studio-browser:
     runs-on: ubuntu-24.04

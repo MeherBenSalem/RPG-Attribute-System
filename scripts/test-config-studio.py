@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the real studio importer/exporter and preview against all five production parsers.
+"""Check the real studio importer/exporter and preview against all four production parsers.
 
 Requires Node >=22, a JDK with Java 17 compilation support, and --gson-jar (or
 GSON_JAR). This focused regression is not rendered-browser QA or a loader build.
@@ -39,7 +39,7 @@ def main():
         output = Path(temporary)
         subprocess.run([args.node, str(studio / 'tests/export-parity.mjs'),
                         str(repo / 'tests/fixtures/mob-xp-contract.json'), str(output)], check=True)
-        for root in ['1.20.1', '1.21.1', '26.1.2', '26.2', '26.3']:
+        for root in ['1.20.1', '1.21.1', '26.2', '26.3']:
             source = repo / root / 'common/src/main/java'
             if root == '26.2':
                 source /= 'java'

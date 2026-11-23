@@ -99,7 +99,7 @@ const assets = {
       <div class="rule" style="width:640px;margin-bottom:26px"></div>
       <div style="font-size:34px;color:var(--header);line-height:1.3">Stage your build. Preview every stat.<br>Confirm once.</div>
       <div style="margin-top:36px"><span class="pill">Fabric</span><span class="pill">Forge</span><span class="pill">NeoForge</span>
-        <span style="font-size:24px;color:var(--dim);margin-left:8px">1.20.1 · 1.21.1 · 26.1.2 · 26.2 · 26.3</span></div>
+        <span style="font-size:24px;color:var(--dim);margin-left:8px">1.20.1 · 1.21.1 · 26.2 · 26.3</span></div>
     </div>`),
 
   icon: () => page(512, 512, `

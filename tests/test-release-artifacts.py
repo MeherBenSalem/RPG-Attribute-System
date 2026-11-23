@@ -41,22 +41,17 @@ TARGETS = (
     ("1.20.1", "forge"),
     ("1.21.1", "fabric"),
     ("1.21.1", "neoforge"),
-    ("26.1.2", "fabric"),
-    ("26.1.2", "neoforge"),
     ("26.2", "fabric"),
     ("26.2", "neoforge"),
     ("26.3", "fabric"),
     ("26.3", "neoforge"),
 )
 METADATA = {
-    "1.20.1": {"java": "17", "minecraft": "[1.20.1, 1.22)",
+    "1.20.1": {"java": "17", "minecraft": "[1.20.1, 1.20.2)",
                "fabricloader": ">=0.14", "forge": "[47.2.30,)",
                "loaderVersion": "[47,)"},
-    "1.21.1": {"java": "21", "minecraft": "[1.21.1, 1.22)",
+    "1.21.1": {"java": "21", "minecraft": "[1.21.1, 1.21.2)",
                "fabricloader": ">=0.14", "neoforge": "[21.1.229,)",
-               "loaderVersion": "[4,)"},
-    "26.1.2": {"java": "25", "minecraft": "[26.1.2, 26.2)",
-               "fabricloader": ">=0.18.6", "neoforge": "[26.1.2.94,)",
                "loaderVersion": "[4,)"},
     "26.2": {"java": "25", "minecraft": "[26.2, 26.3)",
              "fabricloader": ">=0.19.3", "neoforge": "[26.2.0.1-beta,)",
@@ -221,7 +216,7 @@ class ReleaseArtifactsTests(unittest.TestCase):
     def test_publisher_accepts_exact_unchanged_inventory(self):
         result = self.publisher_preflight(self.verify())
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(len(json.loads(result.stdout)), 10)
+        self.assertEqual(len(json.loads(result.stdout)), 8)
 
     @unittest.skipUnless(NODE, "Node is required for publisher preflight smoke tests")
     def test_publisher_rejects_each_mismatched_hash(self):
@@ -287,8 +282,8 @@ class ReleaseArtifactsTests(unittest.TestCase):
         self.assertEqual(inventory["release_version"], VERSION)
         self.assertEqual(inventory["source_commit"], COMMIT)
         self.assertIs(inventory["complete_inventory"], True)
-        self.assertEqual(inventory["artifact_count"], 10)
-        self.assertEqual(len(inventory["files"]), 10)
+        self.assertEqual(inventory["artifact_count"], 8)
+        self.assertEqual(len(inventory["files"]), 8)
         self.assertEqual({(row["minecraft"], row["loader"]) for row in inventory["files"]}, set(TARGETS))
         for row in inventory["files"]:
             mc, loader = row["minecraft"], row["loader"]
@@ -628,6 +623,11 @@ class ReleaseArtifactsTests(unittest.TestCase):
         shutil.copyfile(self.path(), extra)
         self.assert_rejected()
 
+    def test_dropped_26_1_2_artifact_is_rejected(self):
+        shutil.copyfile(self.path(), self.directory / filename("26.1.2", "fabric"))
+        with self.assertRaisesRegex(ValueError, "Unexpected release JAR"):
+            self.verify()
+
     def test_manifest_case_variant_duplicate_is_rejected(self):
         text = manifest("26.3", "fabric").replace(
             "\r\n\r\n", f"\r\nras-source-commit: {OTHER_COMMIT}\r\n\r\n")
@@ -639,7 +639,7 @@ class ReleaseArtifactsTests(unittest.TestCase):
             if loader != "fabric":
                 self.rewrite(descriptor_path(loader), toml_metadata(mc, loader).replace(
                     METADATA[mc]["minecraft"], METADATA[mc]["minecraft"].replace(" ", "")), mc, loader)
-        self.assertEqual(self.verify()["artifact_count"], 10)
+        self.assertEqual(self.verify()["artifact_count"], 8)
 
     def test_loader_mc_range_cannot_broaden_its_upper_bound(self):
         for mc, loader in TARGETS:

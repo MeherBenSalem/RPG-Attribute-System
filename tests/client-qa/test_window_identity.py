@@ -285,7 +285,7 @@ class WindowTests(unittest.TestCase):
         self.assertIn(block, source)
         self.assertEqual(source.count('getUseXvfb()'), 1)
         self.assertEqual(source.count('tasks.named(\'runClientSelfTest\')'), 1)
-        for version in ('1.20.1', '1.21.1', '26.1.2', '26.2'):
+        for version in ('1.20.1', '1.21.1', '26.2'):
             self.assertNotIn('getUseXvfb()', (root/version/'fabric/build.gradle').read_text())
 
     def test_capture_snapshot_rejects_same_xid_changed_screen_page_control_prompt_or_expiry(self):

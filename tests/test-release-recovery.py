@@ -75,7 +75,8 @@ class RecoveryTests(unittest.TestCase):
         workflow=yaml.safe_load((Path(__file__).resolve().parents[1]/'.github/workflows/publish.yml').read_text())
         guard=next(step for step in workflow['jobs']['resolve']['steps'] if step.get('name')=='Reject blind fresh publication after a prior attempt')
         self.assertNotIn('dry_run',guard['if'])
-        self.assertEqual('ras-release-publication',workflow['concurrency']['group'])
+        self.assertEqual('publish-${{ github.repository }}',workflow['concurrency']['group'])
+        self.assertIs(False,workflow['concurrency']['cancel-in-progress'])
         runs=[{'id':1,'created_at':'2026-10-09T10:00:00Z','status':'completed'}]
         uncertain={'jobs':[{'name':'publish','status':'completed','steps':[{'name':'Publish/resume verified binaries with per-loader dependencies','conclusion':'failure'}]}]}
         # A wrote an uncertain live attempt. B cannot run standalone (even dry-run).
@@ -85,6 +86,44 @@ class RecoveryTests(unittest.TestCase):
         recovery.latest_receipt(runs,{'1':uncertain,'2':{'jobs':[]}},3,1)
         with self.assertRaises(ValueError):recovery.latest_receipt(runs,{'1':uncertain,'2':{'jobs':[]}},3,2)
 
+    def test_same_day_guard_runs_before_build_and_again_before_the_real_upload(self):
+        import yaml
+        workflow=yaml.safe_load((Path(__file__).resolve().parents[1]/'.github/workflows/publish.yml').read_text())
+        upload_name='Publish/resume verified binaries with per-loader dependencies'
+        resolve=workflow['jobs']['resolve']
+        self.assertEqual('read',resolve['permissions']['actions'])
+        self.assertEqual('read',workflow['jobs']['publish']['permissions']['actions'])
+        self.assertIn('resolve',workflow['jobs']['build']['needs'])
+        names=[step.get('name') for step in resolve['steps']]
+        early=resolve['steps'][names.index('Same-day guard')]
+        self.assertLess(names.index('Resolve exact source/version and fail closed'),names.index('Same-day guard'))
+        self.assertEqual('node scripts/same_day_guard.mjs',early['run'])
+        self.assertEqual('${{ steps.resolve.outputs.dry_run }}',early['env']['DRY_RUN'])
+        steps=workflow['jobs']['publish']['steps']
+        names=[step.get('name') for step in steps]
+        again=steps[names.index('Same-day guard (again, right before upload)')]
+        upload=steps[names.index(upload_name)]
+        self.assertEqual(names.index(upload_name)-1,names.index('Same-day guard (again, right before upload)'))
+        for guard in [early,again]:
+            self.assertEqual(upload_name,guard['env']['UPLOAD_STEP'])
+            self.assertEqual('publish.yml',guard['env']['PUBLISH_WORKFLOW'])
+            self.assertEqual('${{ secrets.CURSEFORGE_API_KEY }}',guard['env']['CURSEFORGE_API_KEY'])
+            self.assertEqual('${{ github.token }}',guard['env']['GITHUB_TOKEN'])
+        self.assertEqual('${{ needs.resolve.outputs.dry_run }}',again['env']['DRY_RUN'])
+        # A dry run must never run (and so never succeed) the step the guard counts as a release.
+        for step in [again,upload]: self.assertEqual("${{ needs.resolve.outputs.dry_run != 'true' }}",step['if'])
+        self.assertNotIn('--dry-run',upload['run'])
+        dry=steps[names.index('Dry-run publication descriptors (no store writes)')]
+        self.assertEqual("${{ needs.resolve.outputs.dry_run == 'true' }}",dry['if'])
+        self.assertIn('--dry-run',dry['run'])
+        # The resolved flag is the literal string 'true' only for a dispatch with dry_run checked.
+        resolver=next(step for step in resolve['steps'] if step.get('name')=='Resolve exact source/version and fail closed')
+        self.assertIn("dry_run='true' if os.environ.get('REQUESTED_DRY_RUN')=='true' else 'false'",resolver['run'])
+    def test_dry_run_descriptors_do_not_count_as_a_publication_attempt(self):
+        dry={'jobs':[{'name':'publish','status':'completed','steps':[
+            {'name':'Dry-run publication descriptors (no store writes)','conclusion':'success'},
+            {'name':'Publish/resume verified binaries with per-loader dependencies','conclusion':'skipped'}]}]}
+        self.assertFalse(recovery.may_have_published(dry))
     def job(self,job_id,name='other',steps=None):
         return {'id':job_id,'name':name,'status':'completed','steps':steps or []}
     def test_old_write_attempt_survives_blocked_job_rerun(self):

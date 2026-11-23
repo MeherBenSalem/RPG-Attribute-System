@@ -12,7 +12,7 @@ import urllib.request
 
 REPOSITORY='MeherBenSalem/RPG-Attribute-System'
 WORKFLOW='.github/workflows/publish.yml'
-WORKSPACES=['1.20.1','1.21.1','26.1.2','26.2','26.3']
+WORKSPACES=['1.20.1','1.21.1','26.2','26.3']
 
 
 def validate_run(run,commit):

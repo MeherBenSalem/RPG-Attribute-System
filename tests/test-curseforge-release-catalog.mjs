@@ -6,7 +6,8 @@ import {resolveCurseForgeCatalog, curseForgeIds} from '../scripts/curseforge-rel
 // Sanitized hosted diagnostic38055073295 at reviewed helper4409214. These IDs
 // are fixture evidence only. Production resolves fresh responses on every run.
 const evidence = JSON.parse(fs.readFileSync(new URL('./fixtures/curseforge-catalog-430.json', import.meta.url)));
-const targets = evidence.requested_names.slice(0,5).map(minecraft => ({minecraft}));
+// The sanitized evidence predates dropping 26.1.2; only the supported lines are resolved.
+const targets = evidence.requested_names.slice(0,5).filter(name => name !== '26.1.2').map(minecraft => ({minecraft}));
 const clone = value => structuredClone(value);
 function fixture() {
   const upload = Object.values(evidence.upload_candidates).flat().map(row => ({...row}));
@@ -19,7 +20,7 @@ function fixture() {
 }
 function resolve(fx) {return resolveCurseForgeCatalog(fx.upload, fx.canonical, fx.types, fx.groups, targets);}
 const expected = {client: 9638, server: 9639, loader: {fabric: 7499, forge: 7498, neoforge: 10150},
-  minecraft: {'1.20.1': 9990, '1.21.1': 11779, '26.1.2': 16082, '26.2': 16498, '26.3': 17045}};
+  minecraft: {'1.20.1': 9990, '1.21.1': 11779, '26.2': 16498, '26.3': 17045}};
 
 test('actual same-name Bukkit/Addons candidates resolve only exact canonical Java pairs, independent of order', () => {
   const fx = fixture();
@@ -110,6 +111,21 @@ test('all fresh catalog reads use fixed GET routes and separated auth headers wi
   assert.equal(audit.canonical_minecraft['1.20.1'].gameVersionStatus, 1);
   assert.deepEqual(audit.selected_ids, expected);
   assert.ok(!JSON.stringify(audit).includes('fake-'));
-  assert.equal(calls.length, 10);
+  assert.equal(calls.length, 9);
   await assert.rejects(curseForgeIds('fake-upload','fake-core',targets,async () => ({data: {id: 1079687, gameId: 999}})), /namespace/);
+});
+
+test('an unsupported Minecraft line such as 26.1.2 is refused before any catalog join', async () => {
+  const fx = fixture();
+  assert.throws(() => resolveCurseForgeCatalog(fx.upload, fx.canonical, fx.types, fx.groups, [...targets, {minecraft: '26.1.2'}]),
+    /Unreviewed CurseForge Minecraft target/);
+  const request = async url => {
+    if (url === 'https://api.curseforge.com/v1/mods/1079687') return {data: {id: 1079687, gameId: 432}};
+    if (url === 'https://api.curseforge.com/v1/games/432') return {data: {id: 432, slug: 'minecraft'}};
+    if (url === 'https://minecraft.curseforge.com/api/game/versions') return fx.upload;
+    if (url === 'https://api.curseforge.com/v1/games/432/version-types') return fx.types;
+    if (url === 'https://api.curseforge.com/v2/games/432/versions') return fx.groups;
+    assert.fail('No canonical lookup is made for an unsupported line: ' + url);
+  };
+  await assert.rejects(curseForgeIds('fake-upload','fake-core',[{minecraft: '26.1.2'}],request), /Unreviewed CurseForge Minecraft target/);
 });

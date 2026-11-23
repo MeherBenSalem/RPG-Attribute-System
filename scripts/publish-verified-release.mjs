@@ -10,13 +10,13 @@ const modrinthId = id => typeof id === 'string' && /^[0-9A-Za-z]+$/.test(id);
 const curseForgeId = id => Number.isSafeInteger(id) && id > 0 && id <= 0xffffffff;
 
 export function validatePlan(manifest, directory) {
-  if (manifest?.schema_version !== 1 || manifest.complete_inventory !== true || manifest.artifact_count !== 10
+  if (manifest?.schema_version !== 1 || manifest.complete_inventory !== true || manifest.artifact_count !== 8
       || !/^[0-9a-f]{40}$/.test(manifest.source_commit) || !/^\d+\.\d+\.\d+$/.test(manifest.release_version)
-      || manifest.mod_id !== 'rpg_attribute_system' || !Array.isArray(manifest.files) || manifest.files.length !== 10) {
-    throw new Error('A complete verified ten-JAR manifest is required');
+      || manifest.mod_id !== 'rpg_attribute_system' || !Array.isArray(manifest.files) || manifest.files.length !== 8) {
+    throw new Error('A complete verified eight-JAR manifest is required');
   }
   const expected = new Set(['1.20.1:fabric','1.20.1:forge','1.21.1:fabric','1.21.1:neoforge',
-    '26.1.2:fabric','26.1.2:neoforge','26.2:fabric','26.2:neoforge','26.3:fabric','26.3:neoforge']);
+    '26.2:fabric','26.2:neoforge','26.3:fabric','26.3:neoforge']);
   const root = fs.realpathSync(directory);
   const entries = manifest.files.map(file => {
     const combination = `${file.minecraft}:${file.loader}`;
@@ -191,7 +191,7 @@ async function requestJson(url, options = {}, uploadIdValidator = null) {
   return payload;
 }
 
-function curseForgeAudit(existing, entries, version, changelog, ids, dependencies, state, journalBytes, isolation) {
+function curseForgeAudit(existing, entries, version, changelog, ids, dependencies, state, journalBytes) {
   return {schema_version:1,observed_at:new Date().toISOString(),project_id:1079687,
     complete_core_inventory:true,inventory_count:existing.length,
     author_pending_upload_visibility:'not-established',
@@ -204,7 +204,6 @@ function curseForgeAudit(existing, entries, version, changelog, ids, dependencie
       return {file_name:entry.file_name,expected_sha1:entry.sha1,expected_sha256:entry.sha256,
         expected_required_dependency_ids:entry.required_mod_ids.map(dep=>dependencies[dep].curseforge_id).sort((a,b)=>a-b),
         journal_status:receipt?.status??null,journal_id:curseForgeId(receipt?.id)?receipt.id:null,
-        isolation_class:isolation?(receipt?'excluded-journaled':remote?'never-attempted-exact-existing':'never-attempted-post-candidate'):null,
         match:remote?{id,mod_id:remote.modId,file_name:remote.fileName,display_name:remote.displayName,
           sha1:remote.hashes.find(hash=>hash.algo===1).value.toLowerCase(),
           required_dependency_ids:remote.dependencies.filter(dep=>dep.relationType===3).map(dep=>dep.modId).sort((a,b)=>a-b),
@@ -253,7 +252,6 @@ export async function main(argv=process.argv.slice(2)) {
     if (argv[i]==='--dry-run') args.dryRun=true;
     else if (argv[i]==='--preflight-only') args.preflightOnly=true;
     else if (argv[i]==='--require-public-modrinth') args.requirePublicModrinth=true;
-    else if (argv[i]==='--isolate-never-attempted-curseforge') args.isolateNeverAttemptedCurseForge=true;
     else if (argv[i]==='--retry-rejected-curseforge') args.retryRejectedCurseForge=true;
     else if (argv[i]==='--continue-past-pending-curseforge') args.continuePastPendingCurseForge=true;
     else if (['--manifest','--directory','--dependencies','--changelog','--state','--platforms'].includes(argv[i])) args[argv[i].slice(2)]=argv[++i];
@@ -265,12 +263,10 @@ export async function main(argv=process.argv.slice(2)) {
   if (!['both','modrinth','curseforge'].includes(platforms)) throw new Error('Unknown platforms');
   if (args.requirePublicModrinth && (!args.preflightOnly || platforms==='curseforge'))
     throw new Error('Public Modrinth recovery guard requires credentialed Modrinth preflight');
-  if (args.isolateNeverAttemptedCurseForge && (args.dryRun || platforms==='modrinth' || (!args.preflightOnly && platforms!=='curseforge')))
-    throw new Error('Isolation requires credentialed read-only preflight or CurseForge-only live publication');
-  if (args.retryRejectedCurseForge && (args.dryRun || args.isolateNeverAttemptedCurseForge || platforms==='modrinth'
+  if (args.retryRejectedCurseForge && (args.dryRun || platforms==='modrinth'
       || (!args.preflightOnly && platforms!=='curseforge')))
     throw new Error('Rejected-receipt retry requires credentialed read-only preflight or CurseForge-only live publication');
-  if (args.continuePastPendingCurseForge && (args.dryRun || args.preflightOnly || args.isolateNeverAttemptedCurseForge || platforms!=='curseforge'))
+  if (args.continuePastPendingCurseForge && (args.dryRun || args.preflightOnly || platforms!=='curseforge'))
     throw new Error('Continuing past pending CurseForge review requires CurseForge-only live publication');
   const manifest=JSON.parse(fs.readFileSync(args.manifest,'utf8'));
   const entries=validatePlan(manifest,args.directory);
@@ -319,29 +315,6 @@ export async function main(argv=process.argv.slice(2)) {
     if (row && !row.status.startsWith('dry-run') && row.status!=='rejected')
       throw new Error('Prior upload is pending/submitted or missing from inventory; reconcile before retry: '+entry.file_name);
   };
-  let isolation=null;
-  if (args.isolateNeverAttemptedCurseForge) {
-    const firstFile='rpg_attribute_system-fabric-1.20.1-4.3.0.jar';
-    const first=entries.find(entry=>entry.file_name===firstFile),receipt=first&&prior('curseforge',first);
-    const mrRows=state.uploads.filter(row=>row.platform==='modrinth');
-    if (version!=='4.3.0' || manifest.source_commit!=='09a559f500daa21ce6dbc60d80ea0b490a605915'
-        || !receipt || receipt.status!=='uncertain' || Object.hasOwn(receipt,'id') || receipt.sha256!==first.sha256
-        || mrRows.length!==10 || entries.some(entry=>{const row=prior('modrinth',entry);
-          return !row || !['verified','verified-existing'].includes(row.status) || !modrinthId(row.id);}))
-      throw new Error('Isolation requires immutable09a4.3.0, ten preserved verified Modrinth rows and the unchanged first uncertain CurseForge receipt without ID');
-    // No prior journal status, including a dry-run status, is permission for a
-    // POST here. Every journaled target is frozen and excluded from this loop.
-    isolation={scope:'never-attempted-curseforge',frozen_first_file:firstFile,
-      selected_targets:entries.filter(entry=>!prior('curseforge',entry)).map(entry=>entry.file_name),
-      excluded_targets:entries.filter(entry=>prior('curseforge',entry)).map(entry=>({
-        file_name:entry.file_name,reason:entry.file_name===firstFile?'frozen-first-uncertain':'prior-journal-entry',
-        journal_status:prior('curseforge',entry).status}))};
-    isolation.selected_count=isolation.selected_targets.length;
-    isolation.excluded_count=isolation.excluded_targets.length;
-    isolation.unresolved_excluded_count=isolation.excluded_targets.filter(row=>!['verified','verified-existing'].includes(row.journal_status)).length;
-    if (!args.preflightOnly && isolation.selected_count===0)
-      throw new Error('No never-attempted CurseForge targets remain; use read-only preflight and retain every unresolved receipt');
-  }
   if (!args.dryRun && !args.preflightOnly) {state.publicly_verified=false;save();}
   for (const entry of entries) for (const id of entry.required_mod_ids) {
     if (!dependencies[id]?.modrinth || !dependencies[id]?.curseforge_slug || !Number.isInteger(dependencies[id]?.curseforge_id))
@@ -387,9 +360,9 @@ export async function main(argv=process.argv.slice(2)) {
   if (args.preflightOnly) {
     console.log(`Read-only preflight verified release ${version}: ${entries.length} artifacts; no journal changes or store writes`);
     return {preflight_verified:true,source_commit:manifest.source_commit,version,platforms,curseforge_ids:cfIds,curseforge_catalog:cfCatalogEvidence,
-      publication_scope:isolation?'never-attempted-curseforge':'full',curseforge_isolation:isolation,
+      publication_scope:'full',
       curseforge_rejected_retry:rejectedRetry&&rejectedRetry.map(entry=>entry.file_name),
-      curseforge_inventory:platforms==='modrinth'?null:curseForgeAudit(cfInventory,entries,version,changelog,cfIds,dependencies,state,journalBytes,isolation)};
+      curseforge_inventory:platforms==='modrinth'?null:curseForgeAudit(cfInventory,entries,version,changelog,cfIds,dependencies,state,journalBytes)};
   }
   if (platforms!=='curseforge') {
     let existing=mrInventory;
@@ -428,9 +401,6 @@ export async function main(argv=process.argv.slice(2)) {
         rejection_evidence:{http_status:400,response_id_type:'absent',remote_match:null,inventory_count:existing.length,observed_at:new Date().toISOString()}});
     }
     for (const entry of entries) {
-      // Frozen entries are skipped before even the existing-file reconciliation
-      // branch. Isolation cannot change their status/ID/diagnostic or POST them.
-      if (isolation && !isolation.selected_targets.includes(entry.file_name)) continue;
       const descriptor=curseForgeDescriptor(entry,version,changelog,ids,dependencies);
       const duplicate=matchingCurseForge(existing,entry,descriptor,dependencies);
       if (duplicate) {const remote=existing.find(item=>item.id===duplicate);record('curseforge',entry,isPubliclyReleased('curseforge',remote)?'verified-existing':'pending-publication',{id:duplicate,provider_status:remote?.fileStatus});continue;}
@@ -461,19 +431,29 @@ export async function main(argv=process.argv.slice(2)) {
     }
   }
   const selected=state.uploads.filter(row=>platforms==='both'||row.platform===platforms);
-  state.publicly_verified=!args.dryRun && selected.length===(platforms==='both'?20:10)
-    && selected.every(row=>['verified','verified-existing'].includes(row.status));
+  const expectedRows=platforms==='both'?entries.length*2:entries.length;
+  const verifiedStatus=row=>['verified','verified-existing'].includes(row.status);
+  const hasProviderId=row=>row.platform==='modrinth'?modrinthId(row.id):curseForgeId(row.id);
+  state.publicly_verified=!args.dryRun && selected.length===expectedRows && selected.every(verifiedStatus);
   save();
-  if (isolation) {
-    const isolatedVerified=isolation.selected_targets.every(file=>{
-      const row=state.uploads.find(row=>row.platform==='curseforge'&&row.file===file);
-      return row && ['verified','verified-existing'].includes(row.status);
-    });
-    if (!isolatedVerified) throw new Error('Isolated CurseForge targets await publication; retain latest receipts without retrying journaled targets');
-    console.log(`Verified isolated CurseForge targets: ${isolation.selected_targets.length}; full release remains unresolved`);
-    return {...state,publication_scope:isolation.scope,curseforge_isolation:isolation,isolated_curseforge_verified:true};
+  if (!args.dryRun && !state.publicly_verified) {
+    // Every file was accepted by its store (it has a provider file ID) and only awaits review/listing,
+    // which is normal for CurseForge. That is a finished upload, not a failure. Anything else still fails.
+    // CurseForge FileStatus: 2 ChangesRequired, 5 Rejected, 6 MalwareDetected, 7 Deleted, 15 FailedPublishing.
+    const refused=row=>row.platform==='curseforge' && [2,5,6,7,15].includes(row.provider_status);
+    if (selected.some(refused))
+      throw new Error('CurseForge refused or removed a release file: '+selected.filter(refused).map(row=>row.file).join(', '));
+    const accepted=selected.length===expectedRows && selected.every(row=>
+      ['submitted','pending-publication','verified','verified-existing'].includes(row.status) && hasProviderId(row));
+    if (!accepted) throw new Error('Release incomplete: not every artifact was accepted by its store; retain receipts and resume read-only reconciliation');
+    const waiting=selected.filter(row=>!verifiedStatus(row));
+    const count=platform=>waiting.filter(row=>row.platform===platform).length;
+    const parts=[count('curseforge')&&`CurseForge approval pending for ${count('curseforge')} file(s)`,
+      count('modrinth')&&`Modrinth listing pending for ${count('modrinth')} file(s)`].filter(Boolean).join('; ');
+    console.log(`::warning title=Store approval pending::Release ${version}: every file was accepted; ${parts}. A later read-only run reconciles them.`);
+    console.log(`Submitted release ${version}: ${state.uploads.length} platform entries, ${waiting.length} awaiting store approval`);
+    return state;
   }
-  if (!args.dryRun && !state.publicly_verified) throw new Error('Release artifacts submitted but public listing/approval is pending; retain receipts and resume read-only reconciliation');
   console.log(`${args.dryRun?'Dry-run':'Verified'} release ${version}: ${state.uploads.length} platform entries`);
   return state;
 }

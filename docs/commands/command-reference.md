@@ -445,7 +445,7 @@ Output: `Available templates: warrior, mage, archer`
 
 ## Platform Differences
 
-The command tree is identical across Fabric, Forge (1.20.1), and NeoForge (1.21.1, 26.1.2, 26.2). Registration differs:
+The command tree is identical across Fabric, Forge (1.20.1), and NeoForge (1.21.1, 26.2, 26.3). Registration differs:
 
 - **Fabric:** Commands are registered in `RpgAttributeSystemModFabric` during `ModInitializer`
 - **Forge (1.20.1):** Registered via `GiveLevelsCommandCommand` subscribing to `RegisterCommandsEvent`

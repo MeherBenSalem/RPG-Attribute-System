@@ -1,5 +1,8 @@
 # A release tag is created only after final source review, CI and client/gameplay QA.
-# Always build/verify all ten loader JARs; partial prebuilt directories are never trusted.
+# Always build/verify all eight loader JARs; partial prebuilt directories are never trusted.
+# Same-day guard (NightBeam convention): scripts/same_day_guard.mjs stops a real release if this mod already had one
+# today (Africa/Tunis day) on Modrinth, CurseForge or an earlier Publish run. It runs before the build and again right
+# before the upload. A dry run only reports. Needs the CURSEFORGE_API_KEY secret and MODRINTH_ID/CURSEFORGE_ID variables.
 name: Publish
 
 on:
@@ -22,7 +25,7 @@ on:
         options: [both, modrinth, curseforge]
         default: both
       source_run_id:
-        description: Prior Publish run containing the exact ten source-bound JARs (avoids rebuilding on recovery)
+        description: Prior Publish run containing the exact eight source-bound JARs (avoids rebuilding on recovery)
         required: false
         type: string
 
@@ -41,13 +44,17 @@ permissions:
   actions: read
 
 concurrency:
-  # A branch dry-run and tag release must never create competing journals.
-  group: ras-release-publication
+  # One Publish at a time per repo: a dry-run and a tag release never create competing journals,
+  # and two runs can't both pass the same-day guard.
+  group: publish-${{ github.repository }}
   cancel-in-progress: false
 
 jobs:
   resolve:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     outputs:
       version: ${{ steps.resolve.outputs.version }}
       commit: ${{ steps.resolve.outputs.commit }}
@@ -57,6 +64,9 @@ jobs:
       receipt_run_id: ${{ steps.resolve.outputs.receipt_run_id }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
       - name: Resolve exact source/version and fail closed
         id: resolve
         env:
@@ -73,7 +83,7 @@ jobs:
           requested=os.environ.get('REQUESTED_VERSION','')
           if not re.fullmatch(r'\d+\.\d+\.\d+',version) or (requested and requested!=version):
               raise SystemExit('Requested version must equal checked-out VERSION')
-          for root in ['1.20.1','1.21.1','26.1.2','26.2','26.3']:
+          for root in ['1.20.1','1.21.1','26.2','26.3']:
               rows=Path(root,'gradle.properties').read_text().splitlines()
               if 'version='+version not in rows: raise SystemExit('Version roots disagree')
           platforms=os.environ.get('REQUESTED_PLATFORMS') or 'both'
@@ -93,6 +103,16 @@ jobs:
               for key,value in [('version',version),('commit',commit),('platforms',platforms),('dry_run',dry_run),('source_run_id',run_id),('receipt_run_id',receipt_id)]:
                   print(f'{key}={value}',file=output)
           PY
+      - name: Same-day guard
+        env:
+          MODRINTH_ID: ${{ vars.MODRINTH_ID }}
+          CURSEFORGE_ID: ${{ vars.CURSEFORGE_ID }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+          PUBLISH_WORKFLOW: publish.yml
+          UPLOAD_STEP: Publish/resume verified binaries with per-loader dependencies
+          DRY_RUN: ${{ steps.resolve.outputs.dry_run }}
+        run: node scripts/same_day_guard.mjs
       - name: Reject blind fresh publication after a prior attempt
         if: ${{ steps.resolve.outputs.source_run_id == '' }}
         env:
@@ -113,9 +133,6 @@ jobs:
             second_loader: forge
           - workspace: '1.21.1'
             java: '21'
-            second_loader: neoforge
-          - workspace: '26.1.2'
-            java: '25'
             second_loader: neoforge
           - workspace: '26.2'
             java: '25'
@@ -148,6 +165,9 @@ jobs:
     needs: [resolve, build]
     if: ${{ always() && needs.resolve.result == 'success' && (needs.build.result == 'success' || (needs.build.result == 'skipped' && needs.resolve.outputs.source_run_id != '')) }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -202,7 +222,27 @@ jobs:
           RELEASE_VERSION: ${{ needs.resolve.outputs.version }}
           SOURCE_COMMIT: ${{ needs.resolve.outputs.commit }}
         run: python3 scripts/verify-release-artifacts.py --directory release-jars --version "$RELEASE_VERSION" --commit "$SOURCE_COMMIT" --output verified-release.json
+      - name: Dry-run publication descriptors (no store writes)
+        if: ${{ needs.resolve.outputs.dry_run == 'true' }}
+        env:
+          PLATFORMS: ${{ needs.resolve.outputs.platforms }}
+          RELEASE_VERSION: ${{ needs.resolve.outputs.version }}
+        run: node scripts/publish-verified-release.mjs --manifest verified-release.json --directory release-jars --dependencies scripts/release-dependencies.json --changelog "patchnotes/$RELEASE_VERSION.md" --state publication-receipts.json --platforms "$PLATFORMS" --dry-run
+      - name: Same-day guard (again, right before upload)
+        if: ${{ needs.resolve.outputs.dry_run != 'true' }}
+        env:
+          MODRINTH_ID: ${{ vars.MODRINTH_ID }}
+          CURSEFORGE_ID: ${{ vars.CURSEFORGE_ID }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+          PUBLISH_WORKFLOW: publish.yml
+          UPLOAD_STEP: Publish/resume verified binaries with per-loader dependencies
+          DRY_RUN: ${{ needs.resolve.outputs.dry_run }}
+        run: node scripts/same_day_guard.mjs
+      # The same-day guard's GitHub check counts a run as a release when this exact step name succeeded,
+      # so it never runs on a dry run (dry runs use the step above).
       - name: Publish/resume verified binaries with per-loader dependencies
+        if: ${{ needs.resolve.outputs.dry_run != 'true' }}
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
@@ -211,11 +251,9 @@ jobs:
           CURSEFORGE_ID: ${{ vars.CURSEFORGE_ID }}
           PLATFORMS: ${{ needs.resolve.outputs.platforms }}
           RELEASE_VERSION: ${{ needs.resolve.outputs.version }}
-          DRY_RUN: ${{ needs.resolve.outputs.dry_run }}
           CONTINUE_PAST_PENDING_CURSEFORGE: ${{ inputs.continue_past_pending_curseforge }}
         run: |
           args=()
-          if [ "$DRY_RUN" = true ]; then args+=(--dry-run); fi
           if [ "$CONTINUE_PAST_PENDING_CURSEFORGE" = true ]; then args+=(--continue-past-pending-curseforge); fi
           node scripts/publish-verified-release.mjs --manifest verified-release.json --directory release-jars --dependencies scripts/release-dependencies.json --changelog "patchnotes/$RELEASE_VERSION.md" --state publication-receipts.json --platforms "$PLATFORMS" "${args[@]}"
       - uses: actions/upload-artifact@v4

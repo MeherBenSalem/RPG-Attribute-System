@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fail-closed release inventory and internal JAR provenance verification.
 
-Only a complete ten-loader set bound to the requested source commit is accepted.
+Only a complete eight-loader set bound to the requested source commit is accepted.
 No filenames alone, partial prebuilt sets, store writes, or credentials are trusted.
 """
 import argparse
@@ -15,7 +15,7 @@ import zipfile
 
 MOD_ID = 'rpg_attribute_system'
 MATRIX = [('1.20.1','fabric',17),('1.20.1','forge',17),('1.21.1','fabric',21),('1.21.1','neoforge',21),
-          ('26.1.2','fabric',25),('26.1.2','neoforge',25),('26.2','fabric',25),('26.2','neoforge',25),
+          ('26.2','fabric',25),('26.2','neoforge',25),
           ('26.3','fabric',25),('26.3','neoforge',25)]
 RUNTIME_DEPENDENCIES = {'minecraft','java','fabricloader','forge','neoforge'}
 MOD_ALIASES = {'fabric':'fabric-api','fabric-api':'fabric-api','jauml':'jauml'}
@@ -203,7 +203,7 @@ def verify(directory,version,commit):
         if path.name in found: raise ValueError('Duplicate release JAR: '+path.name)
         found[path.name]=path
     missing=sorted(set(expected)-set(found))
-    if missing: raise ValueError('Incomplete ten-JAR inventory: '+', '.join(missing))
+    if missing: raise ValueError('Incomplete eight-JAR inventory: '+', '.join(missing))
     files=[]
     for name,(mc,loader,java) in expected.items():
         result=verify_jar(found[name],version,commit,mc,loader,java)

@@ -7,7 +7,7 @@
  */
 const id = value => Number.isSafeInteger(value) && value > 0 && value <= 0xffffffff;
 const names = {fabric: 'Fabric', forge: 'Forge', neoforge: 'NeoForge'};
-const minecraft = ['1.20.1','1.21.1','26.1.2','26.2','26.3'];
+const minecraft = ['1.20.1','1.21.1','26.2','26.3'];
 const unique = (rows, message) => {
   if (rows.length !== 1) throw new Error('Missing/ambiguous CurseForge ' + message);
   return rows[0];

@@ -2,10 +2,10 @@
 # Use the verified full-inventory publisher described in docs/releasing.md.
 param(
     [string]$Version = "",
-    [string]$Workspace = "26.1.2",
+    [string]$Workspace = "26.3",
     [switch]$CurseForgeOnly,
     [switch]$ModrinthOnly,
     [switch]$DryRun
 )
 
-throw "Direct per-workspace uploads are disabled. Use the Publish workflow or scripts/publish-verified-release.mjs with a complete source-bound verified ten-JAR manifest and retained upload journal. See docs/releasing.md."
+throw "Direct per-workspace uploads are disabled. Use the Publish workflow or scripts/publish-verified-release.mjs with a complete source-bound verified eight-JAR manifest and retained upload journal. See docs/releasing.md."

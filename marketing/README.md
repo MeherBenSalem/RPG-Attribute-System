@@ -7,10 +7,14 @@ Listing copy and artwork for CurseForge and Modrinth. Nothing here ships in the 
 | File | Use |
 | --- | --- |
 | [`curseforge/description.md`](curseforge/description.md) | Full project description (Markdown; also works on Modrinth) |
-| [`curseforge/summary.txt`](curseforge/summary.txt) | Short project summary (234 characters) |
+| [`curseforge/summary.txt`](curseforge/summary.txt) | Short project summary (131 characters) |
+| [`modrinth/description.md`](modrinth/description.md) | Modrinth description, made from the CurseForge copy by `python3 tools/make_modrinth_md.py .` (the screenshot gallery becomes a pointer to the Gallery tab) |
+| [`modrinth/summary.txt`](modrinth/summary.txt) | Modrinth summary (same text) |
 | [`../patchnotes/5.0.0.md`](../patchnotes/5.0.0.md) | File changelog used by the publish workflow |
 
 Right after the opening description comes one row of matching badges (Documentation in gold, then Discord, YouTube, Instagram, X, Facebook and the website: dark single-segment shields.io badges with brand-coloured logos), and the description links to the website docs at <https://nightbeam.dev/docs/remnants-rpg-stats>. The very last thing is the NightBeam Pro / Forge banner (`images/pro-forge-banner.png`, linking to <https://nightbeam.dev/forge>; source and render command in `source/pro-forge-banner.html`). Keep all three when rewriting the copy.
+
+Rerun `python3 tools/make_modrinth_md.py .` after every change to the CurseForge copy so the Modrinth files stay in step. The publish workflow uploads only release files; it does not change either project page, so paste the descriptions and summaries into CurseForge and Modrinth by hand.
 
 Image links in the description point at `raw.githubusercontent.com/.../main/marketing/images/...`, so they work once this folder is on `main`. To host on CurseForge instead, upload the images to the project gallery and replace each URL.
 
@@ -42,6 +46,8 @@ The cards, banner, icon and headers are HTML rendered with Playwright from the s
 NODE_PATH="$(npm root -g)" node marketing/source/render.cjs            # everything
 NODE_PATH="$(npm root -g)" node marketing/source/render.cjs banner icon  # selected assets
 ```
+
+The banner's version line (in `source/render.cjs`) lists the supported Minecraft versions: 1.20.1, 1.21.1, 26.2 and 26.3. Keep it in step with the Downloads & Compatibility table in the description.
 
 `source/backdrop.jpg` is the blurred background scene and `source/tome.png` is the mod logo. To refresh screenshots, launch a client (see `AGENTS.md`), replace the files in `images/screenshots/`, and rerun the script.
 

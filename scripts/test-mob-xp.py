@@ -18,7 +18,7 @@ args = parser.parse_args()
 if not args.gson_jar or not Path(args.gson_jar).is_file():
     parser.error('Supply --gson-jar PATH or GSON_JAR pointing to a cached com.google.code.gson jar')
 repo = Path(__file__).resolve().parents[1]
-for root in ['1.20.1', '1.21.1', '26.1.2', '26.2', '26.3']:
+for root in ['1.20.1', '1.21.1', '26.2', '26.3']:
     source = repo / root / 'common/src/main/java'
     if root == '26.2':
         source /= 'java'

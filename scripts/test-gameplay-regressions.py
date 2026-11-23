@@ -106,7 +106,7 @@ public class CheckLevelupRewardsProcedure {public static void execute(Level leve
  'tn/nightbeam/ras/procedures/OnPlayerSpawnProcedure.java':'''package tn.nightbeam.ras.procedures;
 import net.minecraft.world.entity.Entity;public class OnPlayerSpawnProcedure {public static void resetAttributesToInitial(Entity e){}public static void execute(Entity e){}}''',
 }
-for root in ['1.20.1','1.21.1','26.1.2','26.2','26.3']:
+for root in ['1.20.1','1.21.1','26.2','26.3']:
     production=repo/root/'common/src/main/java'
     if root=='26.2':production/='java'
     package=production/'tn/nightbeam/ras'

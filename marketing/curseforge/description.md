@@ -6,7 +6,7 @@
 
 Earn levels from combat, **stage** your attribute points, watch every stat change **before** it happens, and **confirm** your build with one press. Every number on screen comes from the server, so your armor, weapon, potion effects and other mods are already counted.
 
-**5.0 "The Ascendant Update"** is available for **Fabric, Forge and NeoForge** on **1.20.1, 1.21.1, 26.1.2, 26.2 and 26.3**.
+**5.0 "The Ascendant Update"** is available for **Fabric, Forge and NeoForge** on **1.20.1, 1.21.1, 26.2 and 26.3**.
 
 **New:** the full documentation, with screenshots, every config file, commands, permissions and the API, now lives at **[nightbeam.dev/docs/remnants-rpg-stats](https://nightbeam.dev/docs/remnants-rpg-stats)**.
 
@@ -88,7 +88,7 @@ The progression system under the new screen:
 | --- | --- | --- |
 | 1.20.1 | Fabric, Forge | Fabric API (Fabric), jauml (both loaders) |
 | 1.21.1 | Fabric, NeoForge | Fabric API (Fabric), jauml (both loaders) |
-| 26.1.2 · 26.2 · 26.3 | Fabric, NeoForge | Fabric API (Fabric) |
+| 26.2 · 26.3 | Fabric, NeoForge | Fabric API (Fabric) |
 
 - Download the file whose name matches your loader: `-fabric-`, `-forge-` (1.20.1) or `-neoforge-`.
 - Install RAS on **both the server and every client**, at the same version. 5.0.0 adds new network messages.

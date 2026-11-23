@@ -53,7 +53,7 @@ async function verifyStatsDefaultTargets(){
  frozen(DEFAULTS);
  const reference=statsInitializerDefaults(fs.readFileSync(new URL('../source-reference/ConfigInitializer.java',import.meta.url),'utf8'));
  eq(DEFAULTS[STATS_PATH],reference,'Pinned historical defaults match retained initializer');
- const roots=['1.20.1','1.21.1','26.1.2','26.2','26.3'];
+ const roots=['1.20.1','1.21.1','26.2','26.3'];
  let current;
  if(fs.existsSync(shared)){
   for(const root of roots){
@@ -66,7 +66,7 @@ async function verifyStatsDefaultTargets(){
    eq(expected,current,root+' initializer delta agrees across independent roots');
    currentInitializerRoots++;
   }
-  eq(currentInitializerRoots,5,'All five current initializers checked, including 26.2 nesting');
+  eq(currentInitializerRoots,4,'All four current initializers checked, including 26.2 nesting');
  }else{
   // A standalone checkout has no current runtime source. Record that distinction.
   const fresh=createFreshWorkspace();fresh.target='4.3.0';current=workspacePack(fresh)[STATS_PATH];

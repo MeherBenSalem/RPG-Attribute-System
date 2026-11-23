@@ -26,11 +26,11 @@ Docs: https://github.com/MeherBenSalem/RPG-Attribute-System/blob/main/docs/permi
 Use the jar whose **filename** matches your loader:
 
 - NeoForge 1.21.1 → `rpg_attribute_system-neoforge-1.21.1-*.jar` + NeoForge + matching **jauml** NeoForge JAR
-- NeoForge 26.1.2 / 26.2 / 26.3 → `rpg_attribute_system-neoforge-<mc>-*.jar` + NeoForge; no jauml dependency
+- NeoForge 26.2 / 26.3 → `rpg_attribute_system-neoforge-<mc>-*.jar` + NeoForge; no jauml dependency
 - Forge **1.20.1 only** → `rpg_attribute_system-forge-1.20.1-*.jar`
 - Fabric → `rpg_attribute_system-fabric-<mc>-*.jar`
 
-There is no Forge build for 1.21.1+. If CurseForge still says “Requires Forge” on a `-neoforge-` file, ignore that label and open the **NeoForge** loader tab. jauml is required on both loaders for 1.20.1 and 1.21.1 and is not inside the RAS JAR. The 26.1.2, 26.2 and 26.3 builds do not require jauml. Fabric API is required on all Fabric builds.
+There is no Forge build for 1.21.1+. If CurseForge still says “Requires Forge” on a `-neoforge-` file, ignore that label and open the **NeoForge** loader tab. jauml is required on both loaders for 1.20.1 and 1.21.1 and is not inside the RAS JAR. The 26.2 and 26.3 builds do not require jauml. Fabric API is required on all Fabric builds.
 
 ## Theme 3 — Icon looks locked after 10 attributes
 

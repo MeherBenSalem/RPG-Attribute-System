@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Run actual native-pixel layout, staging, preview, number, motion, ui.json/texts.json and banner regressions
-for all five roots.
+for all four roots.
 
 These are geometry/source regressions, not screenshot or client rendering tests. The settings and texts classes
 read JSON, so a cached Gson jar is required; Services and Constants are minimal doubles.
@@ -29,7 +29,7 @@ STUBS={
 }
 UI_SOURCES=['SoulsLayout.java','AttributeAllocationPreview.java','RasGuiNumbers.java','PendingAllocation.java','RasMotion.java',
             'RasPalette.java','RasUiSettings.java','RasTexts.java','RasLiveConfig.java','BannerLayout.java']
-for root in ['1.20.1','1.21.1','26.1.2','26.2','26.3']:
+for root in ['1.20.1','1.21.1','26.2','26.3']:
     source=repo/root/'common/src/main/java'
     if root=='26.2':source/='java'
     package=source/'tn/nightbeam/ras/client/gui'

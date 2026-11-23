@@ -6,11 +6,11 @@ Before creating a release tag:
 
 1. Independently review the final source commit and its version-specific runtime behavior.
 2. Require every supported loader build and focused regression job to pass for that exact commit.
-3. Require the aggregate `release-inventory-dry-run` job to verify the **actual** ten stamped JARs and produce the publication plan. Synthetic verifier tests alone are insufficient.
+3. Require the aggregate `release-inventory-dry-run` job to verify the **actual** eight stamped JARs and produce the publication plan. Synthetic verifier tests alone are insufficient.
 4. Complete the actual client/gameplay checks and pixel review; disclose any deliberately unverified coverage.
 5. Finalize the version-specific patch notes to describe the release accurately. Do not publish draft/development status text as the release announcement.
 
-The full inventory is Fabric + Forge for 1.20.1, and Fabric + NeoForge for 1.21.1, 26.1.2, 26.2 and 26.3. Version roots and `VERSION` must agree. No partial `releases/` directory bypasses these gates.
+The full inventory is Fabric + Forge for 1.20.1, and Fabric + NeoForge for 1.21.1, 26.2 and 26.3 (8 JARs). Version roots and `VERSION` must agree. No partial `releases/` directory bypasses these gates.
 
 ## Provenance and metadata
 
@@ -20,23 +20,31 @@ The publisher rechecks every binary against the generated manifest immediately b
 
 ## Publication and recovery
 
-A non-dry Publish invocation requires the exact `v<version>` release tag. The workflow builds each version with its correct JDK 17/21/25. It validates all ten artifacts before any store write, then preflights both selected providers' catalogs, descriptors, existing-file identities and hashes.
+A non-dry Publish invocation requires the exact `v<version>` release tag. The workflow builds each version with its correct JDK 17/21/25. It validates all eight artifacts before any store write, then preflights both selected providers' catalogs, descriptors, existing-file identities and hashes.
 
 To tag without pushing a tag yourself, run the **Tag release** workflow from main with `version` set to `VERSION`. It checks that every version root agrees, that Verify passed on the exact main commit and that the tag does not exist yet, then creates `v<version>` at that commit. A tag pushed with the workflow token does not start Publish, so dispatch **Publish** on the new tag with `dry_run: false`.
 
 Upload receipts are atomically saved **before** a POST. Timeout, lost/invalid response, missing ID and pending indexing remain unresolved journal entries. They must be reconciled by identity/hash/metadata; the publisher never blindly retries them. Matching submitted files awaiting public listing/approval are retained without replacement or duplicate upload.
 
-Public success requires Modrinth `listed` + `release`, or CurseForge `isAvailable: true` + Approved/Released, in addition to matching bytes and metadata. Submitted/pending review is not a completed public release.
+Public success requires Modrinth `listed` + `release`, or CurseForge `isAvailable: true` + Approved/Released, in addition to matching bytes and metadata. Submitted/pending review is not a completed public release, and the journal keeps `publicly_verified: false` until a later run sees every file public.
+
+CurseForge reviews every new file, so a real release normally ends with its CurseForge files awaiting approval. When every selected file was accepted (each has a provider file ID and the status `submitted`, `pending-publication`, `verified` or `verified-existing`), the publish step **succeeds** and prints a GitHub `::warning::` saying how many files await CurseForge approval (or Modrinth listing). A later run with the retained journal reconciles them without posting anything twice. Real errors still fail the step: an uncertain or failed upload, a missing provider ID, an incomplete inventory, or a CurseForge file that review refused or removed (file status ChangesRequired, Rejected, MalwareDetected, Deleted or FailedPublishing).
+
+## Same-day guard
+
+Never release a second update of RAS on the same day. `scripts/same_day_guard.mjs` (tests: `node --test scripts/same_day_guard.test.mjs`, run by Verify) checks the calendar day in Africa/Tunis against the Modrinth project's versions, the CurseForge project's files and this repository's earlier Publish runs whose `Publish/resume verified binaries with per-loader dependencies` step succeeded or is running. Publish runs it in the `resolve` job, before any build, and again right before that upload step. On a real run it fails if RAS was already released today, or if any of the three sources cannot be read. On a dry run it only reports, and the upload step is skipped (dry runs prepare descriptors in a separate step), so a dry run never counts as a release. There is no override input.
+
+The guard needs the `CURSEFORGE_API_KEY` secret and the `MODRINTH_ID` and `CURSEFORGE_ID` repository variables, and reads earlier runs with the workflow token (`actions: read`). Because it refuses any second release that day, a recovery run after a partial upload has to wait for the next Tunis day.
 
 Retain the originating Publish run's binaries and latest `release-provenance-<commit>` receipt artifact. For a later explicit workflow dispatch at the same tag:
 
-- `source_run_id`: the original Publish run that built the complete source-bound ten-JAR set
+- `source_run_id`: the original Publish run that built the complete source-bound eight-JAR set
 - `receipt_run_id`: the latest prior Publish run containing the upload journal; defaults to `source_run_id`
 - `platforms`: the requested recovery destination(s)
 - `dry_run: false`: only when authorized to complete the publication
 - `continue_past_pending_curseforge: true`: with `platforms: curseforge`, upload the remaining CurseForge files once one file of the release is verified, instead of stopping after each upload until CurseForge lists it. Files still in review keep their submitted receipt and file ID and are verified by a later recovery run; nothing is posted twice.
 
-The recovery guard checks repository, source SHA, workflow path/event, completed run state, successful real build jobs and immutable nonexpired artifact digests before downloading. It examines all prior job attempts with bounded, complete pagination and requires the latest attempted publication receipt. Missing/unavailable receipts fail closed. Bare live job reruns or standalone restarts, including dry-runs after an earlier Publish invocation, cannot erase the journal; use an explicit recovery run. One fixed publication concurrency group serializes branch dry-runs and tag releases. Rebuilding different bytes under the same release filename is rejected, even when the code version is unchanged.
+The recovery guard checks repository, source SHA, workflow path/event, completed run state, successful real build jobs and immutable nonexpired artifact digests before downloading. It examines all prior job attempts with bounded, complete pagination and requires the latest attempted publication receipt. Missing/unavailable receipts fail closed. Bare live job reruns or standalone restarts, including dry-runs after an earlier Publish invocation, cannot erase the journal; use an explicit recovery run. One publication concurrency group per repository (`publish-<owner>/<repo>`) serializes dry-runs and tag releases. Rebuilding different bytes under the same release filename is rejected, even when the code version is unchanged.
 
 Before the release tag, the owner-only Verify credential-preflight job must return fresh presence and authorized read booleans. Modrinth identity/team upload rights and CurseForge uploader catalog/Core project reads are checked without logging response bodies. A token's separate Modrinth VERSION_CREATE scope and CurseForge per-project upload right have no documented read-only proof here; those remain explicitly unverified until the actual authorized upload. A read-only preflight failure can mean an insufficient read scope, and is not automatically proof the upload credential is invalid. Never create or broaden a token to work around that without the user's required approval.
 
@@ -49,158 +57,63 @@ including their old dry-run flags. They fail before building, reading credential
 or contacting a platform. Keep them only for a clear migration error when an old
 command is used.
 
-The supported CLI is `scripts/publish-verified-release.mjs`. It requires all ten
+The supported CLI is `scripts/publish-verified-release.mjs`. It requires all eight
 verified source-bound JARs, `--manifest`, `--directory`, `--dependencies`,
 `--changelog` and `--state`. Preserve that state journal for retries. Use
 `--dry-run` to prepare an offline plan without tokens or store writes. A standalone
 CLI invocation does not replace source review, exact-commit loader builds,
 runtime verification, release-tag checks or authorization to publish.
 
-## RAS 4.3.0 publisher-only recovery
+## CurseForge catalog and upload diagnostics
 
-The immutable `v4.3.0` source remains `09a559f500daa21ce6dbc60d80ea0b490a605915`.
-Its first Publish run `38053545236` produced the original ten binaries and manifest.
-The latest initial Modrinth journal is run `38054427839`, with all ten public
-Modrinth versions verified. Do not restore the first empty journal.
-
-The GET-only diagnostic run `38055073295` showed that Minecraft names also occur
-in Bukkit and Addons namespaces. The resolver now joins exact Upload name/type/ID
-with the exact Core Minecraft `gameVersionId` and `gameVersionTypeId`, validates
-the live Minecraft namespace and Core v2 index, and rejects all within-namespace
-ambiguities. Loader/environment IDs are resolved dynamically through the live
-`Modloader`/`Environment` semantic namespaces. No stored catalog IDs are used.
-The canonical `approved` boolean is retained/type-checked; the service currently
-returns false even with documented `gameVersionStatus: 1` and
+Minecraft names also occur in CurseForge's Bukkit and Addons namespaces. The resolver
+joins the exact Upload name/type/ID with the exact Core Minecraft `gameVersionId` and
+`gameVersionTypeId`, validates the live Minecraft namespace and Core v2 index, and
+rejects all within-namespace ambiguities. Loader/environment IDs are resolved
+dynamically through the live `Modloader`/`Environment` semantic namespaces. No stored
+catalog IDs are used, and only the supported Minecraft lines (1.20.1, 1.21.1, 26.2,
+26.3) are accepted. The canonical `approved` boolean is retained/type-checked; the
+service currently returns false even with documented `gameVersionStatus: 1` and
 `gameVersionTypeStatus: 1`. Those enums establish catalog readiness. Final file
 approval remains a separate check on each uploaded public file.
 
-Use the reviewed **Recover RAS 4.3.0 publication** workflow on main with:
+A credentialed `--preflight-only` run includes a `curseforge_inventory` audit for all
+eight expected files: complete strict Core inventory count, observation time, input
+journal SHA256, preserved journal status/ID, and each exact match's ID, SHA1, required
+dependency IDs, target tags, release type, availability and file status. It does not
+change the journal. An absent Core match does **not** establish that an author-visible
+pending upload does not exist; inspect the author Files page, including pending/review
+states, before resolving uncertainty. Neither elapsed time nor absent UI/Core matches
+can by itself clear an uncertain receipt. Resolve with an exact positive file match,
+or provider confirmation about non-acceptance of the specific attempt.
 
-- `helper_commit`: the full independently reviewed main commit used for dispatch
-- `receipt_run_id`: the latest attempted original Publish or publisher-recovery run
-- `dry_run: true`: credentialed read-only preflight of both inventories and exact
-  catalogs, preserving the restored journal byte-for-byte
-- `dry_run: false`: when authorized, the same checks followed by CurseForge-only
-  submission/reconciliation; all ten verified Modrinth rows stay in the journal
-
-The helper pins the original artifact IDs/digests and original manifest digest,
-requires the unchanged release tag and successful original build jobs, restores
-the latest journal across both workflow histories/all attempts, and rejects job
-reruns. It downloads the original ten JARs and re-verifies exact manifest equality.
-It never builds, retags or changes gameplay source. Changelog/dependency bytes
-come from a separate original09a checkout. Helper SHA/tree, input journal hash,
-original artifact records, source identity and fresh sanitized catalog facts are
-saved separately in `publisher-recovery-provenance-<source>`.
-
-Both publication paths share `ras-release-publication` concurrency. Preserve every
-source/provenance artifact. Pending approval/indexing and uncertain submissions
-must be resumed from the newest attempted helper journal; never blindly retry or
-replace them. The existing publisher checks remote identity/hash/dependencies
-before deciding whether a journaled upload can be reconciled.
-
-The read-only `publisher-preflight.json` includes a `curseforge_inventory` audit
-for all ten expected files: complete strict Core inventory count, observation
-time, input journal SHA256, preserved journal status/ID, and each exact match's
-ID, SHA1, required dependency IDs, target tags, release type, availability and
-file status. It does not change the journal. An absent Core match does **not**
-establish that an author-visible pending upload does not exist; inspect the
-author Files page, including pending/review states, before resolving uncertainty.
-The cited APIs document no bounded indexing/read-after-write guarantee or
-negative-acceptance deadline. Neither elapsed time nor absent UI/Core matches
-can by itself clear an uncertain receipt. Resolve with an exact positive file
-match, or provider confirmation about non-acceptance of the specific attempt.
-
-For the first uncertain CurseForge attempt in run `38058514181`, retain artifact
-`11672176209` and restore that latest writer's journal for any subsequent audit.
-Do not restore the older Modrinth-only `38054427839` journal. The uncertain row
-is still evidence of an unresolved attempt even when a read-only audit succeeds.
-
-Future upload failures retain bounded `request_diagnostic` facts on an uncertain
-row: fixed phase/error enums, HTTP status when received, allowlisted content
-type, response size, JSON/ID type, known error/message-field presence and a numeric provider `errorCode`. Raw
-body text, error messages/stacks, unknown keys, headers, credentials and request
-arguments are never retained. These diagnostic facts cannot reconstruct earlier
-discarded exceptions, prove acceptance or non-transmission, clear a receipt, or
-authorize another POST. The no-blind-retry guard is unchanged. Synthetic Node
-Request validation can fail before transport, but that category is not historical
-proof of the cause of any real uncertain submission.
+Upload failures retain bounded `request_diagnostic` facts on an uncertain row: fixed
+phase/error enums, HTTP status when received, allowlisted content type, response size,
+JSON/ID type, known error/message-field presence and a numeric provider `errorCode`.
+Raw body text, error messages/stacks, unknown keys, headers, credentials and request
+arguments are never retained. These facts cannot prove acceptance or non-transmission,
+clear a receipt, or authorize another POST.
 
 CurseForge relations send `projectID` as a JSON integer. The Upload API answers a
 string `projectID` with HTTP 400 (errorCode 1002, "Expected Integer but got String"),
-although its documented example quotes the value. That rejected every CurseForge upload
-for 4.3.0 and 5.0.0. Files without required dependencies send no `relations` object.
+although its documented example quotes the value. Files without required dependencies
+send no `relations` object.
+
+Two CLI recovery options remain for CurseForge:
+
+- `--retry-rejected-curseforge` applies only to a CurseForge receipt that is
+  `uncertain`, has no file ID, and whose diagnostic is a POST answered with an HTTP 400
+  JSON object without an ID, and only while the complete live CurseForge inventory has
+  no copy of that file. The receipt is first recorded as `rejected`, with that evidence,
+  and then uploaded once. Every other uncertain receipt still blocks.
+- `--continue-past-pending-curseforge` (the Publish input
+  `continue_past_pending_curseforge`) lets one run upload the remaining files once at
+  least one CurseForge file of the release is verified, which proves the descriptor.
+  Uploads that are not listed yet keep their `submitted` receipt and file ID. They are
+  never posted again and are verified by a later run. Without the flag, the publisher
+  still stops after each upload until CurseForge lists it.
 
 The upload protocol remains the documented `X-Api-Token` plus multipart
 `metadata`/`file` request and top-level numeric response `id`; see the
 [official Upload API](https://support.curseforge.com/support/solutions/articles/9000197321-curseforge-upload-api)
 and [Core file inventory API](https://docs.curseforge.com/rest-api/#get-mod-files).
-
-## RAS 5.0.0 CurseForge recovery
-
-The `v5.0.0` Publish run (`39739461491`) published all ten files to Modrinth. Its
-first CurseForge POST (`fabric-1.20.1`) got HTTP 400, because that publisher sent
-relation `projectID` values as strings. The publisher now sends integers, but the
-tag still points at the old code, so the reviewed **Recover RAS 5.0.0 publication**
-workflow on main completes CurseForge without moving the tag or rebuilding:
-
-- `scripts/release-500-recovery-lock.json` pins the tag, source commit `c8e06b8`,
-  the source run, the five JAR artifact digests, the provenance artifact and the
-  original manifest digest. `scripts/validate-500-publisher-recovery.py` reuses
-  the 4.3.0 provenance checks with that lock.
-- The JARs are re-verified against the original manifest. Modrinth is checked
-  read-only, and its ten verified receipts must be public.
-- `--retry-rejected-curseforge` is the only new permission. It applies only to a
-  CurseForge receipt that is `uncertain`, has no file ID, and whose diagnostic is a
-  POST answered with an HTTP 400 JSON object without an ID. It applies only while the
-  complete live CurseForge inventory has no copy of that file. The receipt is first
-  recorded as `rejected`, with that evidence, and then uploaded once. Every other
-  uncertain receipt still blocks.
-
-`--continue-past-pending-curseforge` lets one run upload the remaining files once
-at least one CurseForge file of the release is verified, which proves the
-descriptor. Uploads that are not listed yet keep their `submitted` receipt and file
-ID. They are never posted again and are verified by a later run. Without the flag,
-the publisher still stops after each upload until CurseForge lists it.
-
-Dispatch it from main with `helper_commit` set to the dispatch SHA and
-`receipt_run_id` set to the latest attempted journal (first `39739461491`). Run it
-with `dry_run: true` first, check `publisher-preflight.json`
-(`curseforge_rejected_retry`), then run it with `dry_run: false`.
-
-## Explicit isolation of never-attempted CurseForge targets
-
-The recovery workflow's `isolate_never_attempted_curseforge` boolean defaults to
-`false`. When explicitly authorized and independently reviewed, set it to `true`
-with `dry_run: true` first, using the exact reviewed helper commit and latest
-writer's receipt run. This passes `--isolate-never-attempted-curseforge` to the
-genuine read-only preflight of both stores. Review the resulting artifact before
-any separately authorized live dispatch. For the current unresolved first
-attempt, restore `receipt_run_id: 38058514181`, not the older Modrinth-only run.
-
-Isolation requires the immutable original09a4.3.0 ten-JAR plan, ten preserved
-verified Modrinth receipt rows, and the existing Fabric1.20.1 CurseForge row with
-status `uncertain`, the exact original hash, and no ID. It freezes **every**
-journaled CurseForge target regardless of its status, including dry-run rows.
-Only targets without any prior CurseForge row are selected. All-ten artifact,
-catalog and existing-file conflict checks still run before the first POST.
-
-The preflight reports exact selected/excluded target lists and counts, unresolved
-excluded count, and per-file classes: excluded journaled targets, never-attempted
-exact existing files, or never-attempted POST candidates. It retains the input
-journal SHA256. The workflow compares the restored journal bytes before/after
-preflight and records `journal_unchanged: true` only after that comparison passes.
-
-Live isolation is CurseForge-only and serial. Frozen targets are skipped before
-the existing-file reconciliation branch, so their receipt fields stay unchanged
-even when an exact file becomes visible. All ten Modrinth rows remain unchanged.
-The first new POST exception is recorded `uncertain` with sanitized diagnostics
-and stops the run immediately. Missing indexing or pending public approval keeps
-the scoped result pending/failed. Empty selection cannot claim completion.
-
-Successful isolation establishes only the reported selected scope. It includes
-the exact selected list/count and excluded/unresolved counts; the full release
-keeps `publicly_verified: false` while the first receipt is uncertain. The
-default full-release path and its success criteria are unchanged. Preserve a
-live isolation run as the newest writer, even when it fails, and restore that
-newest journal for the next read-only audit. Isolation never clears the first
-uncertainty and never authorizes a second POST for any journaled target.

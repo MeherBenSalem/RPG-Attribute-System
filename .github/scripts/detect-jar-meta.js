@@ -7,7 +7,7 @@
  * Current convention (archivesName + version):
  * rpg_attribute_system-{loader}-{mcVersion}-{modVersion}.jar
  *
- * Minecraft versions may be classic (1.21.1) or calendar-style (26.1.2, 26.2).
+ * Minecraft versions may be classic (1.21.1) or calendar-style (26.2, 26.3).
  */
 
 const path = require('path');

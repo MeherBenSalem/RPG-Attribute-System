@@ -129,7 +129,7 @@ Admin commands already require **OP level 4**. Use `/op <player>` in the console
 
 ### I use NeoForge but CurseForge says the file requires Forge. Which jar is correct?
 
-Use the file whose name contains `-neoforge-` and your Minecraft version, and install **NeoForge** (not Minecraft Forge). Forge exists for RAS only on **1.20.1**. On CurseForge, open the **NeoForge** loader tab. NeoForge **1.21.1** also requires matching jauml. NeoForge **26.1.2, 26.2 and 26.3** do not require jauml. See [Installation](installation.md#which-jar-to-download).
+Use the file whose name contains `-neoforge-` and your Minecraft version, and install **NeoForge** (not Minecraft Forge). Forge exists for RAS only on **1.20.1**. On CurseForge, open the **NeoForge** loader tab. NeoForge **1.21.1** also requires matching jauml. NeoForge **26.2 and 26.3** do not require jauml. See [Installation](installation.md#which-jar-to-download).
 
 ### Can I turn off the text shadow on the HUD / stats menu?
 

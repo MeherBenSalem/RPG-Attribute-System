@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "rpg_attribute_system:item/scroll_of_rebirth"
-  }
-}

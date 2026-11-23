@@ -10,7 +10,6 @@ public integration API for other mods.
 | --- | --- | --- | --- |
 | `1.20.1/` | 1.20.1 | Fabric, Forge | 17 |
 | `1.21.1/` | 1.21.1 | Fabric, NeoForge | 21 |
-| `26.1.2/` | 26.1.2 | Fabric, NeoForge | 25 |
 | `26.2/` | 26.2 | Fabric, NeoForge | 25 |
 | `26.3/` | 26.3 | Fabric, NeoForge | 25 |
 
@@ -20,8 +19,8 @@ specific version folder you want to work on.
 Download the jar whose name matches your **loader** (`-fabric-`, `-forge-` on
 1.20.1 only, or `-neoforge-`). There is no Forge build for 1.21.1+. This is a
 mod, not a Paper/Folia plugin. Fabric API is required for every Fabric build.
-jauml is also required for both loaders on 1.20.1 and 1.21.1; the 26.1.2, 26.2
-and 26.3 builds do not require jauml. See [Installation](docs/installation.md).
+jauml is also required for both loaders on 1.20.1 and 1.21.1; the 26.2 and 26.3
+builds do not require jauml. See [Installation](docs/installation.md).
 
 Player-facing docs live in `docs/` and are published with screenshots at
 <https://nightbeam.dev/docs/remnants-rpg-stats> (synced by the website's
@@ -49,7 +48,7 @@ in `docs/listing-notes.md`.
 Build a specific version from inside that version folder:
 
 ```powershell
-cd 26.1.2
+cd 26.3
 .\gradlew.bat build --no-daemon
 ```
 
@@ -59,9 +58,12 @@ version roots, but the individual workspaces remain isolated.
 ## Publishing
 
 Create a release tag only after final independent source review, exact-commit
-loader CI, verified ten-JAR inventory, and the required client/gameplay checks.
+loader CI, verified eight-JAR inventory, and the required client/gameplay checks.
 Pushing `v<version>` runs `.github/workflows/publish.yml`. Each loader JAR has
-its own Modrinth version and CurseForge file (10 JARs total).
+its own Modrinth version and CurseForge file (8 JARs total).
+Publish refuses a second release of RAS on the same day (Africa/Tunis time; see
+the same-day guard in [docs/releasing.md](docs/releasing.md)), and a release whose
+files all await CurseForge approval ends green with a warning instead of failing.
 
 The workflow uses existing `MODRINTH_TOKEN`, `CURSEFORGE_TOKEN`, and
 `CURSEFORGE_API_KEY` repository secrets. The RAS project identities are checked;

@@ -4,11 +4,11 @@
 
 | Component | Requirement |
 |-----------|-------------|
-| **Minecraft** | 1.20.1, 1.21.1, 26.1.2, 26.2, or 26.3 |
-| **Mod Loader** | Fabric, Forge (1.20.1 only), or NeoForge (1.21.1, 26.1.2, 26.2, 26.3) |
-| **Java** | 17 (1.20.1), 21 (1.21.1), or 25 (26.1.2, 26.2, 26.3) |
+| **Minecraft** | 1.20.1, 1.21.1, 26.2, or 26.3 |
+| **Mod Loader** | Fabric, Forge (1.20.1 only), or NeoForge (1.21.1, 26.2, 26.3) |
+| **Java** | 17 (1.20.1), 21 (1.21.1), or 25 (26.2, 26.3) |
 | **Fabric API** | Required on every Fabric build. Use the file for your Minecraft version. |
-| **jauml** | Required on both loaders for **1.20.1 and 1.21.1**. Use the matching Minecraft version and loader. **26.1.2, 26.2 and 26.3 do not require jauml.** |
+| **jauml** | Required on both loaders for **1.20.1 and 1.21.1**. Use the matching Minecraft version and loader. **26.2 and 26.3 do not require jauml.** |
 
 RAS is a Fabric / Forge / NeoForge **mod**. There is no Paper, Folia, Spigot, or Bukkit plugin.
 
@@ -20,7 +20,7 @@ CurseForge and Modrinth publish **one file per loader**. The filename is the sou
 |---------|----------------------------|------------|
 | Fabric (any supported MC) | `rpg_attribute_system-fabric-<mc>-<ver>.jar` | Forge or NeoForge jars |
 | Forge **1.20.1 only** | `rpg_attribute_system-forge-1.20.1-<ver>.jar` | NeoForge jars, or any 1.21.1+ Forge filter result |
-| NeoForge 1.21.1 / 26.1.2 / 26.2 / 26.3 | `rpg_attribute_system-neoforge-<mc>-<ver>.jar` | Forge jars |
+| NeoForge 1.21.1 / 26.2 / 26.3 | `rpg_attribute_system-neoforge-<mc>-<ver>.jar` | Forge jars |
 
 On CurseForge, use the **loader tabs** (Fabric / Forge / NeoForge), not the Minecraft version filter alone:
 
@@ -28,7 +28,7 @@ On CurseForge, use the **loader tabs** (Fabric / Forge / NeoForge), not the Mine
 - **Forge** files are tagged with Forge (type **1**). Only **1.20.1** has a Forge jar.
 - If a NeoForge file's relations panel still says "Requires Forge", install **NeoForge** with the matching `-neoforge-` RAS JAR. Only **1.21.1 NeoForge** additionally requires jauml. You do not install Minecraft Forge for 1.21.1+.
 
-For the 1.20.1 and 1.21.1 builds, jauml is a **separate** required dependency, not bundled inside RAS. Use the jauml file for the same loader and Minecraft version. Calendar-version builds (26.1.2, 26.2, 26.3) do not declare jauml. Fabric builds always require Fabric API.
+For the 1.20.1 and 1.21.1 builds, jauml is a **separate** required dependency, not bundled inside RAS. Use the jauml file for the same loader and Minecraft version. Calendar-version builds (26.2, 26.3) do not declare jauml. Fabric builds always require Fabric API.
 
 ## Singleplayer Installation
 
@@ -116,9 +116,9 @@ Config files are forward-compatible across all RAS versions. The mod only writes
 - Command registration happens via `RegisterCommandsEvent`
 - Boss-specific drop rate randomization is active in 1.20.1 (unused in 1.21.1+)
 
-### NeoForge (1.21.1, 26.1.2, 26.2, 26.3)
+### NeoForge (1.21.1, 26.2, 26.3)
 
-- **1.21.1** additionally requires jauml; **26.1.2, 26.2 and 26.3** have no external library dependency
+- **1.21.1** additionally requires jauml; **26.2 and 26.3** have no external library dependency
 - JARs go in `mods/`
 - Command registration happens via `RegisterCommandsEvent`
 - Uses `AttachmentType` for player data storage

@@ -136,7 +136,7 @@ See the [server authority table](configuration/overview.md#server-authority) for
 
 **Symptom:** You run NeoForge 1.21.1+ but the file relations say Forge is required, or the Forge filter shows a NeoForge jar.
 
-**Fix:** Install **NeoForge**, not Minecraft Forge. Download `rpg_attribute_system-neoforge-<mc>-*.jar` from the **NeoForge** loader tab. 1.21.1 / 26.1.2 / 26.2 have no Forge jar. Also install the matching **jauml** NeoForge jar.
+**Fix:** Install **NeoForge**, not Minecraft Forge. Download `rpg_attribute_system-neoforge-<mc>-*.jar` from the **NeoForge** loader tab. 1.21.1 / 26.2 / 26.3 have no Forge jar. Also install the matching **jauml** NeoForge jar.
 
 ### Invalid JSON
 
