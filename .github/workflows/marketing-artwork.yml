@@ -47,3 +47,11 @@ jobs:
         with:
           name: marketing-images
           path: marketing/images
+      # The same images, printed into the log as base64, for maintainers whose network can read logs but not artifact storage.
+      - name: Print images into the log
+        run: |
+          tar -C marketing/images -czf "$RUNNER_TEMP/images.tgz" .
+          echo "images.tgz sha256 $(sha256sum "$RUNNER_TEMP/images.tgz" | cut -d' ' -f1)"
+          echo "----- BEGIN IMAGES -----"
+          base64 -w 76 "$RUNNER_TEMP/images.tgz"
+          echo "----- END IMAGES -----"
