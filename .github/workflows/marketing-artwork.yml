@@ -1,0 +1,55 @@
+# Renders listing artwork in marketing/images/ with marketing/source/render.cjs on a GitHub runner
+# (headless Chromium through Playwright) and commits the result to main. Runs only by hand.
+# It never builds or publishes the mod.
+
+name: Marketing artwork
+
+on:
+  workflow_dispatch:
+    inputs:
+      targets:
+        description: "Space-separated render.cjs targets (blank renders everything)"
+        required: false
+        default: "banner"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: marketing-artwork-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Require main
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: |
+          echo "Artwork is only rendered on main."
+          exit 1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.63.0
+          npx playwright install --with-deps chromium
+      - name: Render the artwork
+        env:
+          TARGETS: ${{ inputs.targets }}
+        run: NODE_PATH="$PWD/node_modules" node marketing/source/render.cjs $TARGETS
+      - name: Commit the artwork
+        env:
+          TARGETS: ${{ inputs.targets }}
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add marketing/images
+          git diff --cached --quiet && { echo "No new artwork"; exit 0; }
+          git commit -m "marketing: render ${TARGETS:-all artwork} from marketing/source"
+          git push origin HEAD:main
