@@ -6,6 +6,7 @@
  * Fake .jar bytes test the Node publisher's attested inventory boundary; the
  * independent Python suite tests actual ZIP/JAR metadata and source provenance.
  * Every fetch is replaced. No network, account credentials, or store writes.
+ * NightBeam publishes to CurseForge only (24 Nov 2026): any request to another store fails the suite.
  */
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
@@ -16,13 +17,11 @@ import os from 'node:os';
 import path from 'node:path';
 import test, {after} from 'node:test';
 import {
-  validatePlan, modrinthDescriptor, curseForgeDescriptor,
-  matchingModrinth, matchingCurseForge, main,
+  validatePlan, curseForgeDescriptor, matchingCurseForge, main,
 } from '../scripts/publish-verified-release.mjs';
 
 const VERSION = '4.3.0';
 const COMMIT = '0123456789abcdef0123456789abcdef01234567';
-const MODRINTH_PROJECT = 'd85UTOuq';
 const CURSEFORGE_PROJECT = '1079687';
 const CHANGELOG = 'Synthetic offline release changelog.\n';
 // Independent source-metadata expectations, never imported from the uploader.
@@ -37,8 +36,8 @@ const TARGETS = [
   ['26.3', 'neoforge', [], 25],
 ];
 const DEPENDENCIES = {
-  jauml: {modrinth: 'ihvBalM2', curseforge_slug: 'jauml', curseforge_id: 1281310},
-  'fabric-api': {modrinth: 'P7dR8mSH', curseforge_slug: 'fabric-api', curseforge_id: 306612},
+  jauml: {curseforge_slug: 'jauml', curseforge_id: 1281310},
+  'fabric-api': {curseforge_slug: 'fabric-api', curseforge_id: 306612},
 };
 const IDS = {
   client: 99701, server: 99702,
@@ -47,7 +46,7 @@ const IDS = {
 };
 const LOADER_NAMES = {fabric: 'Fabric', forge: 'Forge', neoforge: 'NeoForge'};
 const ORIGINAL_FETCH = globalThis.fetch;
-const ENV_KEYS = ['MODRINTH_TOKEN', 'CURSEFORGE_TOKEN', 'CURSEFORGE_API_KEY', 'MODRINTH_ID', 'CURSEFORGE_ID'];
+const ENV_KEYS = ['CURSEFORGE_TOKEN', 'CURSEFORGE_API_KEY', 'CURSEFORGE_ID'];
 const ORIGINAL_ENV = Object.fromEntries(ENV_KEYS.map(key => [key, process.env[key]]));
 const clone = value => structuredClone(value);
 const hash = (bytes, algorithm) => crypto.createHash(algorithm).update(bytes).digest('hex');
@@ -88,7 +87,7 @@ function fixture(t) {
   fs.writeFileSync(paths.changelog, CHANGELOG);
   return {
     root, directory, manifest, files, paths,
-    argv(platforms = 'both') {
+    argv(platforms = 'curseforge') {
       return ['--manifest', paths.manifest, '--directory', directory, '--dependencies', paths.dependencies,
         '--changelog', paths.changelog, '--state', paths.state, '--platforms', platforms];
     },
@@ -106,7 +105,6 @@ function fakeCredentials(t, overrides = {}) {
   });
   for (const key of ENV_KEYS) delete process.env[key];
   Object.assign(process.env, {
-    MODRINTH_TOKEN: 'offline-test-not-a-token',
     CURSEFORGE_TOKEN: 'offline-test-not-a-token',
     CURSEFORGE_API_KEY: 'offline-test-not-a-key',
   });
@@ -115,18 +113,7 @@ function fakeCredentials(t, overrides = {}) {
     else process.env[key] = value;
   }
 }
-function mrDescriptor(entry) {return modrinthDescriptor(entry, VERSION, CHANGELOG, MODRINTH_PROJECT, DEPENDENCIES);}
 function cfDescriptor(entry) {return curseForgeDescriptor(entry, VERSION, CHANGELOG, IDS, DEPENDENCIES);}
-function mrRecord(entry, id = `MR${String(TARGETS.findIndex(([mc, loader]) => mc === entry.minecraft && loader === entry.loader) + 1).padStart(6, '0')}`) {
-  const descriptor = mrDescriptor(entry);
-  return {
-    id, project_id: MODRINTH_PROJECT, version_number: descriptor.version_number,
-    version_type: 'release', status: 'listed', loaders: [...descriptor.loaders], game_versions: [...descriptor.game_versions],
-    dependencies: clone(descriptor.dependencies),
-    files: [{filename: entry.file_name, primary: true, size: entry.size_bytes,
-      hashes: {sha512: entry.sha512, sha1: entry.sha1}}],
-  };
-}
 function cfRecord(entry, id = TARGETS.findIndex(([mc, loader]) => mc === entry.minecraft && loader === entry.loader) + 1001) {
   return {
     id, modId: Number(CURSEFORGE_PROJECT), fileName: entry.file_name,
@@ -152,7 +139,7 @@ function installFetch(t, handler) {
   globalThis.fetch = async (url, options = {}) => {
     const value = String(url);
     const parsed = new URL(value);
-    assert.ok(['api.modrinth.com', 'api.curseforge.com', 'minecraft.curseforge.com'].includes(parsed.hostname),
+    assert.ok(['api.curseforge.com', 'minecraft.curseforge.com'].includes(parsed.hostname),
       `Unexpected network destination: ${value}`);
     assert.equal(options.redirect, 'error', 'Authenticated store requests must reject redirects');
     const call = {url: value, method: options.method || 'GET', options};
@@ -186,14 +173,11 @@ function catalogFixture() {
 }
 function fakeStore(t, fx, options = {}) {
   const remote = {
-    modrinth: clone(options.modrinth || []), curseforge: clone(options.curseforge || []), posts: [],
+    curseforge: clone(options.curseforge || []), posts: [],
   };
   remote.requests = installFetch(t, async (call, requests) => {
     const custom = await options.intercept?.(call, remote, requests);
     if (custom !== undefined) return custom;
-    if (call.method === 'GET' && call.url === `https://api.modrinth.com/v2/project/${MODRINTH_PROJECT}/version`) {
-      return jsonResponse(remote.modrinth);
-    }
     if (call.method === 'GET' && call.url.startsWith(`https://api.curseforge.com/v1/mods/${CURSEFORGE_PROJECT}/files?`)) {
       const offset = Number(new URL(call.url).searchParams.get('index'));
       return jsonResponse(cfPage(remote.curseforge.slice(offset, offset + 50), offset, remote.curseforge.length));
@@ -210,22 +194,20 @@ function fakeStore(t, fx, options = {}) {
     }
     if (call.method === 'POST') {
       assert.ok(call.options.body instanceof FormData);
-      const platform = call.url === 'https://api.modrinth.com/v2/version' ? 'modrinth'
-        : call.url === `https://minecraft.curseforge.com/api/projects/${CURSEFORGE_PROJECT}/upload-file` ? 'curseforge' : null;
+      const platform = call.url === `https://minecraft.curseforge.com/api/projects/${CURSEFORGE_PROJECT}/upload-file` ? 'curseforge' : null;
       assert.ok(platform, `Unexpected write endpoint: ${call.url}`);
-      const file = call.options.body.get(platform === 'modrinth' ? 'file_0' : 'file');
+      const file = call.options.body.get('file');
       const entry = fx.files.find(row => row.file_name === file?.name);
       assert.ok(entry, 'Uploaded file must be in the attested inventory');
-      const metadata = JSON.parse(call.options.body.get(platform === 'modrinth' ? 'data' : 'metadata'));
-      assert.deepEqual(metadata, platform === 'modrinth' ? mrDescriptor(entry) : cfDescriptor(entry));
+      const metadata = JSON.parse(call.options.body.get('metadata'));
+      assert.deepEqual(metadata, cfDescriptor(entry));
       assert.equal(hash(Buffer.from(await file.arrayBuffer()), 'sha256'), entry.sha256);
       assert.ok(call.options.signal instanceof AbortSignal, 'Network writes must have bounded timeouts');
       remote.posts.push({platform, file: entry.file_name, metadata});
-      const record = platform === 'modrinth' ? mrRecord(entry) : cfRecord(entry);
-      if (platform === 'curseforge' && options.curseForgeFileStatus !== undefined) {
+      const record = cfRecord(entry);
+      if (options.curseForgeFileStatus !== undefined) {
         record.fileStatus = options.curseForgeFileStatus; record.isAvailable = false;
       }
-      if (platform === 'modrinth' && options.modrinthStatus !== undefined) record.status = options.modrinthStatus;
       if (!options.pendingIndex) remote[platform].push(record);
       return jsonResponse(options.missingId ? {} : {id: record.id});
     }
@@ -256,25 +238,20 @@ test('descriptors declare the exact required dependency set for all eight source
     await t.test(`${TARGETS[index][0]} ${TARGETS[index][1]}`, () => {
       const entry = fx.files[index];
       const required = TARGETS[index][2];
-      const mr = mrDescriptor(entry), cf = cfDescriptor(entry);
-      assert.deepEqual(mr.dependencies, required.map(id => ({project_id: DEPENDENCIES[id].modrinth, version_id: null, file_name: null, dependency_type: 'required'})));
+      const cf = cfDescriptor(entry);
       if (required.length) {
         assert.deepEqual(cf.relations.projects, required.map(id => ({slug: DEPENDENCIES[id].curseforge_slug, projectID: DEPENDENCIES[id].curseforge_id, type: 'requiredDependency'})));
         for (const project of cf.relations.projects) assert.equal(typeof project.projectID, 'number', 'CurseForge rejects a string projectID');
       } else {
         assert.equal(Object.hasOwn(cf, 'relations'), false, 'Files without dependencies send no relations');
       }
-      assert.deepEqual(mr.game_versions, [entry.minecraft]);
-      assert.deepEqual(mr.loaders, [entry.loader]);
-      assert.equal(mr.version_number, `${VERSION}+${entry.loader}-${entry.minecraft}`);
-      assert.equal(mr.project_id, MODRINTH_PROJECT);
+      assert.equal(cf.displayName, `${VERSION} · ${entry.loader} · ${entry.minecraft}`);
       assert.deepEqual(cf.gameVersions, [IDS.minecraft[entry.minecraft], IDS.loader[entry.loader], IDS.client, IDS.server]);
     });
   }
 });
 test('descriptor generation fails closed on unknown dependency or incomplete CurseForge IDs', t => {
   const fx = fixture(t), entry = fx.files[0];
-  assert.throws(() => modrinthDescriptor({...entry, required_mod_ids: ['unmapped']}, VERSION, CHANGELOG, MODRINTH_PROJECT, DEPENDENCIES));
   assert.throws(() => curseForgeDescriptor({...entry, required_mod_ids: ['unmapped']}, VERSION, CHANGELOG, IDS, DEPENDENCIES));
   for (const badIds of [
     {...IDS, client: undefined}, {...IDS, server: '99702'},
@@ -341,85 +318,6 @@ test('validatePlan rejects artifact symlinks and paths escaping the verified dir
     if (mode === 'symlink') {fs.unlinkSync(original); fs.symlinkSync(outside, original);}
     else entry.path = `../${entry.file_name}`;
     assert.throws(() => validatePlan(fx.manifest, fx.directory), /path|symlink|escape|directory/i);
-  });
-});
-test('matchingModrinth accepts one exact match regardless of required dependency order', t => {
-  const fx = fixture(t), entry = fx.files[0], existing = mrRecord(entry);
-  existing.dependencies.reverse();
-  assert.equal(matchingModrinth([existing], entry, mrDescriptor(entry)), existing.id);
-  assert.equal(matchingModrinth([], entry, mrDescriptor(entry)), null);
-  assert.throws(() => matchingModrinth([existing, clone(existing)], entry, mrDescriptor(entry)), /ambiguous/i);
-});
-test('matchingModrinth rejects filename/version collisions with wrong hash, target, or dependencies', async t => {
-  const mutations = {
-    'sha512': row => {row.files[0].hashes.sha512 = '0'.repeat(128);},
-    'sha1': row => {row.files[0].hashes.sha1 = '0'.repeat(40);},
-    'version': row => {row.version_number = '4.2.9+fabric-1.20.1';},
-    'filename': row => {row.files[0].filename = 'different.jar';},
-    'release type': row => {row.version_type = 'beta';},
-    'loader': row => {row.loaders = ['forge'];},
-    'extra loader': row => {row.loaders.push('forge');},
-    'game': row => {row.game_versions = ['1.20.2'];},
-    'extra game': row => {row.game_versions.push('1.20.2');},
-    'missing dependency': row => {row.dependencies.pop();},
-    'wrong dependency project': row => {row.dependencies[0].project_id = 'wrong-project';},
-    'optional dependency': row => {row.dependencies[0].dependency_type = 'optional';},
-    'extra required dependency': row => {row.dependencies.push({project_id: 'unexpected-project', dependency_type: 'required'});},
-  };
-  for (const [name, mutate] of Object.entries(mutations)) await t.test(name, t => {
-    const fx = fixture(t), entry = fx.files[0], existing = mrRecord(entry); mutate(existing);
-    assert.throws(() => matchingModrinth([existing], entry, mrDescriptor(entry)));
-  });
-  await t.test('26.x Neo has no inherited JA UML', t => {
-    const fx = fixture(t), entry = fx.files[7], existing = mrRecord(entry);
-    existing.dependencies.push({project_id: DEPENDENCIES.jauml.modrinth, dependency_type: 'required'});
-    assert.throws(() => matchingModrinth([existing], entry, mrDescriptor(entry)));
-  });
-});
-test('matchingModrinth requires explicit valid dependency metadata including empty 26.x Neo targets', async t => {
-  const mutations = {
-    'missing array': row => {delete row.dependencies;},
-    'null array': row => {row.dependencies = null;},
-    'object instead of array': row => {row.dependencies = {};},
-    'null row': row => {row.dependencies.push(null);},
-    'no target': row => {row.dependencies.push({dependency_type: 'optional'});},
-    'all null targets': row => {row.dependencies.push({project_id: null, version_id: null, file_name: null, dependency_type: 'optional'});},
-    'empty project ID': row => {row.dependencies.push({project_id: '', dependency_type: 'optional'});},
-    'nonstring project ID': row => {row.dependencies.push({project_id: 1281310, dependency_type: 'optional'});},
-    'non-base62 project ID': row => {row.dependencies.push({project_id: 'invalid-project', dependency_type: 'optional'});},
-    'non-base62 version ID': row => {row.dependencies.push({project_id: 'ihvBalM2', version_id: 'invalid-version', dependency_type: 'optional'});},
-    'empty external filename': row => {row.dependencies.push({file_name: ' ', dependency_type: 'optional'});},
-    'nonstring external filename': row => {row.dependencies.push({file_name: 123, dependency_type: 'optional'});},
-    'missing relation': row => {row.dependencies.push({project_id: 'ihvBalM2'});},
-    'null relation': row => {row.dependencies.push({project_id: 'ihvBalM2', dependency_type: null});},
-    'unknown relation': row => {row.dependencies.push({project_id: 'ihvBalM2', dependency_type: 'unknown'});},
-  };
-  for (const index of [0, 5, 7]) for (const [name, mutate] of Object.entries(mutations)) {
-    await t.test(`${TARGETS[index][0]} ${TARGETS[index][1]}: ${name}`, t => {
-      const fx = fixture(t), entry = fx.files[index], existing = mrRecord(entry);
-      mutate(existing);
-      assert.throws(() => matchingModrinth([existing], entry, mrDescriptor(entry)), /dependencies/i);
-    });
-  }
-  await t.test('duplicate required destination', t => {
-    const fx = fixture(t), entry = fx.files[0], existing = mrRecord(entry);
-    existing.dependencies.push(clone(existing.dependencies[0]));
-    assert.throws(() => matchingModrinth([existing], entry, mrDescriptor(entry)), /differs/i);
-  });
-  await t.test('unresolved required version or external file cannot stand in for a reviewed project', t => {
-    const fx = fixture(t), entry = fx.files[0];
-    for (const target of [{project_id: null, version_id: 'IIJJKKLL'}, {project_id: null, file_name: 'external.jar'}]) {
-      const existing = mrRecord(entry);
-      existing.dependencies[0] = {...target, dependency_type: 'required'};
-      assert.throws(() => matchingModrinth([existing], entry, mrDescriptor(entry)), /differs/i);
-    }
-  });
-  await t.test('documented optional, incompatible, embedded and external targets remain valid', t => {
-    const fx = fixture(t), entry = fx.files[7], existing = mrRecord(entry);
-    existing.dependencies = ['optional', 'incompatible', 'embedded'].map(dependency_type => ({project_id: 'ihvBalM2', dependency_type}));
-    existing.dependencies.push({project_id: null, version_id: 'IIJJKKLL', file_name: null, dependency_type: 'optional'},
-      {project_id: null, version_id: null, file_name: 'external.jar', dependency_type: 'embedded'});
-    assert.equal(matchingModrinth([existing], entry, mrDescriptor(entry)), existing.id);
   });
 });
 test('matchingCurseForge accepts one exact match and recognizes uppercase SHA1', t => {
@@ -495,25 +393,22 @@ test('matchingCurseForge requires explicit well-formed dependencies even for emp
 });
 test('an otherwise exact existing record with a missing or malformed provider ID cannot trigger a fresh POST', async t => {
   const variants = {
-    modrinth: [undefined, null, '', ' ', 123, {}, [], 'invalid-id'],
     curseforge: [undefined, null, '', '1001', 0, -1, 1.5, {}, [], 0x100000000],
   };
   for (const [platform, ids] of Object.entries(variants)) for (const id of ids) await t.test(`${platform}: ${JSON.stringify(id)}`, async t => {
     const fx = fixture(t); fakeCredentials(t);
     const entry = fx.files[0];
-    const row = platform === 'modrinth' ? mrRecord(entry) : cfRecord(entry);
+    const row = cfRecord(entry);
     if (id === undefined) delete row.id;
     else row.id = id;
-    assert.throws(() => platform === 'modrinth' ? matchingModrinth([row], entry, mrDescriptor(entry))
-      : matchingCurseForge([row], entry, cfDescriptor(entry), DEPENDENCIES));
+    assert.throws(() => matchingCurseForge([row], entry, cfDescriptor(entry), DEPENDENCIES));
     const store = fakeStore(t, fx, {[platform]: [row]});
     await assert.rejects(main(fx.argv(platform)), /differs|inventory|deduplicate/i);
     assert.equal(store.requests.filter(call => call.method === 'POST').length, 0);
   });
 });
 test('malformed POST response IDs remain uncertain and block all later or repeated uploads', async t => {
-  const variants = {modrinth: [null, '', ' ', 123, {}, [], 'invalid-id'],
-    curseforge: [null, '', '1001', 0, -1, 1.5, {}, [], 0x100000000]};
+  const variants = {curseforge: [null, '', '1001', 0, -1, 1.5, {}, [], 0x100000000]};
   for (const [platform, ids] of Object.entries(variants)) for (const id of ids) await t.test(`${platform}: ${JSON.stringify(id)}`, async t => {
     const fx = fixture(t); fakeCredentials(t);
     let posts = 0;
@@ -531,51 +426,54 @@ test('malformed POST response IDs remain uncertain and block all later or repeat
     assert.deepEqual(fx.state().uploads[0], receipt);
   });
 });
-test('dry run needs no tokens and makes no network requests or writes to either platform', async t => {
+test('dry run needs no tokens and makes no network requests or writes', async t => {
   const fx = fixture(t);
-  fakeCredentials(t, {MODRINTH_TOKEN: undefined, CURSEFORGE_TOKEN: undefined, CURSEFORGE_API_KEY: undefined});
+  fakeCredentials(t, {CURSEFORGE_TOKEN: undefined, CURSEFORGE_API_KEY: undefined});
   const calls = installFetch(t, () => assert.fail('Dry-run fetch is forbidden'));
   const state = await main([...fx.argv(), '--dry-run']);
-  assert.equal(state.uploads.length, 16);
+  assert.equal(state.uploads.length, 8);
+  assert.ok(state.uploads.every(upload => upload.platform === 'curseforge'));
   assert.equal(calls.length, 0);
   assert.ok(state.uploads.every(upload => upload.status.startsWith('dry-run')));
   assert.deepEqual(fx.state(), state);
 });
-test('every selected-platform credential is checked before the first network request/write', async t => {
-  const variants = [
-    ['both', 'MODRINTH_TOKEN'], ['both', 'CURSEFORGE_TOKEN'], ['both', 'CURSEFORGE_API_KEY'],
-    ['modrinth', 'MODRINTH_TOKEN'], ['curseforge', 'CURSEFORGE_TOKEN'], ['curseforge', 'CURSEFORGE_API_KEY'],
-  ];
-  for (const [platform, key] of variants) await t.test(`${platform}: ${key}`, async t => {
+test('every CurseForge credential is checked before the first network request/write', async t => {
+  for (const key of ['CURSEFORGE_TOKEN', 'CURSEFORGE_API_KEY']) await t.test(key, async t => {
     const fx = fixture(t); fakeCredentials(t, {[key]: undefined});
     const calls = installFetch(t, () => assert.fail('Missing credential must fail before fetch'));
-    await assert.rejects(main(fx.argv(platform)), /TOKEN|API_KEY|credential/i);
+    await assert.rejects(main(fx.argv()), /TOKEN|API_KEY|credential/i);
     assert.equal(calls.length, 0);
   });
 });
-test('platform-only recovery does not require the other platform credentials', async t => {
-  for (const platform of ['modrinth', 'curseforge']) await t.test(platform, async t => {
-    const fx = fixture(t);
-    fakeCredentials(t, platform === 'modrinth' ? {CURSEFORGE_TOKEN: undefined, CURSEFORGE_API_KEY: undefined} : {MODRINTH_TOKEN: undefined});
-    const store = fakeStore(t, fx, {
-      modrinth: fx.files.map(entry => mrRecord(entry)), curseforge: fx.files.map(entry => cfRecord(entry)),
+test('CurseForge is the only destination: other platforms are refused before any request', async t => {
+  for (const platform of ['modrinth', 'both']) for (const extra of [[], ['--dry-run'], ['--preflight-only']]) {
+    await t.test(`${platform} ${extra.join(' ')}`, async t => {
+      const fx = fixture(t); fakeCredentials(t);
+      const calls = installFetch(t, () => assert.fail('A refused platform must fail before fetch'));
+      await assert.rejects(main([...fx.argv(platform), ...extra]), /Unknown platforms/);
+      assert.equal(calls.length, 0);
+      assert.equal(fs.existsSync(fx.paths.state), false);
     });
-    const state = await main(fx.argv(platform));
+  }
+  await t.test('omitting --platforms publishes to CurseForge', async t => {
+    const fx = fixture(t); fakeCredentials(t);
+    const store = fakeStore(t, fx, {curseforge: fx.files.map(entry => cfRecord(entry))});
+    const argv = fx.argv(); argv.splice(-2, 2);
+    const state = await main(argv);
     assert.equal(state.uploads.length, 8);
-    assert.ok(state.uploads.every(upload => upload.platform === platform));
+    assert.ok(state.uploads.every(upload => upload.platform === 'curseforge' && upload.status === 'verified-existing'));
     assert.equal(store.posts.length, 0);
   });
 });
-test('unmapped or incomplete dependencies fail before first POST even for platform-only recovery', async t => {
+test('unmapped or incomplete dependencies fail before first POST', async t => {
   const variants = {
     'missing JA UML': map => {delete map.jauml;},
     'missing Fabric API': map => {delete map['fabric-api'];},
-    'missing MR mapping': map => {delete map.jauml.modrinth;},
     'missing CF slug': map => {delete map.jauml.curseforge_slug;},
     'missing CF project ID': map => {delete map.jauml.curseforge_id;},
     'noninteger CF project ID': map => {map.jauml.curseforge_id = '1281310';},
   };
-  for (const platform of ['both', 'modrinth', 'curseforge']) for (const [name, mutate] of Object.entries(variants)) await t.test(`${platform}: ${name}`, async t => {
+  for (const platform of ['curseforge']) for (const [name, mutate] of Object.entries(variants)) await t.test(`${platform}: ${name}`, async t => {
     const fx = fixture(t); fakeCredentials(t);
     const dependencies = clone(DEPENDENCIES); mutate(dependencies);
     fs.writeFileSync(fx.paths.dependencies, JSON.stringify(dependencies));
@@ -585,7 +483,7 @@ test('unmapped or incomplete dependencies fail before first POST even for platfo
   });
 });
 test('changed bytes fail before first POST both initially and after an inventory GET', async t => {
-  for (const platform of ['modrinth', 'curseforge']) for (const duringGet of [false, true]) await t.test(`${platform}: ${duringGet ? 'during GET' : 'before preflight'}`, async t => {
+  for (const platform of ['curseforge']) for (const duringGet of [false, true]) await t.test(`${platform}: ${duringGet ? 'during GET' : 'before preflight'}`, async t => {
     const fx = fixture(t); fakeCredentials(t);
     const mutate = () => fs.appendFileSync(path.join(fx.directory, fx.files[0].path), 'changed');
     if (!duringGet) mutate();
@@ -599,34 +497,33 @@ test('changed bytes fail before first POST both initially and after an inventory
 });
 test('exactly matching complete releases make zero POSTs and produce verified-existing receipts', async t => {
   const fx = fixture(t); fakeCredentials(t);
-  const store = fakeStore(t, fx, {modrinth: fx.files.map(entry => mrRecord(entry)), curseforge: fx.files.map(entry => cfRecord(entry))});
+  const store = fakeStore(t, fx, {curseforge: fx.files.map(entry => cfRecord(entry))});
   const state = await main(fx.argv());
   assert.equal(store.posts.length, 0);
-  assert.equal(state.uploads.length, 16);
+  assert.equal(state.uploads.length, 8);
   assert.ok(state.uploads.every(upload => upload.status === 'verified-existing' && upload.sha256));
 });
-test('resume exactly matching Modrinth then partial CurseForge without reposting existing files', async t => {
+test('resume a partial CurseForge release without reposting existing files', async t => {
   const fx = fixture(t); fakeCredentials(t);
-  const store = fakeStore(t, fx, {
-    modrinth: fx.files.map(entry => mrRecord(entry)), curseforge: fx.files.slice(0, 4).map(entry => cfRecord(entry)),
-  });
+  const store = fakeStore(t, fx, {curseforge: fx.files.slice(0, 4).map(entry => cfRecord(entry))});
   const state = await main(fx.argv());
   assert.deepEqual(store.posts.map(post => [post.platform, post.file]), fx.files.slice(4).map(entry => ['curseforge', entry.file_name]));
-  assert.equal(state.uploads.length, 16);
-  assert.equal(state.uploads.filter(upload => upload.status === 'verified-existing').length, 12);
+  assert.equal(state.uploads.length, 8);
+  assert.equal(state.uploads.filter(upload => upload.status === 'verified-existing').length, 4);
   assert.equal(state.uploads.filter(upload => upload.status === 'verified').length, 4);
   const before = store.posts.length;
   const resumed = await main(fx.argv());
   assert.equal(store.posts.length, before, 'A second run must not repost any matching artifact');
   assert.ok(resumed.uploads.every(upload => upload.status === 'verified-existing'));
 });
-test('full synthetic release publishes exact multipart metadata and attested bytes once per platform/target', async t => {
+test('full synthetic release publishes exact multipart metadata and attested bytes once per target', async t => {
   const fx = fixture(t); fakeCredentials(t);
   const store = fakeStore(t, fx);
   const state = await main(fx.argv());
-  assert.equal(store.posts.length, 16);
-  assert.equal(new Set(store.posts.map(post => `${post.platform}:${post.file}`)).size, 16);
-  assert.equal(state.uploads.length, 16);
+  assert.equal(store.posts.length, 8);
+  assert.ok(store.posts.every(post => post.platform === 'curseforge'));
+  assert.equal(new Set(store.posts.map(post => `${post.platform}:${post.file}`)).size, 8);
+  assert.equal(state.uploads.length, 8);
   assert.ok(state.uploads.every(upload => upload.status === 'verified'));
   assert.deepEqual(fx.state(), state);
 });
@@ -635,9 +532,8 @@ test('a release whose files were all accepted but await CurseForge approval ends
   const store = fakeStore(t, fx, {curseForgeFileStatus: 3});
   const logs = captureLog(t);
   const state = await main(fx.argv());
-  assert.equal(store.posts.length, 16);
+  assert.equal(store.posts.length, 8);
   assert.equal(state.publicly_verified, false);
-  assert.ok(state.uploads.filter(row => row.platform === 'modrinth').every(row => row.status === 'verified'));
   assert.ok(state.uploads.filter(row => row.platform === 'curseforge').every(row => row.status === 'pending-publication' && Number.isSafeInteger(row.id)));
   const warning = logs.find(line => line.startsWith('::warning title=Store approval pending::'));
   assert.ok(warning, 'A GitHub warning must announce the pending approval');
@@ -646,25 +542,17 @@ test('a release whose files were all accepted but await CurseForge approval ends
   assert.deepEqual(fx.state(), state);
   await t.test('a rerun while approval is pending reposts nothing and still succeeds', async () => {
     const rerun = await main(fx.argv());
-    assert.equal(store.posts.length, 16);
+    assert.equal(store.posts.length, 8);
     assert.equal(rerun.publicly_verified, false);
   });
   await t.test('once CurseForge approves, a rerun verifies everything without a warning', async () => {
     for (const record of store.curseforge) {record.fileStatus = 4; record.isAvailable = true;}
     const before = logs.length;
     const verified = await main(fx.argv());
-    assert.equal(store.posts.length, 16);
+    assert.equal(store.posts.length, 8);
     assert.equal(verified.publicly_verified, true);
     assert.ok(!logs.slice(before).some(line => line.startsWith('::warning')));
   });
-});
-test('Modrinth files accepted but not yet listed are reported in the same warning', async t => {
-  const fx = fixture(t); fakeCredentials(t);
-  fakeStore(t, fx, {curseForgeFileStatus: 3, modrinthStatus: 'draft'});
-  const logs = captureLog(t);
-  const state = await main(fx.argv());
-  assert.equal(state.publicly_verified, false);
-  assert.match(logs.find(line => line.startsWith('::warning')), /CurseForge approval pending for 8 file\(s\); Modrinth listing pending for 8 file\(s\)/);
 });
 test('a CurseForge file rejected or removed in review still fails the run', async t => {
   for (const fileStatus of [2, 5, 6, 7, 15]) await t.test(`file status ${fileStatus}`, async t => {
@@ -676,7 +564,7 @@ test('a CurseForge file rejected or removed in review still fails the run', asyn
   });
 });
 test('uncertain POST/timeout is journaled and never blindly retried within a run or rerun', async t => {
-  for (const platform of ['modrinth', 'curseforge']) await t.test(platform, async t => {
+  for (const platform of ['curseforge']) await t.test(platform, async t => {
     const fx = fixture(t); fakeCredentials(t);
     let posts = 0;
     const store = fakeStore(t, fx, {intercept(call) {
@@ -691,7 +579,7 @@ test('uncertain POST/timeout is journaled and never blindly retried within a run
   });
 });
 test('POST response missing ID is journaled and blocks a blind rerun', async t => {
-  for (const platform of ['modrinth', 'curseforge']) await t.test(platform, async t => {
+  for (const platform of ['curseforge']) await t.test(platform, async t => {
     const fx = fixture(t); fakeCredentials(t);
     const store = fakeStore(t, fx, {missingId: true, pendingIndex: true});
     await assert.rejects(main(fx.argv(platform)), /ID|outcome|reconcile/i);
@@ -702,7 +590,7 @@ test('POST response missing ID is journaled and blocks a blind rerun', async t =
   });
 });
 test('submitted release pending remote indexing blocks subsequent POSTs and a blind rerun', async t => {
-  for (const platform of ['modrinth', 'curseforge']) await t.test(platform, async t => {
+  for (const platform of ['curseforge']) await t.test(platform, async t => {
     const fx = fixture(t); fakeCredentials(t);
     const store = fakeStore(t, fx, {pendingIndex: true});
     await assert.rejects(main(fx.argv(platform)), /visibility|index|review|pending|reconcile/i);
@@ -713,7 +601,7 @@ test('submitted release pending remote indexing blocks subsequent POSTs and a bl
   });
 });
 test('an uncertain upload can resume after its exact hash-bound record becomes visible', async t => {
-  for (const platform of ['modrinth', 'curseforge']) await t.test(platform, async t => {
+  for (const platform of ['curseforge']) await t.test(platform, async t => {
     const fx = fixture(t); fakeCredentials(t);
     let failed = false, attempted = 0;
     const store = fakeStore(t, fx, {intercept(call, remote) {
@@ -721,7 +609,7 @@ test('an uncertain upload can resume after its exact hash-bound record becomes v
         attempted++;
         if (!failed) {
           failed = true;
-          remote[platform].push(platform === 'modrinth' ? mrRecord(fx.files[0]) : cfRecord(fx.files[0]));
+          remote[platform].push(cfRecord(fx.files[0]));
           throw new DOMException('Synthetic timeout after successful acceptance', 'TimeoutError');
         }
       }
@@ -743,7 +631,7 @@ test('non-timeout uncertain POST outcomes also block blind retries until reconci
     'invalid JSON': () => new Response('{malformed', {status: 200}),
     'empty response': () => new Response('', {status: 200}),
   };
-  for (const platform of ['modrinth', 'curseforge']) for (const [name, fail] of Object.entries(failures)) await t.test(`${platform}: ${name}`, async t => {
+  for (const platform of ['curseforge']) for (const [name, fail] of Object.entries(failures)) await t.test(`${platform}: ${name}`, async t => {
     const fx = fixture(t); fakeCredentials(t);
     let posts = 0;
     fakeStore(t, fx, {intercept(call) {
@@ -770,14 +658,14 @@ test('recovery journal with wrong source, release, file hash, or malformed conte
   for (const [name, mutate] of Object.entries(mutations)) await t.test(name, async t => {
     const fx = fixture(t); fakeCredentials(t);
     const state = {schema_version: 1, source_commit: COMMIT, version: VERSION, uploads: [{
-      platform: 'modrinth', file: fx.files[0].file_name, sha256: fx.files[0].sha256,
-      id: 'previously-submitted-id', status: 'submitted',
+      platform: 'curseforge', file: fx.files[0].file_name, sha256: fx.files[0].sha256,
+      id: 1001, status: 'submitted',
     }]};
     mutate(state);
     fs.writeFileSync(fx.paths.state, name === 'malformed JSON' ? '{broken' : JSON.stringify(state));
     const original = fs.readFileSync(fx.paths.state, 'utf8');
     const store = fakeStore(t, fx);
-    await assert.rejects(main(fx.argv('modrinth')));
+    await assert.rejects(main(fx.argv()));
     assert.equal(store.requests.filter(call => call.method === 'POST').length, 0);
     assert.equal(fs.readFileSync(fx.paths.state, 'utf8'), original, 'Invalid recovery evidence must not be silently overwritten');
   });
@@ -785,12 +673,12 @@ test('recovery journal with wrong source, release, file hash, or malformed conte
 test('dry-run cannot erase the durable journal of a live pending submission', async t => {
   const fx = fixture(t); fakeCredentials(t);
   const original = JSON.stringify({schema_version: 1, source_commit: COMMIT, version: VERSION, uploads: [{
-    platform: 'modrinth', file: fx.files[0].file_name, sha256: fx.files[0].sha256,
-    id: 'previously-submitted-id', status: 'submitted',
+    platform: 'curseforge', file: fx.files[0].file_name, sha256: fx.files[0].sha256,
+    id: 1001, status: 'submitted',
   }]}, null, 2) + '\n';
   fs.writeFileSync(fx.paths.state, original);
   const calls = installFetch(t, () => assert.fail('Dry-run must never fetch'));
-  try {await main([...fx.argv('modrinth'), '--dry-run']);} catch (error) {
+  try {await main([...fx.argv(), '--dry-run']);} catch (error) {
     assert.match(error.message, /state|journal|dry.run|pending|submission|existing|reconcile/i);
   }
   assert.equal(calls.length, 0);
@@ -859,7 +747,7 @@ test('malformed, truncated, changing, or duplicate CurseForge inventories stop a
     }});
     await assert.rejects(main(fx.argv()), /inventory|deduplicate|bound/i);
     assert.equal(store.requests.filter(call => call.method === 'POST').length, 0,
-      'An incomplete deduplication inventory must stop both providers before any write');
+      'An incomplete deduplication inventory must stop every write');
     assert.equal(fx.state().uploads.length, 0);
     assert.equal(fx.state().publicly_verified, false);
   });
@@ -878,7 +766,7 @@ test('CurseForge inventory reads at most 10000 records and never requests an out
   }
   assert.equal(new URL(requests.at(-1).url).searchParams.get('index'), '9950');
 });
-test('malformed or wrong CurseForge dependency inventories fail preflight before either provider writes', async t => {
+test('malformed or wrong CurseForge dependency inventories fail preflight before any write', async t => {
   for (const index of [0, 5, 7]) for (const mode of ['missing', 'null', 'wrong required', 'unknown relation', 'missing relation']) {
     await t.test(`${TARGETS[index][0]} ${TARGETS[index][1]}: ${mode}`, async t => {
       const fx = fixture(t); fakeCredentials(t);
@@ -919,51 +807,6 @@ test('accepted CurseForge POST followed by missing or wrong indexed dependencies
       assert.equal(fx.state().publicly_verified, false);
       await assert.rejects(main(fx.argv('curseforge')), /dependencies|differs/i);
       assert.equal(store.posts.length, 1, 'Invalid indexing metadata must never permit a blind second POST');
-      assert.deepEqual(fx.state().uploads.find(row => row.file === entry.file_name), receipt);
-    });
-  }
-});
-test('invalid Modrinth dependencies fail preflight before either provider writes', async t => {
-  for (const index of [0, 5, 7]) for (const mode of ['missing', 'null', 'wrong required', 'unknown relation', 'missing relation']) {
-    await t.test(`${TARGETS[index][0]} ${TARGETS[index][1]}: ${mode}`, async t => {
-      const fx = fixture(t); fakeCredentials(t);
-      const inventory = fx.files.map(entry => mrRecord(entry));
-      const row = inventory[index];
-      if (mode === 'missing') delete row.dependencies;
-      else if (mode === 'null') row.dependencies = null;
-      else row.dependencies = [{project_id: 'ihvBalM2', ...(mode === 'wrong required' ? {dependency_type: 'required'}
-        : mode === 'unknown relation' ? {dependency_type: 'unknown'} : {})}];
-      const store = fakeStore(t, fx, {modrinth: inventory});
-      await assert.rejects(main(fx.argv()), /dependencies|differs/i);
-      assert.equal(store.requests.filter(call => call.method === 'POST').length, 0);
-      assert.equal(fx.state().uploads.length, 0);
-    });
-  }
-});
-test('accepted Modrinth POST followed by invalid indexed dependencies retains submitted journal and halts', async t => {
-  for (const index of [0, 5, 7]) for (const mode of ['missing', 'null', 'wrong required', 'unknown relation', 'missing relation']) {
-    await t.test(`${TARGETS[index][0]} ${TARGETS[index][1]}: ${mode}`, async t => {
-      const fx = fixture(t); fakeCredentials(t);
-      const entry = fx.files[index];
-      const store = fakeStore(t, fx, {modrinth: fx.files.slice(0, index).map(row => mrRecord(row)),
-        intercept(call, remote) {
-          if (call.url === `https://api.modrinth.com/v2/project/${MODRINTH_PROJECT}/version` && remote.posts.length) {
-            const row = remote.modrinth.find(row => row.version_number === mrDescriptor(entry).version_number);
-            if (mode === 'missing') delete row.dependencies;
-            else if (mode === 'null') row.dependencies = null;
-            else row.dependencies = [{project_id: 'ihvBalM2', ...(mode === 'wrong required' ? {dependency_type: 'required'}
-              : mode === 'unknown relation' ? {dependency_type: 'unknown'} : {})}];
-          }
-        }});
-      await assert.rejects(main(fx.argv('modrinth')), /dependencies|differs/i);
-      assert.equal(store.posts.length, 1);
-      assertDurableSubmission(fx, entry);
-      const receipt = fx.state().uploads.find(row => row.file === entry.file_name);
-      assert.equal(receipt.status, 'submitted');
-      assert.equal(receipt.id, mrRecord(entry).id);
-      assert.equal(fx.state().publicly_verified, false);
-      await assert.rejects(main(fx.argv('modrinth')), /dependencies|differs/i);
-      assert.equal(store.posts.length, 1, 'Invalid dependency metadata must stop any next or rerun POST');
       assert.deepEqual(fx.state().uploads.find(row => row.file === entry.file_name), receipt);
     });
   }
@@ -1025,11 +868,11 @@ test('legacy PowerShell entry point rejects a native dry-run when PowerShell is 
 test('credentialed read-only preflight validates actual catalogs without any journal changes or POST', async t => {
   const fx = fixture(t); fakeCredentials(t);
   const state = {schema_version: 1, source_commit: COMMIT, version: VERSION, publicly_verified: true,
-    uploads: fx.files.map(entry => ({platform: 'modrinth', file: entry.file_name, sha256: entry.sha256, status: 'verified', id: mrRecord(entry).id}))};
+    uploads: fx.files.map(entry => ({platform: 'curseforge', file: entry.file_name, sha256: entry.sha256, status: 'verified', id: cfRecord(entry).id}))};
   const bytes = JSON.stringify(state, null, 2) + '\n';
   fs.writeFileSync(fx.paths.state, bytes);
-  const store = fakeStore(t, fx, {modrinth: fx.files.map(entry => mrRecord(entry))});
-  const result = await main([...fx.argv('both'), '--preflight-only', '--require-public-modrinth']);
+  const store = fakeStore(t, fx, {curseforge: fx.files.map(entry => cfRecord(entry))});
+  const result = await main([...fx.argv(), '--preflight-only']);
   assert.equal(result.preflight_verified, true);
   assert.deepEqual(result.curseforge_ids, IDS);
   assert.equal(store.posts.length, 0);
@@ -1054,11 +897,10 @@ test('read-only audit reports exact approved or pending CF match facts and prese
     const cf=cfRecord(fx.files[0]);cf.fileStatus=fileStatus;cf.isAvailable=[4,10].includes(fileStatus);
     cf.downloadUrl='https://untrusted.invalid/reflected-secret';cf.unknown='offline-secret-reflection';
     const state={schema_version:1,source_commit:COMMIT,version:VERSION,publicly_verified:false,
-      uploads:[...fx.files.map(entry=>({platform:'modrinth',file:entry.file_name,sha256:entry.sha256,status:'verified',id:mrRecord(entry).id})),
-        {platform:'curseforge',file:fx.files[0].file_name,sha256:fx.files[0].sha256,status:'uncertain'}]};
+      uploads:[{platform:'curseforge',file:fx.files[0].file_name,sha256:fx.files[0].sha256,status:'uncertain'}]};
     const bytes=JSON.stringify(state,null,2)+'\n';fs.writeFileSync(fx.paths.state,bytes);
-    const store=fakeStore(t,fx,{modrinth:fx.files.map(entry=>mrRecord(entry)),curseforge:[cf]});
-    const result=await main([...fx.argv(),'--preflight-only','--require-public-modrinth']);
+    const store=fakeStore(t,fx,{curseforge:[cf]});
+    const result=await main([...fx.argv(),'--preflight-only']);
     const audit=result.curseforge_inventory;
     assert.equal(audit.complete_core_inventory,true);assert.equal(audit.inventory_count,1);
     assert.equal(audit.author_pending_upload_visibility,'not-established');
@@ -1088,7 +930,7 @@ test('future uncertain upload diagnostics retain only bounded phase, HTTP and re
     'empty response':{stage:'upload-id',status:200,jsonType:'null',fail:()=>new Response('')},
     'body read':{stage:'response-body',type:'TypeError',status:200,fail:()=>({ok:true,status:200,headers:new Headers({'content-type':'application/json'}),text:async()=>{throw new TypeError(secret);}})},
   };
-  for(const platform of ['modrinth','curseforge']) for(const [name,expected] of Object.entries(failures)) await t.test(`${platform}: ${name}`,async t=>{
+  for(const platform of ['curseforge']) for(const [name,expected] of Object.entries(failures)) await t.test(`${platform}: ${name}`,async t=>{
     const fx=fixture(t);fakeCredentials(t);let posts=0;
     fakeStore(t,fx,{intercept(call){if(call.method==='POST'){posts++;return expected.fail();}}});
     let message;await assert.rejects(main(fx.argv(platform)),error=>{message=error.message;return /Uncertain/.test(message);});
@@ -1123,35 +965,12 @@ test('a native Request validation error before transmission is still conservativ
   assert.deepEqual(fx.state().uploads[0],row);
 });
 
-test('recovery preflight requires every preserved Modrinth ID freshly exact and publicly listed', async t => {
-  for (const mutation of ['missing remote', 'hidden remote', 'draft remote', 'changed remote ID', 'changed journal ID', 'missing journal row', 'wrong hash', 'wrong dependency']) await t.test(mutation, async t => {
-    const fx = fixture(t); fakeCredentials(t);
-    const records = fx.files.map(entry => mrRecord(entry));
-    const rows = fx.files.map(entry => ({platform: 'modrinth', file: entry.file_name, sha256: entry.sha256, status: 'verified', id: mrRecord(entry).id}));
-    if (mutation === 'missing remote') records.pop();
-    if (mutation === 'hidden remote') records[0].status = 'unlisted';
-    if (mutation === 'draft remote') records[0].status = 'draft';
-    if (mutation === 'changed remote ID') records[0].id = 'OtherMRid';
-    if (mutation === 'changed journal ID') rows[0].id = 'OtherMRid';
-    if (mutation === 'missing journal row') rows.pop();
-    if (mutation === 'wrong hash') records[0].files[0].hashes.sha512 = 'f'.repeat(128);
-    if (mutation === 'wrong dependency') records[0].dependencies.pop();
-    const bytes = JSON.stringify({schema_version: 1, source_commit: COMMIT, version: VERSION, uploads: rows, publicly_verified: true}, null, 2) + '\n';
-    fs.writeFileSync(fx.paths.state, bytes);
-    const store = fakeStore(t, fx, {modrinth: records});
-    await assert.rejects(main([...fx.argv('both'), '--preflight-only', '--require-public-modrinth']), /Modrinth/);
-    assert.equal(store.posts.length, 0);
-    assert.equal(fs.readFileSync(fx.paths.state, 'utf8'), bytes);
-  });
-});
-
 function rejectedFixture(t, diagnostic = {schema_version:1,stage:'http-status',method:'POST',http_status:400,
     response_content_type:'application/json',response_bytes:308,response_json_type:'object',response_id_type:'absent',
     response_has_error:false,response_has_message:false,error_type:'Error',transport_code:null,transmission_outcome:'unknown'}) {
   const fx=fixture(t);fakeCredentials(t);
   const state={schema_version:1,source_commit:COMMIT,version:VERSION,publicly_verified:false,
-    uploads:[...fx.files.map(entry=>({platform:'modrinth',file:entry.file_name,sha256:entry.sha256,status:'verified',id:mrRecord(entry).id,provider_status:'listed'})),
-      {platform:'curseforge',file:fx.files[0].file_name,sha256:fx.files[0].sha256,status:'uncertain',...(diagnostic===null?{}:{request_diagnostic:diagnostic})}]};
+    uploads:[{platform:'curseforge',file:fx.files[0].file_name,sha256:fx.files[0].sha256,status:'uncertain',...(diagnostic===null?{}:{request_diagnostic:diagnostic})}]};
   fs.writeFileSync(fx.paths.state,JSON.stringify(state,null,2)+'\n');
   return {...fx,retryArgs:(preflight=false)=>[...fx.argv('curseforge'),'--retry-rejected-curseforge',...(preflight?['--preflight-only']:[])]};
 }
@@ -1172,7 +991,6 @@ test('an HTTP 400 CurseForge receipt is retried only on explicit request and onl
     assert.equal(row.status,'verified');assert.equal(row.rejection_evidence.http_status,400);
     assert.equal(row.rejection_evidence.remote_match,null);assert.equal(row.request_diagnostic.http_status,400);
     assert.equal(state.uploads.filter(upload=>upload.platform==='curseforge').length,8);
-    assert.ok(state.uploads.filter(upload=>upload.platform==='modrinth').every(upload=>upload.status==='verified'));
   });
   await t.test('without the flag the HTTP 400 receipt still blocks every write', async t=>{
     const fx=rejectedFixture(t);const store=fakeStore(t,fx);
@@ -1194,17 +1012,17 @@ test('an HTTP 400 CurseForge receipt is retried only on explicit request and onl
     const fx=rejectedFixture(t);const store=fakeStore(t,fx,{curseforge:[cfRecord(fx.files[0])]});
     await assert.rejects(main(fx.retryArgs()),/matching CurseForge file/);assert.equal(store.posts.length,0);
   });
-  await t.test('the retry flag is refused outside credentialed CurseForge-only recovery', async t=>{
+  await t.test('the retry flag is refused outside credentialed CurseForge recovery', async t=>{
     const fx=rejectedFixture(t);fakeStore(t,fx);
     for(const argv of [[...fx.argv('curseforge'),'--retry-rejected-curseforge','--dry-run'],
       [...fx.argv('both'),'--retry-rejected-curseforge'],[...fx.argv('modrinth'),'--retry-rejected-curseforge','--preflight-only']])
-      await assert.rejects(main(argv),/Rejected-receipt retry requires|mutually exclusive/);
+      await assert.rejects(main(argv),/Rejected-receipt retry requires|mutually exclusive|Unknown platforms/);
   });
 });
 
 function provenFixture(t, {proven=true}={}) {
   const fx=fixture(t);fakeCredentials(t);
-  const uploads=fx.files.map(entry=>({platform:'modrinth',file:entry.file_name,sha256:entry.sha256,status:'verified',id:mrRecord(entry).id,provider_status:'listed'}));
+  const uploads=[];
   if (proven) uploads.push({platform:'curseforge',file:fx.files[0].file_name,sha256:fx.files[0].sha256,status:'verified',id:cfRecord(fx.files[0]).id,provider_status:4});
   fs.writeFileSync(fx.paths.state,JSON.stringify({schema_version:1,source_commit:COMMIT,version:VERSION,publicly_verified:false,uploads},null,2)+'\n');
   return {...fx,continueArgs:()=>[...fx.argv('curseforge'),'--continue-past-pending-curseforge']};
@@ -1242,11 +1060,24 @@ test('after one verified CurseForge file, remaining uploads continue past review
     const fx=provenFixture(t);const store=fakeStore(t,fx,{pendingIndex:true});
     await assert.rejects(main(fx.continueArgs()),/reconcile/);assert.equal(store.posts.length,0);
   });
-  await t.test('the flag is refused outside CurseForge-only live publication', async t=>{
+  await t.test('the flag is refused outside live publication', async t=>{
     const fx=provenFixture(t);fakeStore(t,fx);
     for(const argv of [[...fx.argv('curseforge'),'--continue-past-pending-curseforge','--dry-run'],
       [...fx.argv('curseforge'),'--continue-past-pending-curseforge','--preflight-only'],
       [...fx.argv('both'),'--continue-past-pending-curseforge']])
-      await assert.rejects(main(argv),/Continuing past pending CurseForge review requires|mutually exclusive/);
+      await assert.rejects(main(argv),/Continuing past pending CurseForge review requires|mutually exclusive|Unknown platforms/);
   });
+});
+
+test('journal receipts of the old second store from before 24 Nov 2026 are kept and never acted on', async t => {
+  const fx = fixture(t); fakeCredentials(t);
+  const legacy = fx.files.map(entry => ({platform: 'modrinth', file: entry.file_name, sha256: entry.sha256, status: 'verified', id: 'LegacyId', provider_status: 'listed'}));
+  fs.writeFileSync(fx.paths.state, JSON.stringify({schema_version: 1, source_commit: COMMIT, version: VERSION, publicly_verified: false, uploads: legacy}, null, 2) + '\n');
+  const store = fakeStore(t, fx);
+  const state = await main(fx.argv());
+  assert.equal(store.posts.length, 8);
+  assert.ok(store.posts.every(post => post.platform === 'curseforge'));
+  assert.ok(store.requests.every(call => new URL(call.url).hostname.endsWith('curseforge.com')));
+  assert.deepEqual(state.uploads.filter(row => row.platform === 'modrinth'), legacy);
+  assert.equal(state.publicly_verified, true);
 });

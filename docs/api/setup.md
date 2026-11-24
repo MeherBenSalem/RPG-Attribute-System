@@ -59,7 +59,7 @@ if (RasApi.isAvailable()) {
 
 ## No Maven Repository
 
-RAS is distributed as mod JAR files via GitHub and CurseForge/Modrinth. There is no public Maven repository. Clone the source and build locally, or use the published mod JAR as a flat-file dependency.
+RAS is distributed as mod JAR files via GitHub and CurseForge. There is no public Maven repository. Clone the source and build locally, or use the published mod JAR as a flat-file dependency.
 
 ## Server-Only API Calls
 

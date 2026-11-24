@@ -1,12 +1,13 @@
 #!/usr/bin/env node
-/** Publish only a complete, source-bound inventory. No implicit local secret reads or blind retries. */
+/** Publish only a complete, source-bound inventory. No implicit local secret reads or blind retries.
+ *  NightBeam publishes to CurseForge only (24 Nov 2026); the existing Modrinth project stays up as it is but gets no
+ *  new versions. */
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { curseForgeIds } from './curseforge-release-catalog.mjs';
 
-const modrinthId = id => typeof id === 'string' && /^[0-9A-Za-z]+$/.test(id);
 const curseForgeId = id => Number.isSafeInteger(id) && id > 0 && id <= 0xffffffff;
 
 export function validatePlan(manifest, directory) {
@@ -47,17 +48,6 @@ export function validatePlan(manifest, directory) {
   return entries;
 }
 
-export function modrinthDescriptor(entry, version, changelog, projectId, dependencyMap) {
-  return {name: `${version} · ${entry.loader} · ${entry.minecraft}`,
-    version_number: `${version}+${entry.loader}-${entry.minecraft}`, changelog,
-    dependencies: entry.required_mod_ids.map(id => {
-      const target = dependencyMap[id]?.modrinth;
-      if (!target) throw new Error('Missing verified Modrinth dependency mapping: ' + id);
-      return {project_id: target, version_id: null, file_name: null, dependency_type: 'required'};
-    }), game_versions: [entry.minecraft], version_type: 'release', loaders: [entry.loader], featured: false,
-    status: 'listed', project_id: projectId, file_parts: ['file_0'], primary_file: 'file_0'};
-}
-
 export function curseForgeDescriptor(entry, version, changelog, ids, dependencyMap) {
   const loaderId = ids.loader[entry.loader], gameId = ids.minecraft[entry.minecraft];
   if (!Number.isInteger(loaderId) || !Number.isInteger(gameId) || !Number.isInteger(ids.client) || !Number.isInteger(ids.server)) {
@@ -80,34 +70,6 @@ export function rejectedByCurseForge(row) {
   return row?.platform==='curseforge' && row.status==='uncertain' && !Object.hasOwn(row,'id')
     && diagnostic?.stage==='http-status' && diagnostic.method==='POST' && diagnostic.http_status===400
     && diagnostic.response_json_type==='object' && diagnostic.response_id_type==='absent';
-}
-
-export function matchingModrinth(existing, entry, descriptor) {
-  const matches = existing.filter(version => version.version_number === descriptor.version_number
-    || (version.files || []).some(file => file.filename === entry.file_name));
-  if (!matches.length) return null;
-  if (matches.length !== 1) throw new Error('Ambiguous existing Modrinth release: ' + entry.file_name);
-  const version = matches[0], file = (version.files || []).find(file => file.filename === entry.file_name);
-  // Modrinth allows nullable project/version IDs and external filenames, but
-  // each dependency must have a valid relation and at least one usable target.
-  if (!Array.isArray(version.dependencies) || version.dependencies.some(dep => !dep
-      || !['required','optional','incompatible','embedded'].includes(dep.dependency_type)
-      || (dep.project_id != null && !modrinthId(dep.project_id))
-      || (dep.version_id != null && !modrinthId(dep.version_id))
-      || (dep.file_name != null && (typeof dep.file_name !== 'string' || !dep.file_name.trim()))
-      || (!modrinthId(dep.project_id) && !modrinthId(dep.version_id) && !dep.file_name))) {
-    throw new Error('Malformed Modrinth dependencies; cannot verify artifact: ' + entry.file_name);
-  }
-  const required = version.dependencies.filter(dep => dep.dependency_type === 'required').map(dep => dep.project_id).sort();
-  const expectedRequired = descriptor.dependencies.map(dep => dep.project_id).sort();
-  if (!modrinthId(version.id) || version.project_id !== descriptor.project_id || !file || file.hashes?.sha512 !== entry.sha512 || file.hashes?.sha1 !== entry.sha1
-      || version.version_number !== descriptor.version_number || version.version_type !== 'release'
-      || JSON.stringify([...version.loaders].sort()) !== JSON.stringify(descriptor.loaders)
-      || JSON.stringify([...version.game_versions].sort()) !== JSON.stringify(descriptor.game_versions)
-      || expectedRequired.some(id => !modrinthId(id)) || JSON.stringify(required) !== JSON.stringify(expectedRequired)) {
-    throw new Error('Existing Modrinth artifact differs; refusing overwrite/duplicate: ' + entry.file_name);
-  }
-  return version.id;
 }
 
 export function matchingCurseForge(existing, entry, descriptor, dependencyMap) {
@@ -142,7 +104,6 @@ export function matchingCurseForge(existing, entry, descriptor, dependencyMap) {
 }
 
 export function isPubliclyReleased(platform, record) {
-  if (platform === 'modrinth') return record?.status === 'listed' && record?.version_type === 'release';
   if (platform === 'curseforge') return record?.isAvailable === true && [4,10].includes(record?.fileStatus);
   return false;
 }
@@ -251,7 +212,6 @@ export async function main(argv=process.argv.slice(2)) {
   for (let i=0;i<argv.length;i++) {
     if (argv[i]==='--dry-run') args.dryRun=true;
     else if (argv[i]==='--preflight-only') args.preflightOnly=true;
-    else if (argv[i]==='--require-public-modrinth') args.requirePublicModrinth=true;
     else if (argv[i]==='--retry-rejected-curseforge') args.retryRejectedCurseForge=true;
     else if (argv[i]==='--continue-past-pending-curseforge') args.continuePastPendingCurseForge=true;
     else if (['--manifest','--directory','--dependencies','--changelog','--state','--platforms'].includes(argv[i])) args[argv[i].slice(2)]=argv[++i];
@@ -259,22 +219,20 @@ export async function main(argv=process.argv.slice(2)) {
   }
   if (args.dryRun && args.preflightOnly) throw new Error('Offline dry-run and credentialed read-only preflight are mutually exclusive');
   for (const key of ['manifest','directory','dependencies','changelog','state']) if (!args[key]) throw new Error('--'+key+' is required');
-  const platforms=args.platforms||'both';
-  if (!['both','modrinth','curseforge'].includes(platforms)) throw new Error('Unknown platforms');
-  if (args.requirePublicModrinth && (!args.preflightOnly || platforms==='curseforge'))
-    throw new Error('Public Modrinth recovery guard requires credentialed Modrinth preflight');
-  if (args.retryRejectedCurseForge && (args.dryRun || platforms==='modrinth'
-      || (!args.preflightOnly && platforms!=='curseforge')))
-    throw new Error('Rejected-receipt retry requires credentialed read-only preflight or CurseForge-only live publication');
-  if (args.continuePastPendingCurseForge && (args.dryRun || args.preflightOnly || platforms!=='curseforge'))
-    throw new Error('Continuing past pending CurseForge review requires CurseForge-only live publication');
+  // --platforms stays accepted for older command lines, but CurseForge is the only destination.
+  const platforms=args.platforms||'curseforge';
+  if (platforms!=='curseforge') throw new Error('Unknown platforms: NightBeam publishes to CurseForge only');
+  if (args.retryRejectedCurseForge && args.dryRun)
+    throw new Error('Rejected-receipt retry requires credentialed read-only preflight or live publication');
+  if (args.continuePastPendingCurseForge && (args.dryRun || args.preflightOnly))
+    throw new Error('Continuing past pending CurseForge review requires live publication');
   const manifest=JSON.parse(fs.readFileSync(args.manifest,'utf8'));
   const entries=validatePlan(manifest,args.directory);
   const dependencies=JSON.parse(fs.readFileSync(args.dependencies,'utf8'));
   const changelog=fs.readFileSync(args.changelog,'utf8');
   const version=manifest.release_version;
-  const projectMr=process.env.MODRINTH_ID||'d85UTOuq', projectCf=process.env.CURSEFORGE_ID||'1079687';
-  if (projectMr!=='d85UTOuq' || projectCf!=='1079687') throw new Error('Unexpected release destination');
+  const projectCf=process.env.CURSEFORGE_ID||'1079687';
+  if (projectCf!=='1079687') throw new Error('Unexpected release destination');
   const journalBytes=fs.existsSync(args.state)?fs.readFileSync(args.state):null;
   const state=journalBytes!==null ? JSON.parse(journalBytes.toString('utf8'))
     : {schema_version:1,source_commit:manifest.source_commit,version,uploads:[]};
@@ -285,6 +243,8 @@ export async function main(argv=process.argv.slice(2)) {
   for (const row of state.uploads) {
     const entry=entries.find(entry=>entry.file_name===row.file);
     const key=row.platform+':'+row.file;
+    // Journals written before 24 Nov 2026 may still hold receipts of the old second store; they are kept as they are
+    // and never acted on.
     if (!entry || !['modrinth','curseforge'].includes(row.platform) || row.sha256!==entry.sha256
         || !statuses.has(row.status) || seen.has(key)) throw new Error('Invalid publication journal/hash/entry; reconcile before retry');
     seen.add(key);
@@ -317,35 +277,18 @@ export async function main(argv=process.argv.slice(2)) {
   };
   if (!args.dryRun && !args.preflightOnly) {state.publicly_verified=false;save();}
   for (const entry of entries) for (const id of entry.required_mod_ids) {
-    if (!dependencies[id]?.modrinth || !dependencies[id]?.curseforge_slug || !Number.isInteger(dependencies[id]?.curseforge_id))
+    if (!dependencies[id]?.curseforge_slug || !Number.isInteger(dependencies[id]?.curseforge_id))
       throw new Error('Incomplete verified dependency mapping: '+id);
   }
-  if (!args.dryRun && platforms!=='curseforge' && !process.env.MODRINTH_TOKEN) throw new Error('MODRINTH_TOKEN required');
-  if (!args.dryRun && platforms!=='modrinth' && (!process.env.CURSEFORGE_TOKEN || !process.env.CURSEFORGE_API_KEY))
+  if (!args.dryRun && (!process.env.CURSEFORGE_TOKEN || !process.env.CURSEFORGE_API_KEY))
     throw new Error('CURSEFORGE_TOKEN and CURSEFORGE_API_KEY required');
   if (!args.preflightOnly) {state.publicly_verified=false;save();}
-  // Preflight both selected providers and all descriptors/conflicts before the first POST.
-  let mrInventory=null,cfInventory=null,cfIds=null,cfCatalogEvidence=null;
-  if (platforms!=='curseforge') {
-    mrInventory=args.dryRun?[]:await requestJson(`https://api.modrinth.com/v2/project/${projectMr}/version`,{headers:{Authorization:process.env.MODRINTH_TOKEN}});
-    if (!Array.isArray(mrInventory)) throw new Error('Malformed Modrinth release inventory');
-    for (const entry of entries) {
-      const duplicate=matchingModrinth(mrInventory,entry,modrinthDescriptor(entry,version,changelog,projectMr,dependencies));
-      if (args.requirePublicModrinth) {
-        const receipt=prior('modrinth',entry);
-        const remote=mrInventory.find(record=>record.id===duplicate);
-        if (!duplicate || !receipt || receipt.id!==duplicate || !['verified','verified-existing'].includes(receipt.status)
-            || !isPubliclyReleased('modrinth',remote))
-          throw new Error('Preserved Modrinth receipt is missing, changed or not publicly listed: '+entry.file_name);
-      }
-    }
-  }
-  if (platforms!=='modrinth') {
-    cfInventory=args.dryRun?[]:await curseForgeFiles(projectCf,process.env.CURSEFORGE_API_KEY);
-    cfIds=args.dryRun?{client:1,server:2,loader:{fabric:3,forge:4,neoforge:5},minecraft:Object.fromEntries(entries.map(entry=>[entry.minecraft,6]))}
-      :await curseForgeIds(process.env.CURSEFORGE_TOKEN,process.env.CURSEFORGE_API_KEY,entries,requestJson,evidence=>{cfCatalogEvidence=evidence;});
-    for (const entry of entries) matchingCurseForge(cfInventory,entry,curseForgeDescriptor(entry,version,changelog,cfIds,dependencies),dependencies);
-  }
+  // Preflight the CurseForge inventory, catalog and all descriptors/conflicts before the first POST.
+  let cfInventory=null,cfIds=null,cfCatalogEvidence=null;
+  cfInventory=args.dryRun?[]:await curseForgeFiles(projectCf,process.env.CURSEFORGE_API_KEY);
+  cfIds=args.dryRun?{client:1,server:2,loader:{fabric:3,forge:4,neoforge:5},minecraft:Object.fromEntries(entries.map(entry=>[entry.minecraft,6]))}
+    :await curseForgeIds(process.env.CURSEFORGE_TOKEN,process.env.CURSEFORGE_API_KEY,entries,requestJson,evidence=>{cfCatalogEvidence=evidence;});
+  for (const entry of entries) matchingCurseForge(cfInventory,entry,curseForgeDescriptor(entry,version,changelog,cfIds,dependencies),dependencies);
   // A synchronous HTTP 400 validation answer with no file ID is the provider refusing that exact request.
   // Retry such a receipt only on explicit request, and only while the complete live inventory has no copy.
   let rejectedRetry=null;
@@ -362,37 +305,9 @@ export async function main(argv=process.argv.slice(2)) {
     return {preflight_verified:true,source_commit:manifest.source_commit,version,platforms,curseforge_ids:cfIds,curseforge_catalog:cfCatalogEvidence,
       publication_scope:'full',
       curseforge_rejected_retry:rejectedRetry&&rejectedRetry.map(entry=>entry.file_name),
-      curseforge_inventory:platforms==='modrinth'?null:curseForgeAudit(cfInventory,entries,version,changelog,cfIds,dependencies,state,journalBytes)};
+      curseforge_inventory:curseForgeAudit(cfInventory,entries,version,changelog,cfIds,dependencies,state,journalBytes)};
   }
-  if (platforms!=='curseforge') {
-    let existing=mrInventory;
-    if (!Array.isArray(existing)) throw new Error('Malformed Modrinth release inventory');
-    for (const entry of entries) {
-      const descriptor=modrinthDescriptor(entry,version,changelog,projectMr,dependencies);
-      const duplicate=matchingModrinth(existing,entry,descriptor);
-      if (duplicate) {const remote=existing.find(item=>item.id===duplicate);record('modrinth',entry,isPubliclyReleased('modrinth',remote)?'verified-existing':'pending-publication',{id:duplicate,provider_status:remote?.status});continue;}
-      if (args.dryRun) {record('modrinth',entry,'dry-run',{descriptor});continue;}
-      requireResolved('modrinth',entry);
-      validatePlan(manifest,args.directory);
-      const form=new FormData();form.append('data',JSON.stringify(descriptor));
-      form.append('file_0',new Blob([fs.readFileSync(entry.absolute_path)]),entry.file_name);
-      record('modrinth',entry,'in-flight'); // Durable before the POST, including lost-response cases.
-      let created;
-      try {
-        created=await requestJson('https://api.modrinth.com/v2/version',{method:'POST',headers:{Authorization:process.env.MODRINTH_TOKEN},body:form},modrinthId);
-      } catch (error) {
-        const diagnostic=error.requestDiagnostic??{schema_version:1,stage:'unknown',error_type:'Error',transmission_outcome:'unknown'};
-        record('modrinth',entry,'uncertain',{request_diagnostic:diagnostic});
-        throw new Error('Uncertain Modrinth upload outcome; reconcile before retry: '+entry.file_name+'; '+JSON.stringify(diagnostic));
-      }
-      record('modrinth',entry,'submitted',{id:created.id});
-      existing=await requestJson(`https://api.modrinth.com/v2/project/${projectMr}/version`,{headers:{Authorization:process.env.MODRINTH_TOKEN}});
-      if (matchingModrinth(existing,entry,descriptor)!==created.id) throw new Error('Modrinth upload awaits visibility; reconcile before retry');
-      const remote=existing.find(item=>item.id===created.id);
-      record('modrinth',entry,isPubliclyReleased('modrinth',remote)?'verified':'pending-publication',{id:created.id,provider_status:remote?.status});
-    }
-  }
-  if (platforms!=='modrinth') {
+  {
     let existing=cfInventory;
     const ids=cfIds;
     for (const entry of rejectedRetry||[]) {
@@ -430,10 +345,10 @@ export async function main(argv=process.argv.slice(2)) {
       record('curseforge',entry,isPubliclyReleased('curseforge',remote)?'verified':'pending-publication',{id:created.id,provider_status:remote?.fileStatus});
     }
   }
-  const selected=state.uploads.filter(row=>platforms==='both'||row.platform===platforms);
-  const expectedRows=platforms==='both'?entries.length*2:entries.length;
+  const selected=state.uploads.filter(row=>row.platform==='curseforge');
+  const expectedRows=entries.length;
   const verifiedStatus=row=>['verified','verified-existing'].includes(row.status);
-  const hasProviderId=row=>row.platform==='modrinth'?modrinthId(row.id):curseForgeId(row.id);
+  const hasProviderId=row=>curseForgeId(row.id);
   state.publicly_verified=!args.dryRun && selected.length===expectedRows && selected.every(verifiedStatus);
   save();
   if (!args.dryRun && !state.publicly_verified) {
@@ -447,14 +362,11 @@ export async function main(argv=process.argv.slice(2)) {
       ['submitted','pending-publication','verified','verified-existing'].includes(row.status) && hasProviderId(row));
     if (!accepted) throw new Error('Release incomplete: not every artifact was accepted by its store; retain receipts and resume read-only reconciliation');
     const waiting=selected.filter(row=>!verifiedStatus(row));
-    const count=platform=>waiting.filter(row=>row.platform===platform).length;
-    const parts=[count('curseforge')&&`CurseForge approval pending for ${count('curseforge')} file(s)`,
-      count('modrinth')&&`Modrinth listing pending for ${count('modrinth')} file(s)`].filter(Boolean).join('; ');
-    console.log(`::warning title=Store approval pending::Release ${version}: every file was accepted; ${parts}. A later read-only run reconciles them.`);
-    console.log(`Submitted release ${version}: ${state.uploads.length} platform entries, ${waiting.length} awaiting store approval`);
+    console.log(`::warning title=Store approval pending::Release ${version}: every file was accepted; CurseForge approval pending for ${waiting.length} file(s). A later read-only run reconciles them.`);
+    console.log(`Submitted release ${version}: ${selected.length} CurseForge entries, ${waiting.length} awaiting store approval`);
     return state;
   }
-  console.log(`${args.dryRun?'Dry-run':'Verified'} release ${version}: ${state.uploads.length} platform entries`);
+  console.log(`${args.dryRun?'Dry-run':'Verified'} release ${version}: ${selected.length} CurseForge entries`);
   return state;
 }
 

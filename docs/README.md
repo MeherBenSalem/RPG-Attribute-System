@@ -57,7 +57,7 @@ The [5.0.0 verification record](verification/5.0.0.md) and the [4.3.0 record](ve
 |---------|-------------|
 | [Commands](commands/overview.md) | All `/ras` commands — syntax, permissions, examples |
 | [Permissions](permissions/permissions-reference.md) | Permission nodes, OP level 4, and how to restrict commands |
-| [Listing notes](listing-notes.md) | Paste-ready CurseForge / Modrinth replies |
+| [Listing notes](listing-notes.md) | Paste-ready CurseForge replies |
 | [Configuration Examples](examples.md) | Ready-to-use presets for common server styles |
 
 ### Compatibility and Performance

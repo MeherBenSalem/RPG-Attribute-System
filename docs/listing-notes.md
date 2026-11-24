@@ -1,6 +1,6 @@
 # Listing and comment notes
 
-Paste-ready text for CurseForge / Modrinth. Do **not** treat this file as a
+Paste-ready text for CurseForge. Do **not** treat this file as a
 published store listing. It matches current code.
 
 ## 5.0.0 changelog blurb (short)

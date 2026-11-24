@@ -1,20 +1,18 @@
 # Marketing assets: 5.0 "The Ascendant Update"
 
-Listing copy and artwork for CurseForge and Modrinth. Nothing here ships in the mod JARs.
+Listing copy and artwork for CurseForge (NightBeam publishes to CurseForge only). Nothing here ships in the mod JARs.
 
 ## Listing
 
 | File | Use |
 | --- | --- |
-| [`curseforge/description.md`](curseforge/description.md) | Full project description (Markdown; also works on Modrinth) |
+| [`curseforge/description.md`](curseforge/description.md) | Full project description (Markdown) |
 | [`curseforge/summary.txt`](curseforge/summary.txt) | Short project summary (131 characters) |
-| [`modrinth/description.md`](modrinth/description.md) | Modrinth description, made from the CurseForge copy by `python3 tools/make_modrinth_md.py .` (the screenshot gallery becomes a pointer to the Gallery tab) |
-| [`modrinth/summary.txt`](modrinth/summary.txt) | Modrinth summary (same text) |
 | [`../patchnotes/5.0.0.md`](../patchnotes/5.0.0.md) | File changelog used by the publish workflow |
 
 Right after the opening description comes one row of matching badges (Documentation in gold, then Discord, YouTube, Instagram, X, Facebook and the website: dark single-segment shields.io badges with brand-coloured logos), and the description links to the website docs at <https://nightbeam.dev/docs/remnants-rpg-stats>. The very last thing is the NightBeam Pro / Forge banner (`images/pro-forge-banner.png`, linking to <https://nightbeam.dev/forge>; source and render command in `source/pro-forge-banner.html`). Keep all three when rewriting the copy.
 
-Rerun `python3 tools/make_modrinth_md.py .` after every change to the CurseForge copy so the Modrinth files stay in step. The publish workflow uploads only release files; it does not change either project page, so paste the descriptions and summaries into CurseForge and Modrinth by hand.
+The publish workflow uploads only release files; it does not change the project page, so paste the description and summary into CurseForge by hand.
 
 Image links in the description point at `raw.githubusercontent.com/.../main/marketing/images/...`, so they work once this folder is on `main`. To host on CurseForge instead, upload the images to the project gallery and replace each URL.
 

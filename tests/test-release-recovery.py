@@ -66,7 +66,7 @@ class RecoveryTests(unittest.TestCase):
         workflow=yaml.safe_load((Path(__file__).resolve().parents[1]/'.github/workflows/publish.yml').read_text())
         steps=workflow['jobs']['publish']['steps']
         guard=next(i for i,step in enumerate(steps) if step.get('name')=='Reject live publish-only job reruns without fresh recovery')
-        upload=next(i for i,step in enumerate(steps) if step.get('name')=='Publish/resume verified binaries with per-loader dependencies')
+        upload=next(i for i,step in enumerate(steps) if step.get('name')=='Upload CurseForge')
         self.assertLess(guard,upload)
         self.assertIn('GITHUB_RUN_ATTEMPT',steps[guard]['run'])
 
@@ -89,7 +89,7 @@ class RecoveryTests(unittest.TestCase):
     def test_same_day_guard_runs_before_build_and_again_before_the_real_upload(self):
         import yaml
         workflow=yaml.safe_load((Path(__file__).resolve().parents[1]/'.github/workflows/publish.yml').read_text())
-        upload_name='Publish/resume verified binaries with per-loader dependencies'
+        upload_name='Upload CurseForge'
         resolve=workflow['jobs']['resolve']
         self.assertEqual('read',resolve['permissions']['actions'])
         self.assertEqual('read',workflow['jobs']['publish']['permissions']['actions'])
@@ -105,7 +105,10 @@ class RecoveryTests(unittest.TestCase):
         upload=steps[names.index(upload_name)]
         self.assertEqual(names.index(upload_name)-1,names.index('Same-day guard (again, right before upload)'))
         for guard in [early,again]:
-            self.assertEqual(upload_name,guard['env']['UPLOAD_STEP'])
+            counted=guard['env']['UPLOAD_STEP'].split('|')
+            self.assertEqual(upload_name,counted[0])
+            self.assertIn('Publish/resume verified binaries with per-loader dependencies',counted)
+            self.assertEqual(recovery.UPLOAD_STEPS,set(counted)&recovery.UPLOAD_STEPS)
             self.assertEqual('publish.yml',guard['env']['PUBLISH_WORKFLOW'])
             self.assertEqual('${{ secrets.CURSEFORGE_API_KEY }}',guard['env']['CURSEFORGE_API_KEY'])
             self.assertEqual('${{ github.token }}',guard['env']['GITHUB_TOKEN'])
@@ -119,6 +122,10 @@ class RecoveryTests(unittest.TestCase):
         # The resolved flag is the literal string 'true' only for a dispatch with dry_run checked.
         resolver=next(step for step in resolve['steps'] if step.get('name')=='Resolve exact source/version and fail closed')
         self.assertIn("dry_run='true' if os.environ.get('REQUESTED_DRY_RUN')=='true' else 'false'",resolver['run'])
+    def test_renamed_upload_step_counts_as_a_publication_attempt(self):
+        for conclusion,expected in [('failure',True),('success',True),('skipped',False)]:
+            payload={'jobs':[{'name':'publish','status':'completed','steps':[{'name':'Upload CurseForge','conclusion':conclusion}]}]}
+            with self.subTest(conclusion=conclusion):self.assertIs(expected,recovery.may_have_published(payload))
     def test_dry_run_descriptors_do_not_count_as_a_publication_attempt(self):
         dry={'jobs':[{'name':'publish','status':'completed','steps':[
             {'name':'Dry-run publication descriptors (no store writes)','conclusion':'success'},

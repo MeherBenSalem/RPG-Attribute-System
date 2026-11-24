@@ -13,6 +13,9 @@ import urllib.request
 REPOSITORY='MeherBenSalem/RPG-Attribute-System'
 WORKFLOW='.github/workflows/publish.yml'
 WORKSPACES=['1.20.1','1.21.1','26.2','26.3']
+# The Publish workflow's store-write step: "Upload CurseForge" since 24 Nov 2026 (CurseForge only), and its earlier name,
+# so attempts made before the rename still count.
+UPLOAD_STEPS={'Upload CurseForge','Publish/resume verified binaries with per-loader dependencies'}
 
 
 def validate_run(run,commit):
@@ -64,7 +67,7 @@ def may_have_published(payload):
         for step in steps:
             if not isinstance(step,dict) or not isinstance(step.get('name'),str):
                 raise ValueError('Malformed publication step record')
-            if step.get('name')=='Publish/resume verified binaries with per-loader dependencies' and step.get('conclusion')!='skipped':
+            if step.get('name') in UPLOAD_STEPS and step.get('conclusion')!='skipped':
                 return True
     return False
 

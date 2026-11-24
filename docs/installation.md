@@ -14,7 +14,7 @@ RAS is a Fabric / Forge / NeoForge **mod**. There is no Paper, Folia, Spigot, or
 
 ## Which JAR to download
 
-CurseForge and Modrinth publish **one file per loader**. The filename is the source of truth:
+CurseForge publishes **one file per loader**. The filename is the source of truth:
 
 | You run | Download a file named like | Do not use |
 |---------|----------------------------|------------|

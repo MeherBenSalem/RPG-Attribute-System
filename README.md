@@ -24,7 +24,7 @@ builds do not require jauml. See [Installation](docs/installation.md).
 
 Player-facing docs live in `docs/` and are published with screenshots at
 <https://nightbeam.dev/docs/remnants-rpg-stats> (synced by the website's
-`scripts/sync-repo-docs.mjs remnants`). Paste-ready CurseForge/Modrinth answers are
+`scripts/sync-repo-docs.mjs remnants`). Paste-ready CurseForge answers are
 in `docs/listing-notes.md`.
 
 ## Features
@@ -60,14 +60,15 @@ version roots, but the individual workspaces remain isolated.
 Create a release tag only after final independent source review, exact-commit
 loader CI, verified eight-JAR inventory, and the required client/gameplay checks.
 Pushing `v<version>` runs `.github/workflows/publish.yml`. Each loader JAR has
-its own Modrinth version and CurseForge file (8 JARs total).
+its own CurseForge file (8 JARs total). NightBeam publishes to CurseForge only; the
+Modrinth page stays up but gets no new versions.
 Publish refuses a second release of RAS on the same day (Africa/Tunis time; see
 the same-day guard in [docs/releasing.md](docs/releasing.md)), and a release whose
 files all await CurseForge approval ends green with a warning instead of failing.
 
-The workflow uses existing `MODRINTH_TOKEN`, `CURSEFORGE_TOKEN`, and
-`CURSEFORGE_API_KEY` repository secrets. The RAS project identities are checked;
-`MODRINTH_ID` and `CURSEFORGE_ID` variables, when set, must match them.
+The workflow uses the existing `CURSEFORGE_TOKEN` (upload token) and
+`CURSEFORGE_API_KEY` (Core API key) repository secrets and the `CURSEFORGE_ID`
+variable. The RAS CurseForge project identity is checked; `CURSEFORGE_ID` must match it.
 
 Changelog text comes from `patchnotes/{version}.md`. That
 file must exist and describe the reviewed release; there is no fallback.
